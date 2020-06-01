@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/main.css</file>
+        <file>resources/img/branch-closed.svg</file>
+        <file>resources/img/branch-end.svg</file>
+        <file>resources/img/branch-more.svg</file>
+        <file>resources/img/branch-open.svg</file>
+        <file>resources/img/delete.svg</file>
+        <file>resources/img/exit.svg</file>
+        <file>resources/img/info.svg</file>
+        <file>resources/img/no.svg</file>
+        <file>resources/img/qt_logo.svg</file>
+        <file>resources/img/question.svg</file>
+        <file>resources/img/setup.svg</file>
+        <file>resources/img/vline.svg</file>
+        <file>resources/img/yes.svg</file>
+        <file>resources/img/asterisk.svg</file>
+        <file>resources/img/zoom_in.svg</file>
+        <file>resources/img/zoom_out.svg</file>
+        <file>resources/img/zoom_undo.svg</file>
+    </qresource>
+</RCC>
