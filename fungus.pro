@@ -13,6 +13,7 @@ DEFINES     += BUILD_DATE='"\\\"$(shell date)\\\""'
 DEFINES     += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    dialogs/dialogcellinformation.cpp \
     dialogs/dialogvalueslist.cpp \
     dialogs/helpergraphics.cpp \
     field/cellrule.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
     scene/sceneview.cpp
 
 HEADERS += \
+    dialogs/dialogcellinformation.h \
     dialogs/dialogvalueslist.h \
     dialogs/helpergraphics.h \
     field/cellrule.h \

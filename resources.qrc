@@ -18,5 +18,6 @@
         <file>resources/img/zoom_in.svg</file>
         <file>resources/img/zoom_out.svg</file>
         <file>resources/img/zoom_undo.svg</file>
+        <file>resources/img/point.svg</file>
     </qresource>
 </RCC>

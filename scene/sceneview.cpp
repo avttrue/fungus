@@ -4,11 +4,13 @@
 #include "sceneobject.h"
 #include "field/cell.h"
 #include "graphicsviewzoomer.h"
+#include "dialogs/dialogcellinformation.h"
 
 #include <QtMath>
 #include <QDebug>
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
+#include <QMessageBox>
 
 SceneView::SceneView(QWidget *parent)
     :QGraphicsView(parent),
@@ -83,13 +85,13 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
-            auto o = static_cast<SceneObject*>(item->toGraphicsObject());
-            if(!o)
-            {
-                m_Scene->clearSelection();
-                m_Scene->setFocusItem(nullptr);
-            }
-            return false;
+            //auto o = static_cast<SceneObject*>(item->toGraphicsObject());
+            //if(!o)
+            //{
+            //    m_Scene->clearSelection();
+            //    m_Scene->setFocusItem(nullptr);
+            //}
+            //return false;
 
             //qDebug() << "GraphicsSceneMousePress" << mouseSceneEvent->scenePos();
         }
@@ -104,6 +106,26 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             }
 
             auto o = static_cast<SceneObject*>(item->toGraphicsObject());
+
+            // вывод сообщения об отсутствии SceneObject
+            if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
+                mouseSceneEvent->button() == Qt::LeftButton && !o)
+            {
+                QMessageBox::information(this, tr("Information"), tr("Scene object not created yet."));
+                return true;
+            }
+
+            // информация о ячейке
+            if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
+                mouseSceneEvent->button() == Qt::RightButton && o)
+            {
+                auto dci = new DialogCellInformation(this,
+                                                     ":/resources/img/point.svg",
+                                                     tr("Cell %1 information").arg(o->getCell()->objectName()));
+                dci->show();
+
+                return true;
+            }
 
             // создать SceneObject
             if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
