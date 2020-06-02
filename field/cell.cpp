@@ -16,7 +16,7 @@ Cell::Cell(Field *parent, CellRule *rule)
     //qDebug() << "Cell created";
 }
 
-void Cell::Clear()
+void Cell::clear()
 {
     m_Information.age = 0;
     m_Information.kill = 0;

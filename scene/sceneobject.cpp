@@ -65,6 +65,6 @@ QRectF SceneObject::boundingRect() const { return QRectF(0, 0, m_Size, m_Size); 
 Cell *SceneObject::getCell() const { return m_Cell; }
 void SceneObject::setCell(Cell *Cell) { m_Cell = Cell; }
 void SceneObject::setIndex(const QPoint &value) { m_Index = value; }
-QPoint SceneObject::Index() const { return m_Index; }
-int SceneObject::Size() const { return m_Size; }
+QPoint SceneObject::index() const { return m_Index; }
+int SceneObject::size() const { return m_Size; }
 

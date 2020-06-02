@@ -33,7 +33,7 @@ SceneView::SceneView(QWidget *parent)
     qDebug() << "SceneView created";
 }
 
-Scene *SceneView::AddScene(Field *filed)
+Scene *SceneView::addScene(Field *filed)
 {
     if(m_Scene) m_Scene->deleteLater();
 
@@ -44,7 +44,7 @@ Scene *SceneView::AddScene(Field *filed)
     return m_Scene;
 }
 
-void SceneView::Fill()
+void SceneView::fill()
 {
     if(!m_Scene)
     {
@@ -55,7 +55,7 @@ void SceneView::Fill()
     hide();
 
     QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-    m_Scene->Fill();
+    m_Scene->fill();
 
     show();
 }
@@ -71,9 +71,9 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
         auto mouseSceneEvent = static_cast<QGraphicsSceneMouseEvent *>(event);
 
         if(mouseSceneEvent->scenePos().x() < 0 ||
-            mouseSceneEvent->scenePos().x() >= m_Scene->Size().width() ||
+            mouseSceneEvent->scenePos().x() >= m_Scene->size().width() ||
             mouseSceneEvent->scenePos().y() < 0 ||
-            mouseSceneEvent->scenePos().y() >= m_Scene->Size().height())
+            mouseSceneEvent->scenePos().y() >= m_Scene->size().height())
         { return false; }
 
         else if(event->type() == QEvent::GraphicsSceneMousePress)
@@ -119,11 +119,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
                 mouseSceneEvent->button() == Qt::RightButton && o)
             {
-                auto dci = new DialogCellInformation(this,
-                                                     ":/resources/img/point.svg",
-                                                     tr("Cell %1 information").arg(o->getCell()->objectName()));
-                dci->show();
-
+                showCellInformationDialog(o->getCell());
                 return true;
             }
 
@@ -133,8 +129,8 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             {
                 auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneObjectSize());
                 auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneObjectSize());
-                auto added = m_Scene->AddObject(x, y);
-                added->getCell()->Clear();
+                auto added = m_Scene->addObject(x, y);
+                added->getCell()->clear();
                 m_Scene->setFocusItem(added);
                 qDebug() << added->objectName() << "created manually";
                 return true;
@@ -143,7 +139,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
                 mouseSceneEvent->button() == Qt::LeftButton && o)
             {
-                o->getCell()->Clear();
+                o->getCell()->clear();
                 o->getCell()->getInformation()->alive = true;
                 o->update();
                 m_Scene->setFocusItem(o);
@@ -155,7 +151,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
                 mouseSceneEvent->button() == Qt::RightButton && o)
             {
-                o->getCell()->Clear();
+                o->getCell()->clear();
                 o->update();
                 m_Scene->setFocusItem(o);
                 qDebug() << "Cell" << o->getCell()->objectName() << "cleared and set dead manually";
@@ -168,5 +164,15 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
     return false;
 }
 
+void SceneView::showCellInformationDialog(Cell *cell)
+{
+    if(DialogCellInformation::FindPreviousCopy(cell)) return;
+
+    auto dci = new DialogCellInformation(this, cell);
+    dci->show();
+
+}
+
 Scene *SceneView::getScene() const { return m_Scene; }
-GraphicsViewZoomer *SceneView::Zoomer() const { return m_Zoomer; }
+GraphicsViewZoomer *SceneView::zoomer() const { return m_Zoomer; }
+

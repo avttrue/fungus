@@ -5,6 +5,7 @@
 
 class Scene;
 class Field;
+class Cell;
 class GraphicsViewZoomer;
 
 class SceneView : public QGraphicsView
@@ -12,10 +13,11 @@ class SceneView : public QGraphicsView
     Q_OBJECT
 public:
     SceneView(QWidget *parent = nullptr);
-    Scene* AddScene(Field* filed);
+    Scene* addScene(Field* filed);
     Scene* getScene() const;
-    void Fill();
-    GraphicsViewZoomer *Zoomer() const;
+    void fill();
+    GraphicsViewZoomer *zoomer() const;
+    void showCellInformationDialog(Cell* cell);
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);

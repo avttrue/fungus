@@ -18,9 +18,9 @@ public:
           int width,
           int height);
     Cell* addCell(int x, int y);
-    int Width() const;
-    int Height() const;
-    QVector<QVector<Cell *>>* Cells();
+    int width() const;
+    int height() const;
+    QVector<QVector<Cell *>>* cells();
 
 protected:
 

@@ -11,9 +11,9 @@ Scene::Scene(QObject *parent, Field *field)
     : QGraphicsScene(parent),
     m_Field(field)
 {
-    m_Size = QSize(m_Field->Width(), m_Field->Height()) * config->SceneObjectSize();
+    m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneObjectSize();
     setObjectName(QString("SCENE[%1X%2]").
-                  arg(QString::number(m_Field->Width()), QString::number(m_Field->Height())));
+                  arg(QString::number(m_Field->width()), QString::number(m_Field->height())));
 
     if(config->SceneBspTreeIndex())
     {
@@ -37,8 +37,8 @@ Scene::Scene(QObject *parent, Field *field)
     else scenebordercolor = QColor(SCENE_BORDER_COLOR);
 
     m_BorderRect = addRect(0, 0,
-                           m_Field->Width() * config->SceneObjectSize(),
-                           m_Field->Height() * config->SceneObjectSize(),
+                           m_Field->width() * config->SceneObjectSize(),
+                           m_Field->height() * config->SceneObjectSize(),
                            QPen(scenebordercolor, 0),
                            QBrush(scenecolor));
 
@@ -48,9 +48,9 @@ Scene::Scene(QObject *parent, Field *field)
     qDebug() << objectName() << "created";
 }
 
-SceneObject *Scene::AddObject(int x, int y)
+SceneObject *Scene::addObject(int x, int y)
 {
-    auto c = m_Field->Cells()->at(x).at(y);
+    auto c = m_Field->cells()->at(x).at(y);
     if(!c) c = m_Field->addCell(x, y);
 
     auto o = new SceneObject;
@@ -69,30 +69,30 @@ SceneObject *Scene::AddObject(int x, int y)
     return o;
 }
 
-void Scene::RemoveObject(SceneObject *object)
+void Scene::removeObject(SceneObject *object)
 {
-    m_ObjectList.remove({object->Index().x(), object->Index().y()});
+    m_ObjectList.remove({object->index().x(), object->index().y()});
     QObject::connect(object, &QObject::destroyed, [=](){ qDebug() <<"SceneObject" << object->objectName() <<": destroyed"; });
     removeItem(object);
     object->deleteLater();
     Q_EMIT signalObjectRemoved();
 }
 
-void Scene::RemoveObject(int x, int y)
+void Scene::removeObject(int x, int y)
 {
     auto o = m_ObjectList.value({x, y});
-    RemoveObject(o);
+    removeObject(o);
 }
 
-void Scene::Fill()
+void Scene::fill()
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
-    m_ObjectList.reserve(m_Field->Width() * m_Field->Height());
-    for(int h = 0; h < m_Field->Height(); h++)
+    m_ObjectList.reserve(m_Field->width() * m_Field->height());
+    for(int h = 0; h < m_Field->height(); h++)
     {
-        for(int w = 0; w < m_Field->Width(); w++)
+        for(int w = 0; w < m_Field->width(); w++)
         {
-            AddObject(w, h);
+            addObject(w, h);
         }
         Q_EMIT signalProgress(h + 1);
     }
@@ -106,7 +106,7 @@ void Scene::setBackgroundColor(const QColor &value)
     setBackgroundBrush(m_BackgroundColor);
 }
 
-SceneObject *Scene::FocusedObject()
+SceneObject *Scene::focusedObject()
 {
     auto item = focusItem();
     if(!item) return nullptr;
@@ -114,8 +114,8 @@ SceneObject *Scene::FocusedObject()
     return static_cast<SceneObject*>(item->toGraphicsObject());
 }
 
-QGraphicsRectItem *Scene::BorderRect() const { return m_BorderRect; }
-QHash<QPair<int, int>, SceneObject *> *Scene::ObjectList() { return &m_ObjectList; }
-QSize Scene::Size() const { return m_Size; }
-QColor Scene::BackgroundColor() const { return m_BackgroundColor; }
+QGraphicsRectItem *Scene::borderRect() const { return m_BorderRect; }
+QHash<QPair<int, int>, SceneObject *> *Scene::objectList() { return &m_ObjectList; }
+QSize Scene::size() const { return m_Size; }
+QColor Scene::getBackgroundColor() const { return m_BackgroundColor; }
 

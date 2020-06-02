@@ -30,6 +30,6 @@ Cell *Field::addCell(int x, int y)
     return c;
 }
 
-QVector<QVector<Cell *>> *Field::Cells() { return &m_Cells; }
-int Field::Height() const { return m_Height; }
-int Field::Width() const { return m_Width; }
+QVector<QVector<Cell *>> *Field::cells() { return &m_Cells; }
+int Field::height() const { return m_Height; }
+int Field::width() const { return m_Width; }

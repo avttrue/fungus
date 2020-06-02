@@ -1,24 +1,28 @@
 #include "dialogcellinformation.h"
 #include "properties.h"
+#include "controls.h"
+#include "field/cell.h"
 
+#include <QApplication>
 #include <QDebug>
+#include <QEvent>
 #include <QIcon>
 #include <QScrollArea>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <controls.h>
+#include <QWindowStateChangeEvent>
 
 DialogCellInformation::DialogCellInformation(QWidget *parent,
-                                             const QString &icon,
-                                             const QString &caption)
-    : QDialog(parent)
+                                             Cell *cell)
+    : QDialog(parent),
+    m_Cell(cell)
 {
     setWindowFlags(Qt::Dialog |
                    Qt::CustomizeWindowHint |
                    Qt::WindowTitleHint);
     setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(caption);
-    setWindowIcon(QIcon(icon));
+    setWindowTitle(tr("Cell: %1").arg(cell->objectName()));
+    setWindowIcon(QIcon(":/resources/img/point.svg"));
     setModal(false);
 
     auto vblForm = new QVBoxLayout();
@@ -54,8 +58,48 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     resize(WINDOW_SIZE);
 
-    // TODO: запретить сворачивание
+    installEventFilter(this);
 
-    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogCellInformation" << caption << "destroyed"; });
-    qDebug() << "DialogCellInformation" << caption << "created";
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogCellInformation" << cell << "destroyed"; });
+    qDebug() << "DialogCellInformation" << cell << "created";
 }
+
+bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
+{
+    Q_UNUSED(object)
+
+    switch (event->type())
+    {
+    case QEvent::WindowStateChange:
+    {
+        if(!isMinimized()) return false;
+
+        // если всё же свернули
+        setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
+        return true;
+    }
+    default: { return false; }
+    }
+}
+
+Cell *DialogCellInformation::getCell() const { return m_Cell; }
+
+bool DialogCellInformation::FindPreviousCopy(Cell *cell)
+{
+    for (QWidget *widget: QApplication::topLevelWidgets())
+    {
+        auto dci = qobject_cast<DialogCellInformation*>(widget);
+
+        if (!dci) continue;
+
+        if(dci->getCell() == cell)
+        {
+            dci->showNormal();
+            dci->setWindowState(Qt::WindowActive);
+            return true;
+        }
+    }
+    return false;
+}
+
+

@@ -10,8 +10,8 @@ class SceneObject : public QGraphicsObject
     Q_OBJECT
 public:
     SceneObject(QGraphicsItem *parent = nullptr);
-    int Size() const;
-    QPoint Index() const;
+    int size() const;
+    QPoint index() const;
     void setIndex(const QPoint &value);
     Cell *getCell() const;
     void setCell(Cell *getCell);

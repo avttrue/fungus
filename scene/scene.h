@@ -11,16 +11,16 @@ class Scene : public QGraphicsScene
     Q_OBJECT
 public:
     Scene(QObject *parent, Field* field);
-    SceneObject* AddObject(int x, int y);
-    void RemoveObject(SceneObject* object);
-    void RemoveObject(int x, int y);
-    void Fill();
-    QColor BackgroundColor() const;
+    SceneObject* addObject(int x, int y);
+    void removeObject(SceneObject* object);
+    void removeObject(int x, int y);
+    void fill();
+    QColor getBackgroundColor() const;
     void setBackgroundColor(const QColor &value);
-    QGraphicsRectItem *BorderRect() const;
-    QHash<QPair<int, int>, SceneObject*>* ObjectList();
-    QSize Size() const;
-    SceneObject* FocusedObject();
+    QGraphicsRectItem *borderRect() const;
+    QHash<QPair<int, int>, SceneObject*>* objectList();
+    QSize size() const;
+    SceneObject* focusedObject();
 
 private:
     Field* m_Field;

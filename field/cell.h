@@ -30,7 +30,7 @@ public:
     CellRule *getRule() const;
     void setRule(CellRule *value);
     CellInformation* getInformation();
-    void Clear();
+    void clear();
 
 private:
     Field* m_Field;

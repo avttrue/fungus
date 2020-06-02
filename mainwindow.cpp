@@ -62,7 +62,7 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionZoomOutScene, &QAction::triggered, this, &MainWindow::slotSceneZoomOut);
 
     m_ActionZoomUndoScene = new QAction(QIcon(":/resources/img/zoom_undo.svg"), tr("Zoom UNDO"), this);
-    QObject::connect(m_ActionZoomUndoScene, &QAction::triggered, [=](){ m_SceneView->Zoomer()->Zoom(ZOOM_FACTOR_RESET); });
+    QObject::connect(m_ActionZoomUndoScene, &QAction::triggered, [=](){ m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET); });
 
     auto actionSetup = new QAction(QIcon(":/resources/img/setup.svg"), tr("Settings"), this);
     QObject::connect(actionSetup, &QAction::triggered, this, &MainWindow::slotSetup);
@@ -110,7 +110,7 @@ void MainWindow::loadGui()
     statusBar->addWidget(new QLabel(tr("Zoom:"), this));
     m_LabelFieldZoom = new QLabel(this);
     m_LabelFieldZoom->setText("1");
-    QObject::connect(m_SceneView->Zoomer(), &GraphicsViewZoomer::signalZoomed,
+    QObject::connect(m_SceneView->zoomer(), &GraphicsViewZoomer::signalZoomed,
                      [=](qreal value){ m_LabelFieldZoom->setText(QString::number(value)); });
     statusBar->addWidget(m_LabelFieldZoom);
 
@@ -150,24 +150,24 @@ void MainWindow::newProject()
     config->setSceneObjectSize(map.value(keys.at(2)).value.toInt());
 
     createField(config->SceneSize(), config->SceneSize());
-    m_SceneView->Zoomer()->Zoom(-1.0);
+    m_SceneView->zoomer()->Zoom(-1.0);
     createScene();
 }
 
 void MainWindow::createScene()
 {
-    m_SceneView->AddScene(m_Field);
+    m_SceneView->addScene(m_Field);
 
     if(config->ScenePreFill())
     {
-        m_ProgressBar->setRange(0, m_Field->Height());
+        m_ProgressBar->setRange(0, m_Field->height());
         m_ProgressBar->setValue(0);
         m_ProgressBar->show();
 
         auto conn = std::make_shared<QMetaObject::Connection>();
         auto func = [=](int step)
         {
-            if(step < m_Field->Height()) m_ProgressBar->setValue(step);
+            if(step < m_Field->height()) m_ProgressBar->setValue(step);
             else
             {
                 m_ProgressBar->hide();
@@ -176,18 +176,18 @@ void MainWindow::createScene()
         };
         *conn = QObject::connect(m_SceneView->getScene(), &Scene::signalProgress, func);
 
-        m_SceneView->Fill();
+        m_SceneView->fill();
     }
 
     QObject::connect(m_SceneView->getScene(), &QGraphicsScene::focusItemChanged,
                      [=]()
                      {
-                         auto o = m_SceneView->getScene()->FocusedObject();
+                         auto o = m_SceneView->getScene()->focusedObject();
                          if(o) m_LabelFocusedObject->setText(o->getCell()->objectName());
                          else m_LabelFocusedObject->setText("-");
                      });
-    m_LabelFieldSize->setText(QString("%1X%2 [%3]").arg(QString::number(m_Field->Width()),
-                                                        QString::number(m_Field->Height()),
+    m_LabelFieldSize->setText(QString("%1X%2 [%3]").arg(QString::number(m_Field->width()),
+                                                        QString::number(m_Field->height()),
                                                         QString::number(config->SceneObjectSize())));
 }
 
@@ -291,18 +291,18 @@ void MainWindow::slotSceneZoomIn()
 {
     auto factor = config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1);
     auto scene = m_SceneView->getScene();
-    m_SceneView->Zoomer()->Zoom(factor, true);
-    if(scene && scene->FocusedObject())
-        m_SceneView->centerOn(scene->FocusedObject());
+    m_SceneView->zoomer()->Zoom(factor, true);
+    if(scene && scene->focusedObject())
+        m_SceneView->centerOn(scene->focusedObject());
 }
 
 void MainWindow::slotSceneZoomOut()
 {
     auto factor = 1 / (config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1));
     auto scene = m_SceneView->getScene();
-    m_SceneView->Zoomer()->Zoom(factor, true);
-    if(scene && scene->FocusedObject())
-        m_SceneView->centerOn(scene->FocusedObject());
+    m_SceneView->zoomer()->Zoom(factor, true);
+    if(scene && scene->focusedObject())
+        m_SceneView->centerOn(scene->focusedObject());
 }
 
 QProgressBar *MainWindow::ProgressBar() const { return m_ProgressBar; }
