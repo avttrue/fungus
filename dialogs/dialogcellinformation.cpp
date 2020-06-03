@@ -14,6 +14,7 @@
 #include <QVBoxLayout>
 #include <QWindowStateChangeEvent>
 #include <QTextBrowser>
+#include <QFileDialog>
 
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
@@ -42,12 +43,17 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     toolBar->setMovable(false);
     toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    toolBar->addWidget(new WidgetSpacer());
+    auto actionSave = new QAction(QIcon(":/resources/img/save.svg"), "Save");
+    actionSave->setAutoRepeat(false);
+    QObject::connect(actionSave, &QAction::triggered, this, &DialogCellInformation::saveContent);
+    toolBar->addAction(actionSave);
+
+    toolBar->addWidget(new WidgetSpacer(this));
 
     auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), "Cancel");
     actionCancel->setAutoRepeat(false);
     QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
-    toolBar->addAction(actionCancel);
+    toolBar->addAction(actionCancel);    
 
     vblForm->addWidget(textBrowser);
     vblForm->addWidget(toolBar);
@@ -111,8 +117,27 @@ void DialogCellInformation::loadInformation()
 
     //textToFile(html, config->PathApp() + "/" + "test.html");
 
+    textBrowser->setProperty(TB_PROPERTY_CONTENT, html);
+
     textBrowser->setHtml(html);
     textBrowser->verticalScrollBar()->setValue(sb_pos);
+}
+
+void DialogCellInformation::saveContent()
+{
+    QString filename = QFileDialog::getSaveFileName(this, "Save", config->LastDir(), "HTML files (*.html)");
+
+    if(filename.isNull()) return;
+    config->setLastDir(QFileInfo(filename).dir().path());
+    if(!filename.endsWith(".html", Qt::CaseInsensitive)) filename.append(".html");
+
+    QFile file(filename);
+
+    QString text = textBrowser->property(TB_PROPERTY_CONTENT).toString();
+
+    if(textToFile(text, filename)) return;
+
+    qCritical() << __func__ << "Error at file saving:" << filename;
 }
 
 bool DialogCellInformation::FindPreviousCopy(Cell *cell)

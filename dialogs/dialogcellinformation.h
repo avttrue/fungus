@@ -4,6 +4,7 @@
 #include <QDialog>
 
 const QSize WINDOW_SIZE(300, 200);
+const auto TB_PROPERTY_CONTENT = "RealHTML";
 
 class QTextBrowser;
 class QGridLayout;
@@ -22,6 +23,7 @@ public:
 protected:
     bool eventFilter(QObject *object, QEvent *event);
     void loadInformation();
+    void saveContent();
 
 private:
     QTextBrowser* textBrowser;
