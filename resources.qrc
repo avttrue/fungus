@@ -19,5 +19,6 @@
         <file>resources/img/zoom_out.svg</file>
         <file>resources/img/zoom_undo.svg</file>
         <file>resources/img/point.svg</file>
+        <file>resources/cellinformation.html</file>
     </qresource>
 </RCC>

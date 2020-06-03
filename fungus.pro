@@ -16,6 +16,7 @@ SOURCES += \
     dialogs/dialogcellinformation.cpp \
     dialogs/dialogvalueslist.cpp \
     dialogs/helpergraphics.cpp \
+    field/cellinformation.cpp \
     field/cellrule.cpp \
     field/field.cpp \
     graphicsviewzoomer.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     dialogs/dialogcellinformation.h \
     dialogs/dialogvalueslist.h \
     dialogs/helpergraphics.h \
+    field/cellinformation.h \
     field/cellrule.h \
     field/field.h \
     graphicsviewzoomer.h \

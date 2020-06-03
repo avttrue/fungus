@@ -3,6 +3,7 @@
 #include "properties.h"
 #include "sceneobject.h"
 #include "field/cell.h"
+#include "field/cellinformation.h"
 #include "graphicsviewzoomer.h"
 #include "dialogs/dialogcellinformation.h"
 
@@ -140,11 +141,10 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 mouseSceneEvent->button() == Qt::LeftButton && o)
             {
                 o->getCell()->clear();
-                o->getCell()->getInformation()->alive = true;
+                o->getCell()->getInformation()->setAlive(true);
                 o->update();
                 m_Scene->setFocusItem(o);
                 qDebug() << "Cell" << o->getCell()->objectName() << "cleared and set alive manually";
-                Q_EMIT o->getCell()->signalChanged();
                 return true;
             }
             // обнулить ячейку

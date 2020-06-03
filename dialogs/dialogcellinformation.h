@@ -3,8 +3,9 @@
 
 #include <QDialog>
 
-const QSize WINDOW_SIZE(500, 400);
+const QSize WINDOW_SIZE(300, 200);
 
+class QTextBrowser;
 class QGridLayout;
 class Cell;
 
@@ -20,9 +21,10 @@ public:
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);
+    void loadInformation();
 
 private:
-    QGridLayout* glContent;
+    QTextBrowser* textBrowser;
     Cell* m_Cell;
 };
 

@@ -271,7 +271,7 @@ void MainWindow::createField(int w, int h)
     config->setSceneBorderColor(map.value(keys.at(9)).value.toString());
     config->setSceneColor(map.value(keys.at(10)).value.toString());
     config->setSceneScaleStep(map.value(keys.at(11)).value.toDouble());
-    config->setScenePreFill(map.value(keys.at(12)).value.toDouble());
+    config->setScenePreFill(map.value(keys.at(12)).value.toBool());
     // scene object
     config->setSceneObjectAgeIndicate(map.value(keys.at(14)).value.toBool());
     config->setSceneObjectDeadColor(map.value(keys.at(15)).value.toString());

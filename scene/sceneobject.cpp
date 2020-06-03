@@ -1,6 +1,7 @@
 #include "sceneobject.h"
 #include "properties.h"
 #include "field/cell.h"
+#include "field/cellinformation.h"
 
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
@@ -31,19 +32,19 @@ void SceneObject::paint(QPainter *painter,
                         QWidget*)
 {
     QColor color;
-    if(!m_Cell->getInformation()->alive) color = QColor(config->SceneObjectDeadColor());
+    if(!m_Cell->getInformation()->getAlive()) color = QColor(config->SceneObjectDeadColor());
     else if(config->SceneObjectAgeIndicate())
     {
-        if(m_Cell->getInformation()->age == 0) color = QColor(config->SceneObjectAlive0Color());
-        else if(m_Cell->getInformation()->age == 1) color = QColor(config->SceneObjectAlive1Color());
-        else if(m_Cell->getInformation()->age == 2) color = QColor(config->SceneObjectAlive2Color());
-        else if(m_Cell->getInformation()->age == 3) color = QColor(config->SceneObjectAlive3Color());
-        else if(m_Cell->getInformation()->age == 4) color = QColor(config->SceneObjectAlive4Color());
-        else if(m_Cell->getInformation()->age == 5) color = QColor(config->SceneObjectAlive5Color());
-        else if(m_Cell->getInformation()->age == 6) color = QColor(config->SceneObjectAlive6Color());
-        else if(m_Cell->getInformation()->age == 7) color = QColor(config->SceneObjectAlive7Color());
-        else if(m_Cell->getInformation()->age == 8) color = QColor(config->SceneObjectAlive8Color());
-        else if(m_Cell->getInformation()->age >= 9) color = QColor(config->SceneObjectAlive9Color());
+        if(m_Cell->getInformation()->getAge() == 0) color = QColor(config->SceneObjectAlive0Color());
+        else if(m_Cell->getInformation()->getAge() == 1) color = QColor(config->SceneObjectAlive1Color());
+        else if(m_Cell->getInformation()->getAge() == 2) color = QColor(config->SceneObjectAlive2Color());
+        else if(m_Cell->getInformation()->getAge() == 3) color = QColor(config->SceneObjectAlive3Color());
+        else if(m_Cell->getInformation()->getAge() == 4) color = QColor(config->SceneObjectAlive4Color());
+        else if(m_Cell->getInformation()->getAge() == 5) color = QColor(config->SceneObjectAlive5Color());
+        else if(m_Cell->getInformation()->getAge() == 6) color = QColor(config->SceneObjectAlive6Color());
+        else if(m_Cell->getInformation()->getAge() == 7) color = QColor(config->SceneObjectAlive7Color());
+        else if(m_Cell->getInformation()->getAge() == 8) color = QColor(config->SceneObjectAlive8Color());
+        else if(m_Cell->getInformation()->getAge() >= 9) color = QColor(config->SceneObjectAlive9Color());
     }
     else color = QColor(config->SceneObjectAlive0Color());
 

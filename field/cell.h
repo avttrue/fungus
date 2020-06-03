@@ -6,16 +6,8 @@
 
 class SceneObject;
 class CellRule;
+class CellInformation;
 class Field;
-
-struct CellInformation // NOTE: Q_EMIT signalChanged();
-{
-    bool alive = false;         // жив/мёртв
-    int age = 0;                // возраст живого
-    int generation = 0;         // количество поколений
-    int kill = 0;               // сколько раз убивал
-    int killed = 0;             // сколько раз был убит
-};
 
 class Cell : public QObject
 {
@@ -37,10 +29,11 @@ private:
     CellRule* m_Rule;
     QPoint m_Index;
     SceneObject* m_SceneObject;
-    CellInformation m_Information;
+    CellInformation* m_Information;
+
 
 Q_SIGNALS:
-    void signalChanged();
+
 };
 
 #endif // CELL_H

@@ -1,16 +1,19 @@
 #include "dialogcellinformation.h"
 #include "properties.h"
 #include "controls.h"
+#include "helper.h"
 #include "field/cell.h"
+#include "field/cellinformation.h"
 
 #include <QApplication>
 #include <QDebug>
 #include <QEvent>
 #include <QIcon>
-#include <QScrollArea>
+#include <QScrollBar>
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QWindowStateChangeEvent>
+#include <QTextBrowser>
 
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
@@ -21,7 +24,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
                    Qt::CustomizeWindowHint |
                    Qt::WindowTitleHint);
     setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(tr("Cell: %1").arg(cell->objectName()));
+    setWindowTitle(tr("Cell %1").arg(cell->objectName()));
     setWindowIcon(QIcon(":/resources/img/point.svg"));
     setModal(false);
 
@@ -31,16 +34,9 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     vblForm->setSpacing(0);
     setLayout(vblForm);
 
-    auto saContent = new QScrollArea();
-    saContent->setAlignment(Qt::AlignTop);
-    saContent->setWidgetResizable(true);
-
-    auto wContent = new QWidget();
-    saContent->setWidget(wContent);
-
-    glContent = new QGridLayout();
-    wContent->setLayout(glContent);
-    glContent->setAlignment(Qt::AlignTop);
+    textBrowser = new QTextBrowser(this);
+    textBrowser->setOpenLinks(false);
+    textBrowser->setUndoRedoEnabled(false);
 
     auto toolBar = new QToolBar();
     toolBar->setMovable(false);
@@ -53,12 +49,15 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
     toolBar->addAction(actionCancel);
 
-    vblForm->addWidget(saContent);
+    vblForm->addWidget(textBrowser);
     vblForm->addWidget(toolBar);
 
-    resize(WINDOW_SIZE);
+    loadInformation();
+
+    QObject::connect(cell->getInformation(), &CellInformation::signalChanged, this, &DialogCellInformation::loadInformation);
 
     installEventFilter(this);
+    resize(WINDOW_SIZE);    
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogCellInformation" << cell << "destroyed"; });
     qDebug() << "DialogCellInformation" << cell << "created";
@@ -82,7 +81,39 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
     }
 }
 
-Cell *DialogCellInformation::getCell() const { return m_Cell; }
+void DialogCellInformation::loadInformation()
+{
+    int sb_pos = textBrowser->verticalScrollBar()->value();
+
+    QString content;
+
+    auto map = m_Cell->getInformation()->getPropertiesList();
+
+    for(auto key: map.keys())
+    {
+        if(map.value(key) != QVariant::Bool)
+        {
+            content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
+                                   "<td class = 'TDTEXT'>%2</td></tr>").
+                           arg(key, m_Cell->getInformation()->property(key.toStdString().c_str()).toString()));
+        }
+        else if(map.value(key) == QVariant::Bool)
+        {
+            auto value =  m_Cell->getInformation()->property(key.toStdString().c_str()).toBool();
+            content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
+                                   "<td class = 'TDTEXT'>%2</td></tr>").
+                           arg(key, value ? "V" : "X"));
+        }
+    }
+
+    QString html = getTextFromRes(":/resources/cellinformation.html").
+                   arg(windowTitle(), content);
+
+    //textToFile(html, config->PathApp() + "/" + "test.html");
+
+    textBrowser->setHtml(html);
+    textBrowser->verticalScrollBar()->setValue(sb_pos);
+}
 
 bool DialogCellInformation::FindPreviousCopy(Cell *cell)
 {
@@ -102,4 +133,5 @@ bool DialogCellInformation::FindPreviousCopy(Cell *cell)
     return false;
 }
 
+Cell *DialogCellInformation::getCell() const { return m_Cell; }
 
