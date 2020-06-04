@@ -32,5 +32,5 @@ void Cell::setIndex(const QPoint &value) { m_Index = value; }
 CellRule *Cell::getRule() const { return m_Rule; }
 void Cell::setRule(CellRule *value) { m_Rule = value; }
 CellInformation *Cell::getInformation() { return m_Information; }
-
+Field *Cell::getField() const { return m_Field; }
 

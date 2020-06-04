@@ -32,7 +32,11 @@ void SceneObject::paint(QPainter *painter,
                         QWidget*)
 {
     QColor color;
-    if(!m_Cell->getInformation()->getAlive()) color = QColor(config->SceneObjectDeadColor());
+
+    if(isSelected()) color = QColor(config->SceneSelectColor());
+
+    else if(!m_Cell->getInformation()->getAlive()) color = QColor(config->SceneObjectDeadColor());
+
     else if(config->SceneObjectAgeIndicate())
     {
         if(m_Cell->getInformation()->getAge() == 0) color = QColor(config->SceneObjectAlive0Color());
@@ -46,9 +50,10 @@ void SceneObject::paint(QPainter *painter,
         else if(m_Cell->getInformation()->getAge() == 8) color = QColor(config->SceneObjectAlive8Color());
         else if(m_Cell->getInformation()->getAge() >= 9) color = QColor(config->SceneObjectAlive9Color());
     }
+
     else color = QColor(config->SceneObjectAlive0Color());
 
-    painter->fillRect(0, 0, m_Size, m_Size, color);
+    painter->fillPath(shape(), color);
 }
 
 void SceneObject::advance(int step)

@@ -2,7 +2,6 @@
 #include "cell.h"
 
 #include <QDebug>
-#include <QDateTime> //
 
 Field::Field(QObject *parent,
              int width,
@@ -30,6 +29,99 @@ Cell *Field::addCell(int x, int y)
     return c;
 }
 
-QVector<QVector<Cell *>> *Field::cells() { return &m_Cells; }
+Cell *Field::getTopCell(Cell *c) const
+{
+    auto index = c->getIndex();
+
+    if(index.y() == 0) index.setY(height() - 1);
+    else index.setY(index.y() - 1);
+
+    return getCell(index);
+}
+
+Cell *Field::getRightCell(Cell *c) const
+{
+    auto index = c->getIndex();
+
+    if(index.x() == width() - 1) index.setX(0);
+    else index.setX(index.x() + 1);
+
+    return getCell(index);
+}
+
+Cell *Field::getBottomCell(Cell *c) const
+{
+    auto index = c->getIndex();
+
+    if(index.y() == height() - 1) index.setY(0);
+    else index.setY(index.y() + 1);
+
+    return getCell(index);
+}
+
+Cell *Field::getLeftCell(Cell *c) const
+{
+    auto index = c->getIndex();
+
+    if(index.x() == 0) index.setX(width() - 1);
+    else index.setX(index.x() - 1);
+
+    return getCell(index);
+}
+
+Cell *Field::getTopLeftCell(Cell *c) const
+{
+   auto index = c->getIndex();
+
+   if(index.x() == 0) index.setX(width() - 1);
+   else index.setX(index.x() - 1);
+
+   if(index.y() == 0) index.setY(height() - 1);
+   else index.setY(index.y() - 1);
+
+   return getCell(index);
+}
+
+Cell *Field::getTopRightCell(Cell *c) const
+{
+  auto index = c->getIndex();
+
+  if(index.y() == 0) index.setY(height() - 1);
+  else index.setY(index.y() - 1);
+
+  if(index.x() == width() - 1) index.setX(0);
+  else index.setX(index.x() + 1);
+
+  return getCell(index);
+}
+
+Cell *Field::getBottomLeftCell(Cell *c) const
+{
+    auto index = c->getIndex();
+
+    if(index.y() == height() - 1) index.setY(0);
+    else index.setY(index.y() + 1);
+
+    if(index.x() == 0) index.setX(width() - 1);
+    else index.setX(index.x() - 1);
+
+    return getCell(index);
+}
+
+Cell *Field::getBottomRightCell(Cell *c) const
+{
+    auto index = c->getIndex();
+
+    if(index.y() == height() - 1) index.setY(0);
+    else index.setY(index.y() + 1);
+
+    if(index.x() == width() - 1) index.setX(0);
+    else index.setX(index.x() + 1);
+
+    return getCell(index);
+}
+
+Cell *Field::getCell(QPoint index) const { return m_Cells[index.x()][index.y()]; }
+QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }
 int Field::height() const { return m_Height; }
 int Field::width() const { return m_Width; }

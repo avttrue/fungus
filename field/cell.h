@@ -23,6 +23,7 @@ public:
     void setRule(CellRule *value);
     CellInformation* getInformation();
     void clear();
+    Field *getField() const;
 
 private:
     Field* m_Field;

@@ -5,11 +5,6 @@
 
 class Cell;
 
-struct FieldInformation
-{
-
-};
-
 class Field : public QObject
 {
     Q_OBJECT
@@ -17,15 +12,23 @@ public:
     Field(QObject *parent,
           int width,
           int height);
-    Cell* addCell(int x, int y);
     int width() const;
     int height() const;
-    QVector<QVector<Cell *>>* cells();
+    Cell* addCell(int x, int y);
+    Cell* getCell(QPoint index) const;
+    QVector<QVector<Cell *>>* cells() const;
+    Cell* getTopCell(Cell* c) const;
+    Cell* getRightCell(Cell* c) const;
+    Cell* getBottomCell(Cell* c) const;
+    Cell* getLeftCell(Cell* c) const;
+    Cell* getTopLeftCell(Cell* c) const;
+    Cell* getTopRightCell(Cell* c) const;
+    Cell* getBottomLeftCell(Cell* c) const;
+    Cell *getBottomRightCell(Cell* c) const;
 
 protected:
 
 private:
-    FieldInformation m_Information;
     int m_Width;
     int m_Height;
     QVector<QVector<Cell*>> m_Cells;

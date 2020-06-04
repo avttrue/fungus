@@ -2,6 +2,7 @@
 #include "scene.h"
 #include "properties.h"
 #include "sceneobject.h"
+#include "field/field.h"
 #include "field/cell.h"
 #include "field/cellinformation.h"
 #include "graphicsviewzoomer.h"
@@ -121,6 +122,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 mouseSceneEvent->button() == Qt::RightButton && o)
             {
                 showCellInformationDialog(o->getCell());
+                m_Scene->setFocusItem(o);
                 return true;
             }
 
@@ -140,21 +142,24 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
                 mouseSceneEvent->button() == Qt::LeftButton && o)
             {
-                o->getCell()->clear();
-                o->getCell()->getInformation()->setAlive(true);
+                auto c = o->getCell();
+                c->clear();
+                c->getInformation()->setAlive(true);
                 o->update();
+
                 m_Scene->setFocusItem(o);
-                qDebug() << "Cell" << o->getCell()->objectName() << "cleared and set alive manually";
+                qDebug() << "Cell" << c->objectName() << "cleared and set alive manually";
                 return true;
             }
             // обнулить ячейку
             if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
                 mouseSceneEvent->button() == Qt::RightButton && o)
             {
-                o->getCell()->clear();
+                auto c = o->getCell();
+                c->clear();
                 o->update();
                 m_Scene->setFocusItem(o);
-                qDebug() << "Cell" << o->getCell()->objectName() << "cleared and set dead manually";
+                qDebug() << "Cell" << c->objectName() << "cleared and set dead manually";
                 return true;
             }
 

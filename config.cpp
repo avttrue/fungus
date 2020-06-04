@@ -142,12 +142,24 @@ void Config::load()
     if(!m_Settings->contains("Scene/ObjectAlive9Color"))
         m_Settings->setValue("Scene/ObjectAlive9Color", SCENE_OBJECT_ALIVE9_COLOR);
     m_SceneObjectAlive9Color = m_Settings->value("Scene/ObjectAlive9Color").toString();
+
+    if(!m_Settings->contains("Scene/SceneSelectColor"))
+        m_Settings->setValue("Scene/SceneSelectColor", SCENE_SELECT_COLOR);
+    m_SceneSelectColor = m_Settings->value("Scene/SceneSelectColor").toString();
+}
+
+void Config::setSceneSelectColor(const QString &value)
+{
+    if(m_SceneSelectColor == value) return;
+
+    m_SceneSelectColor = value;
+    m_Settings->setValue("Scene/SceneSelectColor", m_SceneSelectColor);
 }
 
 void Config::setSceneObjectAlive0Color(const QString &value)
 {
     if(m_SceneObjectAlive0Color == value) return;
-
+    
     m_SceneObjectAlive0Color = value;
     m_Settings->setValue("Scene/ObjectAlive0Color", m_SceneObjectAlive0Color);
 }
@@ -322,9 +334,7 @@ void Config::setSceneObjectSize(int value)
 
 void Config::setSceneScaleStep(qreal value)
 {
-    if(m_SceneScaleStep == value) return;
-
-    if(value <= 0) m_SceneScaleStep = 2.0F;
+    if(value <= 0) m_SceneScaleStep = 2.0;
     else m_SceneScaleStep = value;
     m_Settings->setValue("Scene/ScaleStep", m_SceneScaleStep);
 }
@@ -377,6 +387,7 @@ void Config::setButtonSize(int value)
     m_Settings->setValue("MainWindow/ButtonSize", m_ButtonSize);
 }
 
+QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
 QString Config::SceneObjectAlive0Color() const { return m_SceneObjectAlive0Color; }
 QString Config::SceneObjectAlive1Color() const { return m_SceneObjectAlive1Color; }
 QString Config::SceneObjectAlive2Color() const { return m_SceneObjectAlive2Color; }

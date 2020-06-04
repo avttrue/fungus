@@ -7,8 +7,6 @@
 
 #include <QApplication>
 #include <QDebug>
-#include <QEvent>
-#include <QIcon>
 #include <QScrollBar>
 #include <QToolBar>
 #include <QVBoxLayout>
@@ -63,10 +61,10 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     QObject::connect(cell->getInformation(), &CellInformation::signalChanged, this, &DialogCellInformation::loadInformation);
 
     installEventFilter(this);
-    resize(WINDOW_SIZE);    
+    resize(WINDOW_SIZE);
 
-    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogCellInformation" << cell << "destroyed"; });
-    qDebug() << "DialogCellInformation" << cell << "created";
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogCellInformation destroyed"; });
+    qDebug() << "DialogCellInformation created";
 }
 
 bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
@@ -108,14 +106,12 @@ void DialogCellInformation::loadInformation()
             auto value =  m_Cell->getInformation()->property(key.toStdString().c_str()).toBool();
             content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
                                    "<td class = 'TDTEXT'>%2</td></tr>").
-                           arg(key, value ? "V" : "X"));
+                           arg(key, value ? TAG_YES : TAG_NO));
         }
     }
 
     QString html = getTextFromRes(":/resources/cellinformation.html").
                    arg(windowTitle(), content);
-
-    //textToFile(html, config->PathApp() + "/" + "test.html");
 
     textBrowser->setProperty(TB_PROPERTY_CONTENT, html);
 
@@ -125,7 +121,8 @@ void DialogCellInformation::loadInformation()
 
 void DialogCellInformation::saveContent()
 {
-    QString filename = QFileDialog::getSaveFileName(this, "Save", config->LastDir(), "HTML files (*.html)");
+    auto deffilename = config->LastDir() + QDir::separator() + QString("%1.html").arg(windowTitle());
+    auto filename = QFileDialog::getSaveFileName(this, "Save cell report", deffilename, "HTML files (*.html)");
 
     if(filename.isNull()) return;
     config->setLastDir(QFileInfo(filename).dir().path());

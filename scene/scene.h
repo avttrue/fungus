@@ -18,9 +18,9 @@ public:
     QColor getBackgroundColor() const;
     void setBackgroundColor(const QColor &value);
     QGraphicsRectItem *borderRect() const;
-    QHash<QPair<int, int>, SceneObject*>* objectList();
+    QHash<QPair<int, int>, SceneObject*>* objectList() const;
     QSize size() const;
-    SceneObject* focusedObject();
+    SceneObject* focusedObject() const;
 
 private:
     Field* m_Field;
@@ -34,8 +34,6 @@ protected:
 
 Q_SIGNALS:
     void signalProgress(int progress);
-    void signalObjectAdded(SceneObject* object);
-    void signalObjectRemoved();
 };
 
 #endif // SCENE_H

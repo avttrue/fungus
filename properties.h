@@ -15,6 +15,7 @@ const QString DT_FORMAT = "yyyy.MM.dd hh:mm:ss";
 const QString TEXT_CODEC = "UTF-8";
 const QString APP_NAME = "Fungus";
 const QString APP_CFG = "config.cfg";
+const QString SCENE_SELECT_COLOR = "#0000FF";
 const QString SCENE_BG_COLOR = "#2E2E2E";
 const QString SCENE_COLOR = "#DCDCDC";
 const QString SCENE_BORDER_COLOR = "#8B0000";

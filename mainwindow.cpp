@@ -210,21 +210,22 @@ void MainWindow::createField(int w, int h)
         tr("08#_Scene background color"),
         tr("09#_Scene border color"),
         tr("10#_Scene color"),
-        tr("11#_Scene zoom factor"),
-        tr("12#_Prefill scene"),
-        tr("13#_Scene object options"),
-        tr("14#_Indicate age value"),
-        tr("15#_Dead cell color"),
-        tr("16#_Alive cell color (age = 0)"),
-        tr("17#_Alive cell color, age = 1"),
-        tr("18#_Alive cell color, age = 2"),
-        tr("19#_Alive cell color, age = 3"),
-        tr("20#_Alive cell color, age = 4"),
-        tr("21#_Alive cell color, age = 5"),
-        tr("22#_Alive cell color, age = 6"),
-        tr("23#_Alive cell color, age = 7"),
-        tr("24#_Alive cell color, age = 8"),
-        tr("25#_Alive cell color, age >= 9"),
+        tr("11#_Scene selection color"),//
+        tr("12#_Scene zoom factor"),
+        tr("13#_Prefill scene"),
+        tr("14#_Scene object options"),
+        tr("15#_Indicate age value"),
+        tr("16#_Dead cell color"),
+        tr("17#_Alive cell color (age = 0)"),
+        tr("18#_Alive cell color, age = 1"),
+        tr("19#_Alive cell color, age = 2"),
+        tr("20#_Alive cell color, age = 3"),
+        tr("21#_Alive cell color, age = 4"),
+        tr("22#_Alive cell color, age = 5"),
+        tr("23#_Alive cell color, age = 6"),
+        tr("24#_Alive cell color, age = 7"),
+        tr("25#_Alive cell color, age = 8"),
+        tr("26#_Alive cell color, age >= 9"),
         };
     QMap<QString, DialogValue> map =
         {{keys.at(0), {}},
@@ -238,21 +239,22 @@ void MainWindow::createField(int w, int h)
          {keys.at(8), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
          {keys.at(9), {QVariant::String, config->SceneBorderColor(), 0, 0, DialogValueMode::Color}},
          {keys.at(10), {QVariant::String, config->SceneColor(), 0, 0, DialogValueMode::Color}},
-         {keys.at(11), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-         {keys.at(12), {QVariant::Bool, config->ScenePreFill(), 0, 0}},
-         {keys.at(13), {}},
-         {keys.at(14), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
-         {keys.at(15), {QVariant::String, config->SceneObjectDeadColor(), 0, 0, DialogValueMode::Color}},
-         {keys.at(16), {QVariant::String, config->SceneObjectAlive0Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(17), {QVariant::String, config->SceneObjectAlive1Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(18), {QVariant::String, config->SceneObjectAlive2Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(19), {QVariant::String, config->SceneObjectAlive3Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(20), {QVariant::String, config->SceneObjectAlive4Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(21), {QVariant::String, config->SceneObjectAlive5Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(22), {QVariant::String, config->SceneObjectAlive6Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(23), {QVariant::String, config->SceneObjectAlive7Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(24), {QVariant::String, config->SceneObjectAlive8Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(25), {QVariant::String, config->SceneObjectAlive9Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(11), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
+         {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
+         {keys.at(13), {QVariant::Bool, config->ScenePreFill(), 0, 0}},
+         {keys.at(14), {}},
+         {keys.at(15), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
+         {keys.at(16), {QVariant::String, config->SceneObjectDeadColor(), 0, 0, DialogValueMode::Color}},
+         {keys.at(17), {QVariant::String, config->SceneObjectAlive0Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(18), {QVariant::String, config->SceneObjectAlive1Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(19), {QVariant::String, config->SceneObjectAlive2Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(20), {QVariant::String, config->SceneObjectAlive3Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(21), {QVariant::String, config->SceneObjectAlive4Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(22), {QVariant::String, config->SceneObjectAlive5Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(23), {QVariant::String, config->SceneObjectAlive6Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(24), {QVariant::String, config->SceneObjectAlive7Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(25), {QVariant::String, config->SceneObjectAlive8Color(), 0, 0, DialogValueMode::Color}},
+         {keys.at(26), {QVariant::String, config->SceneObjectAlive9Color(), 0, 0, DialogValueMode::Color}},
          };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -270,21 +272,22 @@ void MainWindow::createField(int w, int h)
     config->setSceneBgColor(map.value(keys.at(8)).value.toString());
     config->setSceneBorderColor(map.value(keys.at(9)).value.toString());
     config->setSceneColor(map.value(keys.at(10)).value.toString());
-    config->setSceneScaleStep(map.value(keys.at(11)).value.toDouble());
-    config->setScenePreFill(map.value(keys.at(12)).value.toBool());
+    config->setSceneSelectColor(map.value(keys.at(11)).value.toString());
+    config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
+    config->setScenePreFill(map.value(keys.at(13)).value.toBool());
     // scene object
-    config->setSceneObjectAgeIndicate(map.value(keys.at(14)).value.toBool());
-    config->setSceneObjectDeadColor(map.value(keys.at(15)).value.toString());
-    config->setSceneObjectAlive0Color(map.value(keys.at(16)).value.toString());
-    config->setSceneObjectAlive1Color(map.value(keys.at(17)).value.toString());
-    config->setSceneObjectAlive2Color(map.value(keys.at(18)).value.toString());
-    config->setSceneObjectAlive3Color(map.value(keys.at(19)).value.toString());
-    config->setSceneObjectAlive4Color(map.value(keys.at(20)).value.toString());
-    config->setSceneObjectAlive5Color(map.value(keys.at(21)).value.toString());
-    config->setSceneObjectAlive6Color(map.value(keys.at(22)).value.toString());
-    config->setSceneObjectAlive7Color(map.value(keys.at(23)).value.toString());
-    config->setSceneObjectAlive8Color(map.value(keys.at(24)).value.toString());
-    config->setSceneObjectAlive9Color(map.value(keys.at(25)).value.toString());
+    config->setSceneObjectAgeIndicate(map.value(keys.at(15)).value.toBool());
+    config->setSceneObjectDeadColor(map.value(keys.at(16)).value.toString());
+    config->setSceneObjectAlive0Color(map.value(keys.at(17)).value.toString());
+    config->setSceneObjectAlive1Color(map.value(keys.at(18)).value.toString());
+    config->setSceneObjectAlive2Color(map.value(keys.at(19)).value.toString());
+    config->setSceneObjectAlive3Color(map.value(keys.at(20)).value.toString());
+    config->setSceneObjectAlive4Color(map.value(keys.at(21)).value.toString());
+    config->setSceneObjectAlive5Color(map.value(keys.at(22)).value.toString());
+    config->setSceneObjectAlive6Color(map.value(keys.at(23)).value.toString());
+    config->setSceneObjectAlive7Color(map.value(keys.at(24)).value.toString());
+    config->setSceneObjectAlive8Color(map.value(keys.at(25)).value.toString());
+    config->setSceneObjectAlive9Color(map.value(keys.at(26)).value.toString());
 }
 
 void MainWindow::slotSceneZoomIn()
@@ -292,8 +295,7 @@ void MainWindow::slotSceneZoomIn()
     auto factor = config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1);
     auto scene = m_SceneView->getScene();
     m_SceneView->zoomer()->Zoom(factor, true);
-    if(scene && scene->focusedObject())
-        m_SceneView->centerOn(scene->focusedObject());
+    if(scene && scene->focusedObject()) m_SceneView->centerOn(scene->focusedObject());
 }
 
 void MainWindow::slotSceneZoomOut()
@@ -301,8 +303,7 @@ void MainWindow::slotSceneZoomOut()
     auto factor = 1 / (config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1));
     auto scene = m_SceneView->getScene();
     m_SceneView->zoomer()->Zoom(factor, true);
-    if(scene && scene->focusedObject())
-        m_SceneView->centerOn(scene->focusedObject());
+    if(scene && scene->focusedObject()) m_SceneView->centerOn(scene->focusedObject());
 }
 
 QProgressBar *MainWindow::ProgressBar() const { return m_ProgressBar; }

@@ -76,6 +76,8 @@ public:
     void setSceneObjectAlive8Color(const QString &value);
     QString SceneObjectAlive9Color() const;
     void setSceneObjectAlive9Color(const QString &value);
+    QString SceneSelectColor() const;
+    void setSceneSelectColor(const QString &value);
 
 protected:
     void load();
@@ -86,6 +88,7 @@ private:
     QString m_PathAppConfig;                    // путь до конфига приложения
     QString m_PathAppDir;                       // путь до приложения
     QString m_LastDir;                          // путь до последнего каталога
+    QString m_SceneSelectColor;                 // цвет выбранного объекта сцены
     QString m_SceneBgColor;                     // цвет задника сцены
     QString m_SceneColor;                       // цвет сцены
     QString m_SceneBorderColor;                 // цвет рамок сцены
@@ -100,19 +103,19 @@ private:
     QString m_SceneObjectAlive7Color;           // цвет живой 7 ячейки
     QString m_SceneObjectAlive8Color;           // цвет живой 8 ячейки
     QString m_SceneObjectAlive9Color;           // цвет живой 9 ячейки
-    bool m_SceneObjectAgeIndicate;              // отображать возраст живых ячеек
-    int m_LogSize;                              // количество строк лога событий
-    int m_ButtonSize;                           // размеры кнопок интерфейса
-    bool m_SI_metric;                           // использовать систему СИ в отображении размеров файлов
     qreal m_SceneScaleStep;                     // шаг масштабирования сцены
+    int m_LogSize;                              // количество строк лога событий
+    int m_ButtonSize;                           // размеры кнопок интерфейса    
     int m_SceneObjectSize;                      // размер объекта сцены
+    int m_SceneBspTreeDepth;                    // глубина BspTreeIndex в сцене (0 - авто, 10 - максимум)
+    int m_SceneSize;                            // размер сцены при создании
+    Qt::KeyboardModifiers m_SceneZoomModifier;  // модификатор управления зумом
+    Qt::KeyboardModifiers m_SceneObjectModifier;// модификатор создания/удаления объектов
+    bool m_SceneObjectAgeIndicate;              // отображать возраст живых ячеек
+    bool m_SI_metric;                           // использовать систему СИ в отображении размеров файлов
     bool m_SceneViewAntialiasing;               // SceneView: Antialiasing
     bool m_ScenePreFill;                        // удалить автозаполнение ячейками сцены (эксперимент)
     bool m_SceneBspTreeIndex;                   // использовать BspTreeIndex в сцене
-    int m_SceneBspTreeDepth;                    // глубина BspTreeIndex в сцене (0 - авто, 10 - максимум)
-    Qt::KeyboardModifiers m_SceneZoomModifier;  // модификатор управления зумом
-    Qt::KeyboardModifiers m_SceneObjectModifier;// модификатор создания/удаления объектов
-    int m_SceneSize;                            // размер сцены при создании
 };
 
 #endif // CONFIG_H

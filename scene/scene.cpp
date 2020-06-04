@@ -65,17 +65,16 @@ SceneObject *Scene::addObject(int x, int y)
     o->setPos(o->mapToParent(x * config->SceneObjectSize(), y * config->SceneObjectSize()));
 
     //qDebug() << "Object added:" << o->objectName() << ", count:" << m_ObjectList.count();
-    Q_EMIT signalObjectAdded(o);
     return o;
 }
 
 void Scene::removeObject(SceneObject *object)
 {
     m_ObjectList.remove({object->index().x(), object->index().y()});
-    QObject::connect(object, &QObject::destroyed, [=](){ qDebug() <<"SceneObject" << object->objectName() <<": destroyed"; });
+    QObject::connect(object, &QObject::destroyed,
+                     [=](){ qDebug() <<"SceneObject" << object->objectName() <<": destroyed"; });
     removeItem(object);
     object->deleteLater();
-    Q_EMIT signalObjectRemoved();
 }
 
 void Scene::removeObject(int x, int y)
@@ -106,7 +105,7 @@ void Scene::setBackgroundColor(const QColor &value)
     setBackgroundBrush(m_BackgroundColor);
 }
 
-SceneObject *Scene::focusedObject()
+SceneObject *Scene::focusedObject() const
 {
     auto item = focusItem();
     if(!item) return nullptr;
@@ -115,7 +114,7 @@ SceneObject *Scene::focusedObject()
 }
 
 QGraphicsRectItem *Scene::borderRect() const { return m_BorderRect; }
-QHash<QPair<int, int>, SceneObject *> *Scene::objectList() { return &m_ObjectList; }
+QHash<QPair<int, int>, SceneObject*>* Scene::objectList() const { return const_cast<QHash<QPair<int, int>, SceneObject*>*>(&m_ObjectList); }
 QSize Scene::size() const { return m_Size; }
 QColor Scene::getBackgroundColor() const { return m_BackgroundColor; }
 
