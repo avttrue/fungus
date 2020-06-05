@@ -146,8 +146,8 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 c->clear();
                 c->getInformation()->setAlive(true);
                 o->update();
-
                 m_Scene->setFocusItem(o);
+
                 qDebug() << "Cell" << c->objectName() << "cleared and set alive manually";
                 return true;
             }
@@ -159,6 +159,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 c->clear();
                 o->update();
                 m_Scene->setFocusItem(o);
+
                 qDebug() << "Cell" << c->objectName() << "cleared and set dead manually";
                 return true;
             }

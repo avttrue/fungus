@@ -1,5 +1,6 @@
 #include "field.h"
 #include "cell.h"
+#include "cellinformation.h"
 
 #include <QDebug>
 
@@ -120,6 +121,38 @@ Cell *Field::getBottomRightCell(Cell *c) const
 
     return getCell(index);
 }
+
+QVector<Cell*> Field::getAliveCells(Cell *c) const
+{
+    QVector<Cell*> result;
+
+    auto cell = getTopCell(c);
+    if(cell->getInformation()->getAlive()) result.append(cell);
+
+    cell = getTopRightCell(c);
+    if(cell->getInformation()->getAlive()) result.append(cell);
+
+    cell = getRightCell(c);
+    if(cell->getInformation()->getAlive()) result.append(cell);
+
+    cell = getBottomRightCell(c);
+    if(cell->getInformation()->getAlive()) result.append(cell);
+
+    cell = getBottomCell(c);
+    if(cell->getInformation()->getAlive()) result.append(cell);
+
+    cell = getBottomLeftCell(c);
+    if(cell->getInformation()->getAlive()) result.append(cell);
+
+    cell = getLeftCell(c);
+    if(cell->getInformation()->getAlive()) result.append(cell);
+
+    cell = getTopLeftCell(c);
+    if(cell->getInformation()->getAlive()) result.append(cell);
+
+    return result;
+}
+
 
 Cell *Field::getCell(QPoint index) const { return m_Cells[index.x()][index.y()]; }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }

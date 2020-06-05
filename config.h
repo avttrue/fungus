@@ -78,6 +78,8 @@ public:
     void setSceneObjectAlive9Color(const QString &value);
     QString SceneSelectColor() const;
     void setSceneSelectColor(const QString &value);
+    QString SceneObjectCurseColor() const;
+    void setSceneObjectCurseColor(const QString &value);
 
 protected:
     void load();
@@ -93,6 +95,7 @@ private:
     QString m_SceneColor;                       // цвет сцены
     QString m_SceneBorderColor;                 // цвет рамок сцены
     QString m_SceneObjectDeadColor;             // цвет мёртвой ячейки
+    QString m_SceneObjectCurseColor;            // цвет отравленной ячейки
     QString m_SceneObjectAlive0Color;           // цвет живой 0 ячейки
     QString m_SceneObjectAlive1Color;           // цвет живой 1 ячейки
     QString m_SceneObjectAlive2Color;           // цвет живой 2 ячейки

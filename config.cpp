@@ -146,12 +146,24 @@ void Config::load()
     if(!m_Settings->contains("Scene/SceneSelectColor"))
         m_Settings->setValue("Scene/SceneSelectColor", SCENE_SELECT_COLOR);
     m_SceneSelectColor = m_Settings->value("Scene/SceneSelectColor").toString();
+
+    if(!m_Settings->contains("Scene/ObjectCurseColor"))
+        m_Settings->setValue("Scene/ObjectCurseColor", SCENE_OBJECT_CURSE_COLOR);
+    m_SceneObjectCurseColor = m_Settings->value("Scene/ObjectCurseColor").toString();
+}
+
+void Config::setSceneObjectCurseColor(const QString &value)
+{
+    if(m_SceneObjectCurseColor == value) return;
+
+    m_SceneObjectCurseColor = value;
+    m_Settings->setValue("Scene/ObjectCurseColor", m_SceneObjectCurseColor);
 }
 
 void Config::setSceneSelectColor(const QString &value)
 {
     if(m_SceneSelectColor == value) return;
-
+    
     m_SceneSelectColor = value;
     m_Settings->setValue("Scene/SceneSelectColor", m_SceneSelectColor);
 }
@@ -387,6 +399,7 @@ void Config::setButtonSize(int value)
     m_Settings->setValue("MainWindow/ButtonSize", m_ButtonSize);
 }
 
+QString Config::SceneObjectCurseColor() const { return m_SceneObjectCurseColor; }
 QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
 QString Config::SceneObjectAlive0Color() const { return m_SceneObjectAlive0Color; }
 QString Config::SceneObjectAlive1Color() const { return m_SceneObjectAlive1Color; }

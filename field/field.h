@@ -18,13 +18,14 @@ public:
     Cell* getCell(QPoint index) const;
     QVector<QVector<Cell *>>* cells() const;
     Cell* getTopCell(Cell* c) const;
-    Cell* getRightCell(Cell* c) const;
-    Cell* getBottomCell(Cell* c) const;
     Cell* getLeftCell(Cell* c) const;
+    Cell* getRightCell(Cell* c) const;
+    Cell* getBottomCell(Cell* c) const;   
     Cell* getTopLeftCell(Cell* c) const;
     Cell* getTopRightCell(Cell* c) const;
     Cell* getBottomLeftCell(Cell* c) const;
-    Cell *getBottomRightCell(Cell* c) const;
+    Cell* getBottomRightCell(Cell* c) const;
+    QVector<Cell*> getAliveCells(Cell* c) const;
 
 protected:
 

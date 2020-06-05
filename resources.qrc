@@ -21,5 +21,8 @@
         <file>resources/img/point.svg</file>
         <file>resources/cellinformation.html</file>
         <file>resources/img/save.svg</file>
+        <file>resources/img/run.svg</file>
+        <file>resources/img/step_stop.svg</file>
+        <file>resources/img/check.svg</file>
     </qresource>
 </RCC>
