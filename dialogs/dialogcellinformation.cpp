@@ -15,7 +15,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QWindowStateChangeEvent>
-#include <QTextBrowser>
+#include <QTextEdit>
 #include <QFileDialog>
 
 #include <field/fieldservice.h>
@@ -39,9 +39,11 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     vblForm->setSpacing(0);
     setLayout(vblForm);
 
-    textBrowser = new QTextBrowser(this);
-    textBrowser->setOpenLinks(false);
-    textBrowser->setUndoRedoEnabled(false);
+    textContent = new QTextEdit(this);
+    textContent->setLineWrapMode(QTextEdit::NoWrap);
+    textContent->setReadOnly(true);
+    textContent->setUndoRedoEnabled(false);
+    textContent->document()->setDocumentMargin(0);
 
     auto toolBar = new QToolBar();
     toolBar->setMovable(false);
@@ -64,7 +66,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
     toolBar->addAction(actionCancel);    
 
-    vblForm->addWidget(textBrowser);
+    vblForm->addWidget(textContent);
     vblForm->addWidget(toolBar);
 
     loadInformation();
@@ -99,7 +101,7 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
 
 void DialogCellInformation::loadInformation()
 {
-    int sb_pos = textBrowser->verticalScrollBar()->value();
+    int sb_pos = textContent->verticalScrollBar()->value();
 
     QString content;
 
@@ -113,8 +115,8 @@ void DialogCellInformation::loadInformation()
         {
             value = getNameKernelEnum("CellState", value.toInt());
         }
-        content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
-                               "<td class = 'TDTEXT'>%2</td></tr>").
+        content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
+                               "<td class = 'TDTEXT'>&#160;%2</td></tr>").
                        arg(key, value.toString()));
     }
 
@@ -122,7 +124,7 @@ void DialogCellInformation::loadInformation()
     if(m_Cell->getRule())
     {
         map = getPropertiesList(m_Cell->getRule());
-        content.append(QString("<tr><td class = 'TDCAPTION' colspan='2'>%1</td></tr>").
+        content.append(QString("<tr><td class = 'TDCAPTION' colspan='2'>&#160;%1&#160;</td></tr>").
                        arg(tr("Rules \"%1\"").arg(m_Cell->getRule()->objectName()).
                            toHtmlEscaped().
                            replace(" ", "&#160;")));
@@ -133,24 +135,24 @@ void DialogCellInformation::loadInformation()
             if(key == "XenoReaction")
             {
                 value = getNameKernelEnum("CellXenoReaction", value.toInt());
-                content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
-                                       "<td class = 'TDTEXT'>%2</td></tr>").
+                content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
+                                       "<td class = 'TDTEXT'>&#160;%2</td></tr>").
                                arg(key, value.toString()));
             }
             else if(key == "ColorAlive")
             {
-                content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
+                content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
                                        "<td class = 'TDTEXT' bgcolor = '%2'> &#160; </td></tr>").
                                arg(key, value.toString()));
             }
             else if(key == "Activity")
             {
                 auto activity = value.value<CellActivity>();
-                content.append(QString("<tr><td class = 'TDTEXT' colspan='2'>%1</td></tr>").arg(key));
+                content.append(QString("<tr><td class = 'TDTEXT' colspan='2'>&#160;%1</td></tr>").arg(key));
 
                 for(auto p: activity)
                 {
-                    content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
+                    content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
                                            "<td class = 'TDTEXT'>%2</td></tr>").
                                    arg(p.first, QString("&#160;%1&#160;%2").
                                                 arg(p.second.first.toHtmlEscaped(),
@@ -160,8 +162,8 @@ void DialogCellInformation::loadInformation()
             }
             else
             {
-                content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
-                                       "<td class = 'TDTEXT'>%2</td></tr>").
+                content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
+                                       "<td class = 'TDTEXT'>&#160;%2</td></tr>").
                                arg(key, value.toString()));
             }
         }
@@ -173,9 +175,9 @@ void DialogCellInformation::loadInformation()
     QString html = getTextFromRes(":/resources/cellinformation.html").
                    arg(windowTitle(), content);
 
-    textBrowser->setProperty(TB_PROPERTY_CONTENT, html);
-    textBrowser->setHtml(html);
-    textBrowser->verticalScrollBar()->setValue(sb_pos);
+    textContent->setProperty(TB_PROPERTY_CONTENT, html);
+    textContent->setHtml(html);
+    textContent->verticalScrollBar()->setValue(sb_pos);
 }
 
 void DialogCellInformation::slotSaveContent()
@@ -187,7 +189,7 @@ void DialogCellInformation::slotSaveContent()
     config->setLastDir(QFileInfo(filename).dir().path());
     if(!filename.endsWith(".html", Qt::CaseInsensitive)) filename.append(".html");
 
-    QString text = textBrowser->property(TB_PROPERTY_CONTENT).toString();
+    QString text = textContent->property(TB_PROPERTY_CONTENT).toString();
 
     if(textToFile(text, filename)) return;
 
@@ -196,6 +198,7 @@ void DialogCellInformation::slotSaveContent()
 
 void DialogCellInformation::slotShowPoint()
 {
+    // TODO: вынести выделение ячейки в View с передачей данных сигналом о выделенной ячейке
     auto o = m_Cell->getSceneObject();
     o->getScene()->setFocusItem(o);
     o->getScene()->clearSelection();

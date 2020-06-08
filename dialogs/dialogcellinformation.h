@@ -6,7 +6,7 @@
 const QSize WINDOW_SIZE(300, 300);
 const auto TB_PROPERTY_CONTENT = "RealHTML";
 
-class QTextBrowser;
+class QTextEdit;
 class Cell;
 
 class DialogCellInformation : public QDialog
@@ -28,7 +28,7 @@ private Q_SLOTS:
     void slotShowPoint();
 
 private:
-    QTextBrowser* textBrowser;
+    QTextEdit* textContent;
     Cell* m_Cell;
 };
 
