@@ -49,10 +49,6 @@ QStringList listKernelEnum(const QString& enumname);
  */
 QString getNameKernelEnum(const QString& enumname, int index);
 
-/*!
- * \brief getPropertiesList - получить список пользовательских QProperty объекта в виде <имя, тип>
- */
-QMap<QString, QVariant::Type> getPropertiesList(QObject *object);
 
 typedef QVector<QPair<QString, QPair<QString,int>>> CellActivity;
 Q_DECLARE_METATYPE(CellActivity);

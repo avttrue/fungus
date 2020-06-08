@@ -39,11 +39,11 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     vblForm->setSpacing(0);
     setLayout(vblForm);
 
-    textContent = new QTextEdit(this);
-    textContent->setLineWrapMode(QTextEdit::NoWrap);
-    textContent->setReadOnly(true);
-    textContent->setUndoRedoEnabled(false);
-    textContent->document()->setDocumentMargin(0);
+    m_TEContent = new QTextEdit(this);
+    m_TEContent->setLineWrapMode(QTextEdit::NoWrap);
+    m_TEContent->setReadOnly(true);
+    m_TEContent->setUndoRedoEnabled(false);
+    m_TEContent->document()->setDocumentMargin(0);
 
     auto toolBar = new QToolBar();
     toolBar->setMovable(false);
@@ -66,7 +66,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
     toolBar->addAction(actionCancel);    
 
-    vblForm->addWidget(textContent);
+    vblForm->addWidget(m_TEContent);
     vblForm->addWidget(toolBar);
 
     loadInformation();
@@ -101,7 +101,7 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
 
 void DialogCellInformation::loadInformation()
 {
-    int sb_pos = textContent->verticalScrollBar()->value();
+    int sb_pos = m_TEContent->verticalScrollBar()->value();
 
     QString content;
 
@@ -175,9 +175,9 @@ void DialogCellInformation::loadInformation()
     QString html = getTextFromRes(":/resources/cellinformation.html").
                    arg(windowTitle(), content);
 
-    textContent->setProperty(TB_PROPERTY_CONTENT, html);
-    textContent->setHtml(html);
-    textContent->verticalScrollBar()->setValue(sb_pos);
+    m_TEContent->setProperty(TB_PROPERTY_CONTENT, html);
+    m_TEContent->setHtml(html);
+    m_TEContent->verticalScrollBar()->setValue(sb_pos);
 }
 
 void DialogCellInformation::slotSaveContent()
@@ -189,7 +189,7 @@ void DialogCellInformation::slotSaveContent()
     config->setLastDir(QFileInfo(filename).dir().path());
     if(!filename.endsWith(".html", Qt::CaseInsensitive)) filename.append(".html");
 
-    QString text = textContent->property(TB_PROPERTY_CONTENT).toString();
+    QString text = m_TEContent->property(TB_PROPERTY_CONTENT).toString();
 
     if(textToFile(text, filename)) return;
 
@@ -200,10 +200,7 @@ void DialogCellInformation::slotShowPoint()
 {
     // TODO: вынести выделение ячейки в View с передачей данных сигналом о выделенной ячейке
     auto o = m_Cell->getSceneObject();
-    o->getScene()->setFocusItem(o);
-    o->getScene()->clearSelection();
-    o->getScene()->focusItem()->setSelected(true);
-    o->getScene()->getView()->centerOn(o);
+    o->getScene()->getView()->findObjectBySell(m_Cell);
 }
 
 bool DialogCellInformation::FindPreviousCopy(Cell *cell)

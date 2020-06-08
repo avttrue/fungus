@@ -41,15 +41,3 @@ int countKernelEnum(const QString &enumname)
 
     return me.keyCount();
 }
-
-QMap<QString, QVariant::Type> getPropertiesList(QObject* object)
-{
-    QMap<QString, QVariant::Type> result;
-
-    for(int i = object->metaObject()->propertyOffset(); i < object->metaObject()->propertyCount(); ++i)
-    {
-        result.insert(object->metaObject()->property(i).name(), object->metaObject()->property(i).type());
-    }
-
-    return result;
-}

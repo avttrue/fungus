@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-const QSize WINDOW_SIZE(300, 300);
+const QSize WINDOW_SIZE(350, 300);
 const auto TB_PROPERTY_CONTENT = "RealHTML";
 
 class QTextEdit;
@@ -12,6 +12,7 @@ class Cell;
 class DialogCellInformation : public QDialog
 {
     Q_OBJECT
+
 public:
     DialogCellInformation(QWidget *parent,
                           Cell* cell);
@@ -28,7 +29,7 @@ private Q_SLOTS:
     void slotShowPoint();
 
 private:
-    QTextEdit* textContent;
+    QTextEdit* m_TEContent;
     Cell* m_Cell;
 };
 

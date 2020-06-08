@@ -1,8 +1,8 @@
 #ifndef HELPER_H
 #define HELPER_H
 
-#include <QColor>
 #include <QString>
+#include <QVariant>
 
 /*!
  * \brief getTextFromRes - получить текстовый файл из ресурсов приложения
@@ -31,6 +31,11 @@ QString longTimeToString(long datetime, const QString& format);
  * \return количество байт в виде строки
  */
 QString humanReadableByteCount(long long bytes, bool si = true);
+
+/*!
+ * \brief getPropertiesList - получить список пользовательских QProperty объекта в виде <имя, тип>
+ */
+QMap<QString, QVariant::Type> getPropertiesList(QObject *object);
 
 QString getSystemInfo();
 

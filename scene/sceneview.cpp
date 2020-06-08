@@ -180,6 +180,16 @@ void SceneView::showCellInformationDialog(Cell *cell)
 
 }
 
+void SceneView::findObjectBySell(Cell *cell)
+{
+    auto o = cell->getSceneObject();
+    m_Scene->setFocusItem(o);
+    m_Scene->clearSelection();
+    m_Scene->focusItem()->setSelected(true);
+    centerOn(o);
+    Q_EMIT m_Scene->focusItemChanged(nullptr, o, Qt::OtherFocusReason);
+}
+
 Scene *SceneView::getScene() const { return m_Scene; }
 GraphicsViewZoomer *SceneView::zoomer() const { return m_Zoomer; }
 
