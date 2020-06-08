@@ -198,7 +198,6 @@ void DialogCellInformation::slotSaveContent()
 
 void DialogCellInformation::slotShowPoint()
 {
-    // TODO: вынести выделение ячейки в View с передачей данных сигналом о выделенной ячейке
     auto o = m_Cell->getSceneObject();
     o->getScene()->getView()->findObjectBySell(m_Cell);
 }
