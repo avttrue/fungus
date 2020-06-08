@@ -4,6 +4,7 @@
 #include <QObject>
 
 class Cell;
+class CellRule;
 
 class Field : public QObject
 {
@@ -33,6 +34,7 @@ private:
     int m_Width;
     int m_Height;
     QVector<QVector<Cell*>> m_Cells;
+    QVector<CellRule*> m_CellRules;
 
 Q_SIGNALS:
     void signalCellAdded(Cell* cell);

@@ -1,15 +1,17 @@
 #include "scene.h"
 #include "properties.h"
 #include "sceneobject.h"
+#include "sceneview.h"
 #include "field/field.h"
 #include "field/cell.h"
 
 #include <QDateTime>
 #include <QDebug>
 
-Scene::Scene(QObject *parent, Field *field)
+Scene::Scene(SceneView* parent, Field *field)
     : QGraphicsScene(parent),
-    m_Field(field)
+      m_View(parent),
+      m_Field(field)
 {
     m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneObjectSize();
     setObjectName(QString("SCENE[%1X%2]").
@@ -53,7 +55,7 @@ SceneObject *Scene::addObject(int x, int y)
     auto c = m_Field->cells()->at(x).at(y);
     if(!c) c = m_Field->addCell(x, y);
 
-    auto o = new SceneObject;
+    auto o = new SceneObject(this);
     o->setObjectName(QString("SCENE_OBJECT[%1.%2]").arg(QString::number(x), QString::number(y)));
     o->setIndex({x, y});
     o->setCell(c);
@@ -113,6 +115,7 @@ SceneObject *Scene::focusedObject() const
     return static_cast<SceneObject*>(item->toGraphicsObject());
 }
 
+SceneView *Scene::getView() const { return m_View; }
 QGraphicsRectItem *Scene::borderRect() const { return m_BorderRect; }
 QHash<QPair<int, int>, SceneObject*>* Scene::objectList() const { return const_cast<QHash<QPair<int, int>, SceneObject*>*>(&m_ObjectList); }
 QSize Scene::size() const { return m_Size; }

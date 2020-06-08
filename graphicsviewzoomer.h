@@ -5,7 +5,7 @@
 #include <QPointF>
 
 const auto ZOOM_FACTOR_BASE = 1.001;
-const auto ZOOM_FACTOR_RESET = -1.0;
+const auto ZOOM_FACTOR_RESET = -1;
 const auto MODIFIER = Qt::ControlModifier;
 
 class QGraphicsView;

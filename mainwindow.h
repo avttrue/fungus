@@ -23,7 +23,6 @@ protected:
     void createScene();
     void createField(int w, int h);
     void setActionsEnable(bool value);
-    void RevertSelectionFocusedSceneObject();
 
 private:
     Field* m_Field;
@@ -31,7 +30,6 @@ private:
     QAction* m_ActionZoomInScene;
     QAction* m_ActionZoomOutScene;
     QAction* m_ActionZoomUndoScene;
-    QAction* m_ActionSelect;
     QAction* m_ActionStepStop;
     QAction* m_ActionRun;
     QLabel* m_LabelFieldSize;

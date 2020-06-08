@@ -1,18 +1,21 @@
 #include "sceneobject.h"
+#include "scene.h"
 #include "properties.h"
 #include "field/cell.h"
+#include "field/cellrule.h"
 #include "field/cellinformation.h"
 
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
-SceneObject::SceneObject(QGraphicsItem* parent)
+SceneObject::SceneObject(Scene* scene, QGraphicsItem* parent)
     : QGraphicsObject(parent),
-    m_Size(config->SceneObjectSize()),
-    m_Index(-1, -1),
-    m_Cell(nullptr),
-    m_Update(true)
+      m_Scene(scene),
+      m_Cell(nullptr),
+      m_Size(config->SceneObjectSize()),
+      m_Index(-1, -1),
+      m_Update(true)
 {
     setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable);
 
@@ -35,23 +38,20 @@ void SceneObject::paint(QPainter *painter,
 
     if(isSelected()) color = QColor(config->SceneSelectColor());
 
-    else if(!m_Cell->getInformation()->getAlive()) color = QColor(config->SceneObjectDeadColor());
+    else if(m_Cell->getInformation()->getState() == Kernel::CellState::Dead)
+        color = QColor(config->SceneObjectDeadColor());
+
+    else if(m_Cell->getInformation()->getState() == Kernel::CellState::Cursed)
+        color = QColor(config->SceneObjectCurseColor());
 
     else if(config->SceneObjectAgeIndicate())
     {
-        if(m_Cell->getInformation()->getAge() == 0) color = QColor(config->SceneObjectAlive0Color());
-        else if(m_Cell->getInformation()->getAge() == 1) color = QColor(config->SceneObjectAlive1Color());
-        else if(m_Cell->getInformation()->getAge() == 2) color = QColor(config->SceneObjectAlive2Color());
-        else if(m_Cell->getInformation()->getAge() == 3) color = QColor(config->SceneObjectAlive3Color());
-        else if(m_Cell->getInformation()->getAge() == 4) color = QColor(config->SceneObjectAlive4Color());
-        else if(m_Cell->getInformation()->getAge() == 5) color = QColor(config->SceneObjectAlive5Color());
-        else if(m_Cell->getInformation()->getAge() == 6) color = QColor(config->SceneObjectAlive6Color());
-        else if(m_Cell->getInformation()->getAge() == 7) color = QColor(config->SceneObjectAlive7Color());
-        else if(m_Cell->getInformation()->getAge() == 8) color = QColor(config->SceneObjectAlive8Color());
-        else if(m_Cell->getInformation()->getAge() >= 9) color = QColor(config->SceneObjectAlive9Color());
+        color = m_Cell->getRule()->getColorAlive();
+        // if(m_Cell->getInformation()->getAge() == 0)
+        // TODO: изменение цвета по восрасту ячейки
     }
 
-    else color = QColor(config->SceneObjectAlive0Color());
+    else color = m_Cell->getRule()->getColorAlive();
 
     painter->fillPath(shape(), color);
 }
@@ -66,6 +66,7 @@ void SceneObject::advance(int step)
     update();
 }
 
+Scene *SceneObject::getScene() const { return m_Scene; }
 void SceneObject::setUpdate(bool value) { m_Update = value; }
 QRectF SceneObject::boundingRect() const { return QRectF(0, 0, m_Size, m_Size); }
 Cell *SceneObject::getCell() const { return m_Cell; }

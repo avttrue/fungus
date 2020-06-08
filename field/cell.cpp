@@ -21,7 +21,7 @@ Cell::Cell(Field *parent, CellRule *rule)
 void Cell::clear()
 {
     m_Information->setAge(0);
-    m_Information->setAlive(false);
+    m_Information->setState(Kernel::CellState::Dead);
     m_Information->setGeneration(0);
 }
 

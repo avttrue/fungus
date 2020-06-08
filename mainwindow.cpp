@@ -67,10 +67,6 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionZoomUndoScene, &QAction::triggered, this, &MainWindow::slotZoomUndoScene);
     m_ActionZoomUndoScene->setEnabled(false);
 
-    m_ActionSelect = new QAction(QIcon(":/resources/img/check.svg"), tr("Select / Unselect"), this);
-    QObject::connect(m_ActionSelect, &QAction::triggered, [=](){ RevertSelectionFocusedSceneObject(); });
-    m_ActionSelect->setEnabled(false);
-
     auto actionSetup = new QAction(QIcon(":/resources/img/setup.svg"), tr("Settings"), this);
     QObject::connect(actionSetup, &QAction::triggered, this, &MainWindow::slotSetup);
 
@@ -93,7 +89,6 @@ void MainWindow::loadGui()
     tbMain->addAction(m_ActionZoomUndoScene);
     tbMain->addAction(m_ActionZoomInScene);
     tbMain->addAction(m_ActionZoomOutScene);
-    tbMain->addAction(m_ActionSelect);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionStepStop);
     tbMain->addAction(m_ActionRun);
@@ -234,7 +229,6 @@ void MainWindow::setActionsEnable(bool value)
     m_ActionZoomUndoScene->setEnabled(value);
     m_ActionStepStop->setEnabled(value);
     m_ActionRun->setEnabled(value);
-    m_ActionSelect->setEnabled(value);
 }
 
     void MainWindow::slotSetup()
@@ -353,20 +347,6 @@ void MainWindow::slotZoomUndoScene()
 {
     m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET);
     m_SceneView->centerOn(m_SceneView->getScene()->focusedObject());
-}
-
-void MainWindow::RevertSelectionFocusedSceneObject()
-{
-    if(!m_SceneView->scene()) return;
-    if(!m_SceneView->scene()->focusItem()) return;
-
-    if(m_SceneView->scene()->selectedItems().contains(m_SceneView->scene()->focusItem()))
-        m_SceneView->scene()->clearSelection();
-    else
-    {
-        m_SceneView->scene()->clearSelection();
-        m_SceneView->scene()->focusItem()->setSelected(true);
-    }
 }
 
 QProgressBar *MainWindow::ProgressBar() const { return m_ProgressBar; }

@@ -3,10 +3,8 @@
 
 #include <QDialog>
 
-const QSize WINDOW_SIZE(200, 300);
+const QSize WINDOW_SIZE(300, 300);
 const auto TB_PROPERTY_CONTENT = "RealHTML";
-const auto TAG_YES = "<div style='text-align: center; color: white; background-color: green;'>&#160;V&#160;</div>";
-const auto TAG_NO =  "<div style='text-align: center; color: white; background-color: red;'>&#160;X&#160;</div>";
 
 class QTextBrowser;
 class Cell;
@@ -24,7 +22,10 @@ public:
 protected:
     bool eventFilter(QObject *object, QEvent *event);
     void loadInformation();
-    void saveContent();
+
+private Q_SLOTS:
+    void slotSaveContent();
+    void slotShowPoint();
 
 private:
     QTextBrowser* textBrowser;

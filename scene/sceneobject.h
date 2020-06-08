@@ -4,18 +4,20 @@
 #include <QGraphicsObject>
 
 class Cell;
+class Scene;
 
 class SceneObject : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    SceneObject(QGraphicsItem *parent = nullptr);
+    SceneObject(Scene *scene, QGraphicsItem *parent = nullptr);
     int size() const;
     QPoint index() const;
     void setIndex(const QPoint &value);
     Cell *getCell() const;
     void setCell(Cell *getCell);
     void setUpdate(bool value);
+    Scene *getScene() const;
 
 protected:
     QRectF boundingRect() const override;
@@ -24,9 +26,10 @@ protected:
     void advance(int step) override;
 
 private:
-    int m_Size;
-    QPoint m_Index;
+    Scene* m_Scene;
     Cell* m_Cell;
+    int m_Size;
+    QPoint m_Index;    
     bool m_Update;
 };
 

@@ -19,6 +19,7 @@ SOURCES += \
     field/cellinformation.cpp \
     field/cellrule.cpp \
     field/field.cpp \
+    field/fieldservice.cpp \
     graphicsviewzoomer.cpp \
     config.cpp \
     controls.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     field/cellinformation.h \
     field/cellrule.h \
     field/field.h \
+    field/fieldservice.h \
     graphicsviewzoomer.h \
     config.h \
     controls.h \

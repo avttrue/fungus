@@ -7,18 +7,18 @@
 
 CellInformation::CellInformation(Cell *parent)
     : QObject(parent),
-    m_Age(0),
-    m_Generation(0),
-    m_Alive(false)
+      m_Age(0),
+      m_Generation(0),
+      m_State(Kernel::CellState::Dead)
 {
     //QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "CellInformation" <<parent->objectName() <<"destroyed"; });
 }
 
-void CellInformation::setAlive(bool value)
+void CellInformation::setState(Kernel::CellState value)
 {
-    if (m_Alive == value) return;
+    if (m_State == value) return;
 
-    m_Alive = value;
+    m_State = value;
     Q_EMIT signalChanged();
 }
 
@@ -38,18 +38,6 @@ void CellInformation::setGeneration(int value)
     Q_EMIT signalChanged();
 }
 
-QMap<QString, QVariant::Type> CellInformation::getPropertiesList()
-{
-    QMap<QString, QVariant::Type> result;
-
-    for(int i = metaObject()->propertyOffset(); i < metaObject()->propertyCount(); ++i)
-    {
-        result.insert(metaObject()->property(i).name(), metaObject()->property(i).type());
-    }
-
-    return result;
-}
-
-bool CellInformation::getAlive() const { return m_Alive; }
+Kernel::CellState CellInformation::getState() const { return m_State; }
 int CellInformation::getAge() const { return m_Age; }
 int CellInformation::getGeneration() const { return m_Generation; }

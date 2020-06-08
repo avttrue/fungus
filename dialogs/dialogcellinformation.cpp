@@ -3,7 +3,11 @@
 #include "controls.h"
 #include "helper.h"
 #include "field/cell.h"
+#include "field/cellrule.h"
 #include "field/cellinformation.h"
+#include "scene/scene.h"
+#include "scene/sceneobject.h"
+#include "scene/sceneview.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -14,10 +18,12 @@
 #include <QTextBrowser>
 #include <QFileDialog>
 
+#include <field/fieldservice.h>
+
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
     : QDialog(parent),
-    m_Cell(cell)
+      m_Cell(cell)
 {
     setWindowFlags(Qt::Dialog |
                    Qt::CustomizeWindowHint |
@@ -41,9 +47,14 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     toolBar->setMovable(false);
     toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
+    auto actionShowPoint = new QAction(QIcon(":/resources/img/check.svg"), "Show point");
+    actionShowPoint->setAutoRepeat(false);
+    QObject::connect(actionShowPoint, &QAction::triggered, this, &DialogCellInformation::slotShowPoint);
+    toolBar->addAction(actionShowPoint);
+
     auto actionSave = new QAction(QIcon(":/resources/img/save.svg"), "Save");
     actionSave->setAutoRepeat(false);
-    QObject::connect(actionSave, &QAction::triggered, this, &DialogCellInformation::saveContent);
+    QObject::connect(actionSave, &QAction::triggered, this, &DialogCellInformation::slotSaveContent);
     toolBar->addAction(actionSave);
 
     toolBar->addWidget(new WidgetSpacer(this));
@@ -58,7 +69,8 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     loadInformation();
 
-    QObject::connect(cell->getInformation(), &CellInformation::signalChanged, this, &DialogCellInformation::loadInformation);
+    QObject::connect(cell->getInformation(), &CellInformation::signalChanged,
+                     this, &DialogCellInformation::loadInformation);
 
     installEventFilter(this);
     resize(WINDOW_SIZE);
@@ -91,35 +103,82 @@ void DialogCellInformation::loadInformation()
 
     QString content;
 
-    auto map = m_Cell->getInformation()->getPropertiesList();
+    auto map = getPropertiesList(m_Cell->getInformation());
 
+    // Cell information
     for(auto key: map.keys())
     {
-        if(map.value(key) != QVariant::Bool)
+        QVariant value = m_Cell->getInformation()->property(key.toStdString().c_str());
+        if(key == "State")
         {
-            content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
-                                   "<td class = 'TDTEXT'>%2</td></tr>").
-                           arg(key, m_Cell->getInformation()->property(key.toStdString().c_str()).toString()));
+            value = getNameKernelEnum("CellState", value.toInt());
         }
-        else if(map.value(key) == QVariant::Bool)
+        content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
+                               "<td class = 'TDTEXT'>%2</td></tr>").
+                       arg(key, value.toString()));
+    }
+
+    // Cell rules
+    if(m_Cell->getRule())
+    {
+        map = getPropertiesList(m_Cell->getRule());
+        content.append(QString("<tr><td class = 'TDCAPTION' colspan='2'>%1</td></tr>").
+                       arg(tr("Rules \"%1\"").arg(m_Cell->getRule()->objectName()).
+                           toHtmlEscaped().
+                           replace(" ", "&#160;")));
+
+        for(auto key: map.keys())
         {
-            auto value =  m_Cell->getInformation()->property(key.toStdString().c_str()).toBool();
-            content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
-                                   "<td class = 'TDTEXT'>%2</td></tr>").
-                           arg(key, value ? TAG_YES : TAG_NO));
+            QVariant value = m_Cell->getRule()->property(key.toStdString().c_str());
+            if(key == "XenoReaction")
+            {
+                value = getNameKernelEnum("CellXenoReaction", value.toInt());
+                content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
+                                       "<td class = 'TDTEXT'>%2</td></tr>").
+                               arg(key, value.toString()));
+            }
+            else if(key == "ColorAlive")
+            {
+                content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
+                                       "<td class = 'TDTEXT' bgcolor = '%2'> &#160; </td></tr>").
+                               arg(key, value.toString()));
+            }
+            else if(key == "Activity")
+            {
+                auto activity = value.value<CellActivity>();
+                content.append(QString("<tr><td class = 'TDTEXT' colspan='2'>%1</td></tr>").arg(key));
+
+                for(auto p: activity)
+                {
+                    content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
+                                           "<td class = 'TDTEXT'>%2</td></tr>").
+                                   arg(p.first, QString("&#160;%1&#160;%2").
+                                                arg(p.second.first.toHtmlEscaped(),
+                                                    QString::number(p.second.second))));
+                }
+                content.append("<tr><td class = 'TDCAPTION' colspan='2'>&#8212; &#8212; &#8212;</td></tr>");
+            }
+            else
+            {
+                content.append(QString("<tr><td class = 'TDTEXT'>%1</td>"
+                                       "<td class = 'TDTEXT'>%2</td></tr>").
+                               arg(key, value.toString()));
+            }
         }
     }
+    else
+        content.append(QString("<tr><td class = 'TDCAPTION' colspan='2'>%1</td></tr>").
+                       arg(tr("Rules list is empty!")));
 
     QString html = getTextFromRes(":/resources/cellinformation.html").
                    arg(windowTitle(), content);
 
     textBrowser->setProperty(TB_PROPERTY_CONTENT, html);
-
     textBrowser->setHtml(html);
     textBrowser->verticalScrollBar()->setValue(sb_pos);
 }
 
-void DialogCellInformation::saveContent()
+void DialogCellInformation::slotSaveContent()
 {
     auto deffilename = config->LastDir() + QDir::separator() + QString("%1.html").arg(windowTitle());
     auto filename = QFileDialog::getSaveFileName(this, "Save cell report", deffilename, "HTML files (*.html)");
@@ -128,13 +187,20 @@ void DialogCellInformation::saveContent()
     config->setLastDir(QFileInfo(filename).dir().path());
     if(!filename.endsWith(".html", Qt::CaseInsensitive)) filename.append(".html");
 
-    QFile file(filename);
-
     QString text = textBrowser->property(TB_PROPERTY_CONTENT).toString();
 
     if(textToFile(text, filename)) return;
 
     qCritical() << __func__ << "Error at file saving:" << filename;
+}
+
+void DialogCellInformation::slotShowPoint()
+{
+    auto o = m_Cell->getSceneObject();
+    o->getScene()->setFocusItem(o);
+    o->getScene()->clearSelection();
+    o->getScene()->focusItem()->setSelected(true);
+    o->getScene()->getView()->centerOn(o);
 }
 
 bool DialogCellInformation::FindPreviousCopy(Cell *cell)
