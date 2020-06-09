@@ -25,7 +25,7 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
         return;
     }
 
-    if(static_cast<int>(factor) == ZOOM_FACTOR_RESET) // reset
+    if(factor - ZOOM_FACTOR_RESET == 0.0) // reset
     {
         m_View->resetMatrix();
         m_CurrentZoom = 1.0;

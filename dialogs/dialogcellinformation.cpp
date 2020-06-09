@@ -5,6 +5,7 @@
 #include "field/cell.h"
 #include "field/cellrule.h"
 #include "field/cellinformation.h"
+#include "field/fieldservice.h"
 #include "scene/scene.h"
 #include "scene/sceneobject.h"
 #include "scene/sceneview.h"
@@ -18,7 +19,7 @@
 #include <QTextEdit>
 #include <QFileDialog>
 
-#include <field/fieldservice.h>
+
 
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
@@ -75,7 +76,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
                      this, &DialogCellInformation::loadInformation);
 
     installEventFilter(this);
-    resize(WINDOW_SIZE);
+    resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogCellInformation destroyed"; });
     qDebug() << "DialogCellInformation created";
@@ -83,8 +84,6 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
 bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
 {
-    Q_UNUSED(object)
-
     switch (event->type())
     {
     case QEvent::WindowStateChange:
@@ -94,7 +93,19 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
         // если всё же свернули
         setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
         return true;
+
     }
+    case QEvent::Close:
+    {
+        if(object != this || isMinimized() || isMaximized()) return false;
+
+        QSettings settings(config->PathAppConfig(), QSettings::IniFormat);
+        settings.setValue("MainWindow/CellInfoWindowHeight", height());
+        settings.setValue("MainWindow/CellInfoWindowWidth", width());
+
+        return true;
+    }
+
     default: { return false; }
     }
 }
@@ -150,13 +161,24 @@ void DialogCellInformation::loadInformation()
                 auto activity = value.value<CellActivity>();
                 content.append(QString("<tr><td class = 'TDTEXT' colspan='2'>&#160;%1</td></tr>").arg(key));
 
-                for(auto p: activity)
+                for(auto v: activity)
                 {
+                    if(v.count() < 4)
+                    {
+                        qCritical() << __func__ << "Wrong CellActivity format, count" << v.count();
+                        continue;
+                    }
+                    auto activitytype = getNameKernelEnum("CellActivityType", v.at(0).toInt());
+                    auto activitytarget = getNameKernelEnum("CellActivityTarget", v.at(1).toInt());
+                    auto activityoperator = v.at(2).toString().toHtmlEscaped();
+                    auto activityvalue = v.at(3).toString();
+
                     content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
                                            "<td class = 'TDTEXT'>%2</td></tr>").
-                                   arg(p.first, QString("&#160;%1&#160;%2").
-                                                arg(p.second.first.toHtmlEscaped(),
-                                                    QString::number(p.second.second))));
+                                   arg(activitytype, QString("&#160;%1&#160;%2&#160;%3").
+                                                     arg(activitytarget,
+                                                         activityoperator,
+                                                         activityvalue)));
                 }
                 content.append("<tr><td class = 'TDCAPTION' colspan='2'>&#8212; &#8212; &#8212;</td></tr>");
             }

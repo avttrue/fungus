@@ -3,7 +3,6 @@
 
 #include <QDialog>
 
-const QSize WINDOW_SIZE(350, 300);
 const auto TB_PROPERTY_CONTENT = "RealHTML";
 
 class QTextEdit;

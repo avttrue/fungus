@@ -47,6 +47,14 @@ void Config::load()
         m_Settings->setValue("MainWindow/DateTimeFormat", DT_FORMAT);
     m_DateTimeFormat = m_Settings->value("MainWindow/DateTimeFormat").toString();
 
+    if(!m_Settings->contains("MainWindow/CellInfoWindowHeight"))
+        m_Settings->setValue("MainWindow/CellInfoWindowHeight", CELL_INFO_WINDOW_HEIGHT);
+    m_CellInfoWindowHeight = m_Settings->value("MainWindow/CellInfoWindowHeight").toInt();
+
+    if(!m_Settings->contains("MainWindow/CellInfoWindowWidth"))
+        m_Settings->setValue("MainWindow/CellInfoWindowWidth", CELL_INFO_WINDOW_WIDTH);
+    m_CellInfoWindowWidth = m_Settings->value("MainWindow/CellInfoWindowWidth").toInt();
+
     if(!m_Settings->contains("Scene/BackgroundColor"))
         m_Settings->setValue("Scene/BackgroundColor", SCENE_BG_COLOR);
     m_SceneBgColor = m_Settings->value("Scene/BackgroundColor").toString();
@@ -152,10 +160,26 @@ void Config::load()
     m_SceneObjectCurseColor = m_Settings->value("Scene/ObjectCurseColor").toString();
 }
 
+void Config::setCellInfoWindowWidth(int value)
+{
+    if(m_CellInfoWindowWidth == value) return;
+
+    m_CellInfoWindowWidth = value;
+    m_Settings->setValue("MainWindow/CellInfoWindowWidth", m_CellInfoWindowWidth);
+}
+
+void Config::setCellInfoWindowHeight(int value)
+{
+    if(m_CellInfoWindowHeight == value) return;
+
+    m_CellInfoWindowHeight = value;
+    m_Settings->setValue("MainWindow/CellInfoWindowHeight", m_CellInfoWindowHeight);
+}
+
 void Config::setSceneObjectCurseColor(const QString &value)
 {
     if(m_SceneObjectCurseColor == value) return;
-
+    
     m_SceneObjectCurseColor = value;
     m_Settings->setValue("Scene/ObjectCurseColor", m_SceneObjectCurseColor);
 }
@@ -399,6 +423,8 @@ void Config::setButtonSize(int value)
     m_Settings->setValue("MainWindow/ButtonSize", m_ButtonSize);
 }
 
+int Config::CellInfoWindowWidth() const { return m_CellInfoWindowWidth; }
+int Config::CellInfoWindowHeight() const { return m_CellInfoWindowHeight; }
 QString Config::SceneObjectCurseColor() const { return m_SceneObjectCurseColor; }
 QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
 QString Config::SceneObjectAlive0Color() const { return m_SceneObjectAlive0Color; }

@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     m_Field(nullptr)
 {
-    setWindowIcon(QIcon(":/resources/img/mainicon512.png"));
+    setWindowIcon(QIcon(":/resources/img/flora.svg"));
     setWindowTitle(QString("%1 %2").arg(APP_NAME, APP_VERS));
     loadGui();
     setWidgetToScreenCenter(this);
@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings(config->PathAppConfig(), QSettings::IniFormat);
-    settings.setValue("MainWindow/Height",height());
-    settings.setValue("MainWindow/Width",width());
+    settings.setValue("MainWindow/Height", height());
+    settings.setValue("MainWindow/Width", width());
 
     m_SceneView->hide(); //
     if(m_SceneView->scene()) m_SceneView->scene()->clear(); //

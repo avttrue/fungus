@@ -80,6 +80,10 @@ public:
     void setSceneSelectColor(const QString &value);
     QString SceneObjectCurseColor() const;
     void setSceneObjectCurseColor(const QString &value);
+    int CellInfoWindowHeight() const;
+    void setCellInfoWindowHeight(int value);
+    int CellInfoWindowWidth() const;
+    void setCellInfoWindowWidth(int value);
 
 protected:
     void load();
@@ -112,6 +116,8 @@ private:
     int m_SceneObjectSize;                      // размер объекта сцены
     int m_SceneBspTreeDepth;                    // глубина BspTreeIndex в сцене (0 - авто, 10 - максимум)
     int m_SceneSize;                            // размер сцены при создании
+    int m_CellInfoWindowHeight;                 // размеры окна информации о ячейке
+    int m_CellInfoWindowWidth;                  // размеры окна информации о ячейке
     Qt::KeyboardModifiers m_SceneZoomModifier;  // модификатор управления зумом
     Qt::KeyboardModifiers m_SceneObjectModifier;// модификатор создания/удаления объектов
     bool m_SceneObjectAgeIndicate;              // отображать возраст живых ячеек

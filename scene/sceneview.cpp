@@ -138,7 +138,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 qDebug() << added->objectName() << "created manually";
                 return true;
             }
-            // TODO: Вынести из SceneView редактирование Cell
+
             // обнулить ячейку и сделать живой
             if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
                 mouseSceneEvent->button() == Qt::LeftButton && o)
@@ -182,11 +182,14 @@ void SceneView::showCellInformationDialog(Cell *cell)
 
 void SceneView::findObjectBySell(Cell *cell)
 {
+    if(!cell) return;
+
     auto o = cell->getSceneObject();
     m_Scene->setFocusItem(o);
     m_Scene->clearSelection();
     m_Scene->focusItem()->setSelected(true);
     centerOn(o);
+
     Q_EMIT m_Scene->focusItemChanged(nullptr, o, Qt::OtherFocusReason);
 }
 

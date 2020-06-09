@@ -19,6 +19,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QPushButton>
 #include <QColorDialog>
+#include <QWindowStateChangeEvent>
 
 DialogValuesList::DialogValuesList(QWidget* parent,
                                    const QString& icon,
@@ -26,7 +27,7 @@ DialogValuesList::DialogValuesList(QWidget* parent,
                                    QMap<QString, DialogValue> *values,
                                    const QString &focusedKey,
                                    bool dialogMode) :
-    QDialog(parent)
+      QDialog(parent)
 {
     m_Values = values;
     m_DialogMode = dialogMode;
@@ -293,7 +294,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
             auto spinbox = new QDoubleSpinBox();
             spinbox->setPrefix(QString("%1: ").arg(text));
             spinbox->setRange(minv.toDouble(),
-                              maxv.toDouble() == minv.toDouble()
+                              maxv.toDouble() - minv.toDouble() == 0.0
                                   ? std::numeric_limits<double>::max()
                                   : maxv.toDouble());
             spinbox->setDecimals(DOUBLE_SPINBOX_DECIMALS);
@@ -390,11 +391,32 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
     }
 }
 
-bool DialogValuesList::eventFilter(QObject*, QEvent *event)
+bool DialogValuesList::eventFilter(QObject* object, QEvent *event)
 {
-    if(event->type() == QEvent::Wheel) { return true; }
+    switch (event->type())
+    {
+    case QEvent::Wheel:
+    { return true; }
+    case QEvent::WindowStateChange:
+    {
+        if(!isMinimized()) return false;
 
-    return false;
+        // если всё же свернули
+        setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
+        return true;
+
+    }
+    case QEvent::Close:
+    {
+        if(object != this || isMinimized() || isMaximized()) return false;
+
+        // сохранение размеров окна
+
+        return true;
+    }
+
+    default: { return false; }
+    }
 }
 
 void DialogValuesList::saveImage(QPixmap pixmap)

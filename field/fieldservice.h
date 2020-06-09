@@ -9,25 +9,40 @@ class Kernel: public QObject
     Q_OBJECT
 public:
     Kernel() = delete;
-    /*!
-     * \brief XenoReaction enum - реакция ячейки на соседнюю ячейку с иными правилами ("иную")
-     */
-    enum class CellXenoReaction: int
-    {
-        AsOwn = 0,          // относиться как к своей
-        Ignore,             // игнорировать
-        Death,              // умирать
-        Bomb                // взрываться
-    };
-    Q_ENUM(CellXenoReaction)
 
+    /*!
+     * \brief The CellState enum - состояние ячейки
+     */
     enum class CellState: int
     {
         Dead = 0,           // мертва (пустая)
         Alive,              // жива
-        Cursed              // отравлена
+        Cursed              // отравлена (может принять такое значение при смерти или взрыве)
     };
     Q_ENUM(CellState)
+
+    /*!
+     * \brief The CellActivityType enum - тип активности ячейки
+     */
+    enum class CellActivityType: int
+    {
+        Birth = 0,          // рождение
+        Death,              // смерть
+        Bomb                // взрыв
+    };
+    Q_ENUM(CellActivityType)
+
+    /*!
+     * \brief The CellActivityTarget enum - цель проверок активности
+     */
+    enum class CellActivityTarget: int
+    {
+        Self = 0,           // сама ячейка
+        Near,               // соседние ячейки любые
+        NearAlien,          // соседние ячейки чужие
+        NearAlly            // соседние ячейки свои
+    };
+    Q_ENUM(CellActivityTarget)
 };
 
 /*!
@@ -49,10 +64,16 @@ QStringList listKernelEnum(const QString& enumname);
  */
 QString getNameKernelEnum(const QString& enumname, int index);
 
+/*!
+ * \brief CellActivity - список активностей ячейки:
+ * {CellActivityType, CellActivityTarget, [оператор: <,>,=], [значение]};
+ * проверяется на условие выполнения по-очереди начиная с первой, до первого успешного
+ */
+typedef QVector<QVector<QVariant>> CellActivity;
 
-typedef QVector<QPair<QString, QPair<QString,int>>> CellActivity;
-Q_DECLARE_METATYPE(CellActivity);
-Q_DECLARE_METATYPE(Kernel::CellXenoReaction)
+Q_DECLARE_METATYPE(Kernel::CellActivityTarget)
+Q_DECLARE_METATYPE(Kernel::CellActivityType)
 Q_DECLARE_METATYPE(Kernel::CellState)
+Q_DECLARE_METATYPE(CellActivity)
 
 #endif // FIELDSERVICE_H

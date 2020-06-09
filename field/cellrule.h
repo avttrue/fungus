@@ -11,24 +11,24 @@ class Field;
 class CellRule : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Kernel::CellXenoReaction XenoReaction READ getXenoReaction WRITE setXenoReaction NOTIFY signalChanged)
     Q_PROPERTY(QColor ColorAlive READ getColorAlive WRITE setColorAlive NOTIFY signalChanged)
     Q_PROPERTY(CellActivity Activity READ getActivity WRITE setActivity NOTIFY signalChanged)
+    Q_PROPERTY(int CurseTime READ getCurseTime WRITE setCurseTime NOTIFY signalChanged)
 
 public:
     CellRule(Field *parent);
 
-    Kernel::CellXenoReaction getXenoReaction() const;
-    void setXenoReaction(Kernel::CellXenoReaction value);
     QColor getColorAlive() const;
-    void setColorAlive(QColor Color);
+    void setColorAlive(QColor value);
     CellActivity getActivity() const;
-    void setActivity(CellActivity Activity);
+    void setActivity(CellActivity value);
+    int getCurseTime() const;
+    void setCurseTime(int value);
 
 private:
-    QColor m_ColorAlive;
-    CellActivity m_Activity;
-    Kernel::CellXenoReaction m_XenoReaction;
+    QColor m_ColorAlive;                            // цвет живой ячейки
+    CellActivity m_Activity;                        // активность ячейки
+    int m_CurseTime;                                // время отравления ячейки после смерти или взрыва (0 - не отравляется)
 
 Q_SIGNALS:
     void signalChanged();

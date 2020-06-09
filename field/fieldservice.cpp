@@ -20,9 +20,10 @@ QStringList listKernelEnum(const QString &enumname)
     QStringList list;
     const char* en = enumname.toLatin1().data();
     int index = Kernel::staticMetaObject.indexOfEnumerator(en);
+
     if(index == -1)
     {
-        qCritical() << "Wrong enum name: '" << enumname << "'";
+        qCritical() << "Wrong enum name:" << enumname;
         return list;
     }
 
@@ -37,6 +38,13 @@ int countKernelEnum(const QString &enumname)
 {
     const char* en = enumname.toLatin1().data();
     int index = Kernel::staticMetaObject.indexOfEnumerator(en);
+
+    if(index == -1)
+    {
+        qCritical() << "Wrong enum name:" << enumname;
+        return -1;
+    }
+
     QMetaEnum me = Kernel::staticMetaObject.enumerator(index);
 
     return me.keyCount();
