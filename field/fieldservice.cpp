@@ -49,3 +49,19 @@ int countKernelEnum(const QString &enumname)
 
     return me.keyCount();
 }
+
+QString CellActivityElementToString(const QVector<QVariant> &activity)
+{
+    if(activity.count() < 4)
+    {
+        qCritical() << __func__ << "Wrong CellActivity format, count" << activity.count();
+        return "";
+    }
+
+    auto activitytype = getNameKernelEnum("CellActivityType", activity.at(0).toInt());
+    auto activitytarget = getNameKernelEnum("CellActivityTarget", activity.at(1).toInt());
+    auto activityoperator = activity.at(2).toString();
+    auto activityvalue = activity.at(3).toString();
+
+    return QString("%1: %2 %3 %4").arg(activitytype, activitytarget, activityoperator, activityvalue);
+}

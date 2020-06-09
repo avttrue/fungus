@@ -1,6 +1,7 @@
 #ifndef FIELD_H
 #define FIELD_H
 
+#include <QMap>
 #include <QObject>
 
 class Cell;
@@ -10,9 +11,8 @@ class Field : public QObject
 {
     Q_OBJECT
 public:
-    Field(QObject *parent,
-          int width,
-          int height);
+    Field(QObject *parent, int width, int height);
+    void fill();
     int width() const;
     int height() const;
     Cell* addCell(int x, int y);
@@ -27,14 +27,14 @@ public:
     Cell* getBottomLeftCell(Cell* c) const;
     Cell* getBottomRightCell(Cell* c) const;
     QVector<Cell*> getAliveCells(Cell* c) const;
-
-protected:
+    QMap<QString, CellRule *> getCellRules() const;
 
 private:
     int m_Width;
     int m_Height;
     QVector<QVector<Cell*>> m_Cells;
-    QVector<CellRule*> m_CellRules;
+    QMap<QString, CellRule*> m_CellRules;
+    QString m_DefaultRule;
 
 Q_SIGNALS:
     void signalCellAdded(Cell* cell);

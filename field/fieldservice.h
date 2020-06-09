@@ -64,6 +64,8 @@ QStringList listKernelEnum(const QString& enumname);
  */
 QString getNameKernelEnum(const QString& enumname, int index);
 
+QString CellActivityElementToString(const QVector<QVariant>& activity);
+
 /*!
  * \brief CellActivity - список активностей ячейки:
  * {CellActivityType, CellActivityTarget, [оператор: <,>,=], [значение]};

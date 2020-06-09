@@ -220,6 +220,24 @@ void MainWindow::createField(int w, int h)
 {
     if(m_Field) m_Field->deleteLater();
     m_Field = new Field(this, w, h);
+
+    m_ProgressBar->setRange(0, m_Field->height());
+    m_ProgressBar->setValue(0);
+    m_ProgressBar->show();
+
+    auto conn = std::make_shared<QMetaObject::Connection>();
+    auto func = [=](int step)
+    {
+        if(step < m_Field->height()) m_ProgressBar->setValue(step);
+        else
+        {
+            m_ProgressBar->hide();
+            qDebug() << "Field filling disconnection:" << QObject::disconnect(*conn);
+        }
+    };
+    *conn = QObject::connect(m_Field, &Field::signalProgress, func);
+
+    m_Field->fill();
 }
 
 void MainWindow::setActionsEnable(bool value)

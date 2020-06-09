@@ -25,5 +25,6 @@
         <file>resources/img/step_stop.svg</file>
         <file>resources/img/check.svg</file>
         <file>resources/img/flora.svg</file>
+        <file>resources/table_content.html</file>
     </qresource>
 </RCC>

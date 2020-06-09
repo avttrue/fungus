@@ -19,8 +19,6 @@
 #include <QTextEdit>
 #include <QFileDialog>
 
-
-
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
     : QDialog(parent),
@@ -77,9 +75,6 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     installEventFilter(this);
     resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());
-
-    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogCellInformation destroyed"; });
-    qDebug() << "DialogCellInformation created";
 }
 
 bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
@@ -112,11 +107,9 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
 
 void DialogCellInformation::loadInformation()
 {
-    int sb_pos = m_TEContent->verticalScrollBar()->value();
-
-    QString content;
-
+    auto sb_pos = m_TEContent->verticalScrollBar()->value();
     auto map = getPropertiesList(m_Cell->getInformation());
+    QString content;    
 
     // Cell information
     for(auto key: map.keys())
@@ -134,68 +127,16 @@ void DialogCellInformation::loadInformation()
     // Cell rules
     if(m_Cell->getRule())
     {
-        map = getPropertiesList(m_Cell->getRule());
-        content.append(QString("<tr><td class = 'TDCAPTION' colspan='2'>&#160;%1&#160;</td></tr>").
-                       arg(tr("Rules \"%1\"").arg(m_Cell->getRule()->objectName()).
-                           toHtmlEscaped().
-                           replace(" ", "&#160;")));
-
-        for(auto key: map.keys())
-        {
-            QVariant value = m_Cell->getRule()->property(key.toStdString().c_str());
-            if(key == "XenoReaction")
-            {
-                value = getNameKernelEnum("CellXenoReaction", value.toInt());
-                content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
-                                       "<td class = 'TDTEXT'>&#160;%2</td></tr>").
-                               arg(key, value.toString()));
-            }
-            else if(key == "ColorAlive")
-            {
-                content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
-                                       "<td class = 'TDTEXT' bgcolor = '%2'> &#160; </td></tr>").
-                               arg(key, value.toString()));
-            }
-            else if(key == "Activity")
-            {
-                auto activity = value.value<CellActivity>();
-                content.append(QString("<tr><td class = 'TDTEXT' colspan='2'>&#160;%1</td></tr>").arg(key));
-
-                for(auto v: activity)
-                {
-                    if(v.count() < 4)
-                    {
-                        qCritical() << __func__ << "Wrong CellActivity format, count" << v.count();
-                        continue;
-                    }
-                    auto activitytype = getNameKernelEnum("CellActivityType", v.at(0).toInt());
-                    auto activitytarget = getNameKernelEnum("CellActivityTarget", v.at(1).toInt());
-                    auto activityoperator = v.at(2).toString().toHtmlEscaped();
-                    auto activityvalue = v.at(3).toString();
-
-                    content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
-                                           "<td class = 'TDTEXT'>%2</td></tr>").
-                                   arg(activitytype, QString("&#160;%1&#160;%2&#160;%3").
-                                                     arg(activitytarget,
-                                                         activityoperator,
-                                                         activityvalue)));
-                }
-                content.append("<tr><td class = 'TDCAPTION' colspan='2'>&#8212; &#8212; &#8212;</td></tr>");
-            }
-            else
-            {
-                content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
-                                       "<td class = 'TDTEXT'>&#160;%2</td></tr>").
-                               arg(key, value.toString()));
-            }
-        }
+        content.append(m_Cell->getRule()->toHtmlTable());
     }
     else
         content.append(QString("<tr><td class = 'TDCAPTION' colspan='2'>%1</td></tr>").
                        arg(tr("Rules list is empty!")));
 
+    QString table = getTextFromRes(":/resources/table_content.html").
+                    arg(windowTitle(), content);
     QString html = getTextFromRes(":/resources/cellinformation.html").
-                   arg(windowTitle(), content);
+                   arg(windowTitle(), table);
 
     m_TEContent->setProperty(TB_PROPERTY_CONTENT, html);
     m_TEContent->setHtml(html);

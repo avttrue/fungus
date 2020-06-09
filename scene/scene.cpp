@@ -53,7 +53,11 @@ Scene::Scene(SceneView* parent, Field *field)
 SceneObject *Scene::addObject(int x, int y)
 {
     auto c = m_Field->cells()->at(x).at(y);
-    if(!c) c = m_Field->addCell(x, y);
+    if(!c)
+    {
+        qCritical() << __func__ << ": Cell not found:" << x << "X" << y;
+        return nullptr;
+    }
 
     auto o = new SceneObject(this);
     o->setObjectName(QString("SCENE_OBJECT[%1.%2]").arg(QString::number(x), QString::number(y)));
