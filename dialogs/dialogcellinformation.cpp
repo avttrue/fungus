@@ -73,6 +73,8 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     QObject::connect(cell->getInformation(), &CellInformation::signalChanged,
                      this, &DialogCellInformation::loadInformation);
 
+    QObject::connect(cell, &QObject::destroyed, this, &QDialog::close);
+
     installEventFilter(this);
     resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());
 }

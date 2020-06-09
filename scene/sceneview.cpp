@@ -123,6 +123,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             {
                 showCellInformationDialog(o->getCell());
                 m_Scene->setFocusItem(o);
+                findObjectBySell(o->getCell());
                 return true;
             }
 
