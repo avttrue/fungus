@@ -28,19 +28,19 @@ public:
     Cell* getBottomLeftCell(Cell* c);
     Cell* getBottomRightCell(Cell* c);
     QVector<Cell*> getCellsAround(Cell* c);
-    QMap<QString, CellRule *> getCellRules() const;
+    CellRule *getRule() const;
+    void setRule(CellRule *value);
 
 private:
     int m_Width;
     int m_Height;
     QVector<QVector<Cell*>> m_Cells;
-    QMap<QString, CellRule*> m_CellRules;
-    QString m_DefaultRule;
+    CellRule* m_Rule;
 
 Q_SIGNALS:
     void signalCellAdded(Cell* cell);
     void signalProgress(int progress);
-
+    void signalRuleChanged(CellRule* rule);
 };
 
 #endif // FIELD_H

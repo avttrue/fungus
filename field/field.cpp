@@ -9,16 +9,15 @@
 Field::Field(QObject *parent, int width, int height)
     : QObject(parent),
       m_Width(width),
-      m_Height(height)
+      m_Height(height),
+      m_Rule(nullptr)
 {
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
     m_Cells = QVector(m_Width, QVector<Cell*>(m_Height, nullptr));
 
     // Default rule
-    auto rule = new CellRule(this);
-    m_DefaultRule = rule->objectName();
-    m_CellRules.insert(m_DefaultRule, rule);
+    m_Rule = new CellRule(this);
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
@@ -169,6 +168,16 @@ QVector<Cell*> Field::getCellsAround(Cell *c)
     return result;
 }
 
+void Field::setRule(CellRule *value)
+{
+    if(!value) return;
+    if(m_Rule == value) return;
+
+    m_Rule = value;
+
+    Q_EMIT signalRuleChanged(m_Rule);
+}
+
 void Field::fill()
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
@@ -185,8 +194,8 @@ void Field::fill()
              << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 }
 
+CellRule *Field::getRule() const { return m_Rule; }
 Cell *Field::getCell(QPoint index) { return m_Cells[index.x()][index.y()]; }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }
 int Field::height() { return m_Height; }
 int Field::width() { return m_Width; }
-QMap<QString, CellRule *> Field::getCellRules() const { return m_CellRules; }

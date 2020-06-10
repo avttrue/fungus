@@ -3,6 +3,7 @@
 #include "controls.h"
 #include "helper.h"
 #include "field/cell.h"
+#include "field/field.h"
 #include "field/cellrule.h"
 #include "field/cellinformation.h"
 #include "field/fieldservice.h"
@@ -136,12 +137,7 @@ void DialogCellInformation::loadInformation()
 
     // Cell rules
     if(m_CBShowRule->isChecked())
-    {
-        if(m_Cell->getRule()) content.append(m_Cell->getRule()->toHtmlTable());
-        else
-            content.append(QString("<tr><td class = 'TDCAPTION' colspan='2'>%1</td></tr>").
-                           arg(tr("Rules list is empty!")));
-    }
+        content.append(m_Cell->getField()->getRule()->toHtmlTable());
 
     QString table = getTextFromRes(":/resources/table_content.html").
                     arg(windowTitle(), content);

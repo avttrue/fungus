@@ -38,9 +38,7 @@ public:
     enum class CellActivityTarget: int
     {
         Self = 0,           // сама ячейка
-        Near,               // соседние ячейки любые
-        NearAlien,          // соседние ячейки чужие
-        NearAlly            // соседние ячейки свои
+        Near                // соседние ячейки любые
     };
     Q_ENUM(CellActivityTarget)
 };

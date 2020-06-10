@@ -2,6 +2,7 @@
 #include "scene.h"
 #include "properties.h"
 #include "field/cell.h"
+#include "field/field.h"
 #include "field/cellrule.h"
 #include "field/cellinformation.h"
 
@@ -46,12 +47,12 @@ void SceneObject::paint(QPainter *painter,
 
     else if(config->SceneObjectAgeIndicate())
     {
-        color = m_Cell->getRule()->getColorAlive();
+        color = m_Cell->getField()->getRule()->getColorAlive();
         // if(m_Cell->getInformation()->getAge() == 0)
         // TODO: изменение цвета по восрасту ячейки
     }
 
-    else color = m_Cell->getRule()->getColorAlive();
+    else color = m_Cell->getField()->getRule()->getColorAlive();
 
     painter->fillPath(shape(), color);
 }
