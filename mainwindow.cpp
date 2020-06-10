@@ -220,24 +220,6 @@ void MainWindow::createField(int w, int h)
 {
     if(m_Field) m_Field->deleteLater();
     m_Field = new Field(this, w, h);
-
-    m_ProgressBar->setRange(0, m_Field->height());
-    m_ProgressBar->setValue(0);
-    m_ProgressBar->show();
-
-    auto conn = std::make_shared<QMetaObject::Connection>();
-    auto func = [=](int step)
-    {
-        if(step < m_Field->height()) m_ProgressBar->setValue(step);
-        else
-        {
-            m_ProgressBar->hide();
-            qDebug() << "Field filling disconnection:" << QObject::disconnect(*conn);
-        }
-    };
-    *conn = QObject::connect(m_Field, &Field::signalProgress, func);
-
-    m_Field->fill();
 }
 
 void MainWindow::setActionsEnable(bool value)
@@ -269,16 +251,6 @@ void MainWindow::setActionsEnable(bool value)
         tr("15#_Indicate age value"),
         tr("16#_Dead cell color"),
         tr("17#_Cursed cell color"),
-        tr("18#_Alive cell color (age = 0)"),
-        tr("19#_Alive cell color, age = 1"),
-        tr("20#_Alive cell color, age = 2"),
-        tr("21#_Alive cell color, age = 3"),
-        tr("22#_Alive cell color, age = 4"),
-        tr("23#_Alive cell color, age = 5"),
-        tr("24#_Alive cell color, age = 6"),
-        tr("25#_Alive cell color, age = 7"),
-        tr("26#_Alive cell color, age = 8"),
-        tr("27#_Alive cell color, age >= 9"),
         };
     QMap<QString, DialogValue> map =
         {{keys.at(0), {}},
@@ -299,16 +271,6 @@ void MainWindow::setActionsEnable(bool value)
          {keys.at(15), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
          {keys.at(16), {QVariant::String, config->SceneObjectDeadColor(), 0, 0, DialogValueMode::Color}},
          {keys.at(17), {QVariant::String, config->SceneObjectCurseColor(), 0, 0, DialogValueMode::Color}},
-         {keys.at(18), {QVariant::String, config->SceneObjectAlive0Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(19), {QVariant::String, config->SceneObjectAlive1Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(20), {QVariant::String, config->SceneObjectAlive2Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(21), {QVariant::String, config->SceneObjectAlive3Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(22), {QVariant::String, config->SceneObjectAlive4Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(23), {QVariant::String, config->SceneObjectAlive5Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(24), {QVariant::String, config->SceneObjectAlive6Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(25), {QVariant::String, config->SceneObjectAlive7Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(26), {QVariant::String, config->SceneObjectAlive8Color(), 0, 0, DialogValueMode::Color}},
-         {keys.at(27), {QVariant::String, config->SceneObjectAlive9Color(), 0, 0, DialogValueMode::Color}},
          };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -333,16 +295,6 @@ void MainWindow::setActionsEnable(bool value)
     config->setSceneObjectAgeIndicate(map.value(keys.at(15)).value.toBool());
     config->setSceneObjectDeadColor(map.value(keys.at(16)).value.toString());
     config->setSceneObjectCurseColor(map.value(keys.at(17)).value.toString());
-    config->setSceneObjectAlive0Color(map.value(keys.at(18)).value.toString());
-    config->setSceneObjectAlive1Color(map.value(keys.at(19)).value.toString());
-    config->setSceneObjectAlive2Color(map.value(keys.at(20)).value.toString());
-    config->setSceneObjectAlive3Color(map.value(keys.at(21)).value.toString());
-    config->setSceneObjectAlive4Color(map.value(keys.at(22)).value.toString());
-    config->setSceneObjectAlive5Color(map.value(keys.at(23)).value.toString());
-    config->setSceneObjectAlive6Color(map.value(keys.at(24)).value.toString());
-    config->setSceneObjectAlive7Color(map.value(keys.at(25)).value.toString());
-    config->setSceneObjectAlive8Color(map.value(keys.at(26)).value.toString());
-    config->setSceneObjectAlive9Color(map.value(keys.at(27)).value.toString());
 }
 
 void MainWindow::slotSceneZoomIn()

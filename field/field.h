@@ -13,20 +13,21 @@ class Field : public QObject
 public:
     Field(QObject *parent, int width, int height);
     void fill();
-    int width() const;
-    int height() const;
+    int width();
+    int height();
     Cell* addCell(int x, int y);
-    Cell* getCell(QPoint index) const;
+    Cell* addCell(QPoint index);
+    Cell* getCell(QPoint index);
     QVector<QVector<Cell *>>* cells() const;
-    Cell* getTopCell(Cell* c) const;
-    Cell* getLeftCell(Cell* c) const;
-    Cell* getRightCell(Cell* c) const;
-    Cell* getBottomCell(Cell* c) const;   
-    Cell* getTopLeftCell(Cell* c) const;
-    Cell* getTopRightCell(Cell* c) const;
-    Cell* getBottomLeftCell(Cell* c) const;
-    Cell* getBottomRightCell(Cell* c) const;
-    QVector<Cell*> getAliveCells(Cell* c) const;
+    Cell* getTopCell(Cell* c);
+    Cell* getLeftCell(Cell* c);
+    Cell* getRightCell(Cell* c);
+    Cell* getBottomCell(Cell* c);
+    Cell* getTopLeftCell(Cell* c);
+    Cell* getTopRightCell(Cell* c);
+    Cell* getBottomLeftCell(Cell* c);
+    Cell* getBottomRightCell(Cell* c);
+    QVector<Cell*> getCellsAround(Cell* c);
     QMap<QString, CellRule *> getCellRules() const;
 
 private:

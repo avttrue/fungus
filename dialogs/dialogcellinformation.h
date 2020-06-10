@@ -7,6 +7,7 @@ const auto TB_PROPERTY_CONTENT = "RealHTML";
 
 class QTextEdit;
 class Cell;
+class QCheckBox;
 
 class DialogCellInformation : public QDialog
 {
@@ -30,6 +31,7 @@ private Q_SLOTS:
 private:
     QTextEdit* m_TEContent;
     Cell* m_Cell;
+    QCheckBox* m_CBShowRule;
 };
 
 

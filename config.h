@@ -56,26 +56,6 @@ public:
     void setSceneObjectDeadColor(const QString &value);
     bool SceneObjectAgeIndicate() const;
     void setSceneObjectAgeIndicate(bool value);
-    QString SceneObjectAlive0Color() const;
-    void setSceneObjectAlive0Color(const QString &value);
-    QString SceneObjectAlive1Color() const;
-    void setSceneObjectAlive1Color(const QString &value);
-    QString SceneObjectAlive2Color() const;
-    void setSceneObjectAlive2Color(const QString &value);
-    QString SceneObjectAlive3Color() const;
-    void setSceneObjectAlive3Color(const QString &value);
-    QString SceneObjectAlive4Color() const;
-    void setSceneObjectAlive4Color(const QString &value);
-    QString SceneObjectAlive5Color() const;
-    void setSceneObjectAlive5Color(const QString &value);
-    QString SceneObjectAlive6Color() const;
-    void setSceneObjectAlive6Color(const QString &value);
-    QString SceneObjectAlive7Color() const;
-    void setSceneObjectAlive7Color(const QString &value);
-    QString SceneObjectAlive8Color() const;
-    void setSceneObjectAlive8Color(const QString &value);
-    QString SceneObjectAlive9Color() const;
-    void setSceneObjectAlive9Color(const QString &value);
     QString SceneSelectColor() const;
     void setSceneSelectColor(const QString &value);
     QString SceneObjectCurseColor() const;
@@ -100,16 +80,6 @@ private:
     QString m_SceneBorderColor;                 // цвет рамок сцены
     QString m_SceneObjectDeadColor;             // цвет мёртвой ячейки
     QString m_SceneObjectCurseColor;            // цвет отравленной ячейки
-    QString m_SceneObjectAlive0Color;           // цвет живой 0 ячейки
-    QString m_SceneObjectAlive1Color;           // цвет живой 1 ячейки
-    QString m_SceneObjectAlive2Color;           // цвет живой 2 ячейки
-    QString m_SceneObjectAlive3Color;           // цвет живой 3 ячейки
-    QString m_SceneObjectAlive4Color;           // цвет живой 4 ячейки
-    QString m_SceneObjectAlive5Color;           // цвет живой 5 ячейки
-    QString m_SceneObjectAlive6Color;           // цвет живой 6 ячейки
-    QString m_SceneObjectAlive7Color;           // цвет живой 7 ячейки
-    QString m_SceneObjectAlive8Color;           // цвет живой 8 ячейки
-    QString m_SceneObjectAlive9Color;           // цвет живой 9 ячейки
     qreal m_SceneScaleStep;                     // шаг масштабирования сцены
     int m_LogSize;                              // количество строк лога событий
     int m_ButtonSize;                           // размеры кнопок интерфейса    

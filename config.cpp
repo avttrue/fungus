@@ -111,46 +111,6 @@ void Config::load()
         m_Settings->setValue("Scene/ObjectDeadColor", SCENE_OBJECT_DEAD_COLOR);
     m_SceneObjectDeadColor = m_Settings->value("Scene/ObjectDeadColor").toString();
 
-    if(!m_Settings->contains("Scene/ObjectAlive0Color"))
-        m_Settings->setValue("Scene/ObjectAlive0Color", SCENE_OBJECT_ALIVE0_COLOR);
-    m_SceneObjectAlive0Color = m_Settings->value("Scene/ObjectAlive0Color").toString();
-
-    if(!m_Settings->contains("Scene/ObjectAlive1Color"))
-        m_Settings->setValue("Scene/ObjectAlive1Color", SCENE_OBJECT_ALIVE1_COLOR);
-    m_SceneObjectAlive1Color = m_Settings->value("Scene/ObjectAlive1Color").toString();
-
-    if(!m_Settings->contains("Scene/ObjectAlive2Color"))
-        m_Settings->setValue("Scene/ObjectAlive2Color", SCENE_OBJECT_ALIVE2_COLOR);
-    m_SceneObjectAlive2Color = m_Settings->value("Scene/ObjectAlive2Color").toString();
-
-    if(!m_Settings->contains("Scene/ObjectAlive3Color"))
-        m_Settings->setValue("Scene/ObjectAlive3Color", SCENE_OBJECT_ALIVE3_COLOR);
-    m_SceneObjectAlive3Color = m_Settings->value("Scene/ObjectAlive3Color").toString();
-
-    if(!m_Settings->contains("Scene/ObjectAlive4Color"))
-        m_Settings->setValue("Scene/ObjectAlive4Color", SCENE_OBJECT_ALIVE4_COLOR);
-    m_SceneObjectAlive4Color = m_Settings->value("Scene/ObjectAlive4Color").toString();
-
-    if(!m_Settings->contains("Scene/ObjectAlive5Color"))
-        m_Settings->setValue("Scene/ObjectAlive5Color", SCENE_OBJECT_ALIVE5_COLOR);
-    m_SceneObjectAlive5Color = m_Settings->value("Scene/ObjectAlive5Color").toString();
-
-    if(!m_Settings->contains("Scene/ObjectAlive6Color"))
-        m_Settings->setValue("Scene/ObjectAlive6Color", SCENE_OBJECT_ALIVE6_COLOR);
-    m_SceneObjectAlive6Color = m_Settings->value("Scene/ObjectAlive6Color").toString();
-
-    if(!m_Settings->contains("Scene/ObjectAlive7Color"))
-        m_Settings->setValue("Scene/ObjectAlive7Color", SCENE_OBJECT_ALIVE7_COLOR);
-    m_SceneObjectAlive7Color = m_Settings->value("Scene/ObjectAlive7Color").toString();
-
-    if(!m_Settings->contains("Scene/ObjectAlive8Color"))
-        m_Settings->setValue("Scene/ObjectAlive8Color", SCENE_OBJECT_ALIVE8_COLOR);
-    m_SceneObjectAlive8Color = m_Settings->value("Scene/ObjectAlive8Color").toString();
-
-    if(!m_Settings->contains("Scene/ObjectAlive9Color"))
-        m_Settings->setValue("Scene/ObjectAlive9Color", SCENE_OBJECT_ALIVE9_COLOR);
-    m_SceneObjectAlive9Color = m_Settings->value("Scene/ObjectAlive9Color").toString();
-
     if(!m_Settings->contains("Scene/SceneSelectColor"))
         m_Settings->setValue("Scene/SceneSelectColor", SCENE_SELECT_COLOR);
     m_SceneSelectColor = m_Settings->value("Scene/SceneSelectColor").toString();
@@ -190,86 +150,6 @@ void Config::setSceneSelectColor(const QString &value)
     
     m_SceneSelectColor = value;
     m_Settings->setValue("Scene/SceneSelectColor", m_SceneSelectColor);
-}
-
-void Config::setSceneObjectAlive0Color(const QString &value)
-{
-    if(m_SceneObjectAlive0Color == value) return;
-    
-    m_SceneObjectAlive0Color = value;
-    m_Settings->setValue("Scene/ObjectAlive0Color", m_SceneObjectAlive0Color);
-}
-
-void Config::setSceneObjectAlive1Color(const QString &value)
-{
-    if(m_SceneObjectAlive1Color == value) return;
-
-    m_SceneObjectAlive1Color = value;
-    m_Settings->setValue("Scene/ObjectAlive1Color", m_SceneObjectAlive1Color);
-}
-
-void Config::setSceneObjectAlive2Color(const QString &value)
-{
-    if(m_SceneObjectAlive2Color == value) return;
-
-    m_SceneObjectAlive2Color = value;
-    m_Settings->setValue("Scene/ObjectAlive2Color", m_SceneObjectAlive2Color);
-}
-
-void Config::setSceneObjectAlive3Color(const QString &value)
-{
-    if(m_SceneObjectAlive3Color == value) return;
-
-    m_SceneObjectAlive3Color = value;
-    m_Settings->setValue("Scene/ObjectAlive3Color", m_SceneObjectAlive3Color);
-}
-
-void Config::setSceneObjectAlive4Color(const QString &value)
-{
-    if(m_SceneObjectAlive4Color == value) return;
-
-    m_SceneObjectAlive4Color = value;
-    m_Settings->setValue("Scene/ObjectAlive4Color", m_SceneObjectAlive4Color);
-}
-
-void Config::setSceneObjectAlive5Color(const QString &value)
-{
-    if(m_SceneObjectAlive5Color == value) return;
-
-    m_SceneObjectAlive5Color = value;
-    m_Settings->setValue("Scene/ObjectAlive5Color", m_SceneObjectAlive5Color);
-}
-
-void Config::setSceneObjectAlive6Color(const QString &value)
-{
-    if(m_SceneObjectAlive6Color == value) return;
-
-    m_SceneObjectAlive6Color = value;
-    m_Settings->setValue("Scene/ObjectAlive6Color", m_SceneObjectAlive6Color);
-}
-
-void Config::setSceneObjectAlive7Color(const QString &value)
-{
-    if(m_SceneObjectAlive7Color == value) return;
-
-    m_SceneObjectAlive7Color = value;
-    m_Settings->setValue("Scene/ObjectAlive7Color", m_SceneObjectAlive7Color);
-}
-
-void Config::setSceneObjectAlive8Color(const QString &value)
-{
-    if(m_SceneObjectAlive8Color == value) return;
-
-    m_SceneObjectAlive8Color = value;
-    m_Settings->setValue("Scene/ObjectAlive8Color", m_SceneObjectAlive8Color);
-}
-
-void Config::setSceneObjectAlive9Color(const QString &value)
-{
-    if(m_SceneObjectAlive9Color == value) return;
-
-    m_SceneObjectAlive9Color = value;
-    m_Settings->setValue("Scene/ObjectAlive9Color", m_SceneObjectAlive9Color);
 }
 
 void Config::setSceneObjectAgeIndicate(bool value)
@@ -427,16 +307,6 @@ int Config::CellInfoWindowWidth() const { return m_CellInfoWindowWidth; }
 int Config::CellInfoWindowHeight() const { return m_CellInfoWindowHeight; }
 QString Config::SceneObjectCurseColor() const { return m_SceneObjectCurseColor; }
 QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
-QString Config::SceneObjectAlive0Color() const { return m_SceneObjectAlive0Color; }
-QString Config::SceneObjectAlive1Color() const { return m_SceneObjectAlive1Color; }
-QString Config::SceneObjectAlive2Color() const { return m_SceneObjectAlive2Color; }
-QString Config::SceneObjectAlive3Color() const { return m_SceneObjectAlive3Color; }
-QString Config::SceneObjectAlive4Color() const { return m_SceneObjectAlive4Color; }
-QString Config::SceneObjectAlive5Color() const { return m_SceneObjectAlive5Color; }
-QString Config::SceneObjectAlive6Color() const { return m_SceneObjectAlive6Color; }
-QString Config::SceneObjectAlive7Color() const { return m_SceneObjectAlive7Color; }
-QString Config::SceneObjectAlive8Color() const { return m_SceneObjectAlive8Color; }
-QString Config::SceneObjectAlive9Color() const { return m_SceneObjectAlive9Color; }
 bool Config::SceneObjectAgeIndicate() const { return m_SceneObjectAgeIndicate; }
 QString Config::SceneObjectDeadColor() const { return m_SceneObjectDeadColor; }
 int Config::SceneSize() const { return m_SceneSize; }

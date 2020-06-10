@@ -17,7 +17,7 @@ public:
     Cell(Field *parent, CellRule* rule = nullptr);
     SceneObject *getSceneObject() const;
     void setSceneObject(SceneObject *value);
-    QPoint getIndex() const;
+    QPoint getIndex();
     void setIndex(const QPoint &value);
     CellRule *getRule() const;
     void setRule(CellRule *value);

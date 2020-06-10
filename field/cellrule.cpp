@@ -58,14 +58,7 @@ QString CellRule::toHtmlTable()
     for(auto key: map.keys())
     {
         QVariant value = property(key.toStdString().c_str());
-        if(key == "XenoReaction")
-        {
-            value = getNameKernelEnum("CellXenoReaction", value.toInt());
-            content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
-                                   "<td class = 'TDTEXT'>&#160;%2</td></tr>").
-                           arg(key, value.toString()));
-        }
-        else if(key == "ColorAlive")
+        if(key == "ColorAlive")
         {
             content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
                                    "<td class = 'TDTEXT' bgcolor = '%2'> &#160; </td></tr>").

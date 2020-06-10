@@ -63,5 +63,5 @@ QString CellActivityElementToString(const QVector<QVariant> &activity)
     auto activityoperator = activity.at(2).toString();
     auto activityvalue = activity.at(3).toString();
 
-    return QString("%1: %2 %3 %4").arg(activitytype, activitytarget, activityoperator, activityvalue);
+    return QString("%1 %2 %3 %4").arg(activitytype, activitytarget, activityoperator, activityvalue);
 }

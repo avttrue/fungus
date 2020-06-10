@@ -29,54 +29,67 @@ Cell *Field::addCell(int x, int y)
     auto c = new Cell(this);
     c->setIndex({x, y});
     c->setObjectName(QString("[%1X%2]").arg(QString::number(x), QString::number(y)));
-    c->setRule(m_CellRules.value(m_DefaultRule)); // TODO: создать инструмет установки правила
     m_Cells[x][y] = c;
 
     Q_EMIT signalCellAdded(c);
     return c;
 }
 
-Cell *Field::getTopCell(Cell *c) const
+Cell *Field::addCell(QPoint index) { return addCell(index.x(), index.y()); }
+
+Cell *Field::getTopCell(Cell *c)
 {
     auto index = c->getIndex();
 
     if(index.y() == 0) index.setY(height() - 1);
     else index.setY(index.y() - 1);
 
-    return getCell(index);
+    auto cell = getCell(index);
+    if(!cell) cell = addCell(index);
+
+    return cell;
 }
 
-Cell *Field::getRightCell(Cell *c) const
+Cell *Field::getRightCell(Cell *c)
 {
     auto index = c->getIndex();
 
     if(index.x() == width() - 1) index.setX(0);
     else index.setX(index.x() + 1);
 
-    return getCell(index);
+    auto cell = getCell(index);
+    if(!cell) cell = addCell(index);
+
+    return cell;
 }
 
-Cell *Field::getBottomCell(Cell *c) const
+Cell *Field::getBottomCell(Cell *c)
 {
     auto index = c->getIndex();
 
     if(index.y() == height() - 1) index.setY(0);
     else index.setY(index.y() + 1);
 
-    return getCell(index);
+    auto cell = getCell(index);
+    if(!cell) cell = addCell(index);
+
+    return cell;
 }
 
-Cell *Field::getLeftCell(Cell *c) const
+Cell *Field::getLeftCell(Cell *c)
 {
     auto index = c->getIndex();
 
     if(index.x() == 0) index.setX(width() - 1);
     else index.setX(index.x() - 1);
 
-    return getCell(index);
+    auto cell = getCell(index);
+    if(!cell) cell = addCell(index);
+
+    return cell;
 }
 
-Cell *Field::getTopLeftCell(Cell *c) const
+Cell *Field::getTopLeftCell(Cell *c)
 {
     auto index = c->getIndex();
 
@@ -86,10 +99,13 @@ Cell *Field::getTopLeftCell(Cell *c) const
     if(index.y() == 0) index.setY(height() - 1);
     else index.setY(index.y() - 1);
 
-    return getCell(index);
+    auto cell = getCell(index);
+    if(!cell) cell = addCell(index);
+
+    return cell;
 }
 
-Cell *Field::getTopRightCell(Cell *c) const
+Cell *Field::getTopRightCell(Cell *c)
 {
     auto index = c->getIndex();
 
@@ -99,10 +115,13 @@ Cell *Field::getTopRightCell(Cell *c) const
     if(index.x() == width() - 1) index.setX(0);
     else index.setX(index.x() + 1);
 
-    return getCell(index);
+    auto cell = getCell(index);
+    if(!cell) cell = addCell(index);
+
+    return cell;
 }
 
-Cell *Field::getBottomLeftCell(Cell *c) const
+Cell *Field::getBottomLeftCell(Cell *c)
 {
     auto index = c->getIndex();
 
@@ -112,10 +131,13 @@ Cell *Field::getBottomLeftCell(Cell *c) const
     if(index.x() == 0) index.setX(width() - 1);
     else index.setX(index.x() - 1);
 
-    return getCell(index);
+    auto cell = getCell(index);
+    if(!cell) cell = addCell(index);
+
+    return cell;
 }
 
-Cell *Field::getBottomRightCell(Cell *c) const
+Cell *Field::getBottomRightCell(Cell *c)
 {
     auto index = c->getIndex();
 
@@ -125,36 +147,24 @@ Cell *Field::getBottomRightCell(Cell *c) const
     if(index.x() == width() - 1) index.setX(0);
     else index.setX(index.x() + 1);
 
-    return getCell(index);
+    auto cell = getCell(index);
+    if(!cell) cell = addCell(index);
+
+    return cell;
 }
 
-QVector<Cell*> Field::getAliveCells(Cell *c) const
+QVector<Cell*> Field::getCellsAround(Cell *c)
 {
     QVector<Cell*> result;
 
-    auto cell = getTopCell(c);
-    if(cell->getInformation()->getState() == Kernel::CellState::Alive) result.append(cell);
-
-    cell = getTopRightCell(c);
-    if(cell->getInformation()->getState() == Kernel::CellState::Alive) result.append(cell);
-
-    cell = getRightCell(c);
-    if(cell->getInformation()->getState() == Kernel::CellState::Alive) result.append(cell);
-
-    cell = getBottomRightCell(c);
-    if(cell->getInformation()->getState() == Kernel::CellState::Alive) result.append(cell);
-
-    cell = getBottomCell(c);
-    if(cell->getInformation()->getState() == Kernel::CellState::Alive) result.append(cell);
-
-    cell = getBottomLeftCell(c);
-    if(cell->getInformation()->getState() == Kernel::CellState::Alive) result.append(cell);
-
-    cell = getLeftCell(c);
-    if(cell->getInformation()->getState() == Kernel::CellState::Alive) result.append(cell);
-
-    cell = getTopLeftCell(c);
-    if(cell->getInformation()->getState() == Kernel::CellState::Alive) result.append(cell);
+    result.append(getTopCell(c));
+    result.append(getTopRightCell(c));
+    result.append(getRightCell(c));
+    result.append(getBottomRightCell(c));
+    result.append(getBottomCell(c));
+    result.append(getBottomLeftCell(c));
+    result.append(getLeftCell(c));
+    result.append(getTopLeftCell(c));
 
     return result;
 }
@@ -175,8 +185,8 @@ void Field::fill()
              << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 }
 
-Cell *Field::getCell(QPoint index) const { return m_Cells[index.x()][index.y()]; }
+Cell *Field::getCell(QPoint index) { return m_Cells[index.x()][index.y()]; }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }
-int Field::height() const { return m_Height; }
-int Field::width() const { return m_Width; }
+int Field::height() { return m_Height; }
+int Field::width() { return m_Width; }
 QMap<QString, CellRule *> Field::getCellRules() const { return m_CellRules; }

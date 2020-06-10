@@ -18,6 +18,7 @@
 #include <QWindowStateChangeEvent>
 #include <QTextEdit>
 #include <QFileDialog>
+#include <QCheckBox>
 
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
@@ -44,6 +45,10 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     m_TEContent->setUndoRedoEnabled(false);
     m_TEContent->document()->setDocumentMargin(0);
 
+    m_CBShowRule = new QCheckBox(tr("Show rules"), this);
+    m_CBShowRule->setCheckState(Qt::Unchecked);
+    QObject::connect(m_CBShowRule, &QCheckBox::stateChanged, [=]() { loadInformation(); });
+
     auto toolBar = new QToolBar();
     toolBar->setMovable(false);
     toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
@@ -57,6 +62,9 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     actionSave->setAutoRepeat(false);
     QObject::connect(actionSave, &QAction::triggered, this, &DialogCellInformation::slotSaveContent);
     toolBar->addAction(actionSave);
+
+    toolBar->addSeparator();
+    toolBar->addWidget(m_CBShowRule);
 
     toolBar->addWidget(new WidgetSpacer(this));
 
@@ -127,13 +135,13 @@ void DialogCellInformation::loadInformation()
     }
 
     // Cell rules
-    if(m_Cell->getRule())
+    if(m_CBShowRule->isChecked())
     {
-        content.append(m_Cell->getRule()->toHtmlTable());
+        if(m_Cell->getRule()) content.append(m_Cell->getRule()->toHtmlTable());
+        else
+            content.append(QString("<tr><td class = 'TDCAPTION' colspan='2'>%1</td></tr>").
+                           arg(tr("Rules list is empty!")));
     }
-    else
-        content.append(QString("<tr><td class = 'TDCAPTION' colspan='2'>%1</td></tr>").
-                       arg(tr("Rules list is empty!")));
 
     QString table = getTextFromRes(":/resources/table_content.html").
                     arg(windowTitle(), content);
