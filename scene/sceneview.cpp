@@ -7,6 +7,7 @@
 #include "field/cellinformation.h"
 #include "graphicsviewzoomer.h"
 #include "dialogs/dialogcellinformation.h"
+#include "dialogs/dialogvalueslist.h"
 
 #include <QtMath>
 #include <QDebug>
@@ -16,7 +17,7 @@
 
 SceneView::SceneView(QWidget *parent)
     :QGraphicsView(parent),
-    m_Scene(nullptr)
+      m_Scene(nullptr)
 {
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
@@ -87,14 +88,6 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
-            //auto o = static_cast<SceneObject*>(item->toGraphicsObject());
-            //if(!o)
-            //{
-            //    m_Scene->clearSelection();
-            //    m_Scene->setFocusItem(nullptr);
-            //}
-            //return false;
-
             //qDebug() << "GraphicsSceneMousePress" << mouseSceneEvent->scenePos();
         }
 
@@ -117,52 +110,56 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
-            // информация о ячейке
-            if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
+            // создать SceneObject и отредактировать Cell
+            if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
+                mouseSceneEvent->button() == Qt::LeftButton)
+            {
+                if(!o)
+                {
+                    auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneObjectSize());
+                    auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneObjectSize());
+                    o = m_Scene->addObject(x, y);
+                    o->getCell()->clear();
+                    qDebug() << o->objectName() << "created manually";
+                }
+                m_Scene->setFocusItem(o);
+                m_Scene->clearSelection();
+                o->setSelected(true);
+
+                auto cellinfo = o->getCell()->getInformation();
+                auto statelist = listKernelEnum("CellState");
+
+                const QVector<QString> keys =
+                    {tr("00#_Cell properties"),
+                     tr("01#_Cell state"),
+                     tr("02#_Cell age"),
+                     tr("03#_Cell generation")};
+                QMap<QString, DialogValue> map =
+                    {{keys.at(0), {}},
+                     {keys.at(1), {QVariant::StringList,
+                                   getNameKernelEnum("CellState", static_cast<int>(cellinfo->getState())), 0,
+                                   statelist, DialogValueMode::OneFromList}},
+                     {keys.at(2), {QVariant::Int, cellinfo->getAge(), 0, 0}},
+                     {keys.at(3), {QVariant::Int, cellinfo->getGeneration(), 0, 0}},
+                     };
+
+                auto dvl = new DialogValuesList(this, ":/resources/img/point.svg", tr("Edit cell"), &map);
+                if(!dvl->exec()) return false;
+
+                cellinfo->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
+                cellinfo->setAge(map.value(keys.at(2)).value.toInt());
+                cellinfo->setGeneration(map.value(keys.at(3)).value.toInt());
+
+                return true;
+            }
+
+            // свойства Cell
+            if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
                 mouseSceneEvent->button() == Qt::RightButton && o)
             {
                 showCellInformationDialog(o->getCell());
                 m_Scene->setFocusItem(o);
                 findObjectBySell(o->getCell());
-                return true;
-            }
-
-            // создать SceneObject
-            if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
-                mouseSceneEvent->button() == Qt::LeftButton && !o)
-            {
-                auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneObjectSize());
-                auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneObjectSize());
-                auto added = m_Scene->addObject(x, y);
-                added->getCell()->clear();
-                m_Scene->setFocusItem(added);
-                qDebug() << added->objectName() << "created manually";
-                return true;
-            }
-
-            // обнулить ячейку и сделать живой
-            if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
-                mouseSceneEvent->button() == Qt::LeftButton && o)
-            {
-                auto c = o->getCell();
-                c->clear();
-                c->getInformation()->setState(Kernel::CellState::Alive);
-                o->update();
-                m_Scene->setFocusItem(o);
-
-                qDebug() << "Cell" << c->objectName() << "cleared and set alive manually";
-                return true;
-            }
-            // обнулить ячейку
-            if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
-                mouseSceneEvent->button() == Qt::RightButton && o)
-            {
-                auto c = o->getCell();
-                c->clear();
-                o->update();
-                m_Scene->setFocusItem(o);
-
-                qDebug() << "Cell" << c->objectName() << "cleared and set dead manually";
                 return true;
             }
 
