@@ -9,6 +9,7 @@
 #include "dialogs/dialogvalueslist.h"
 #include "field/field.h"
 #include "field/cell.h"
+#include "field/cellrule.h"
 
 #include <QDebug>
 #include <QAction>
@@ -20,13 +21,12 @@
 #include <QLabel>
 #include <QProgressBar>
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-    m_Field(nullptr)
+      m_Field(nullptr)
 {
     setWindowIcon(QIcon(":/resources/img/flora.svg"));
-    setWindowTitle(QString("%1 %2").arg(APP_NAME, APP_VERS));
+    setWindowTitle(QString("%1 %2 < >").arg(APP_NAME, APP_VERS));
     loadGui();
     setWidgetToScreenCenter(this);
 }
@@ -145,25 +145,39 @@ void MainWindow::loadGui()
            settings.value("MainWindow/Height", WINDOW_HEIGHT).toInt());
 }
 
-void MainWindow::slotNewProject()
+    void MainWindow::slotNewProject()
 {
-    const QVector<QString> keys = {tr("00#_Field options"),
-                                   tr("01#_Size"),
-                                   tr("02#_Cell size")};
+    QMap<QString, CellRule*> ruleslist;
+    auto rule = new CellRule; // default rule
+    ruleslist.insert(rule->objectName(), rule);
+
+        const QVector<QString> keys = {tr("00#_Field options"),
+                                       tr("01#_Size"),
+                                       tr("02#_Cell size"),
+                                       tr("03#_Rule (%1):").arg(QString::number(ruleslist.count()))};
     QMap<QString, DialogValue> map =
         {{keys.at(0), {}},
          {keys.at(1), {QVariant::Int, config->SceneSize(), 2, 10000}},
-         {keys.at(2), {QVariant::Int, config->SceneObjectSize(), 1, 100}}
-        };
+         {keys.at(2), {QVariant::Int, config->SceneObjectSize(), 1, 100}},
+         {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
+         };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/asterisk.svg", tr("New project"), &map);
 
-    if(!dvl->exec()) return;
+    if(!dvl->exec())
+    {
+        rule->deleteLater();
+        return;
+    }
 
     config->setSceneSize(map.value(keys.at(1)).value.toInt());
     config->setSceneObjectSize(map.value(keys.at(2)).value.toInt());
 
     createField(config->SceneSize(), config->SceneSize());
+    auto currentrule = map.value(keys.at(3)).value.toString();                  // set rule
+    m_Field->setRule(ruleslist.value(currentrule));                             //
+    setWindowTitle(QString("%1 %2 <%3>").arg(APP_NAME, APP_VERS, currentrule)); //
+
     m_SceneView->zoomer()->Zoom(-1.0);
     createScene();
     setActionsEnable(true);

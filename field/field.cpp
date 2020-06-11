@@ -16,9 +16,6 @@ Field::Field(QObject *parent, int width, int height)
 
     m_Cells = QVector(m_Width, QVector<Cell*>(m_Height, nullptr));
 
-    // Default rule
-    m_Rule = new CellRule(this);
-
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
 }
@@ -173,7 +170,10 @@ void Field::setRule(CellRule *value)
     if(!value) return;
     if(m_Rule == value) return;
 
+    if(m_Rule) m_Rule->deleteLater();
+
     m_Rule = value;
+    m_Rule->setParent(this);
 
     Q_EMIT signalRuleChanged(m_Rule);
 }

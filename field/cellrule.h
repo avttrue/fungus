@@ -18,7 +18,7 @@ class CellRule : public QObject
     Q_PROPERTY(int CurseTime READ getCurseTime WRITE setCurseTime NOTIFY signalChanged)
 
 public:
-    CellRule(Field *parent);
+    CellRule(Field *parent = nullptr);
 
     QColor getColorAlive() const;
     void setColorAlive(QColor value);
