@@ -123,33 +123,33 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                     qDebug() << o->objectName() << "created manually";
                 }
                 m_Scene->setFocusItem(o);
-                m_Scene->clearSelection();
-                o->setSelected(true);
 
                 auto cellinfo = o->getCell()->getInformation();
                 auto statelist = listKernelEnum("CellState");
 
                 const QVector<QString> keys =
-                    {tr("00#_Cell properties"),
-                     tr("01#_Cell state"),
-                     tr("02#_Cell age"),
-                     tr("03#_Cell generation")};
+                        { tr("00#_Cell properties"),
+                         tr("01#_Cell state"),
+                         tr("02#_Cell age"),
+                         tr("03#_Cell generation") };
                 QMap<QString, DialogValue> map =
-                    {{keys.at(0), {}},
+                    { {keys.at(0), {}},
                      {keys.at(1), {QVariant::StringList,
                                    getNameKernelEnum("CellState", static_cast<int>(cellinfo->getState())), 0,
                                    statelist, DialogValueMode::OneFromList}},
                      {keys.at(2), {QVariant::Int, cellinfo->getAge(), 0, 0}},
-                     {keys.at(3), {QVariant::Int, cellinfo->getGeneration(), 0, 0}},
-                     };
+                     {keys.at(3), {QVariant::Int, cellinfo->getGeneration(), 0, 0}} };
 
-                auto dvl = new DialogValuesList(this, ":/resources/img/point.svg", tr("Edit cell"), &map);
+                auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
+                                                tr("Edit cell %1").arg(o->getCell()->objectName()), &map);
                 if(!dvl->exec()) return false;
 
                 cellinfo->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
                 cellinfo->setAge(map.value(keys.at(2)).value.toInt());
                 cellinfo->setGeneration(map.value(keys.at(3)).value.toInt());
+                m_Scene->clearSelection();
 
+                o->update();
                 return true;
             }
 
