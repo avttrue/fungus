@@ -151,7 +151,7 @@ void MainWindow::loadGui()
     auto rule = new CellRule; // default rule
     ruleslist.insert(rule->objectName(), rule);
 
-        const QVector<QString> keys = {tr("00#_Field options"),
+        const QVector<QString> keys = {tr("00#_Field properties"),
                                        tr("01#_Size"),
                                        tr("02#_Cell size"),
                                        tr("03#_Rule (%1):").arg(QString::number(ruleslist.count()))};
