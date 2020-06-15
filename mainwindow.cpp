@@ -20,9 +20,11 @@
 #include <QStatusBar>
 #include <QLabel>
 #include <QProgressBar>
+#include <QThread>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
+      m_ThreadField(nullptr),
       m_Field(nullptr)
 {
     setWindowIcon(QIcon(":/resources/img/flora.svg"));
@@ -40,6 +42,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     m_SceneView->hide(); //
     if(m_SceneView->scene()) m_SceneView->scene()->clear(); //
 
+    deleteObjects();
     event->accept();
 }
 
@@ -185,12 +188,26 @@ void MainWindow::loadGui()
 
 void MainWindow::slotStepStop()
 {
-
+    if(m_Field->isRunning())
+    {
+        m_Field->setRunning(false);
+    }
+    else
+    {
+        m_Field->setRunningAlways(false);
+        m_Field->setRunning(true);
+        m_ThreadField.start();
+    }
 }
 
 void MainWindow::slotRun()
 {
-
+    if(!m_Field->isRunning())
+    {
+        m_Field->setRunningAlways(true);
+        m_Field->setRunning(true);
+        m_ThreadField.start();
+    }
 }
 
 void MainWindow::createScene()
@@ -232,8 +249,13 @@ void MainWindow::createScene()
 
 void MainWindow::createField(int w, int h)
 {
-    if(m_Field) m_Field->deleteLater();
-    m_Field = new Field(this, w, h);
+    deleteObjects();
+
+    m_Field = new Field(w, h);
+
+    QObject::connect(&m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
+    QObject::connect(m_Field, &Field::signalFinished, this, &MainWindow::stopThreadField, Qt::DirectConnection);
+    m_Field->moveToThread(&m_ThreadField);
 }
 
 void MainWindow::setActionsEnable(bool value)
@@ -243,6 +265,28 @@ void MainWindow::setActionsEnable(bool value)
     m_ActionZoomUndoScene->setEnabled(value);
     m_ActionStepStop->setEnabled(value);
     m_ActionRun->setEnabled(value);
+}
+
+void MainWindow::deleteObjects()
+{
+    if(m_Field)
+    {
+        m_Field->setRunning(false);
+
+        while(m_ThreadField.isRunning())
+        {
+            qDebug() << "Waiting ThreadField";
+        }
+
+        delete m_Field;
+        m_Field = nullptr;
+    }
+}
+
+void MainWindow::stopThreadField()
+{
+    m_ThreadField.quit();
+    m_ThreadField.requestInterruption();
 }
 
     void MainWindow::slotSetup()

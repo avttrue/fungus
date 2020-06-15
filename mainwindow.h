@@ -2,12 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QThread>
 
 class Field;
 class SceneView;
 class SceneObject;
 class QLabel;
 class QProgressBar;
+//class QThread;
 
 class MainWindow : public QMainWindow
 {
@@ -23,8 +25,11 @@ protected:
     void createScene();
     void createField(int w, int h);
     void setActionsEnable(bool value);
+    void deleteObjects();
+    void stopThreadField();
 
 private:
+    QThread m_ThreadField;
     Field* m_Field;
     SceneView* m_SceneView;
     QAction* m_ActionZoomInScene;

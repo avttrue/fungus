@@ -6,11 +6,13 @@
 #include <QDateTime>
 #include <QDebug>
 
-Field::Field(QObject *parent, int width, int height)
+Field::Field(int width, int height, QObject *parent)
     : QObject(parent),
       m_Width(width),
       m_Height(height),
-      m_Rule(nullptr)
+      m_Rule(nullptr),
+      m_Running(false),
+      m_RunningAlways(false)
 {
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
@@ -165,6 +167,13 @@ QVector<Cell*> Field::getCellsAround(Cell *c)
     return result;
 }
 
+void Field::setRunningAlways(bool value)
+{
+    if(m_RunningAlways == value) return;
+
+    m_RunningAlways = value;
+}
+
 void Field::setRule(CellRule *value)
 {
     if(!value) return;
@@ -173,25 +182,34 @@ void Field::setRule(CellRule *value)
     if(m_Rule) m_Rule->deleteLater();
 
     m_Rule = value;
+
+    m_Rule->moveToThread(thread());
     m_Rule->setParent(this);
 
     Q_EMIT signalRuleChanged(m_Rule);
 }
 
-void Field::fill()
+void Field::setRunning(bool value)
 {
-    auto time = QDateTime::currentMSecsSinceEpoch();
-    for(int h = 0; h < m_Height; h++)
+    if(m_Running == value) return;
+
+    m_Running = value;
+    Q_EMIT signalRunning(m_Running);
+}
+
+void Field::calculate()
+{
+    while(m_Running)
     {
-        for(int w = 0; w < m_Width; w++)
+        qDebug() << "calculate";
+        if(!m_RunningAlways)
         {
-            auto c = addCell(w, h);
-            Q_EMIT signalCellAdded(c);
+            m_Running = false;
         }
-        Q_EMIT signalProgress(h + 1);
     }
-    qDebug() << "field" << objectName() << "filled in"
-             << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+
+    qDebug() << "Field calculating stopped";
+    Q_EMIT signalFinished();
 }
 
 CellRule *Field::getRule() const { return m_Rule; }
@@ -199,3 +217,5 @@ Cell *Field::getCell(QPoint index) { return m_Cells[index.x()][index.y()]; }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }
 int Field::height() { return m_Height; }
 int Field::width() { return m_Width; }
+bool Field::getRunningAlways() const { return m_RunningAlways; }
+bool Field::isRunning() { return m_Running; }
