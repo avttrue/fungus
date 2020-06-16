@@ -2,6 +2,8 @@
 #include "cell.h"
 #include "cellinformation.h"
 #include "cellrule.h"
+#include "fieldinformation.h"
+#include "wait.h" // test
 
 #include <QDateTime>
 #include <QDebug>
@@ -16,6 +18,7 @@ Field::Field(int width, int height, QObject *parent)
 {
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
+    m_FieldInformation = new FieldInformation(this);
     m_Cells = QVector(m_Width, QVector<Cell*>(m_Height, nullptr));
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
@@ -199,13 +202,21 @@ void Field::setRunning(bool value)
 
 void Field::calculate()
 {
+    qDebug() << "Field calculating started";
     while(m_Running)
     {
-        qDebug() << "calculate";
+        auto time = QDateTime::currentMSecsSinceEpoch();
+
+        m_FieldInformation->stepAge();
+
+        delay(2); // test
+
         if(!m_RunningAlways)
         {
             m_Running = false;
         }
+
+        m_FieldInformation->setCalc(time);
     }
 
     qDebug() << "Field calculating stopped";
@@ -219,3 +230,4 @@ int Field::height() { return m_Height; }
 int Field::width() { return m_Width; }
 bool Field::getRunningAlways() const { return m_RunningAlways; }
 bool Field::isRunning() { return m_Running; }
+FieldInformation *Field::getFieldInfo() const { return m_FieldInformation; }

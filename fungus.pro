@@ -19,6 +19,7 @@ SOURCES += \
     field/cellinformation.cpp \
     field/cellrule.cpp \
     field/field.cpp \
+    field/fieldinformation.cpp \
     field/fieldservice.cpp \
     graphicsviewzoomer.cpp \
     config.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     field/cellinformation.h \
     field/cellrule.h \
     field/field.h \
+    field/fieldinformation.h \
     field/fieldservice.h \
     graphicsviewzoomer.h \
     config.h \
@@ -49,7 +51,8 @@ HEADERS += \
     field/cell.h \
     scene/sceneobject.h \
     scene/scene.h \
-    scene/sceneview.h
+    scene/sceneview.h \
+    wait.h
 
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

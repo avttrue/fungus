@@ -10,6 +10,7 @@
 #include "field/field.h"
 #include "field/cell.h"
 #include "field/cellrule.h"
+#include "field/fieldinformation.h"
 
 #include <QDebug>
 #include <QAction>
@@ -26,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_ThreadField(nullptr),
       m_Field(nullptr)
-{
+{    
     setWindowIcon(QIcon(":/resources/img/flora.svg"));
     setWindowTitle(QString("%1 %2 < >").arg(APP_NAME, APP_VERS));
     loadGui();
@@ -39,10 +40,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("MainWindow/Height", height());
     settings.setValue("MainWindow/Width", width());
 
-    m_SceneView->hide(); //
-    if(m_SceneView->scene()) m_SceneView->scene()->clear(); //
-
     deleteObjects();
+    config->deleteLater();
     event->accept();
 }
 
@@ -111,25 +110,37 @@ void MainWindow::loadGui()
     // статусбар
     auto statusBar = new QStatusBar(this);
     statusBar->addWidget(new QLabel(tr("Size:"), this));
-    m_LabelFieldSize = new QLabel(this);
-    m_LabelFieldSize->setText("-");
+    m_LabelFieldSize = new QLabel("-", this);
     statusBar->addWidget(m_LabelFieldSize);
 
     statusBar->addWidget(new SeparatorV(this)); // TODO: statusBar separator
 
     statusBar->addWidget(new QLabel(tr("Selected:"), this));
-    m_LabelFocusedObject = new QLabel(this);
-    m_LabelFocusedObject->setText("-");
+    m_LabelFocusedObject = new QLabel("-", this);
     statusBar->addWidget(m_LabelFocusedObject);
 
     statusBar->addWidget(new SeparatorV(this));
 
     statusBar->addWidget(new QLabel(tr("Zoom:"), this));
-    m_LabelFieldZoom = new QLabel(this);
-    m_LabelFieldZoom->setText("1");
+    m_LabelFieldZoom = new QLabel("1", this);
     QObject::connect(m_SceneView->zoomer(), &GraphicsViewZoomer::signalZoomed,
                      [=](qreal value){ m_LabelFieldZoom->setText(QString::number(value)); });
     statusBar->addWidget(m_LabelFieldZoom);
+
+    statusBar->addWidget(new SeparatorV(this));
+
+    statusBar->addWidget(new QLabel(tr("Age:"), this));
+    m_LabelFieldAge = new QLabel("-", this);
+    statusBar->addWidget(m_LabelFieldAge);
+
+    statusBar->addWidget(new SeparatorV(this));
+
+    statusBar->addWidget(new QLabel(tr("Calc time:"), this));
+    m_LabelFieldCalc = new QLabel("-", this);
+    m_LabelFieldAvCalc = new QLabel("-", this);
+    statusBar->addWidget(m_LabelFieldCalc);
+    statusBar->addWidget(new QLabel("|", this));
+    statusBar->addWidget(m_LabelFieldAvCalc);
 
     statusBar->addWidget(new SeparatorV(this));
 
@@ -196,7 +207,7 @@ void MainWindow::slotStepStop()
     {
         m_Field->setRunningAlways(false);
         m_Field->setRunning(true);
-        m_ThreadField.start();
+        m_ThreadField->start();
     }
 }
 
@@ -206,7 +217,7 @@ void MainWindow::slotRun()
     {
         m_Field->setRunningAlways(true);
         m_Field->setRunning(true);
-        m_ThreadField.start();
+        m_ThreadField->start();
     }
 }
 
@@ -250,12 +261,21 @@ void MainWindow::createScene()
 void MainWindow::createField(int w, int h)
 {
     deleteObjects();
+    m_ThreadField = new QThread;
+    QObject::connect(m_ThreadField, &QObject::destroyed, [=](){ qDebug() << "ThreadField destroyed"; });
 
     m_Field = new Field(w, h);
 
-    QObject::connect(&m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
+    QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
     QObject::connect(m_Field, &Field::signalFinished, this, &MainWindow::stopThreadField, Qt::DirectConnection);
-    m_Field->moveToThread(&m_ThreadField);
+    m_Field->moveToThread(m_ThreadField);
+
+    m_LabelFieldAge->setText("0");
+    QObject::connect(m_Field->getFieldInfo(), &FieldInformation::signalAgeChanged, this, &MainWindow::slotFieldAge);
+    m_LabelFieldCalc->setText(tr("0 ms"));
+    QObject::connect(m_Field->getFieldInfo(), &FieldInformation::signalCalcChanged, this, &MainWindow::slotFieldCalc);
+    m_LabelFieldAvCalc->setText(tr("0 ms"));
+    QObject::connect(m_Field->getFieldInfo(), &FieldInformation::signalAverageCalcChanged, this, &MainWindow::slotFieldAvCalc);
 }
 
 void MainWindow::setActionsEnable(bool value)
@@ -273,7 +293,7 @@ void MainWindow::deleteObjects()
     {
         m_Field->setRunning(false);
 
-        while(m_ThreadField.isRunning())
+        while(m_ThreadField->isRunning())
         {
             qDebug() << "Waiting ThreadField";
         }
@@ -281,12 +301,18 @@ void MainWindow::deleteObjects()
         delete m_Field;
         m_Field = nullptr;
     }
+
+    if(m_ThreadField)
+    {
+        m_ThreadField->deleteLater();
+        m_ThreadField = nullptr;
+    }
 }
 
 void MainWindow::stopThreadField()
 {
-    m_ThreadField.quit();
-    m_ThreadField.requestInterruption();
+    m_ThreadField->quit();
+    m_ThreadField->requestInterruption();
 }
 
     void MainWindow::slotSetup()
@@ -374,7 +400,11 @@ void MainWindow::slotSceneZoomOut()
 void MainWindow::slotZoomUndoScene()
 {
     m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET);
-    m_SceneView->centerOn(m_SceneView->getScene()->focusedObject());
+    if(m_SceneView->getScene()->focusedObject())
+        m_SceneView->centerOn(m_SceneView->getScene()->focusedObject());
 }
 
+void MainWindow::slotFieldCalc(qint64 value) { m_LabelFieldCalc->setText(tr("%1 ms").arg(QString::number(value))); }
+void MainWindow::slotFieldAvCalc(qreal value) { m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 3))); }
+void MainWindow::slotFieldAge(qint64 value) { m_LabelFieldAge->setText(QString::number(value)); }
 QProgressBar *MainWindow::ProgressBar() const { return m_ProgressBar; }

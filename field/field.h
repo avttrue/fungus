@@ -6,6 +6,7 @@
 
 class Cell;
 class CellRule;
+class FieldInformation;
 
 class Field : public QObject
 {
@@ -25,6 +26,7 @@ public:
     void calculate();
     bool getRunningAlways() const;
     void setRunningAlways(bool value);
+    FieldInformation *getFieldInfo() const;
 
 protected:
     Cell* getTopCell(Cell* c);
@@ -42,6 +44,7 @@ private:
     int m_Height;
     QVector<QVector<Cell*>> m_Cells;
     CellRule* m_Rule;
+    FieldInformation* m_FieldInformation;
     bool m_Running;
     bool m_RunningAlways;
 

@@ -2,14 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QThread>
 
 class Field;
 class SceneView;
 class SceneObject;
 class QLabel;
 class QProgressBar;
-//class QThread;
+class QThread;
 
 class MainWindow : public QMainWindow
 {
@@ -29,7 +28,7 @@ protected:
     void stopThreadField();
 
 private:
-    QThread m_ThreadField;
+    QThread* m_ThreadField;
     Field* m_Field;
     SceneView* m_SceneView;
     QAction* m_ActionZoomInScene;
@@ -40,6 +39,9 @@ private:
     QLabel* m_LabelFieldSize;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFocusedObject;
+    QLabel* m_LabelFieldAge;
+    QLabel* m_LabelFieldCalc;
+    QLabel* m_LabelFieldAvCalc;
     QProgressBar* m_ProgressBar;
 
 private Q_SLOTS:
@@ -50,5 +52,8 @@ private Q_SLOTS:
     void slotNewProject();
     void slotStepStop();
     void slotRun();
+    void slotFieldAge(qint64 value);
+    void slotFieldCalc(qint64 value);
+    void slotFieldAvCalc(qreal value);
 };
 #endif // MAINWINDOW_H
