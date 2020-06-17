@@ -14,7 +14,8 @@ Field::Field(int width, int height, QObject *parent)
       m_Height(height),
       m_Rule(nullptr),
       m_Running(false),
-      m_RunningAlways(false)
+      m_RunningAlways(false),
+      m_SceneBusy(false)
 {
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
@@ -206,11 +207,18 @@ void Field::calculate()
     qDebug() << "Field calculating started";
     while(m_Running)
     {
+        if(m_SceneBusy) continue;
+
         auto time = QDateTime::currentMSecsSinceEpoch();
 
         m_FieldInformation->stepAge();
 
-        delay(2); // test
+        //delay(2); // test
+
+        for(auto c: m_Cells)
+        {
+          // TODO: выполнение правил
+        }
 
         if(!m_RunningAlways)
         {
@@ -232,3 +240,4 @@ int Field::width() { return m_Width; }
 bool Field::getRunningAlways() const { return m_RunningAlways; }
 bool Field::isRunning() { return m_Running; }
 FieldInformation *Field::getFieldInfo() const { return m_FieldInformation; }
+void Field::setSceneBusy(bool value) { m_SceneBusy = value; }

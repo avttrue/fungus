@@ -167,16 +167,17 @@ void MainWindow::slotNewProject()
     auto rule = new CellRule; // default rule
     ruleslist.insert(rule->objectName(), rule);
 
-        const QVector<QString> keys = {tr("00#_Field properties"),
-                                       tr("01#_Size"),
-                                       tr("02#_Cell size"),
-                                       tr("03#_Rule (%1):").arg(QString::number(ruleslist.count()))};
+    //TODO: загружать здесь остальные возможные правила
+    const QVector<QString> keys = {tr("00#_Field properties"),
+                                   tr("01#_Size"),
+                                   tr("02#_Cell size"),
+                                   tr("03#_Rule (%1):").arg(QString::number(ruleslist.count()))};
     QMap<QString, DialogValue> map =
-        {{keys.at(0), {}},
-         {keys.at(1), {QVariant::Int, config->SceneSize(), 2, 10000}},
-         {keys.at(2), {QVariant::Int, config->SceneObjectSize(), 1, 100}},
-         {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
-         };
+    {{keys.at(0), {}},
+     {keys.at(1), {QVariant::Int, config->SceneSize(), 2, 10000}},
+     {keys.at(2), {QVariant::Int, config->SceneObjectSize(), 1, 100}},
+     {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
+    };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/asterisk.svg", tr("New project"), &map);
 
@@ -250,11 +251,11 @@ void MainWindow::createScene()
 
     QObject::connect(m_SceneView->getScene(), &QGraphicsScene::focusItemChanged,
                      [=]()
-                     {
-                         auto o = m_SceneView->getScene()->focusedObject();
-                         if(o) m_LabelFocusedObject->setText(o->getCell()->objectName());
-                         else m_LabelFocusedObject->setText("-");
-                     });
+    {
+        auto o = m_SceneView->getScene()->focusedObject();
+        if(o) m_LabelFocusedObject->setText(o->getCell()->objectName());
+        else m_LabelFocusedObject->setText("-");
+    });
     m_LabelFieldSize->setText(QString("%1X%2 [%3]").arg(QString::number(m_Field->width()),
                                                         QString::number(m_Field->height()),
                                                         QString::number(config->SceneObjectSize())));
@@ -314,47 +315,47 @@ void MainWindow::stopThreadField()
     m_ThreadField->requestInterruption();
 }
 
-    void MainWindow::slotSetup()
+void MainWindow::slotSetup()
 {
     const QVector<QString> keys = {tr("00#_Common options"),
-        tr("01#_Date and time format"),
-        tr("02#_Use SI metric"),
-        tr("03#_Event log size (0 = maximum)"),
-        tr("04#_Buttons size"),
-        tr("05#_Scene options"),
-        tr("06#_Scene BspTree indexing"),
-        tr("07#_Scene antialiasing"),
-        tr("08#_Scene background color"),
-        tr("09#_Scene border color"),
-        tr("10#_Scene color"),
-        tr("11#_Scene selection color"),//
-        tr("12#_Scene zoom factor"),
-        tr("13#_Prefill scene"),
-        tr("14#_Scene object options"),
-        tr("15#_Indicate age value"),
-        tr("16#_Dead cell color"),
-        tr("17#_Cursed cell color"),
-        };
+                                   tr("01#_Date and time format"),
+                                   tr("02#_Use SI metric"),
+                                   tr("03#_Event log size (0 = maximum)"),
+                                   tr("04#_Buttons size"),
+                                   tr("05#_Scene options"),
+                                   tr("06#_Scene BspTree indexing"),
+                                   tr("07#_Scene antialiasing"),
+                                   tr("08#_Scene background color"),
+                                   tr("09#_Scene border color"),
+                                   tr("10#_Scene color"),
+                                   tr("11#_Scene selection color"),//
+                                   tr("12#_Scene zoom factor"),
+                                   tr("13#_Prefill scene"),
+                                   tr("14#_Scene object options"),
+                                   tr("15#_Indicate age value"),
+                                   tr("16#_Dead cell color"),
+                                   tr("17#_Cursed cell color"),
+                                  };
     QMap<QString, DialogValue> map =
-        {{keys.at(0), {}},
-         {keys.at(1), {QVariant::String, config->DateTimeFormat(), 0, 0}},
-         {keys.at(2), {QVariant::Bool, config->SIMetric(), 0, 0}},
-         {keys.at(3), {QVariant::Int, config->LogSize(), 0, 0}},
-         {keys.at(4), {QVariant::Int, config->ButtonSize(), 16, 100}},
-         {keys.at(5), {}},
-         {keys.at(6), {QVariant::Bool, config->SceneBspTreeIndex(), 0, 0}},
-         {keys.at(7), {QVariant::Bool, config->SceneViewAntialiasing(), 0, 0}},
-         {keys.at(8), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
-         {keys.at(9), {QVariant::String, config->SceneBorderColor(), 0, 0, DialogValueMode::Color}},
-         {keys.at(10), {QVariant::String, config->SceneColor(), 0, 0, DialogValueMode::Color}},
-         {keys.at(11), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
-         {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-         {keys.at(13), {QVariant::Bool, config->ScenePreFill(), 0, 0}},
-         {keys.at(14), {}},
-         {keys.at(15), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
-         {keys.at(16), {QVariant::String, config->SceneObjectDeadColor(), 0, 0, DialogValueMode::Color}},
-         {keys.at(17), {QVariant::String, config->SceneObjectCurseColor(), 0, 0, DialogValueMode::Color}},
-         };
+    {{keys.at(0), {}},
+     {keys.at(1), {QVariant::String, config->DateTimeFormat(), 0, 0}},
+     {keys.at(2), {QVariant::Bool, config->SIMetric(), 0, 0}},
+     {keys.at(3), {QVariant::Int, config->LogSize(), 0, 0}},
+     {keys.at(4), {QVariant::Int, config->ButtonSize(), 16, 100}},
+     {keys.at(5), {}},
+     {keys.at(6), {QVariant::Bool, config->SceneBspTreeIndex(), 0, 0}},
+     {keys.at(7), {QVariant::Bool, config->SceneViewAntialiasing(), 0, 0}},
+     {keys.at(8), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(9), {QVariant::String, config->SceneBorderColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(10), {QVariant::String, config->SceneColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(11), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
+     {keys.at(13), {QVariant::Bool, config->ScenePreFill(), 0, 0}},
+     {keys.at(14), {}},
+     {keys.at(15), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
+     {keys.at(16), {QVariant::String, config->SceneObjectDeadColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(17), {QVariant::String, config->SceneObjectCurseColor(), 0, 0, DialogValueMode::Color}},
+    };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
 
