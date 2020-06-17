@@ -39,12 +39,15 @@ void SceneObject::paint(QPainter *painter,
 
     if(isSelected()) color = QColor(config->SceneSelectColor());
 
+    // alive
     else if(m_Cell->getInformation()->getState() == Kernel::CellState::Dead)
         color = QColor(config->SceneObjectDeadColor());
 
+    // cursed
     else if(m_Cell->getInformation()->getState() == Kernel::CellState::Cursed)
         color = QColor(config->SceneObjectCurseColor());
 
+    // alive
     else if(config->SceneObjectAgeIndicate())
     {
         color = m_Cell->getField()->getRule()->getColorAlive();

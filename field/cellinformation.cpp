@@ -19,25 +19,25 @@ void CellInformation::setState(Kernel::CellState value)
     if (m_State == value) return;
 
     m_State = value;
-    Q_EMIT signalChanged();
+    Q_EMIT signalStateChanged(m_State);
 }
 
-void CellInformation::setAge(int value)
+void CellInformation::setAge(qint64 value)
 {
     if (m_Age == value) return;
 
     m_Age = value;
-    Q_EMIT signalChanged();
+    Q_EMIT signalAgeChanged(m_Age);
 }
 
-void CellInformation::setGeneration(int value)
+void CellInformation::setGeneration(qint64 value)
 {
     if (m_Generation == value) return;
 
     m_Generation = value;
-    Q_EMIT signalChanged();
+    Q_EMIT signalGenerationChanged(m_Generation);
 }
 
 Kernel::CellState CellInformation::getState() const { return m_State; }
-int CellInformation::getAge() const { return m_Age; }
-int CellInformation::getGeneration() const { return m_Generation; }
+qint64 CellInformation::getAge() const { return m_Age; }
+qint64 CellInformation::getGeneration() const { return m_Generation; }

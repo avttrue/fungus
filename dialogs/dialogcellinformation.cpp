@@ -79,10 +79,13 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     loadInformation();
 
-    QObject::connect(cell->getInformation(), &CellInformation::signalChanged,
-                     this, &DialogCellInformation::loadInformation);
-
-    QObject::connect(cell, &QObject::destroyed, this, &QDialog::close);
+    QObject::connect(cell->getInformation(), &CellInformation::signalStateChanged,
+                     this, &DialogCellInformation::loadInformation, Qt::QueuedConnection);
+    QObject::connect(cell->getInformation(), &CellInformation::signalAgeChanged,
+                     this, &DialogCellInformation::loadInformation, Qt::QueuedConnection);
+    QObject::connect(cell->getInformation(), &CellInformation::signalGenerationChanged,
+                     this, &DialogCellInformation::loadInformation, Qt::QueuedConnection);
+    QObject::connect(cell, &QObject::destroyed, this, &QDialog::close); // закрывать при уничтожении cell
 
     installEventFilter(this);
     resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());

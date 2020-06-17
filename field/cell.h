@@ -13,7 +13,7 @@ class Cell : public QObject
     Q_OBJECT
 
 public:
-    Cell(Field *parent);
+    explicit Cell(QObject *parent = nullptr);
     SceneObject *getSceneObject() const;
     void setSceneObject(SceneObject *value);
     QPoint getIndex();
@@ -21,6 +21,7 @@ public:
     CellInformation* getInformation();
     void clear();
     Field *getField() const;
+    void setField(Field *value);
 
 private:
     Field* m_Field;

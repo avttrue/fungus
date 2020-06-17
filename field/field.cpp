@@ -27,11 +27,12 @@ Field::Field(int width, int height, QObject *parent)
 
 Cell *Field::addCell(int x, int y)
 {
-    auto c = new Cell(this);
+    auto c = new Cell;
+    c->moveToThread(thread()); c->setParent(this); // NOTE: field выполняется не в основном потоке
+    c->setField(this);
     c->setIndex({x, y});
     c->setObjectName(QString("[%1X%2]").arg(QString::number(x), QString::number(y)));
     m_Cells[x][y] = c;
-
     Q_EMIT signalCellAdded(c);
     return c;
 }

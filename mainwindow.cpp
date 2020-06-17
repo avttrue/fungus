@@ -190,7 +190,7 @@ void MainWindow::loadGui()
     createField(config->SceneSize(), config->SceneSize());
     auto currentrule = map.value(keys.at(3)).value.toString();                  // set rule
     m_Field->setRule(ruleslist.value(currentrule));                             //
-    setWindowTitle(QString("%1 %2 <%3>").arg(APP_NAME, APP_VERS, currentrule)); //
+    setWindowTitle(QString("%1 %2 <%3>").arg(APP_NAME, APP_VERS, currentrule)); // show rule in caption
 
     m_SceneView->zoomer()->Zoom(-1.0);
     createScene();
@@ -268,7 +268,7 @@ void MainWindow::createField(int w, int h)
 
     QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
     QObject::connect(m_Field, &Field::signalFinished, this, &MainWindow::stopThreadField, Qt::DirectConnection);
-    m_Field->moveToThread(m_ThreadField);
+    m_Field->moveToThread(m_ThreadField);  // NOTE: field выполняется не в основном потоке
 
     m_LabelFieldAge->setText("0");
     QObject::connect(m_Field->getFieldInfo(), &FieldInformation::signalAgeChanged, this, &MainWindow::slotFieldAge);
@@ -293,10 +293,7 @@ void MainWindow::deleteObjects()
     {
         m_Field->setRunning(false);
 
-        while(m_ThreadField->isRunning())
-        {
-            qDebug() << "Waiting ThreadField";
-        }
+        while(m_ThreadField->isRunning()) qDebug() << "Waiting ThreadField";
 
         delete m_Field;
         m_Field = nullptr;

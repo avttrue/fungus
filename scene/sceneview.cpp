@@ -148,7 +148,6 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 cellinfo->setAge(map.value(keys.at(2)).value.toInt());
                 cellinfo->setGeneration(map.value(keys.at(3)).value.toInt());
                 m_Scene->clearSelection();
-
                 o->update();
                 return true;
             }
