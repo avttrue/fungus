@@ -123,6 +123,8 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                     qDebug() << o->objectName() << "created manually";
                 }
                 m_Scene->setFocusItem(o);
+                m_Scene->clearSelection();
+                o->setSelected(true);
 
                 auto cellinfo = o->getCell()->getInformation();
                 auto statelist = listKernelEnum("CellState");
@@ -147,7 +149,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 cellinfo->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
                 cellinfo->setAge(map.value(keys.at(2)).value.toInt());
                 cellinfo->setGeneration(map.value(keys.at(3)).value.toInt());
-                m_Scene->clearSelection();
+
                 o->update();
                 return true;
             }
@@ -184,7 +186,7 @@ void SceneView::findObjectBySell(Cell *cell)
     auto o = cell->getSceneObject();
     m_Scene->setFocusItem(o);
     m_Scene->clearSelection();
-    m_Scene->focusItem()->setSelected(true);
+    o->setSelected(true);
     centerOn(o);
 
     Q_EMIT m_Scene->focusItemChanged(nullptr, o, Qt::OtherFocusReason);

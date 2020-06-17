@@ -8,10 +8,10 @@
 
 GraphicsViewZoomer::GraphicsViewZoomer(QGraphicsView* view)
     : QObject(view),
-    m_View(view),
-    m_Modifiers(MODIFIER),
-    m_ZoomFactorBase(ZOOM_FACTOR_BASE),
-    m_CurrentZoom(1.0)
+      m_View(view),
+      m_Modifiers(MODIFIER),
+      m_ZoomFactorBase(ZOOM_FACTOR_BASE),
+      m_CurrentZoom(1.0)
 {
     m_View->viewport()->installEventFilter(this);
     m_View->setMouseTracking(true);
@@ -27,7 +27,7 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
 
     if(factor - ZOOM_FACTOR_RESET == 0.0) // reset
     {
-        m_View->resetMatrix();
+        m_View->resetTransform();
         m_CurrentZoom = 1.0;
         qDebug() << "Scene zoom resetted";
     }
@@ -79,13 +79,10 @@ bool GraphicsViewZoomer::eventFilter(QObject *object, QEvent *event)
         QWheelEvent* wheelevent = static_cast<QWheelEvent*>(event);
         if (QApplication::keyboardModifiers() == m_Modifiers)
         {
-            if (wheelevent->orientation() == Qt::Vertical)
-            {
-                qreal angle = wheelevent->angleDelta().y();
-                qreal factor = qPow(m_ZoomFactorBase, angle);
-                Zoom(factor);
-                return true;
-            }
+            qreal angle = wheelevent->angleDelta().y();
+            qreal factor = qPow(m_ZoomFactorBase, angle);
+            Zoom(factor);
+            return true;
         }
     }
     return false;

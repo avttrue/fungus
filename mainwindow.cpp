@@ -159,8 +159,10 @@ void MainWindow::loadGui()
            settings.value("MainWindow/Height", WINDOW_HEIGHT).toInt());
 }
 
-    void MainWindow::slotNewProject()
+void MainWindow::slotNewProject()
 {
+    if(m_Field) m_Field->setRunning(false);
+
     QMap<QString, CellRule*> ruleslist;
     auto rule = new CellRule; // default rule
     ruleslist.insert(rule->objectName(), rule);

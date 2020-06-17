@@ -344,7 +344,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
                     cb->setProperty("ValueName", key);
                     auto index = list.indexOf(v.toString());
                     if(index != -1) cb->setCurrentIndex(index);
-                    QObject::connect(cb, QOverload<const QString&>::of(&QComboBox::currentIndexChanged),
+                    QObject::connect(cb, QOverload<int>::of(&QComboBox::currentIndexChanged),
                                      this, &DialogValuesList::slotOneOfStringListValueChanged);
                 }
                 else cb->setDisabled(true);
@@ -452,15 +452,15 @@ void DialogValuesList::slotStringListValueChanged()
     auto ledit = qobject_cast<QLineEdit*>(sender());
     if(!ledit) { qCritical() << __func__ << ": Signal sender not found."; return; }
     auto key = ledit->property("ValueName").toString();
-    setMapValue(key, ledit->text().split(',', QString::SkipEmptyParts).replaceInStrings(QRegExp(RE_FIRST_LAST_SPACES), ""));
+    setMapValue(key, ledit->text().split(',', Qt::SkipEmptyParts).replaceInStrings(QRegExp(RE_FIRST_LAST_SPACES), ""));
 }
 
-void DialogValuesList::slotOneOfStringListValueChanged(const QString &value)
+void DialogValuesList::slotOneOfStringListValueChanged()
 {
     auto cb = qobject_cast<QComboBox*>(sender());
     if(!cb) { qCritical() << __func__ << ": Signal sender not found."; return; }
     auto key = cb->property("ValueName").toString();
-    setMapValue(key, QStringList(value));
+    setMapValue(key, cb->currentText());
 }
 
 void DialogValuesList::slotManyOfStringListValueChanged()
