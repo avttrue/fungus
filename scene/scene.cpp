@@ -123,12 +123,10 @@ SceneObject *Scene::focusedObject() const
 
 void Scene::slotAdvance(QSet<Cell*> cells)
 {
-    if(m_StopAdvanse) return;
-
     auto time = QDateTime::currentMSecsSinceEpoch();
     for(auto c: cells)
     {
-        if(m_StopAdvanse) return;
+        if(m_StopAdvanse) break;
 
         auto o = c->getSceneObject();
         if(!o) addObject(c->getIndex().x(), c->getIndex().y());
@@ -136,14 +134,21 @@ void Scene::slotAdvance(QSet<Cell*> cells)
         o->setUpdate(true);
     }
 
+    if(m_StopAdvanse) return;
+
     auto conn = std::make_shared<QMetaObject::Connection>();
     auto func = [=]()
     {
         QObject::disconnect(*conn);
         auto dt = QDateTime::currentMSecsSinceEpoch() - time;
-        m_AverageDraw = calcAverage(m_AverageDraw, m_Field->getInformation()->getAge(), dt);
+        auto new_ad = calcAverage(m_AverageDraw, m_Field->getInformation()->getAge(), dt);
         m_Field->setWaitScene(false);
-        Q_EMIT signalAdvansedTime(m_AverageDraw);
+
+        if(m_AverageDraw < new_ad || m_AverageDraw > new_ad)
+        {
+            m_AverageDraw = new_ad;
+            Q_EMIT signalAdvansedTime(m_AverageDraw);
+        }
     };
     *conn = QObject::connect(this, &Scene::changed, func);
     advance();
