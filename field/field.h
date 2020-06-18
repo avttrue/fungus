@@ -27,7 +27,8 @@ public:
     bool getRunningAlways() const;
     void setRunningAlways(bool value);
     FieldInformation *getFieldInfo() const;
-    void setSceneBusy(bool value);
+    void setWaitScene(bool value);
+    void StopCalculating();
 
 protected:
     Cell* getTopCell(Cell* c);
@@ -46,16 +47,17 @@ private:
     QVector<QVector<Cell*>> m_Cells;
     CellRule* m_Rule;
     FieldInformation* m_FieldInformation;
-    bool m_Running;                         // флаг управления циклом calculate
-    bool m_RunningAlways;                   // флаг управления режимом одиночный шаг / постоянное выполнение
-    bool m_SceneBusy;                       // для ожидания отрисовки сцены
+    bool m_Running;                             // флаг управления циклом calculate
+    bool m_RunningAlways;                       // флаг управления режимом calculate: одиночный шаг / постоянное выполнение
+    bool m_WaitScene;                           // ожидание готовности сцены
+    bool m_StopCalculating;                     // остановка цикла calculate перед выходом и т.д.
+
 
 Q_SIGNALS:
-    void signalCellAdded(Cell* cell);
-    void signalRuleChanged(CellRule* rule);
-    void signalRunning(bool value);
-    void signalFinished();
-    void signalCalculated(QVector<Cell*> cells);
+    void signalRuleChanged(CellRule* rule);     // правила изменены
+    void signalRunning(bool value);             // состояние вкл/выкл цикла calculate
+    void signalCalculatingStopped();            // calculate остановлен/завершён
+    void signalCalculated(QSet<Cell*> cells);   // завершена итерация calculate
 };
 
 #endif // FIELD_H

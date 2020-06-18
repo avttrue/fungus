@@ -24,7 +24,7 @@ protected:
     void createScene();
     void createField(int w, int h);
     void setActionsEnable(bool value);
-    void deleteObjects();
+    void deleteField();
     void stopThreadField();
 
 private:

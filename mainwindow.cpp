@@ -36,11 +36,14 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if(m_SceneView->getScene()) m_SceneView->getScene()->StopAdvanse();
+
+    deleteField();
+
     QSettings settings(config->PathAppConfig(), QSettings::IniFormat);
     settings.setValue("MainWindow/Height", height());
     settings.setValue("MainWindow/Width", width());
 
-    deleteObjects();
     config->deleteLater();
     event->accept();
 }
@@ -263,14 +266,17 @@ void MainWindow::createScene()
 
 void MainWindow::createField(int w, int h)
 {
-    deleteObjects();
+    if(m_SceneView->getScene()) m_SceneView->getScene()->StopAdvanse();
+
+    deleteField();
+
     m_ThreadField = new QThread;
     QObject::connect(m_ThreadField, &QObject::destroyed, [=](){ qDebug() << "ThreadField destroyed"; });
 
     m_Field = new Field(w, h);
 
     QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
-    QObject::connect(m_Field, &Field::signalFinished, this, &MainWindow::stopThreadField, Qt::DirectConnection);
+    QObject::connect(m_Field, &Field::signalCalculatingStopped, this, &MainWindow::stopThreadField, Qt::DirectConnection);
     m_Field->moveToThread(m_ThreadField);  // NOTE: field выполняется не в основном потоке
 
     m_LabelFieldAge->setText("0");
@@ -290,12 +296,12 @@ void MainWindow::setActionsEnable(bool value)
     m_ActionRun->setEnabled(value);
 }
 
-void MainWindow::deleteObjects()
+void MainWindow::deleteField()
 {
     if(m_Field)
     {
         m_Field->setRunning(false);
-
+        m_Field->StopCalculating();
         while(m_ThreadField->isRunning()) qDebug() << "Waiting ThreadField";
 
         delete m_Field;

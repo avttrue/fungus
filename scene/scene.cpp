@@ -11,7 +11,8 @@
 Scene::Scene(SceneView* parent, Field *field)
     : QGraphicsScene(parent),
       m_View(parent),
-      m_Field(field)
+      m_Field(field),
+      m_StopAdvanse(false)
 {
     m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneObjectSize();
     setObjectName(QString("SCENE[%1X%2]").
@@ -45,6 +46,8 @@ Scene::Scene(SceneView* parent, Field *field)
                            QBrush(scenecolor));
 
     setStickyFocus(true);
+
+    QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
@@ -115,9 +118,33 @@ SceneObject *Scene::focusedObject() const
     return static_cast<SceneObject*>(item->toGraphicsObject());
 }
 
-SceneView *Scene::getView() const { return m_View; }
+void Scene::slotAdvance(QSet<Cell*> cells)
+{
+    for(auto c: cells)
+    {
+        if(m_StopAdvanse) return;
+
+        auto o = c->getSceneObject();
+        if(!o) addObject(c->getIndex().x(), c->getIndex().y());
+
+        o->setUpdate(true);
+    }
+
+    auto conn = std::make_shared<QMetaObject::Connection>();
+    auto func = [=]()
+    {
+
+        QObject::disconnect(*conn);
+        m_Field->setWaitScene(false);
+    };
+    *conn = QObject::connect(this, &Scene::changed, func);
+    advance();
+}
+
 QGraphicsRectItem *Scene::borderRect() const { return m_BorderRect; }
 QHash<QPair<int, int>, SceneObject*>* Scene::objectList() const { return const_cast<QHash<QPair<int, int>, SceneObject*>*>(&m_ObjectList); }
 QSize Scene::size() const { return m_Size; }
 QColor Scene::getBackgroundColor() const { return m_BackgroundColor; }
-
+SceneView *Scene::getView() const { return m_View; }
+Field *Scene::getField() const { return m_Field; }
+void Scene::StopAdvanse() { m_StopAdvanse = true; }

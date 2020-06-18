@@ -20,7 +20,7 @@ SceneView::SceneView(QWidget *parent)
       m_Scene(nullptr)
 {
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
-    setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
     setCacheMode(QGraphicsView::CacheBackground);
@@ -114,6 +114,8 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
                 mouseSceneEvent->button() == Qt::LeftButton)
             {
+                if(m_Scene->getField()) m_Scene->getField()->setRunning(false);
+
                 if(!o)
                 {
                     auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneObjectSize());

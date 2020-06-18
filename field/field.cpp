@@ -15,7 +15,8 @@ Field::Field(int width, int height, QObject *parent)
       m_Rule(nullptr),
       m_Running(false),
       m_RunningAlways(false),
-      m_SceneBusy(false)
+      m_WaitScene(false),
+      m_StopCalculating(false)
 {
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
@@ -34,7 +35,6 @@ Cell *Field::addCell(int x, int y)
     c->setIndex({x, y});
     c->setObjectName(QString("[%1X%2]").arg(QString::number(x), QString::number(y)));
     m_Cells[x][y] = c;
-    Q_EMIT signalCellAdded(c);
     return c;
 }
 
@@ -207,29 +207,47 @@ void Field::calculate()
     qDebug() << "Field calculating started";
     while(m_Running)
     {
-        if(m_SceneBusy) continue;
+        if(m_WaitScene) continue;
 
         auto time = QDateTime::currentMSecsSinceEpoch();
 
         m_FieldInformation->stepAge();
 
-        //delay(2); // test
+        //delay(10); // test
 
-        for(auto c: m_Cells)
+        QSet<Cell*> list;
+        for(int h = 0; h < m_Height; h++)
         {
-          // TODO: выполнение правил
+            if(m_StopCalculating) break;
+
+            for(int w = 0; w < m_Width; w++)
+            {
+                if(m_StopCalculating) break;
+
+                auto c = m_Cells.at(w).at(h);
+
+                if(!c) continue;
+
+                // TODO: выполнение правил
+                auto state = c->getInformation()->getState();
+                if(state == Kernel::CellState::Dead) c->getInformation()->setState(Kernel::CellState::Alive);
+                else if(state == Kernel::CellState::Alive) c->getInformation()->setState(Kernel::CellState::Cursed);
+                else if(state == Kernel::CellState::Cursed) c->getInformation()->setState(Kernel::CellState::Dead);
+
+                list.insert(c);
+            }
         }
 
-        if(!m_RunningAlways)
-        {
-            m_Running = false;
-        }
+        if(!m_RunningAlways) m_Running = false;
 
         m_FieldInformation->setCalc(time);
+
+        m_WaitScene = true;
+        Q_EMIT signalCalculated(list);
     }
 
     qDebug() << "Field calculating stopped";
-    Q_EMIT signalFinished();
+    Q_EMIT signalCalculatingStopped();
 }
 
 CellRule *Field::getRule() const { return m_Rule; }
@@ -240,4 +258,5 @@ int Field::width() { return m_Width; }
 bool Field::getRunningAlways() const { return m_RunningAlways; }
 bool Field::isRunning() { return m_Running; }
 FieldInformation *Field::getFieldInfo() const { return m_FieldInformation; }
-void Field::setSceneBusy(bool value) { m_SceneBusy = value; }
+void Field::setWaitScene(bool value) { m_WaitScene = value; }
+void Field::StopCalculating() { m_StopCalculating = true; }

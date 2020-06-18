@@ -6,6 +6,7 @@
 class SceneObject;
 class SceneView;
 class Field;
+class Cell;
 
 class Scene : public QGraphicsScene
 {
@@ -23,6 +24,8 @@ public:
     QSize size() const;
     SceneObject* focusedObject() const;
     SceneView *getView() const;
+    Field *getField() const;
+       void StopAdvanse();
 
 private:
     SceneView* m_View;
@@ -31,6 +34,10 @@ private:
     QGraphicsRectItem* m_BorderRect;
     QHash<QPair<int, int>, SceneObject*> m_ObjectList;
     QSize m_Size;
+    bool m_StopAdvanse;                                 // остановка отрисовки перед выходом и .т.д
+
+private Q_SLOTS:
+    void slotAdvance(QSet<Cell*> cells);
 
 Q_SIGNALS:
     void signalProgress(int progress);
