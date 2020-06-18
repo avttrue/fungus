@@ -2,8 +2,10 @@
 #include "properties.h"
 #include "sceneobject.h"
 #include "sceneview.h"
+#include "helper.h"
 #include "field/field.h"
 #include "field/cell.h"
+#include "field/fieldinformation.h"
 
 #include <QDateTime>
 #include <QDebug>
@@ -12,6 +14,7 @@ Scene::Scene(SceneView* parent, Field *field)
     : QGraphicsScene(parent),
       m_View(parent),
       m_Field(field),
+      m_AverageDraw(0),
       m_StopAdvanse(false)
 {
     m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneObjectSize();
@@ -120,6 +123,9 @@ SceneObject *Scene::focusedObject() const
 
 void Scene::slotAdvance(QSet<Cell*> cells)
 {
+    if(m_StopAdvanse) return;
+
+    auto time = QDateTime::currentMSecsSinceEpoch();
     for(auto c: cells)
     {
         if(m_StopAdvanse) return;
@@ -133,9 +139,11 @@ void Scene::slotAdvance(QSet<Cell*> cells)
     auto conn = std::make_shared<QMetaObject::Connection>();
     auto func = [=]()
     {
-
         QObject::disconnect(*conn);
+        auto dt = QDateTime::currentMSecsSinceEpoch() - time;
+        m_AverageDraw = calcAverage(m_AverageDraw, m_Field->getInformation()->getAge(), dt);
         m_Field->setWaitScene(false);
+        Q_EMIT signalAdvansedTime(m_AverageDraw);
     };
     *conn = QObject::connect(this, &Scene::changed, func);
     advance();

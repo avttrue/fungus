@@ -207,6 +207,7 @@ void Field::calculate()
     qDebug() << "Field calculating started";
     while(m_Running)
     {
+        if(m_StopCalculating) break;
         if(m_WaitScene) continue;
 
         auto time = QDateTime::currentMSecsSinceEpoch();
@@ -219,7 +220,6 @@ void Field::calculate()
         for(int h = 0; h < m_Height; h++)
         {
             if(m_StopCalculating) break;
-
             for(int w = 0; w < m_Width; w++)
             {
                 if(m_StopCalculating) break;
@@ -240,7 +240,7 @@ void Field::calculate()
 
         if(!m_RunningAlways) m_Running = false;
 
-        m_FieldInformation->setCalc(time);
+        m_FieldInformation->applyAverageCalc(time);
 
         m_WaitScene = true;
         Q_EMIT signalCalculated(list);
@@ -257,6 +257,7 @@ int Field::height() { return m_Height; }
 int Field::width() { return m_Width; }
 bool Field::getRunningAlways() const { return m_RunningAlways; }
 bool Field::isRunning() { return m_Running; }
-FieldInformation *Field::getFieldInfo() const { return m_FieldInformation; }
+FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::setWaitScene(bool value) { m_WaitScene = value; }
 void Field::StopCalculating() { m_StopCalculating = true; }
+bool Field::getWaitScene() const { return m_WaitScene; }

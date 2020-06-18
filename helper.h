@@ -37,6 +37,8 @@ QString humanReadableByteCount(long long bytes, bool si = true);
  */
 QMap<QString, QVariant::Type> getPropertiesList(QObject *object);
 
+qreal calcAverage(qreal oldAverage, qint64 iteration, qint64 value);
+
 QString getSystemInfo();
 
 #endif // HELPER_H

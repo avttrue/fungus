@@ -40,8 +40,8 @@ private:
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFocusedObject;
     QLabel* m_LabelFieldAge;
-    QLabel* m_LabelFieldCalc;
     QLabel* m_LabelFieldAvCalc;
+    QLabel* m_LabelFieldAvDraw;
     QProgressBar* m_ProgressBar;
 
 private Q_SLOTS:
@@ -52,8 +52,9 @@ private Q_SLOTS:
     void slotNewProject();
     void slotStepStop();
     void slotRun();
+    void slotFocusedObjectChanged();
     void slotFieldAge(qint64 value);
-    void slotFieldCalc(qint64 value);
     void slotFieldAvCalc(qreal value);
+    void slotFieldAvDraw(qreal value);
 };
 #endif // MAINWINDOW_H

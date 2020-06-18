@@ -57,9 +57,9 @@ QString humanReadableByteCount(long long bytes, bool si)
     QString pre = si ? "kMGTPE" : "KMGTPE";
 
     return QString("%1 %2%3B").
-        arg(bytes / qPow(unit, exp), 0, 'f', 1, '0').
-        arg(pre[exp - 1]).
-        arg(si ? "" : "i");
+            arg(bytes / qPow(unit, exp), 0, 'f', 1, '0').
+            arg(pre[exp - 1]).
+            arg(si ? "" : "i");
 }
 
 QString fileToText(const QString& path, bool* ok)
@@ -96,9 +96,9 @@ QString getSystemInfo()
     if (uname(&buf) == 0)
     {
         result.append(buf.sysname).append(" ").
-            append(buf.version).append(" ").
-            append(buf.release).append(" ").
-            append(buf.machine);
+                append(buf.version).append(" ").
+                append(buf.release).append(" ").
+                append(buf.machine);
         return result;
     }
     return "unknown";
@@ -114,4 +114,13 @@ QMap<QString, QVariant::Type> getPropertiesList(QObject* object)
     }
 
     return result;
+}
+
+qreal calcAverage(qreal oldAverage, qint64 iteration, qint64 value)
+{
+    auto iteration_1 = static_cast<qreal>(iteration - 1);
+    return iteration == 1
+            ? value
+            : (oldAverage + static_cast<qreal>(value) / iteration_1) /
+              (static_cast<qreal>(iteration) / iteration_1);
 }

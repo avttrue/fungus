@@ -26,8 +26,9 @@ public:
     void calculate();
     bool getRunningAlways() const;
     void setRunningAlways(bool value);
-    FieldInformation *getFieldInfo() const;
+    FieldInformation *getInformation() const;
     void setWaitScene(bool value);
+    bool getWaitScene() const;
     void StopCalculating();
 
 protected:

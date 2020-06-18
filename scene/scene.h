@@ -34,13 +34,15 @@ private:
     QGraphicsRectItem* m_BorderRect;
     QHash<QPair<int, int>, SceneObject*> m_ObjectList;
     QSize m_Size;
-    bool m_StopAdvanse;                                 // остановка отрисовки перед выходом и .т.д
+    qreal m_AverageDraw;                                    // среднее время отрисовки сцены
+    bool m_StopAdvanse;                                     // остановка отрисовки перед выходом и .т.д
 
 private Q_SLOTS:
-    void slotAdvance(QSet<Cell*> cells);
+    void slotAdvance(QSet<Cell*> cells);                    // перерисовать сцену
 
 Q_SIGNALS:
-    void signalProgress(int progress);
+    void signalProgress(int progress);                      // прогресс создания сцены
+    void signalAdvansedTime(qint64 time);                   // сигнал статистики отрисовки
 };
 
 #endif // SCENE_H
