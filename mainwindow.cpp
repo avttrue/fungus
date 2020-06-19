@@ -319,7 +319,7 @@ void MainWindow::deleteField()
 
     if(m_ThreadField)
     {
-        m_ThreadField->deleteLater();
+        delete m_ThreadField;
         m_ThreadField = nullptr;
     }
 }
