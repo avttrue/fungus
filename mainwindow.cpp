@@ -180,8 +180,8 @@ void MainWindow::slotNewProject()
                                    tr("03#_Rule (%1):").arg(QString::number(ruleslist.count()))};
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
-     {keys.at(1), {QVariant::Int, config->SceneSize(), 2, 10000}},
-     {keys.at(2), {QVariant::Int, config->SceneObjectSize(), 1, 100}},
+     {keys.at(1), {QVariant::Int, config->SceneFieldSize(), 2, 10000}},
+     {keys.at(2), {QVariant::Int, config->SceneCellSize(), 1, 100}},
      {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
     };
 
@@ -193,10 +193,10 @@ void MainWindow::slotNewProject()
         return;
     }
 
-    config->setSceneSize(map.value(keys.at(1)).value.toInt());
-    config->setSceneObjectSize(map.value(keys.at(2)).value.toInt());
+    config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
+    config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
 
-    createField(config->SceneSize(), config->SceneSize());
+    createField(config->SceneFieldSize(), config->SceneFieldSize());
     auto currentrule = map.value(keys.at(3)).value.toString();                  // set rule
     m_Field->setRule(ruleslist.value(currentrule));                             //
     setWindowTitle(QString("%1 %2 <%3>").arg(APP_NAME, APP_VERS, currentrule)); // show rule in caption
@@ -267,7 +267,7 @@ void MainWindow::createScene()
 
     m_LabelFieldSize->setText(QString("%1X%2 [%3]").arg(QString::number(m_Field->width()),
                                                         QString::number(m_Field->height()),
-                                                        QString::number(config->SceneObjectSize())));
+                                                        QString::number(config->SceneCellSize())));
     m_LabelFieldAvDraw->setText(tr("0 ms"));
 
     QObject::connect(scene, &QGraphicsScene::focusItemChanged, this, &MainWindow::slotFocusedObjectChanged);

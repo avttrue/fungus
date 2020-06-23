@@ -18,7 +18,7 @@ Config::Config(const QString& in_AppDirectory):
 
     load();
 
-    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "Config destroyed"; });
+    QObject::connect(this, &QObject::destroyed, [=](){ qInfo() << "Config destroyed"; });
 }
 
 void Config::load()
@@ -73,13 +73,13 @@ void Config::load()
         m_Settings->setValue("Scene/ScaleStep", SCENE_SCALE_STEP);
     m_SceneScaleStep = m_Settings->value("Scene/ScaleStep").toDouble();
 
-    if(!m_Settings->contains("Scene/ObjectSize"))
-        m_Settings->setValue("Scene/ObjectSize", SCENE_OBJECT_SIZE);
-    m_SceneObjectSize = m_Settings->value("Scene/ObjectSize").toInt();
+    if(!m_Settings->contains("Scene/CellSize"))
+        m_Settings->setValue("Scene/CellSize", SCENE_CELL_SIZE);
+    m_SceneCellSize = m_Settings->value("Scene/CellSize").toInt();
 
-    if(!m_Settings->contains("Scene/Size"))
-        m_Settings->setValue("Scene/Size", SCENE_SIZE);
-    m_SceneSize = m_Settings->value("Scene/Size").toInt();
+    if(!m_Settings->contains("Scene/FieldSize"))
+        m_Settings->setValue("Scene/FieldSize", SCENE_FIELD_SIZE);
+    m_SceneFieldSize = m_Settings->value("Scene/FieldSize").toInt();
 
     if(!m_Settings->contains("Scene/ViewAntialiasing"))
         m_Settings->setValue("Scene/ViewAntialiasing", SCENE_VIEW_ANTIALIASING);
@@ -170,12 +170,12 @@ void Config::setSceneObjectDeadColor(const QString &value)
     m_Settings->setValue("Scene/ObjectDeadColor", m_SceneObjectDeadColor);
 }
 
-void Config::setSceneSize(int value)
+void Config::setSceneFieldSize(int value)
 {
-    if(m_SceneSize == value) return;
+    if(m_SceneFieldSize == value) return;
     
-    m_SceneSize = value;
-    m_Settings->setValue("Scene/Size", m_SceneSize);
+    m_SceneFieldSize = value;
+    m_Settings->setValue("Scene/FieldSize", m_SceneFieldSize);
 }
 
 void Config::setSceneObjectModifier(const Qt::KeyboardModifiers &value)
@@ -242,12 +242,12 @@ void Config::setSceneColor(const QString &value)
     m_Settings->setValue("Scene/Color", m_SceneColor);
 }
 
-void Config::setSceneObjectSize(int value)
+void Config::setSceneCellSize(int value)
 {
-    if(m_SceneObjectSize == value) return;
+    if(m_SceneCellSize == value) return;
     
-    m_SceneObjectSize = value;
-    m_Settings->setValue("Scene/ObjectSize", m_SceneObjectSize);
+    m_SceneCellSize = value;
+    m_Settings->setValue("Scene/CellSize", m_SceneCellSize);
 }
 
 void Config::setSceneScaleStep(qreal value)
@@ -311,7 +311,7 @@ QString Config::SceneObjectCurseColor() const { return m_SceneObjectCurseColor; 
 QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
 bool Config::SceneObjectAgeIndicate() const { return m_SceneObjectAgeIndicate; }
 QString Config::SceneObjectDeadColor() const { return m_SceneObjectDeadColor; }
-int Config::SceneSize() const { return m_SceneSize; }
+int Config::SceneFieldSize() const { return m_SceneFieldSize; }
 Qt::KeyboardModifiers Config::SceneObjectModifier() const { return m_SceneObjectModifier; }
 Qt::KeyboardModifiers Config::SceneZoomModifier() const { return m_SceneZoomModifier; }
 int Config::SceneBspTreeDepth() const { return m_SceneBspTreeDepth; }
@@ -320,7 +320,7 @@ bool Config::ScenePreFill() const { return m_ScenePreFill; }
 QString Config::SceneBorderColor() const { return m_SceneBorderColor; }
 bool Config::SceneViewAntialiasing() const { return m_SceneViewAntialiasing; }
 QString Config::SceneColor() const { return m_SceneColor; }
-int Config::SceneObjectSize() const { return m_SceneObjectSize; }
+int Config::SceneCellSize() const { return m_SceneCellSize; }
 qreal Config::SceneScaleStep() const { return m_SceneScaleStep; }
 QString Config::SceneBgColor() const { return m_SceneBgColor; }
 bool Config::SIMetric() const { return m_SI_metric; }

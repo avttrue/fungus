@@ -32,8 +32,8 @@ public:
     void setSceneBgColor(const QString &value);
     qreal SceneScaleStep() const;
     void setSceneScaleStep(qreal value);
-    int SceneObjectSize() const;
-    void setSceneObjectSize(int value);
+    int SceneCellSize() const;
+    void setSceneCellSize(int value);
     QString SceneColor() const;
     void setSceneColor(const QString &value);
     bool SceneViewAntialiasing() const;
@@ -50,8 +50,8 @@ public:
     void setSceneZoomModifier(const Qt::KeyboardModifiers &value);
     Qt::KeyboardModifiers SceneObjectModifier() const;
     void setSceneObjectModifier(const Qt::KeyboardModifiers &value);
-    int SceneSize() const;
-    void setSceneSize(int value);
+    int SceneFieldSize() const;
+    void setSceneFieldSize(int value);
     QString SceneObjectDeadColor() const;
     void setSceneObjectDeadColor(const QString &value);
     bool SceneObjectAgeIndicate() const;
@@ -83,9 +83,9 @@ private:
     qreal m_SceneScaleStep;                     // шаг масштабирования сцены
     int m_LogSize;                              // количество строк лога событий
     int m_ButtonSize;                           // размеры кнопок интерфейса    
-    int m_SceneObjectSize;                      // размер объекта сцены
+    int m_SceneCellSize;                        // размер объекта сцены
     int m_SceneBspTreeDepth;                    // глубина BspTreeIndex в сцене (0 - авто, 10 - максимум)
-    int m_SceneSize;                            // размер сцены при создании
+    int m_SceneFieldSize;                       // размер сцены при создании
     int m_CellInfoWindowHeight;                 // размеры окна информации о ячейке
     int m_CellInfoWindowWidth;                  // размеры окна информации о ячейке
     Qt::KeyboardModifiers m_SceneZoomModifier;  // модификатор управления зумом

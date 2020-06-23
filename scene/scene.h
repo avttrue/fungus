@@ -14,15 +14,13 @@ class Scene : public QGraphicsScene
 public:
     Scene(SceneView* parent, Field* field);
     SceneObject* addObject(int x, int y);
-    void removeObject(SceneObject* object);
-    void removeObject(int x, int y);
     void fill();
     QColor getBackgroundColor() const;
     void setBackgroundColor(const QColor &value);
     QGraphicsRectItem *borderRect() const;
     QHash<QPair<int, int>, SceneObject*>* objectList() const;
     QSize size() const;
-    SceneObject* focusedObject() const;
+    SceneObject *focusedObject() const;
     SceneView *getView() const;
     Field *getField() const;
        void StopAdvanse();

@@ -11,14 +11,15 @@
 #include <QPainter>
 
 SceneObject::SceneObject(Scene* scene, QGraphicsItem* parent)
-    : QGraphicsObject(parent),
+    : QGraphicsItem(parent),
       m_Scene(scene),
       m_Cell(nullptr),
-      m_Size(config->SceneObjectSize()),
+      m_Size(config->SceneCellSize()),
       m_Index(-1, -1),
       m_Update(true)
 {
     setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable);
+    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
     //QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "SceneObject" << objectName() <<" destroyed"; });
     //qDebug() << "SceneObject created";
@@ -68,6 +69,16 @@ void SceneObject::advance(int step)
 
     m_Update = false;
     update();
+}
+
+QString SceneObject::getName() const
+{
+    return m_Name;
+}
+
+void SceneObject::setName(const QString &Name)
+{
+    m_Name = Name;
 }
 
 Scene *SceneObject::getScene() const { return m_Scene; }

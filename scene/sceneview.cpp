@@ -20,7 +20,7 @@ SceneView::SceneView(QWidget *parent)
       m_Scene(nullptr)
 {
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
-    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
     setCacheMode(QGraphicsView::CacheBackground);
@@ -100,7 +100,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
-            auto o = static_cast<SceneObject*>(item->toGraphicsObject());
+            auto o = static_cast<SceneObject*>(item);
 
             // вывод сообщения об отсутствии SceneObject
             if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
@@ -118,11 +118,11 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
 
                 if(!o)
                 {
-                    auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneObjectSize());
-                    auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneObjectSize());
+                    auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneCellSize());
+                    auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneCellSize());
                     o = m_Scene->addObject(x, y);
                     o->getCell()->clear();
-                    qDebug() << o->objectName() << "created manually";
+                    qDebug() << o->getName() << "created manually";
                 }
                 m_Scene->setFocusItem(o);
                 m_Scene->clearSelection();

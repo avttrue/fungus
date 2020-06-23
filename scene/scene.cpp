@@ -17,7 +17,7 @@ Scene::Scene(SceneView* parent, Field *field)
       m_AverageDraw(0),
       m_StopAdvanse(false)
 {
-    m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneObjectSize();
+    m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneCellSize();
     setObjectName(QString("SCENE[%1X%2]").
                   arg(QString::number(m_Field->width()), QString::number(m_Field->height())));
 
@@ -43,8 +43,8 @@ Scene::Scene(SceneView* parent, Field *field)
     else scenebordercolor = QColor(SCENE_BORDER_COLOR);
 
     m_BorderRect = addRect(0, 0,
-                           m_Field->width() * config->SceneObjectSize(),
-                           m_Field->height() * config->SceneObjectSize(),
+                           m_Field->width() * config->SceneCellSize(),
+                           m_Field->height() * config->SceneCellSize(),
                            QPen(scenebordercolor, 0),
                            QBrush(scenecolor));
 
@@ -62,7 +62,7 @@ SceneObject *Scene::addObject(int x, int y)
     if(!c) c = m_Field->addCell(x, y);
 
     auto o = new SceneObject(this);
-    o->setObjectName(QString("SCENE_OBJECT[%1.%2]").arg(QString::number(x), QString::number(y)));
+    o->setName(QString("SCENE_ITEM[%1.%2]").arg(QString::number(x), QString::number(y)));
     o->setIndex({x, y});
     o->setCell(c);
     c->setSceneObject(o);
@@ -70,25 +70,10 @@ SceneObject *Scene::addObject(int x, int y)
     addItem(o);
     m_ObjectList.insert({x, y}, o);
 
-    o->setPos(o->mapToParent(x * config->SceneObjectSize(), y * config->SceneObjectSize()));
+    o->setPos(o->mapToParent(x * config->SceneCellSize(), y * config->SceneCellSize()));
 
     //qDebug() << "Object added:" << o->objectName() << ", count:" << m_ObjectList.count();
     return o;
-}
-
-void Scene::removeObject(SceneObject *object)
-{
-    m_ObjectList.remove({object->index().x(), object->index().y()});
-    QObject::connect(object, &QObject::destroyed,
-                     [=](){ qDebug() <<"SceneObject" << object->objectName() <<": destroyed"; });
-    removeItem(object);
-    object->deleteLater();
-}
-
-void Scene::removeObject(int x, int y)
-{
-    auto o = m_ObjectList.value({x, y});
-    removeObject(o);
 }
 
 void Scene::fill()
@@ -118,7 +103,7 @@ SceneObject *Scene::focusedObject() const
     auto item = focusItem();
     if(!item) return nullptr;
 
-    return static_cast<SceneObject*>(item->toGraphicsObject());
+    return static_cast<SceneObject*>(item);
 }
 
 void Scene::slotAdvance(QSet<Cell*> cells)
