@@ -3,7 +3,7 @@
 #include "helper.h"
 #include "controls.h"
 #include "scene/scene.h"
-#include "scene/sceneobject.h"
+#include "scene/sceneItem.h"
 #include "scene/sceneview.h"
 #include "graphicsviewzoomer.h"
 #include "dialogs/dialogvalueslist.h"
@@ -235,7 +235,7 @@ void MainWindow::slotFocusedObjectChanged()
     auto scene = m_SceneView->getScene();
     if(!scene) return;
 
-    auto o = scene->focusedObject();
+    auto o = scene->focusedItem();
     if(o) m_LabelFocusedObject->setText(o->getCell()->objectName());
     else m_LabelFocusedObject->setText("-");
 }
@@ -401,7 +401,7 @@ void MainWindow::slotSceneZoomIn()
     auto factor = config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1);
     auto scene = m_SceneView->getScene();
     m_SceneView->zoomer()->Zoom(factor, true);
-    if(scene && scene->focusedObject()) m_SceneView->centerOn(scene->focusedObject());
+    if(scene && scene->focusedItem()) m_SceneView->centerOn(scene->focusedItem());
 }
 
 void MainWindow::slotSceneZoomOut()
@@ -409,14 +409,14 @@ void MainWindow::slotSceneZoomOut()
     auto factor = 1 / (config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1));
     auto scene = m_SceneView->getScene();
     m_SceneView->zoomer()->Zoom(factor, true);
-    if(scene && scene->focusedObject()) m_SceneView->centerOn(scene->focusedObject());
+    if(scene && scene->focusedItem()) m_SceneView->centerOn(scene->focusedItem());
 }
 
 void MainWindow::slotZoomUndoScene()
 {
     m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET);
-    if(m_SceneView->getScene()->focusedObject())
-        m_SceneView->centerOn(m_SceneView->getScene()->focusedObject());
+    if(m_SceneView->getScene()->focusedItem())
+        m_SceneView->centerOn(m_SceneView->getScene()->focusedItem());
 }
 
 void MainWindow::slotFieldAvCalc(qreal value) { m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1))); }

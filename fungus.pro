@@ -30,7 +30,7 @@ SOURCES += \
     properties.cpp \
     field/cell.cpp \
     scene/scene.cpp \
-    scene/sceneobject.cpp \
+    scene/sceneItem.cpp \
     scene/sceneview.cpp
 
 HEADERS += \
@@ -49,8 +49,8 @@ HEADERS += \
     mainwindow.h \
     properties.h \
     field/cell.h \
-    scene/sceneobject.h \
     scene/scene.h \
+    scene/sceneItem.h \
     scene/sceneview.h \
     wait.h
 

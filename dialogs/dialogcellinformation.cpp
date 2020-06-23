@@ -8,7 +8,7 @@
 #include "field/cellinformation.h"
 #include "field/fieldservice.h"
 #include "scene/scene.h"
-#include "scene/sceneobject.h"
+#include "scene/sceneItem.h"
 #include "scene/sceneview.h"
 
 #include <QApplication>
@@ -170,7 +170,7 @@ void DialogCellInformation::slotSaveContent()
 
 void DialogCellInformation::slotShowPoint()
 {
-    auto o = m_Cell->getSceneObject();
+    auto o = m_Cell->getSceneItem();
     o->getScene()->getView()->findObjectBySell(m_Cell);
 }
 

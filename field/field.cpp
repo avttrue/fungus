@@ -3,6 +3,7 @@
 #include "cellinformation.h"
 #include "cellrule.h"
 #include "fieldinformation.h"
+#include "scene/sceneItem.h"
 #include "wait.h" // test
 
 #include <QDateTime>
@@ -216,7 +217,6 @@ void Field::calculate()
 
         //delay(10); // test
 
-        QSet<Cell*> list;
         for(int h = 0; h < m_Height; h++)
         {
             if(m_StopCalculating) break;
@@ -230,11 +230,22 @@ void Field::calculate()
 
                 // TODO: выполнение правил
                 auto state = c->getInformation()->getState();
-                if(state == Kernel::CellState::Dead) c->getInformation()->setState(Kernel::CellState::Alive);
-                else if(state == Kernel::CellState::Alive) c->getInformation()->setState(Kernel::CellState::Cursed);
-                else if(state == Kernel::CellState::Cursed) c->getInformation()->setState(Kernel::CellState::Dead);
+                if(state == Kernel::CellState::Dead)
+                {
+                    c->getInformation()->setState(Kernel::CellState::Alive);
+                    c->getSceneItem()->setUpdate(true);
+                }
+                else if(state == Kernel::CellState::Alive)
+                {
+                    c->getInformation()->setState(Kernel::CellState::Cursed);
+                    c->getSceneItem()->setUpdate(true);
+                }
+                else if(state == Kernel::CellState::Cursed)
+                {
+                    c->getInformation()->setState(Kernel::CellState::Dead);
+                    c->getSceneItem()->setUpdate(true);
+                }
 
-                list.insert(c);
             }
         }
 
@@ -243,7 +254,7 @@ void Field::calculate()
         m_FieldInformation->applyAverageCalc(time);
 
         m_WaitScene = true;
-        Q_EMIT signalCalculated(list);
+        Q_EMIT signalCalculated();
     }
 
     qDebug() << "Field calculating stopped";

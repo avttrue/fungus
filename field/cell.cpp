@@ -4,7 +4,7 @@
 #include "field.h"
 
 #include <QDebug>
-#include <scene/sceneobject.h>
+#include <scene/sceneItem.h>
 
 Cell::Cell(QObject *parent)
     : QObject(parent),
@@ -24,8 +24,8 @@ void Cell::clear()
     m_Information->setGeneration(0);
 }
 
-SceneObject *Cell::getSceneObject() const { return m_SceneObject; }
-void Cell::setSceneObject(SceneObject *value) { m_SceneObject = value; }
+SceneItem *Cell::getSceneItem() const { return m_SceneObject; }
+void Cell::setSceneObject(SceneItem *value) { m_SceneObject = value; }
 QPoint Cell::getIndex() { return m_Index; }
 void Cell::setIndex(const QPoint &value) { m_Index = value; }
 CellInformation *Cell::getInformation() { return m_Information; }

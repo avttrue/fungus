@@ -1,15 +1,15 @@
-#ifndef SCENEOBJECT_H
-#define SCENEOBJECT_H
+#ifndef SCENEITEM_H
+#define SCENEITEM_H
 
 #include <QGraphicsItem>
 
 class Cell;
 class Scene;
 
-class SceneObject : public QGraphicsItem
+class SceneItem : public QGraphicsItem
 {
 public:
-    SceneObject(Scene *scene, QGraphicsItem *parent = nullptr);
+    SceneItem(Scene *scene, QGraphicsItem *parent = nullptr);
     int size() const;
     QPoint index() const;
     void setIndex(const QPoint &value);
@@ -23,7 +23,7 @@ public:
 protected:
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
     void advance(int step) override;
 
 private:
@@ -35,4 +35,4 @@ private:
     QString m_Name;
 };
 
-#endif // SCENEOBJECT_H
+#endif // SCENEITEM_H

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QPoint>
 
-class SceneObject;
+class SceneItem;
 class CellInformation;
 class Field;
 
@@ -14,8 +14,8 @@ class Cell : public QObject
 
 public:
     explicit Cell(QObject *parent = nullptr);
-    SceneObject *getSceneObject() const;
-    void setSceneObject(SceneObject *value);
+    SceneItem *getSceneItem() const;
+    void setSceneObject(SceneItem *value);
     QPoint getIndex();
     void setIndex(const QPoint &value);
     CellInformation* getInformation();
@@ -26,7 +26,7 @@ public:
 private:
     Field* m_Field;
     QPoint m_Index;
-    SceneObject* m_SceneObject;
+    SceneItem* m_SceneObject;
     CellInformation* m_Information;
 
 

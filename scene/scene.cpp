@@ -1,6 +1,6 @@
 #include "scene.h"
 #include "properties.h"
-#include "sceneobject.h"
+#include "sceneItem.h"
 #include "sceneview.h"
 #include "helper.h"
 #include "field/field.h"
@@ -56,40 +56,38 @@ Scene::Scene(SceneView* parent, Field *field)
     qDebug() << objectName() << "created";
 }
 
-SceneObject *Scene::addObject(int x, int y)
+SceneItem *Scene::addSceneItem(int x, int y)
 {
     auto c = m_Field->cells()->at(x).at(y);
-    if(!c) c = m_Field->addCell(x, y);
+    if(!c) c = m_Field->addCell(x, y); // если автозаполнение выключено
 
-    auto o = new SceneObject(this);
+    auto o = new SceneItem(this);
     o->setName(QString("SCENE_ITEM[%1.%2]").arg(QString::number(x), QString::number(y)));
     o->setIndex({x, y});
     o->setCell(c);
     c->setSceneObject(o);
 
     addItem(o);
-    m_ObjectList.insert({x, y}, o);
+    m_ItemsList.insert({x, y}, o);
 
     o->setPos(o->mapToParent(x * config->SceneCellSize(), y * config->SceneCellSize()));
 
-    //qDebug() << "Object added:" << o->objectName() << ", count:" << m_ObjectList.count();
     return o;
 }
 
 void Scene::fill()
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
-    m_ObjectList.reserve(m_Field->width() * m_Field->height());
+    m_ItemsList.reserve(m_Field->width() * m_Field->height());
     for(int h = 0; h < m_Field->height(); h++)
     {
         for(int w = 0; w < m_Field->width(); w++)
         {
-            addObject(w, h);
+            addSceneItem(w, h);
         }
         Q_EMIT signalProgress(h + 1);
     }
-    qDebug() << "Scene" << objectName() << "filled in"
-             << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    qDebug() << "Scene" << objectName() << "filled in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 }
 
 void Scene::setBackgroundColor(const QColor &value)
@@ -98,26 +96,17 @@ void Scene::setBackgroundColor(const QColor &value)
     setBackgroundBrush(m_BackgroundColor);
 }
 
-SceneObject *Scene::focusedObject() const
+SceneItem *Scene::focusedItem() const
 {
     auto item = focusItem();
     if(!item) return nullptr;
 
-    return static_cast<SceneObject*>(item);
+    return static_cast<SceneItem*>(item);
 }
 
-void Scene::slotAdvance(QSet<Cell*> cells)
+void Scene::slotAdvance()
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
-    for(auto c: cells)
-    {
-        if(m_StopAdvanse) break;
-
-        auto o = c->getSceneObject();
-        if(!o) addObject(c->getIndex().x(), c->getIndex().y());
-
-        o->setUpdate(true);
-    }
 
     if(m_StopAdvanse) return;
 
@@ -132,6 +121,7 @@ void Scene::slotAdvance(QSet<Cell*> cells)
         if(m_AverageDraw < new_ad || m_AverageDraw > new_ad)
         {
             m_AverageDraw = new_ad;
+
             Q_EMIT signalAdvansedTime(m_AverageDraw);
         }
     };
@@ -140,7 +130,7 @@ void Scene::slotAdvance(QSet<Cell*> cells)
 }
 
 QGraphicsRectItem *Scene::borderRect() const { return m_BorderRect; }
-QHash<QPair<int, int>, SceneObject*>* Scene::objectList() const { return const_cast<QHash<QPair<int, int>, SceneObject*>*>(&m_ObjectList); }
+QHash<QPair<int, int>, SceneItem*>* Scene::itemsList() const { return const_cast<QHash<QPair<int, int>, SceneItem*>*>(&m_ItemsList); }
 QSize Scene::size() const { return m_Size; }
 QColor Scene::getBackgroundColor() const { return m_BackgroundColor; }
 SceneView *Scene::getView() const { return m_View; }

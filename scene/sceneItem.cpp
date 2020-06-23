@@ -1,4 +1,4 @@
-#include "sceneobject.h"
+#include "sceneItem.h"
 #include "scene.h"
 #include "properties.h"
 #include "field/cell.h"
@@ -10,7 +10,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
-SceneObject::SceneObject(Scene* scene, QGraphicsItem* parent)
+SceneItem::SceneItem(Scene* scene, QGraphicsItem* parent)
     : QGraphicsItem(parent),
       m_Scene(scene),
       m_Cell(nullptr),
@@ -25,22 +25,24 @@ SceneObject::SceneObject(Scene* scene, QGraphicsItem* parent)
     //qDebug() << "SceneObject created";
 }
 
-QPainterPath SceneObject::shape() const
+QPainterPath SceneItem::shape() const
 {
     QPainterPath path;
     path.addRect(0, 0, m_Size, m_Size);
     return path;
 }
 
-void SceneObject::paint(QPainter *painter,
-                        const QStyleOptionGraphicsItem*,
-                        QWidget*)
+void SceneItem::paint(QPainter *painter,
+                        const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     QColor color;
 
     if(isSelected()) color = QColor(config->SceneSelectColor());
 
-    // alive
+    // dead
     else if(m_Cell->getInformation()->getState() == Kernel::CellState::Dead)
         color = QColor(config->SceneObjectDeadColor());
 
@@ -61,7 +63,7 @@ void SceneObject::paint(QPainter *painter,
     painter->fillPath(shape(), color);
 }
 
-void SceneObject::advance(int step)
+void SceneItem::advance(int step)
 {
     if (!step) return;
 
@@ -71,22 +73,22 @@ void SceneObject::advance(int step)
     update();
 }
 
-QString SceneObject::getName() const
+QString SceneItem::getName() const
 {
     return m_Name;
 }
 
-void SceneObject::setName(const QString &Name)
+void SceneItem::setName(const QString &Name)
 {
     m_Name = Name;
 }
 
-Scene *SceneObject::getScene() const { return m_Scene; }
-void SceneObject::setUpdate(bool value) { m_Update = value; }
-QRectF SceneObject::boundingRect() const { return QRectF(0, 0, m_Size, m_Size); }
-Cell *SceneObject::getCell() const { return m_Cell; }
-void SceneObject::setCell(Cell *Cell) { m_Cell = Cell; }
-void SceneObject::setIndex(const QPoint &value) { m_Index = value; }
-QPoint SceneObject::index() const { return m_Index; }
-int SceneObject::size() const { return m_Size; }
+Scene *SceneItem::getScene() const { return m_Scene; }
+void SceneItem::setUpdate(bool value) { m_Update = value; }
+QRectF SceneItem::boundingRect() const { return QRectF(0, 0, m_Size, m_Size); }
+Cell *SceneItem::getCell() const { return m_Cell; }
+void SceneItem::setCell(Cell *Cell) { m_Cell = Cell; }
+void SceneItem::setIndex(const QPoint &value) { m_Index = value; }
+QPoint SceneItem::index() const { return m_Index; }
+int SceneItem::size() const { return m_Size; }
 

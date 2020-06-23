@@ -5,7 +5,7 @@
 
 class Field;
 class SceneView;
-class SceneObject;
+class SceneItem;
 class QLabel;
 class QProgressBar;
 class QThread;
