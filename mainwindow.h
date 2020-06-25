@@ -23,9 +23,11 @@ protected:
     void loadGui();
     void createScene();
     void createField(int w, int h);
+    void fillField();
     void setActionsEnable(bool value);
     void deleteField();
     void stopThreadField();
+
 
 private:
     QThread* m_ThreadField;
@@ -52,7 +54,6 @@ private Q_SLOTS:
     void slotNewProject();
     void slotStepStop();
     void slotRun();
-    void slotFocusedObjectChanged();
     void slotFieldAge(qint64 value);
     void slotFieldAvCalc(qreal value);
     void slotFieldAvDraw(qreal value);

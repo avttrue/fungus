@@ -34,14 +34,8 @@ public:
     void setSceneScaleStep(qreal value);
     int SceneCellSize() const;
     void setSceneCellSize(int value);
-    QString SceneColor() const;
-    void setSceneColor(const QString &value);
     bool SceneViewAntialiasing() const;
     void setSceneViewAntialiasing(bool value);
-    QString SceneBorderColor() const;
-    void setSceneBorderColor(const QString &value);
-    bool ScenePreFill() const;
-    void setScenePreFill(bool value);
     bool SceneBspTreeIndex() const;
     void setSceneBspTreeIndex(bool value);
     int SceneBspTreeDepth() const;
@@ -52,18 +46,20 @@ public:
     void setSceneObjectModifier(const Qt::KeyboardModifiers &value);
     int SceneFieldSize() const;
     void setSceneFieldSize(int value);
-    QString SceneObjectDeadColor() const;
-    void setSceneObjectDeadColor(const QString &value);
+    QString SceneCellDeadColor() const;
+    void setSceneCellDeadColor(const QString &value);
     bool SceneObjectAgeIndicate() const;
     void setSceneObjectAgeIndicate(bool value);
     QString SceneSelectColor() const;
     void setSceneSelectColor(const QString &value);
-    QString SceneObjectCurseColor() const;
-    void setSceneObjectCurseColor(const QString &value);
+    QString SceneCellCurseColor() const;
+    void setSceneCellCurseColor(const QString &value);
     int CellInfoWindowHeight() const;
     void setCellInfoWindowHeight(int value);
     int CellInfoWindowWidth() const;
     void setCellInfoWindowWidth(int value);
+    int SceneCalculatingMinPause() const;
+    void setSceneCalculatingMinPause(int value);
 
 protected:
     void load();
@@ -76,11 +72,10 @@ private:
     QString m_LastDir;                          // путь до последнего каталога
     QString m_SceneSelectColor;                 // цвет выбранного объекта сцены
     QString m_SceneBgColor;                     // цвет задника сцены
-    QString m_SceneColor;                       // цвет сцены
-    QString m_SceneBorderColor;                 // цвет рамок сцены
-    QString m_SceneObjectDeadColor;             // цвет мёртвой ячейки
-    QString m_SceneObjectCurseColor;            // цвет отравленной ячейки
+    QString m_SceneCellDeadColor;               // цвет мёртвой ячейки
+    QString m_SceneCellCurseColor;              // цвет отравленной ячейки
     qreal m_SceneScaleStep;                     // шаг масштабирования сцены
+    int m_SceneCalculatingMinPause;             // минимальная допустимая пауза при обсчёте Field
     int m_LogSize;                              // количество строк лога событий
     int m_ButtonSize;                           // размеры кнопок интерфейса    
     int m_SceneCellSize;                        // размер объекта сцены
@@ -93,7 +88,6 @@ private:
     bool m_SceneObjectAgeIndicate;              // отображать возраст живых ячеек
     bool m_SI_metric;                           // использовать систему СИ в отображении размеров файлов
     bool m_SceneViewAntialiasing;               // SceneView: Antialiasing
-    bool m_ScenePreFill;                        // удалить автозаполнение ячейками сцены (эксперимент)
     bool m_SceneBspTreeIndex;                   // использовать BspTreeIndex в сцене
 };
 

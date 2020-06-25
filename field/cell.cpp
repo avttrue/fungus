@@ -9,8 +9,7 @@
 Cell::Cell(QObject *parent)
     : QObject(parent),
     m_Field(nullptr),
-    m_Index({-1, -1}),
-    m_SceneObject(nullptr)
+    m_Index({-1, -1})
 {
     m_Information = new CellInformation(this);
     //QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "Cell"<< objectName() <<"destroyed"; });
@@ -24,8 +23,6 @@ void Cell::clear()
     m_Information->setGeneration(0);
 }
 
-SceneItem *Cell::getSceneItem() const { return m_SceneObject; }
-void Cell::setSceneObject(SceneItem *value) { m_SceneObject = value; }
 QPoint Cell::getIndex() { return m_Index; }
 void Cell::setIndex(const QPoint &value) { m_Index = value; }
 CellInformation *Cell::getInformation() { return m_Information; }

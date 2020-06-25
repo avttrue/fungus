@@ -13,30 +13,30 @@ class Scene : public QGraphicsScene
     Q_OBJECT
 public:
     Scene(SceneView* parent, Field* field);
-    SceneItem* addSceneItem(int x, int y);
-    void fill();
+    //SceneItem* addSceneItem(int x, int y);
+    //void fill();
+    void addSceneItem();
     QColor getBackgroundColor() const;
     void setBackgroundColor(const QColor &value);
     QGraphicsRectItem *borderRect() const;
-    QHash<QPair<int, int>, SceneItem*>* itemsList() const;
     QSize size() const;
-    SceneItem *focusedItem() const;
     SceneView *getView() const;
     Field *getField() const;
     void StopAdvanse();
+    SceneItem *getSceneItem() const;
 
 private:
     SceneView* m_View;
     Field* m_Field;
+    SceneItem* m_SceneItem;
     QColor m_BackgroundColor;
     QGraphicsRectItem* m_BorderRect;
-    QHash<QPair<int, int>, SceneItem*> m_ItemsList;
     QSize m_Size;
     qreal m_AverageDraw;                                    // среднее время отрисовки сцены
     bool m_StopAdvanse;                                     // остановка отрисовки перед выходом и .т.д
 
 private Q_SLOTS:
-    void slotAdvance();                                     // перерисовать сцену
+    void slotAdvance(const QPixmap& pixmap);                       // перерисовать сцену
 
 Q_SIGNALS:
     void signalProgress(int progress);                      // прогресс создания сцены

@@ -17,7 +17,7 @@ Scene::Scene(SceneView* parent, Field *field)
       m_AverageDraw(0),
       m_StopAdvanse(false)
 {
-    m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneCellSize();
+    m_Size = QSize(m_Field->width() * config->SceneCellSize(), m_Field->height()) * config->SceneCellSize();
     setObjectName(QString("SCENE[%1X%2]").
                   arg(QString::number(m_Field->width()), QString::number(m_Field->height())));
 
@@ -32,23 +32,7 @@ Scene::Scene(SceneView* parent, Field *field)
         setBackgroundColor(QColor(config->SceneBgColor()));
     else setBackgroundColor(QColor(SCENE_BG_COLOR));
 
-    QColor scenecolor;
-    if(QColor::isValidColor(config->SceneColor()))
-        scenecolor = QColor(config->SceneColor());
-    else scenecolor = QColor(SCENE_COLOR);
-
-    QColor scenebordercolor;
-    if(QColor::isValidColor(config->SceneBorderColor()))
-        scenebordercolor = QColor(config->SceneBorderColor());
-    else scenebordercolor = QColor(SCENE_BORDER_COLOR);
-
-    m_BorderRect = addRect(0, 0,
-                           m_Field->width() * config->SceneCellSize(),
-                           m_Field->height() * config->SceneCellSize(),
-                           QPen(scenebordercolor, 0),
-                           QBrush(scenecolor));
-
-    setStickyFocus(true);
+    addSceneItem();
 
     QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
 
@@ -56,38 +40,11 @@ Scene::Scene(SceneView* parent, Field *field)
     qDebug() << objectName() << "created";
 }
 
-SceneItem *Scene::addSceneItem(int x, int y)
+void Scene::addSceneItem()
 {
-    auto c = m_Field->cells()->at(x).at(y);
-    if(!c) c = m_Field->addCell(x, y); // если автозаполнение выключено
-
-    auto o = new SceneItem(this);
-    o->setName(QString("SCENE_ITEM[%1.%2]").arg(QString::number(x), QString::number(y)));
-    o->setIndex({x, y});
-    o->setCell(c);
-    c->setSceneObject(o);
-
-    addItem(o);
-    m_ItemsList.insert({x, y}, o);
-
-    o->setPos(o->mapToParent(x * config->SceneCellSize(), y * config->SceneCellSize()));
-
-    return o;
-}
-
-void Scene::fill()
-{
-    auto time = QDateTime::currentMSecsSinceEpoch();
-    m_ItemsList.reserve(m_Field->width() * m_Field->height());
-    for(int h = 0; h < m_Field->height(); h++)
-    {
-        for(int w = 0; w < m_Field->width(); w++)
-        {
-            addSceneItem(w, h);
-        }
-        Q_EMIT signalProgress(h + 1);
-    }
-    qDebug() << "Scene" << objectName() << "filled in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    m_SceneItem = new SceneItem(this);
+    m_SceneItem->setPos(m_SceneItem->mapToParent(0, 0));
+    addItem(m_SceneItem);
 }
 
 void Scene::setBackgroundColor(const QColor &value)
@@ -96,19 +53,13 @@ void Scene::setBackgroundColor(const QColor &value)
     setBackgroundBrush(m_BackgroundColor);
 }
 
-SceneItem *Scene::focusedItem() const
-{
-    auto item = focusItem();
-    if(!item) return nullptr;
-
-    return static_cast<SceneItem*>(item);
-}
-
-void Scene::slotAdvance()
+void Scene::slotAdvance(const QPixmap &pixmap)
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
 
     if(m_StopAdvanse) return;
+
+    m_SceneItem->setPixmap(pixmap);
 
     auto conn = std::make_shared<QMetaObject::Connection>();
     auto func = [=]()
@@ -130,9 +81,9 @@ void Scene::slotAdvance()
 }
 
 QGraphicsRectItem *Scene::borderRect() const { return m_BorderRect; }
-QHash<QPair<int, int>, SceneItem*>* Scene::itemsList() const { return const_cast<QHash<QPair<int, int>, SceneItem*>*>(&m_ItemsList); }
 QSize Scene::size() const { return m_Size; }
 QColor Scene::getBackgroundColor() const { return m_BackgroundColor; }
 SceneView *Scene::getView() const { return m_View; }
 Field *Scene::getField() const { return m_Field; }
 void Scene::StopAdvanse() { m_StopAdvanse = true; }
+SceneItem *Scene::getSceneItem() const { return m_SceneItem; }

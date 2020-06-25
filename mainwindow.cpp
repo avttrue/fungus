@@ -230,47 +230,17 @@ void MainWindow::slotRun()
     }
 }
 
-void MainWindow::slotFocusedObjectChanged()
-{
-    auto scene = m_SceneView->getScene();
-    if(!scene) return;
-
-    auto o = scene->focusedItem();
-    if(o) m_LabelFocusedObject->setText(o->getCell()->objectName());
-    else m_LabelFocusedObject->setText("-");
-}
-
 void MainWindow::createScene()
 {
     auto scene = m_SceneView->addScene(m_Field);
-
-    if(config->ScenePreFill())
-    {
-        m_ProgressBar->setRange(0, m_Field->height());
-        m_ProgressBar->setValue(0);
-        m_ProgressBar->show();
-
-        auto conn = std::make_shared<QMetaObject::Connection>();
-        auto func = [=](int step)
-        {
-            if(step < m_Field->height()) m_ProgressBar->setValue(step);
-            else
-            {
-                m_ProgressBar->hide();
-                qDebug() << "Scene filling disconnection:" << QObject::disconnect(*conn);
-            }
-        };
-        *conn = QObject::connect(scene, &Scene::signalProgress, func);
-
-        m_SceneView->fill();
-    }
+    scene->addSceneItem();
 
     m_LabelFieldSize->setText(QString("%1X%2 [%3]").arg(QString::number(m_Field->width()),
                                                         QString::number(m_Field->height()),
                                                         QString::number(config->SceneCellSize())));
     m_LabelFieldAvDraw->setText(tr("0 ms"));
 
-    QObject::connect(scene, &QGraphicsScene::focusItemChanged, this, &MainWindow::slotFocusedObjectChanged);
+    //    QObject::connect(scene, &QGraphicsScene::focusItemChanged, this, &MainWindow::slotFocusedObjectChanged);
     QObject::connect(scene, &Scene::signalAdvansedTime, this, &MainWindow::slotFieldAvDraw);
 }
 
@@ -285,6 +255,7 @@ void MainWindow::createField(int w, int h)
     QObject::connect(m_ThreadField, &QObject::destroyed, [=](){ qDebug() << "ThreadField destroyed"; });
 
     m_Field = new Field(w, h);
+    fillField();
 
     QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
     QObject::connect(m_Field, &Field::signalCalculatingStopped, this, &MainWindow::stopThreadField, Qt::DirectConnection);
@@ -294,6 +265,27 @@ void MainWindow::createField(int w, int h)
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAgeChanged, this, &MainWindow::slotFieldAge);
     m_LabelFieldAvCalc->setText(tr("0 ms"));
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChanged, this, &MainWindow::slotFieldAvCalc);
+}
+
+void MainWindow::fillField()
+{
+    m_ProgressBar->setRange(0, m_Field->height());
+    m_ProgressBar->setValue(0);
+    m_ProgressBar->show();
+
+    auto conn = std::make_shared<QMetaObject::Connection>();
+    auto func = [=](int step)
+    {
+        if(step < m_Field->height()) m_ProgressBar->setValue(step);
+        else
+        {
+            m_ProgressBar->hide();
+            qDebug() << "Field filling disconnection:" << QObject::disconnect(*conn);
+        }
+    };
+    *conn = QObject::connect(m_Field, &Field::signalFillingProgress, func);
+
+    m_Field->fill();
 }
 
 void MainWindow::setActionsEnable(bool value)
@@ -338,18 +330,14 @@ void MainWindow::slotSetup()
                                    tr("03#_Event log size (0 = maximum)"),
                                    tr("04#_Buttons size"),
                                    tr("05#_Scene options"),
-                                   tr("06#_Scene BspTree indexing"),
-                                   tr("07#_Scene antialiasing"),
-                                   tr("08#_Scene background color"),
-                                   tr("09#_Scene border color"),
-                                   tr("10#_Scene color"),
-                                   tr("11#_Scene selection color"),//
-                                   tr("12#_Scene zoom factor"),
-                                   tr("13#_Prefill scene"),
-                                   tr("14#_Scene object options"),
-                                   tr("15#_Indicate age value"),
-                                   tr("16#_Dead cell color"),
-                                   tr("17#_Cursed cell color"),
+                                   tr("06#_Scene antialiasing"),
+                                   tr("07#_Scene background color"),
+                                   tr("08#_Scene selection color"),//
+                                   tr("09#_Dead cell color"),
+                                   tr("10#_Cursed cell color"),
+                                   tr("11#_Scene zoom factor"),
+                                   tr("12#_Indicate age value"),
+                                   tr("13#_Minimum pause at calculating (ms)"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -358,18 +346,14 @@ void MainWindow::slotSetup()
      {keys.at(3), {QVariant::Int, config->LogSize(), 0, 0}},
      {keys.at(4), {QVariant::Int, config->ButtonSize(), 16, 100}},
      {keys.at(5), {}},
-     {keys.at(6), {QVariant::Bool, config->SceneBspTreeIndex(), 0, 0}},
-     {keys.at(7), {QVariant::Bool, config->SceneViewAntialiasing(), 0, 0}},
-     {keys.at(8), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(9), {QVariant::String, config->SceneBorderColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(10), {QVariant::String, config->SceneColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(11), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-     {keys.at(13), {QVariant::Bool, config->ScenePreFill(), 0, 0}},
-     {keys.at(14), {}},
-     {keys.at(15), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
-     {keys.at(16), {QVariant::String, config->SceneObjectDeadColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(17), {QVariant::String, config->SceneObjectCurseColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(6), {QVariant::Bool, config->SceneViewAntialiasing(), 0, 0}},
+     {keys.at(7), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(8), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(9), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(10), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(11), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
+     {keys.at(12), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
+     {keys.at(13), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -382,41 +366,32 @@ void MainWindow::slotSetup()
     config->setLogSize(map.value(keys.at(3)).value.toInt());
     config->setButtonSize(map.value(keys.at(4)).value.toInt());
     // scene
-    config->setSceneBspTreeIndex(map.value(keys.at(6)).value.toBool());
-    config->setSceneViewAntialiasing(map.value(keys.at(7)).value.toBool());
-    config->setSceneBgColor(map.value(keys.at(8)).value.toString());
-    config->setSceneBorderColor(map.value(keys.at(9)).value.toString());
-    config->setSceneColor(map.value(keys.at(10)).value.toString());
-    config->setSceneSelectColor(map.value(keys.at(11)).value.toString());
-    config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
-    config->setScenePreFill(map.value(keys.at(13)).value.toBool());
-    // scene object
-    config->setSceneObjectAgeIndicate(map.value(keys.at(15)).value.toBool());
-    config->setSceneObjectDeadColor(map.value(keys.at(16)).value.toString());
-    config->setSceneObjectCurseColor(map.value(keys.at(17)).value.toString());
+    config->setSceneViewAntialiasing(map.value(keys.at(6)).value.toBool());
+    config->setSceneBgColor(map.value(keys.at(7)).value.toString());
+    config->setSceneSelectColor(map.value(keys.at(8)).value.toString());
+    config->setSceneCellDeadColor(map.value(keys.at(9)).value.toString());
+    config->setSceneCellCurseColor(map.value(keys.at(10)).value.toString());
+    config->setSceneScaleStep(map.value(keys.at(11)).value.toDouble());
+    config->setSceneObjectAgeIndicate(map.value(keys.at(12)).value.toBool());
+    config->setSceneCalculatingMinPause(map.value(keys.at(13)).value.toInt());
 }
 
 void MainWindow::slotSceneZoomIn()
 {
     auto factor = config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1);
-    auto scene = m_SceneView->getScene();
     m_SceneView->zoomer()->Zoom(factor, true);
-    if(scene && scene->focusedItem()) m_SceneView->centerOn(scene->focusedItem());
 }
 
 void MainWindow::slotSceneZoomOut()
 {
     auto factor = 1 / (config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1));
-    auto scene = m_SceneView->getScene();
     m_SceneView->zoomer()->Zoom(factor, true);
-    if(scene && scene->focusedItem()) m_SceneView->centerOn(scene->focusedItem());
 }
 
 void MainWindow::slotZoomUndoScene()
 {
     m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET);
-    if(m_SceneView->getScene()->focusedItem())
-        m_SceneView->centerOn(m_SceneView->getScene()->focusedItem());
+
 }
 
 void MainWindow::slotFieldAvCalc(qreal value) { m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1))); }

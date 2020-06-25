@@ -4,10 +4,12 @@
 #include "cellrule.h"
 #include "fieldinformation.h"
 #include "scene/sceneItem.h"
-#include "wait.h" // test
+#include "properties.h"
 
+#include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
+#include <QPainter>
 
 Field::Field(int width, int height, QObject *parent)
     : QObject(parent),
@@ -26,6 +28,20 @@ Field::Field(int width, int height, QObject *parent)
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
+}
+
+void Field::fill()
+{
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    for(int h = 0; h < m_Height; h++)
+    {
+        for(int w = 0; w < m_Width; w++)
+        {
+            addCell(w, h);
+        }
+        Q_EMIT signalFillingProgress(h + 1);
+    }
+    qDebug() << "Field" << objectName() << "filled in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 }
 
 Cell *Field::addCell(int x, int y)
@@ -215,7 +231,8 @@ void Field::calculate()
 
         m_FieldInformation->stepAge();
 
-        //delay(10); // test
+        auto pixmap = createPixmap();
+        QPainter painter(&pixmap);
 
         for(int h = 0; h < m_Height; h++)
         {
@@ -226,39 +243,59 @@ void Field::calculate()
 
                 auto c = m_Cells.at(w).at(h);
 
-                if(!c) continue;
-
                 // TODO: выполнение правил
                 auto state = c->getInformation()->getState();
                 if(state == Kernel::CellState::Dead)
                 {
                     c->getInformation()->setState(Kernel::CellState::Alive);
-                    c->getSceneItem()->setUpdate(true);
                 }
                 else if(state == Kernel::CellState::Alive)
                 {
                     c->getInformation()->setState(Kernel::CellState::Cursed);
-                    c->getSceneItem()->setUpdate(true);
                 }
                 else if(state == Kernel::CellState::Cursed)
                 {
                     c->getInformation()->setState(Kernel::CellState::Dead);
-                    c->getSceneItem()->setUpdate(true);
                 }
 
+                // отрисовка pixmap
+                QRect rect(w * config->SceneCellSize(), h * config->SceneCellSize(), config->SceneCellSize(), config->SceneCellSize());
+                if(state == Kernel::CellState::Dead)
+                {
+                    // ничего не далаем
+                }
+                else if(state == Kernel::CellState::Alive)
+                {
+                    painter.fillRect(rect, m_Rule->getColorAlive());
+                }
+                else if(state == Kernel::CellState::Cursed)
+                {
+                    painter.fillRect(rect, config->SceneCellCurseColor());
+                }
             }
         }
 
         if(!m_RunningAlways) m_Running = false;
-
         m_FieldInformation->applyAverageCalc(time);
+        Q_EMIT signalCalculated(pixmap);
 
-        m_WaitScene = true;
-        Q_EMIT signalCalculated();
+        // пауза
+        QTime pausetime = QTime::currentTime().addMSecs(config->SceneCalculatingMinPause());
+        while(QTime::currentTime() < pausetime && !m_StopCalculating)
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 1);
     }
 
     qDebug() << "Field calculating stopped";
     Q_EMIT signalCalculatingStopped();
+}
+
+QPixmap Field::createPixmap()
+{
+    auto pixmap = QPixmap(m_Width * config->SceneCellSize(),
+                          m_Height * config->SceneCellSize());
+
+    pixmap.fill(config->SceneCellDeadColor());
+    return pixmap;
 }
 
 CellRule *Field::getRule() const { return m_Rule; }

@@ -13,6 +13,7 @@ class Field : public QObject
     Q_OBJECT
 public:
     Field(int width, int height, QObject *parent = nullptr);
+    void fill();
     int width();
     int height();
     Cell* addCell(int x, int y);
@@ -41,6 +42,7 @@ protected:
     Cell* getBottomLeftCell(Cell* c);
     Cell* getBottomRightCell(Cell* c);
     QVector<Cell*> getCellsAround(Cell* c);
+    QPixmap createPixmap();
 
 private:
     int m_Width;
@@ -58,7 +60,8 @@ Q_SIGNALS:
     void signalRuleChanged(CellRule* rule);     // правила изменены
     void signalRunning(bool value);             // состояние вкл/выкл цикла calculate
     void signalCalculatingStopped();            // calculate остановлен/завершён
-    void signalCalculated();                    // завершена итерация calculate
+    void signalCalculated(const QPixmap& pixmap);      // завершена итерация calculate
+    void signalFillingProgress(int step);
 };
 
 #endif // FIELD_H

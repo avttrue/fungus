@@ -170,8 +170,8 @@ void DialogCellInformation::slotSaveContent()
 
 void DialogCellInformation::slotShowPoint()
 {
-    auto o = m_Cell->getSceneItem();
-    o->getScene()->getView()->findObjectBySell(m_Cell);
+//    auto o = m_Cell->getSceneItem();
+//    o->getScene()->getView()->findObjectBySell(m_Cell);
 }
 
 bool DialogCellInformation::FindPreviousCopy(Cell *cell)

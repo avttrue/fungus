@@ -15,10 +15,8 @@ public:
     SceneView(QWidget *parent = nullptr);
     Scene* addScene(Field* filed);
     Scene* getScene() const;
-    void fill();
     GraphicsViewZoomer *zoomer() const;
     void showCellInformationDialog(Cell* cell);
-    void findObjectBySell(Cell* cell);
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);

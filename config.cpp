@@ -61,14 +61,6 @@ void Config::load()
         m_Settings->setValue("Scene/BackgroundColor", SCENE_BG_COLOR);
     m_SceneBgColor = m_Settings->value("Scene/BackgroundColor").toString();
 
-    if(!m_Settings->contains("Scene/Color"))
-        m_Settings->setValue("Scene/Color", SCENE_COLOR);
-    m_SceneColor = m_Settings->value("Scene/Color").toString();
-
-    if(!m_Settings->contains("Scene/BorderColor"))
-        m_Settings->setValue("Scene/BorderColor", SCENE_BORDER_COLOR);
-    m_SceneBorderColor = m_Settings->value("Scene/BorderColor").toString();
-
     if(!m_Settings->contains("Scene/ScaleStep"))
         m_Settings->setValue("Scene/ScaleStep", SCENE_SCALE_STEP);
     m_SceneScaleStep = m_Settings->value("Scene/ScaleStep").toDouble();
@@ -84,10 +76,6 @@ void Config::load()
     if(!m_Settings->contains("Scene/ViewAntialiasing"))
         m_Settings->setValue("Scene/ViewAntialiasing", SCENE_VIEW_ANTIALIASING);
     m_SceneViewAntialiasing = m_Settings->value("Scene/ViewAntialiasing").toBool();
-
-    if(!m_Settings->contains("Scene/PreFill"))
-        m_Settings->setValue("Scene/PreFill", SCENE_PREFILL);
-    m_ScenePreFill = m_Settings->value("Scene/PreFill").toBool();
 
     if(!m_Settings->contains("Scene/BspTreeIndex"))
         m_Settings->setValue("Scene/BspTreeIndex", SCENE_BSP_TREE_INDEX);
@@ -109,17 +97,29 @@ void Config::load()
         m_Settings->setValue("Scene/ObjectAgeIndicate", SCENE_OBJECT_AGE_INDICATE);
     m_SceneObjectAgeIndicate = m_Settings->value("Scene/ObjectAgeIndicate").toBool();
 
-    if(!m_Settings->contains("Scene/ObjectDeadColor"))
-        m_Settings->setValue("Scene/ObjectDeadColor", SCENE_OBJECT_DEAD_COLOR);
-    m_SceneObjectDeadColor = m_Settings->value("Scene/ObjectDeadColor").toString();
+    if(!m_Settings->contains("Scene/CellDeadColor"))
+        m_Settings->setValue("Scene/CellDeadColor", SCENE_CELL_DEAD_COLOR);
+    m_SceneCellDeadColor = m_Settings->value("Scene/CellDeadColor").toString();
 
     if(!m_Settings->contains("Scene/SceneSelectColor"))
         m_Settings->setValue("Scene/SceneSelectColor", SCENE_SELECT_COLOR);
     m_SceneSelectColor = m_Settings->value("Scene/SceneSelectColor").toString();
 
-    if(!m_Settings->contains("Scene/ObjectCurseColor"))
-        m_Settings->setValue("Scene/ObjectCurseColor", SCENE_OBJECT_CURSE_COLOR);
-    m_SceneObjectCurseColor = m_Settings->value("Scene/ObjectCurseColor").toString();
+    if(!m_Settings->contains("Scene/CellCurseColor"))
+        m_Settings->setValue("Scene/CellCurseColor", SCENE_CELL_CURSE_COLOR);
+    m_SceneCellCurseColor = m_Settings->value("Scene/CellCurseColor").toString();
+
+    if(!m_Settings->contains("Scene/CalculatingMinPause"))
+        m_Settings->setValue("Scene/CalculatingMinPause", SCENE_CALCULATING_MIN_PAUSE);
+    m_SceneCalculatingMinPause = m_Settings->value("Scene/CalculatingMinPause").toInt();
+}
+
+void Config::setSceneCalculatingMinPause(int value)
+{
+    if(m_SceneCalculatingMinPause == value) return;
+
+    m_SceneCalculatingMinPause = value;
+    m_Settings->setValue("Scene/CalculatingMinPause", m_SceneCalculatingMinPause);
 }
 
 void Config::setCellInfoWindowWidth(int value)
@@ -138,12 +138,12 @@ void Config::setCellInfoWindowHeight(int value)
     m_Settings->setValue("MainWindow/CellInfoWindowHeight", m_CellInfoWindowHeight);
 }
 
-void Config::setSceneObjectCurseColor(const QString &value)
+void Config::setSceneCellCurseColor(const QString &value)
 {
-    if(m_SceneObjectCurseColor == value) return;
+    if(m_SceneCellCurseColor == value) return;
     
-    m_SceneObjectCurseColor = value;
-    m_Settings->setValue("Scene/ObjectCurseColor", m_SceneObjectCurseColor);
+    m_SceneCellCurseColor = value;
+    m_Settings->setValue("Scene/CellCurseColor", m_SceneCellCurseColor);
 }
 
 void Config::setSceneSelectColor(const QString &value)
@@ -162,12 +162,12 @@ void Config::setSceneObjectAgeIndicate(bool value)
     m_Settings->setValue("Scene/ObjectAgeIndicate", m_SceneObjectAgeIndicate);
 }
 
-void Config::setSceneObjectDeadColor(const QString &value)
+void Config::setSceneCellDeadColor(const QString &value)
 {
-    if(m_SceneObjectDeadColor == value) return;
+    if(m_SceneCellDeadColor == value) return;
 
-    m_SceneObjectDeadColor = value;
-    m_Settings->setValue("Scene/ObjectDeadColor", m_SceneObjectDeadColor);
+    m_SceneCellDeadColor = value;
+    m_Settings->setValue("Scene/CellDeadColor", m_SceneCellDeadColor);
 }
 
 void Config::setSceneFieldSize(int value)
@@ -210,36 +210,12 @@ void Config::setSceneBspTreeIndex(bool value)
     m_Settings->setValue("Scene/BspTreeIndex", m_SceneBspTreeIndex);
 }
 
-void Config::setScenePreFill(bool value)
-{
-    if(m_ScenePreFill == value) return;
-
-    m_ScenePreFill = value;
-    m_Settings->setValue("Scene/PreFill", m_ScenePreFill);
-}
-
-void Config::setSceneBorderColor(const QString &value)
-{
-    if(m_SceneBorderColor == value) return;
-
-    m_SceneBorderColor = value;
-    m_Settings->setValue("Scene/BorderColor", m_SceneBorderColor);
-}
-
 void Config::setSceneViewAntialiasing(bool value)
 {
     if(m_SceneViewAntialiasing == value) return;
 
     m_SceneViewAntialiasing = value;
     m_Settings->setValue("Scene/ViewAntialiasing", m_SceneViewAntialiasing);
-}
-
-void Config::setSceneColor(const QString &value)
-{
-    if(m_SceneColor == value) return;
-    
-    m_SceneColor = value;
-    m_Settings->setValue("Scene/Color", m_SceneColor);
 }
 
 void Config::setSceneCellSize(int value)
@@ -307,19 +283,16 @@ void Config::setButtonSize(int value)
 
 int Config::CellInfoWindowWidth() const { return m_CellInfoWindowWidth; }
 int Config::CellInfoWindowHeight() const { return m_CellInfoWindowHeight; }
-QString Config::SceneObjectCurseColor() const { return m_SceneObjectCurseColor; }
+QString Config::SceneCellCurseColor() const { return m_SceneCellCurseColor; }
 QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
 bool Config::SceneObjectAgeIndicate() const { return m_SceneObjectAgeIndicate; }
-QString Config::SceneObjectDeadColor() const { return m_SceneObjectDeadColor; }
+QString Config::SceneCellDeadColor() const { return m_SceneCellDeadColor; }
 int Config::SceneFieldSize() const { return m_SceneFieldSize; }
 Qt::KeyboardModifiers Config::SceneObjectModifier() const { return m_SceneObjectModifier; }
 Qt::KeyboardModifiers Config::SceneZoomModifier() const { return m_SceneZoomModifier; }
 int Config::SceneBspTreeDepth() const { return m_SceneBspTreeDepth; }
 bool Config::SceneBspTreeIndex() const { return m_SceneBspTreeIndex; }
-bool Config::ScenePreFill() const { return m_ScenePreFill; }
-QString Config::SceneBorderColor() const { return m_SceneBorderColor; }
 bool Config::SceneViewAntialiasing() const { return m_SceneViewAntialiasing; }
-QString Config::SceneColor() const { return m_SceneColor; }
 int Config::SceneCellSize() const { return m_SceneCellSize; }
 qreal Config::SceneScaleStep() const { return m_SceneScaleStep; }
 QString Config::SceneBgColor() const { return m_SceneBgColor; }
@@ -330,3 +303,4 @@ QString Config::DateTimeFormat() const { return m_DateTimeFormat; }
 int Config::ButtonSize() const { return m_ButtonSize; }
 QString Config::PathApp() const { return m_PathAppDir; }
 QString Config::PathAppConfig() const { return m_PathAppConfig; }
+int Config::SceneCalculatingMinPause() const { return m_SceneCalculatingMinPause; }
