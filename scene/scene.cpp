@@ -67,14 +67,14 @@ void Scene::slotAdvance(const QPixmap &pixmap)
         QObject::disconnect(*conn);
         auto dt = QDateTime::currentMSecsSinceEpoch() - time;
         auto new_ad = calcAverage(m_AverageDraw, m_Field->getInformation()->getAge(), dt);
-        m_Field->setWaitScene(false);
-
         if(m_AverageDraw < new_ad || m_AverageDraw > new_ad)
         {
             m_AverageDraw = new_ad;
 
             Q_EMIT signalAdvansedTime(m_AverageDraw);
         }
+
+        m_Field->setWaitScene(false);
     };
     *conn = QObject::connect(this, &Scene::changed, func);
     advance();

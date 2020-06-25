@@ -6,15 +6,12 @@
 class SceneItem;
 class SceneView;
 class Field;
-class Cell;
 
 class Scene : public QGraphicsScene
 {
     Q_OBJECT
 public:
     Scene(SceneView* parent, Field* field);
-    //SceneItem* addSceneItem(int x, int y);
-    //void fill();
     void addSceneItem();
     QColor getBackgroundColor() const;
     void setBackgroundColor(const QColor &value);

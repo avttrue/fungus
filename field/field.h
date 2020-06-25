@@ -7,6 +7,7 @@
 class Cell;
 class CellRule;
 class FieldInformation;
+class QPainter;
 
 class Field : public QObject
 {
@@ -43,6 +44,7 @@ protected:
     Cell* getBottomRightCell(Cell* c);
     QVector<Cell*> getCellsAround(Cell* c);
     QPixmap createPixmap();
+    void drawCell(Cell *cell, QPainter *painter); // отрисовка cell в pixmap
 
 private:
     int m_Width;

@@ -13,13 +13,13 @@
 
 Field::Field(int width, int height, QObject *parent)
     : QObject(parent),
-      m_Width(width),
-      m_Height(height),
-      m_Rule(nullptr),
-      m_Running(false),
-      m_RunningAlways(false),
-      m_WaitScene(false),
-      m_StopCalculating(false)
+    m_Width(width),
+    m_Height(height),
+    m_Rule(nullptr),
+    m_Running(false),
+    m_RunningAlways(false),
+    m_WaitScene(false),
+    m_StopCalculating(false)
 {
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
@@ -258,20 +258,7 @@ void Field::calculate()
                     c->getInformation()->setState(Kernel::CellState::Dead);
                 }
 
-                // отрисовка pixmap
-                QRect rect(w * config->SceneCellSize(), h * config->SceneCellSize(), config->SceneCellSize(), config->SceneCellSize());
-                if(state == Kernel::CellState::Dead)
-                {
-                    // ничего не далаем
-                }
-                else if(state == Kernel::CellState::Alive)
-                {
-                    painter.fillRect(rect, m_Rule->getColorAlive());
-                }
-                else if(state == Kernel::CellState::Cursed)
-                {
-                    painter.fillRect(rect, config->SceneCellCurseColor());
-                }
+                drawCell(c, &painter);
             }
         }
 
@@ -280,9 +267,9 @@ void Field::calculate()
         Q_EMIT signalCalculated(pixmap);
 
         // пауза
-        QTime pausetime = QTime::currentTime().addMSecs(config->SceneCalculatingMinPause());
-        while(QTime::currentTime() < pausetime && !m_StopCalculating)
-            QCoreApplication::processEvents(QEventLoop::AllEvents, 1);
+        auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
+        while(QDateTime::currentDateTime() < pausetime && !m_StopCalculating)
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
     }
 
     qDebug() << "Field calculating stopped";
@@ -296,6 +283,29 @@ QPixmap Field::createPixmap()
 
     pixmap.fill(config->SceneCellDeadColor());
     return pixmap;
+}
+
+void Field::drawCell(Cell* cell, QPainter *painter)
+{
+    QRect rect(cell->getIndex().x() * config->SceneCellSize(),
+               cell->getIndex().y() * config->SceneCellSize(),
+               config->SceneCellSize(),
+               config->SceneCellSize());
+
+    auto state = cell->getInformation()->getState();
+
+    if(state == Kernel::CellState::Dead)
+    {
+        // ничего не делаем
+    }
+    else if(state == Kernel::CellState::Alive)
+    {
+        painter->fillRect(rect, m_Rule->getColorAlive());
+    }
+    else if(state == Kernel::CellState::Cursed)
+    {
+        painter->fillRect(rect, config->SceneCellCurseColor());
+    }
 }
 
 CellRule *Field::getRule() const { return m_Rule; }

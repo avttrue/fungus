@@ -3,7 +3,6 @@
 
 #include <QGraphicsItem>
 
-class Cell;
 class Scene;
 
 class SceneItem : public QGraphicsItem
