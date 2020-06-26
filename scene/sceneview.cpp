@@ -20,7 +20,7 @@ SceneView::SceneView(QWidget *parent)
       m_Scene(nullptr)
 {
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing);// | DontSavePainterState);
-    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate); // TODO: параметризовать setViewportUpdateMode
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate); // TODO: параметризовать setViewportUpdateMode
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
     setCacheMode(QGraphicsView::CacheBackground);

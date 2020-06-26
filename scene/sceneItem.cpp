@@ -45,7 +45,7 @@ void SceneItem::advance(int step)
     update();
 }
 
-void SceneItem::setPixmap(const QPixmap &Pixmap) { m_Pixmap = Pixmap; }
+void SceneItem::setPixmap(QPixmap pixmap) { m_Pixmap.swap(pixmap) ;}
 QString SceneItem::getName() const { return m_Name; }
 void SceneItem::setName(const QString &Name) { m_Name = Name; }
 Scene *SceneItem::getScene() const { return m_Scene; }

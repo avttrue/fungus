@@ -264,6 +264,7 @@ void Field::calculate()
 
         if(!m_RunningAlways) m_Running = false;
         m_FieldInformation->applyAverageCalc(time);
+        m_WaitScene = true;
         Q_EMIT signalCalculated(pixmap);
 
         // пауза

@@ -12,7 +12,7 @@ public:
     Scene *getScene() const;
     QString getName() const;
     void setName(const QString &Name);
-    void setPixmap(const QPixmap &Pixmap);
+    void setPixmap(QPixmap pixmap);
 
 protected:
     QRectF boundingRect() const override;
