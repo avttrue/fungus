@@ -33,7 +33,7 @@ private:
     bool m_StopAdvanse;                                     // остановка отрисовки перед выходом и .т.д
 
 private Q_SLOTS:
-    void slotAdvance(const QPixmap& pixmap);                       // перерисовать сцену
+    void slotAdvance(const QVariant &pixmap);               // перерисовать сцену
 
 Q_SIGNALS:
     void signalProgress(int progress);                      // прогресс создания сцены

@@ -12,7 +12,8 @@
 
 SceneItem::SceneItem(Scene* scene, QGraphicsItem* parent)
     : QGraphicsItem(parent),
-      m_Scene(scene)
+      m_Scene(scene),
+      m_BufferPixmapUpdated(false)
 {
    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
@@ -40,14 +41,26 @@ void SceneItem::paint(QPainter *painter,
 
 void SceneItem::advance(int step)
 {
-    if (!step) return;
+    if (step == 0 && m_BufferPixmapUpdated)
+    {
+        auto pm = m_BufferPixmap.value<QPixmap>();
+        m_Pixmap = pm;
+        m_BufferPixmapUpdated = false;
+    }
 
-    update();
+    else if(step == 1) update();
+
+    else return;
 }
 
-void SceneItem::setPixmap(QPixmap pixmap) { m_Pixmap.swap(pixmap) ;}
-QString SceneItem::getName() const { return m_Name; }
-void SceneItem::setName(const QString &Name) { m_Name = Name; }
+void SceneItem::setPixmap(QVariant pixmap)
+{
+    if(m_BufferPixmap == pixmap) return;
+
+    m_BufferPixmap = pixmap;
+    m_BufferPixmapUpdated = true;
+}
+
 Scene *SceneItem::getScene() const { return m_Scene; }
 QRectF SceneItem::boundingRect() const { return QRectF(0, 0, m_Pixmap.width(), m_Pixmap.height()); }
 

@@ -53,31 +53,15 @@ void Scene::setBackgroundColor(const QColor &value)
     setBackgroundBrush(m_BackgroundColor);
 }
 
-void Scene::slotAdvance(const QPixmap &pixmap)
+void Scene::slotAdvance(const QVariant &pixmap)
 {
-    auto time = QDateTime::currentMSecsSinceEpoch();
-
     if(m_StopAdvanse) return;
 
     m_SceneItem->setPixmap(pixmap);
 
-    auto conn = std::make_shared<QMetaObject::Connection>();
-    auto func = [=]()
-    {
-        QObject::disconnect(*conn);
-        auto dt = QDateTime::currentMSecsSinceEpoch() - time;
-        auto new_ad = calcAverage(m_AverageDraw, m_Field->getInformation()->getAge(), dt);
-        if(m_AverageDraw < new_ad || m_AverageDraw > new_ad)
-        {
-            m_AverageDraw = new_ad;
-
-            Q_EMIT signalAdvansedTime(m_AverageDraw);
-        }
-
-        m_Field->setWaitScene(false);
-    };
-    *conn = QObject::connect(this, &Scene::changed, func);
     advance();
+
+    m_Field->setWaitScene(false);
 }
 
 QGraphicsRectItem *Scene::borderRect() const { return m_BorderRect; }

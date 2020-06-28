@@ -10,9 +10,7 @@ class SceneItem : public QGraphicsItem
 public:
     SceneItem(Scene *scene, QGraphicsItem *parent = nullptr);
     Scene *getScene() const;
-    QString getName() const;
-    void setName(const QString &Name);
-    void setPixmap(QPixmap pixmap);
+    void setPixmap(QVariant pixmap);
 
 protected:
     QRectF boundingRect() const override;
@@ -23,7 +21,8 @@ protected:
 private:
     Scene* m_Scene;
     QPixmap m_Pixmap;
-    QString m_Name;
+    QVariant m_BufferPixmap;
+    bool m_BufferPixmapUpdated;
 };
 
 #endif // SCENEITEM_H

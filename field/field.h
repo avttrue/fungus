@@ -59,10 +59,10 @@ private:
 
 
 Q_SIGNALS:
-    void signalRuleChanged(CellRule* rule);     // правила изменены
-    void signalRunning(bool value);             // состояние вкл/выкл цикла calculate
-    void signalCalculatingStopped();            // calculate остановлен/завершён
-    void signalCalculated(const QPixmap& pixmap);      // завершена итерация calculate
+    void signalRuleChanged(CellRule* rule);         // правила изменены
+    void signalRunning(bool value);                 // состояние вкл/выкл цикла calculate
+    void signalCalculatingStopped();                // calculate остановлен/завершён
+    void signalCalculated(const QVariant& pixmap);  // завершена итерация calculate
     void signalFillingProgress(int step);
 };
 
