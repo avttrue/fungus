@@ -12,8 +12,7 @@
 
 SceneItem::SceneItem(Scene* scene, QGraphicsItem* parent)
     : QGraphicsItem(parent),
-      m_Scene(scene),
-      m_BufferPixmapUpdated(false)
+      m_Scene(scene)
 {
    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
@@ -41,24 +40,15 @@ void SceneItem::paint(QPainter *painter,
 
 void SceneItem::advance(int step)
 {
-    if (step == 0 && m_BufferPixmapUpdated)
-    {
-        auto pm = m_BufferPixmap.value<QPixmap>();
-        m_Pixmap = pm;
-        m_BufferPixmapUpdated = false;
-    }
+    if (step == 0) return;
 
     else if(step == 1) update();
-
-    else return;
 }
 
-void SceneItem::setPixmap(QVariant pixmap)
+void SceneItem::setPixmap(QPixmap pixmap)
 {
-    if(m_BufferPixmap == pixmap) return;
-
-    m_BufferPixmap = pixmap;
-    m_BufferPixmapUpdated = true;
+    m_Pixmap.swap(pixmap);
+    //m_Pixmap = pixmap;
 }
 
 Scene *SceneItem::getScene() const { return m_Scene; }

@@ -231,8 +231,8 @@ void Field::calculate()
 
         m_FieldInformation->stepAge();
 
-        auto pixmap = createPixmap();
-        QPainter painter(&pixmap);
+        clearPixmap();
+        QPainter painter(&m_Pixmap);
 
         for(int h = 0; h < m_Height; h++)
         {
@@ -265,25 +265,24 @@ void Field::calculate()
         if(!m_RunningAlways) m_Running = false;
         m_FieldInformation->applyAverageCalc(time);
         m_WaitScene = true;
-        Q_EMIT signalCalculated(QVariant(pixmap));
+        Q_EMIT signalCalculated();
 
         // пауза
         auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
         while(QDateTime::currentDateTime() < pausetime && !m_StopCalculating)
-            QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+            QCoreApplication::processEvents(QEventLoop::AllEvents);
     }
 
     qDebug() << "Field calculating stopped";
     Q_EMIT signalCalculatingStopped();
 }
 
-QPixmap Field::createPixmap()
+void Field::clearPixmap()
 {
-    auto pixmap = QPixmap(m_Width * config->SceneCellSize(),
+    m_Pixmap = QPixmap(m_Width * config->SceneCellSize(),
                           m_Height * config->SceneCellSize());
 
-    pixmap.fill(config->SceneCellDeadColor());
-    return pixmap;
+    m_Pixmap.fill(config->SceneCellDeadColor());
 }
 
 void Field::drawCell(Cell* cell, QPainter *painter)
@@ -309,6 +308,7 @@ void Field::drawCell(Cell* cell, QPainter *painter)
     }
 }
 
+QPixmap Field::getPixmap() const { return m_Pixmap; }
 CellRule *Field::getRule() const { return m_Rule; }
 Cell *Field::getCell(QPoint index) { return m_Cells[index.x()][index.y()]; }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }

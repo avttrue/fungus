@@ -53,11 +53,11 @@ void Scene::setBackgroundColor(const QColor &value)
     setBackgroundBrush(m_BackgroundColor);
 }
 
-void Scene::slotAdvance(const QVariant &pixmap)
+void Scene::slotAdvance()
 {
     if(m_StopAdvanse) return;
 
-    m_SceneItem->setPixmap(pixmap);
+    m_SceneItem->setPixmap(m_Field->getPixmap());
 
     advance();
 
