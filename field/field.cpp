@@ -9,7 +9,6 @@
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
-#include <QPainter>
 
 Field::Field(int width, int height, QObject *parent)
     : QObject(parent),
