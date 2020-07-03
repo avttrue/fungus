@@ -6,9 +6,11 @@
 
 FieldInformation::FieldInformation(QObject *parent)
     : QObject(parent),
-      m_Age(0),
+      m_Age(-1),
       m_AverageCalc(0),
-      m_DeadCells(0)
+      m_DeadCells(-1),
+      m_AliveCells(-1),
+      m_CursedCells(-1)
 {
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldInformation destroyed"; });
 }
@@ -35,28 +37,28 @@ void FieldInformation::applyAverageCalc(qint64 time)
     }
 }
 
-void FieldInformation::setDeadCells(qint64 DeadCells)
+void FieldInformation::setDeadCells(qint64 value)
 {
-    if (m_DeadCells == DeadCells) return;
+    if (m_DeadCells == value) return;
 
-    m_DeadCells = DeadCells;
-    emit signalDeadCellsChanged(m_DeadCells);
+    m_DeadCells = value;
+    Q_EMIT signalDeadCellsChanged(m_DeadCells);
 }
 
-void FieldInformation::setAliveCells(qint64 AliveCells)
+void FieldInformation::setAliveCells(qint64 value)
 {
-    if (m_AliveCells == AliveCells) return;
+    if (m_AliveCells == value) return;
 
-    m_AliveCells = AliveCells;
-    emit signalAliveCellsChanged(m_AliveCells);
+    m_AliveCells = value;
+    Q_EMIT signalAliveCellsChanged(m_AliveCells);
 }
 
-void FieldInformation::setCursedCells(qint64 CursedCells)
+void FieldInformation::setCursedCells(qint64 value)
 {
-    if (m_CursedCells == CursedCells) return;
+    if (m_CursedCells == value) return;
 
-    m_CursedCells = CursedCells;
-    emit signaCursedCellsChanged(m_CursedCells);
+    m_CursedCells = value;
+    Q_EMIT signaCursedCellsChanged(m_CursedCells);
 }
 
 qreal FieldInformation::getAverageCalc() const { return m_AverageCalc; }

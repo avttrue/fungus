@@ -138,13 +138,29 @@ void MainWindow::loadGui()
 
     statusBar->addWidget(new SeparatorV(this));
 
-    statusBar->addWidget(new QLabel(tr("Calc time:"), this));
-    m_LabelFieldAvCalc = new QLabel("-", this);
-    statusBar->addWidget(m_LabelFieldAvCalc);
+    statusBar->addWidget(new QLabel(tr("Cells"), this));
+
+    statusBar->addWidget(new QLabel(tr("dead:"), this));
+    m_LabelFieldDeadCells = new QLabel("-", this);
+    statusBar->addWidget(m_LabelFieldDeadCells);
+
+    statusBar->addWidget(new QLabel(tr("alive:"), this));
+    m_LabelFieldAliveCells = new QLabel("-", this);
+    statusBar->addWidget(m_LabelFieldAliveCells);
+
+    statusBar->addWidget(new QLabel(tr("cursed:"), this));
+    m_LabelFieldCursedCells = new QLabel("-", this);
+    statusBar->addWidget(m_LabelFieldCursedCells);
 
     statusBar->addWidget(new SeparatorV(this));
 
-    statusBar->addWidget(new QLabel(tr("Draw time:"), this));
+    statusBar->addWidget(new QLabel(tr("Time"), this));
+
+    statusBar->addWidget(new QLabel(tr("calc:"), this));
+    m_LabelFieldAvCalc = new QLabel("-", this);
+    statusBar->addWidget(m_LabelFieldAvCalc);
+
+    statusBar->addWidget(new QLabel(tr("draw:"), this));
     m_LabelSceneAvDraw = new QLabel("-", this);
     statusBar->addWidget(m_LabelSceneAvDraw);
 
@@ -177,7 +193,7 @@ void MainWindow::slotNewProject()
     const QVector<QString> keys = {tr("00#_Field properties"),
                                    tr("01#_Size"),
                                    tr("02#_Cell size"),
-                                   tr("03#_Rule (%1):").arg(QString::number(ruleslist.count()))};
+                                   tr("03#_Rule [%1]:").arg(QString::number(ruleslist.count()))};
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
      {keys.at(1), {QVariant::Int, config->SceneFieldSize(), 2, 10000}},
@@ -241,6 +257,7 @@ void MainWindow::createScene()
 
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     QObject::connect(scene, &Scene::signalAverageDrawChanged, this, &MainWindow::slotAverageDraw);
+    QObject::connect(scene, &Scene::signalAverageDrawChanged, this, &MainWindow::slotAverageDraw);
 }
 
 void MainWindow::createField(int w, int h)
@@ -254,16 +271,20 @@ void MainWindow::createField(int w, int h)
     QObject::connect(m_ThreadField, &QObject::destroyed, [=](){ qDebug() << "ThreadField destroyed"; });
 
     m_Field = new Field(w, h);
+
+    QObject::connect(m_Field->getInformation(), &FieldInformation::signalAgeChanged, this, &MainWindow::slotFieldAge);
+    QObject::connect(m_Field->getInformation(), &FieldInformation::signalDeadCellsChanged, this, &MainWindow::slotFieldDeadCells);
+    QObject::connect(m_Field->getInformation(), &FieldInformation::signalAliveCellsChanged, this, &MainWindow::slotFieldAliveCells);
+    QObject::connect(m_Field->getInformation(), &FieldInformation::signaCursedCellsChanged, this, &MainWindow::slotFieldCursedCells);
+
+    m_LabelFieldAvCalc->setText(tr("0 ms"));
+    QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChanged, this, &MainWindow::slotFieldAvCalc);
+
     fillField();
 
     QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
     QObject::connect(m_Field, &Field::signalCalculatingStopped, this, &MainWindow::stopThreadField, Qt::DirectConnection);
     m_Field->moveToThread(m_ThreadField);  // NOTE: field выполняется не в основном потоке
-
-    m_LabelFieldAge->setText("0");
-    QObject::connect(m_Field->getInformation(), &FieldInformation::signalAgeChanged, this, &MainWindow::slotFieldAge);
-    m_LabelFieldAvCalc->setText(tr("0 ms"));
-    QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChanged, this, &MainWindow::slotFieldAvCalc);
 }
 
 void MainWindow::fillField()
@@ -390,10 +411,12 @@ void MainWindow::slotSceneZoomOut()
 void MainWindow::slotZoomUndoScene()
 {
     m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET);
-
 }
 
 void MainWindow::slotFieldAvCalc(qreal value) { m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1))); }
 void MainWindow::slotAverageDraw(qreal value) { m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1))); }
+void MainWindow::slotFieldDeadCells(qint64 value) { m_LabelFieldDeadCells->setText(QString::number(value)); }
+void MainWindow::slotFieldAliveCells(qint64 value) { m_LabelFieldAliveCells->setText(QString::number(value)); }
+void MainWindow::slotFieldCursedCells(qint64 value) {  m_LabelFieldCursedCells->setText(QString::number(value)); }
 void MainWindow::slotFieldAge(qint64 value) { m_LabelFieldAge->setText(QString::number(value)); }
 QProgressBar *MainWindow::ProgressBar() const { return m_ProgressBar; }

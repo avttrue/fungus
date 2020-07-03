@@ -23,6 +23,7 @@ Field::Field(int width, int height, QObject *parent)
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
     m_FieldInformation = new FieldInformation(this);
+
     m_Cells = QVector(m_Width, QVector<Cell*>(m_Height, nullptr));
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
@@ -40,6 +41,11 @@ void Field::fill()
         }
         Q_EMIT signalFillingProgress(h + 1);
     }
+    m_FieldInformation->stepAge();
+    m_FieldInformation->setDeadCells(m_Width * m_Height);
+    m_FieldInformation->setAliveCells(0);
+    m_FieldInformation->setCursedCells(0);
+
     qDebug() << "Field" << objectName() << "filled in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 }
 
@@ -229,6 +235,9 @@ void Field::calculate()
         auto time = QDateTime::currentMSecsSinceEpoch();
 
         m_FieldInformation->stepAge();
+        qint64 dead = 0;
+        qint64 alive = 0;
+        qint64 cursed = 0;
 
         QVector<Cell*> cells;
         for(int h = 0; h < m_Height; h++)
@@ -242,25 +251,41 @@ void Field::calculate()
 
                 // TODO: выполнение правил
                 // test
-                auto state = c->getInformation()->getState();
-                if(state == Kernel::CellState::Dead)
+                if(c->getInformation()->getState() == Kernel::CellState::Dead)
                 {
                     c->getInformation()->setState(Kernel::CellState::Alive);
                 }
-                else if(state == Kernel::CellState::Alive)
+                else if(c->getInformation()->getState() == Kernel::CellState::Alive)
                 {
                     c->getInformation()->setState(Kernel::CellState::Cursed);
                 }
-                else if(state == Kernel::CellState::Cursed)
+                else if(c->getInformation()->getState() == Kernel::CellState::Cursed)
                 {
                     c->getInformation()->setState(Kernel::CellState::Dead);
                 }
                 // test
 
-                if(c->getInformation()->getState() != Kernel::CellState::Dead) // пустые не передаём
+                if(c->getInformation()->getState() == Kernel::CellState::Dead)
+                {
+                    dead++;
+                    //cells.append(c); // пустые не передаём
+
+                }
+                else if(c->getInformation()->getState() == Kernel::CellState::Alive)
+                {
                     cells.append(c);
+                    alive++;
+                }
+                else if(c->getInformation()->getState() == Kernel::CellState::Cursed)
+                {
+                    cells.append(c);
+                    cursed++;
+                }
             }
         }
+        m_FieldInformation->setDeadCells(dead);
+        m_FieldInformation->setAliveCells(alive);
+        m_FieldInformation->setCursedCells(cursed);
 
         if(!m_RunningAlways) m_Running = false;
         m_FieldInformation->applyAverageCalc(time);

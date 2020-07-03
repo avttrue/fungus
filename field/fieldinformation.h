@@ -18,21 +18,19 @@ public:
     qint64 getAge() const;
     qint64 stepAge();
     qreal getAverageCalc() const;
-    void applyAverageCalc(qint64 time);    
+    void applyAverageCalc(qint64 time);
     qint64 getDeadCells() const;
-    void setDeadCells(qint64 DeadCells);
+    void setDeadCells(qint64 value);
     qint64 getAliveCells() const;
-    void setAliveCells(qint64 AliveCells);
+    void setAliveCells(qint64 value);
     qint64 getCursedCells() const;
-    void setCursedCells(qint64 CursedCells);
+    void setCursedCells(qint64 value);
 
 private:
     qint64 m_Age;
-    qreal m_AverageCalc;    
+    qreal m_AverageCalc;
     qint64 m_DeadCells;
-
     qint64 m_AliveCells;
-
     qint64 m_CursedCells;
 
 Q_SIGNALS:
@@ -41,6 +39,7 @@ Q_SIGNALS:
     void signalDeadCellsChanged(qint64 DeadCells);
     void signalAliveCellsChanged(qint64 AliveCells);
     void signaCursedCellsChanged(qint64 CursedCells);
+
 };
 
 #endif // FIELDINFORMATION_H
