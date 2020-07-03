@@ -1,4 +1,4 @@
-#include "fieldservice.h"
+#include "kernel.h"
 
 #include <QDebug>
 #include <QMetaProperty>

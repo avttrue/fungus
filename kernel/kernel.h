@@ -1,5 +1,5 @@
-﻿#ifndef FIELDSERVICE_H
-#define FIELDSERVICE_H
+﻿#ifndef KERNEL_H
+#define KERNEL_H
 
 #include <QObject>
 #include <QVariant>
@@ -76,4 +76,4 @@ Q_DECLARE_METATYPE(Kernel::CellActivityType)
 Q_DECLARE_METATYPE(Kernel::CellState)
 Q_DECLARE_METATYPE(CellActivity)
 
-#endif // FIELDSERVICE_H
+#endif // KERNEL_H

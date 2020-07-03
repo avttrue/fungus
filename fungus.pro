@@ -20,11 +20,11 @@ SOURCES += \
     field/cellrule.cpp \
     field/field.cpp \
     field/fieldinformation.cpp \
-    field/fieldservice.cpp \
     graphicsviewzoomer.cpp \
     config.cpp \
     controls.cpp \
     helper.cpp \
+    kernel/kernel.cpp \
     main.cpp \
     mainwindow.cpp \
     properties.cpp \
@@ -41,11 +41,11 @@ HEADERS += \
     field/cellrule.h \
     field/field.h \
     field/fieldinformation.h \
-    field/fieldservice.h \
     graphicsviewzoomer.h \
     config.h \
     controls.h \
     helper.h \
+    kernel/kernel.h \
     mainwindow.h \
     properties.h \
     field/cell.h \

@@ -1,7 +1,7 @@
 #ifndef CELLRULE_H
 #define CELLRULE_H
 
-#include "fieldservice.h"
+#include "kernel/kernel.h"
 
 #include <QColor>
 #include <QObject>

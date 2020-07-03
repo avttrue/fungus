@@ -1,7 +1,7 @@
 #ifndef CELLINFORMATION_H
 #define CELLINFORMATION_H
 
-#include "fieldservice.h"
+#include "kernel/kernel.h"
 
 #include <QObject>
 

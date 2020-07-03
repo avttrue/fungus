@@ -7,6 +7,7 @@
 #include "dialogs/dialogvalueslist.h"
 
 #include <QDebug>
+#include <QGraphicsView>
 #include <QGraphicsSceneMouseEvent>
 
 SceneView::SceneView(QWidget *parent)
@@ -14,7 +15,7 @@ SceneView::SceneView(QWidget *parent)
       m_Scene(nullptr)
 {
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing | DontSavePainterState);
-    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate); // TODO: config setViewportUpdateMode
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
     setCacheMode(QGraphicsView::CacheBackground);
