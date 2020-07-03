@@ -33,7 +33,6 @@ public:
     void setWaitScene(bool value);
     bool getWaitScene() const;
     void StopCalculating();
-    QPixmap getPixmap() const;
 
 protected:
     Cell* getTopCell(Cell* c);
@@ -45,8 +44,6 @@ protected:
     Cell* getBottomLeftCell(Cell* c);
     Cell* getBottomRightCell(Cell* c);
     QVector<Cell*> getCellsAround(Cell* c);
-    void clearPixmap();
-    void drawCell(Cell *cell, QPainter *painter); // отрисовка cell в pixmap
 
 private:
     int m_Width;
@@ -54,7 +51,6 @@ private:
     QVector<QVector<Cell*>> m_Cells;
     CellRule* m_Rule;
     FieldInformation* m_FieldInformation;
-    QPixmap m_Pixmap;
     bool m_Running;                             // флаг управления циклом calculate
     bool m_RunningAlways;                       // флаг управления режимом calculate: одиночный шаг / постоянное выполнение
     bool m_WaitScene;                           // ожидание готовности сцены
@@ -65,7 +61,7 @@ Q_SIGNALS:
     void signalRuleChanged(CellRule* rule);         // правила изменены
     void signalRunning(bool value);                 // состояние вкл/выкл цикла calculate
     void signalCalculatingStopped();                // calculate остановлен/завершён
-    void signalCalculated();                        // завершена итерация calculate
+    void signalCalculated(QVector<Cell*> cells);       // завершена итерация calculate
     void signalFillingProgress(int step);
 };
 

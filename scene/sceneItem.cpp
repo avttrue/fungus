@@ -25,7 +25,12 @@ SceneItem::SceneItem(Scene* scene, QGraphicsItem* parent)
 QPainterPath SceneItem::shape() const
 {
     QPainterPath path;
-    path.addRect(0, 0, m_Pixmap.width(), m_Pixmap.height());
+
+    if(!m_Pixmap)
+        qDebug() << "shape: !m_Pixmap";
+    else
+        path.addRect(0, 0, m_Pixmap.width(), m_Pixmap.height());
+
     return path;
 }
 
@@ -35,22 +40,26 @@ void SceneItem::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->drawPixmap(0, 0, m_Pixmap);
+    if(!m_Pixmap)
+        qDebug() << "paint: !m_Pixmap";
+    else
+        painter->drawPixmap(0, 0, m_Pixmap);
 }
 
 void SceneItem::advance(int step)
 {
     if (step == 0) return;
 
-    else if(step == 1) update();
+    else if(step == 1)
+    {
+        update();
+    }
 }
 
 void SceneItem::setPixmap(QPixmap pixmap)
 {
     m_Pixmap.swap(pixmap);
-    //m_Pixmap = pixmap;
 }
 
 Scene *SceneItem::getScene() const { return m_Scene; }
 QRectF SceneItem::boundingRect() const { return QRectF(0, 0, m_Pixmap.width(), m_Pixmap.height()); }
-

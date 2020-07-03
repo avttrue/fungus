@@ -5,6 +5,8 @@
 #include "helper.h"
 #include "field/field.h"
 #include "field/cell.h"
+#include "field/cellrule.h"
+#include "field/cellinformation.h"
 #include "field/fieldinformation.h"
 
 #include <QDateTime>
@@ -53,14 +55,39 @@ void Scene::setBackgroundColor(const QColor &value)
     setBackgroundBrush(m_BackgroundColor);
 }
 
-void Scene::slotAdvance()
+void Scene::slotAdvance(QVector<Cell *> cells)
 {
+    auto time = QDateTime::currentMSecsSinceEpoch();
+
+    QPixmap pixmap(m_Field->width() * config->SceneCellSize(),
+                   m_Field->height() * config->SceneCellSize());
+    pixmap.fill(config->SceneCellDeadColor());
+
+    for(auto c: cells)
+    {
+      if(m_StopAdvanse) break;
+
+      QRect rect(c->getIndex().x() * config->SceneCellSize(),
+                 c->getIndex().y() * config->SceneCellSize(),
+                 config->SceneCellSize(),
+                 config->SceneCellSize());
+
+      QPainter painter(&pixmap);
+      auto state = c->getInformation()->getState();
+      // Kernel::CellState::Dead не обрабатываем
+      if(state == Kernel::CellState::Alive)
+          painter.fillRect(rect, m_Field->getRule()->getColorAlive());
+      else if(state == Kernel::CellState::Cursed)
+          painter.fillRect(rect, config->SceneCellCurseColor());
+    }
+
     if(m_StopAdvanse) return;
 
-    m_SceneItem->setPixmap(m_Field->getPixmap());
+    m_SceneItem->setPixmap(pixmap);
+
+    applyAverageDraw(time);
 
     advance();
-
     m_Field->setWaitScene(false);
 }
 
@@ -71,3 +98,22 @@ SceneView *Scene::getView() const { return m_View; }
 Field *Scene::getField() const { return m_Field; }
 void Scene::StopAdvanse() { m_StopAdvanse = true; }
 SceneItem *Scene::getSceneItem() const { return m_SceneItem; }
+
+qreal Scene::getAverageDraw() const
+{
+    return m_AverageDraw;
+}
+
+void Scene::applyAverageDraw(qint64 time)
+{
+    auto new_d = QDateTime::currentMSecsSinceEpoch() - time;
+
+    qreal new_ad = calcAverage(m_AverageDraw, m_Field->getInformation()->getAge(), new_d);
+
+    if (m_AverageDraw > new_ad || m_AverageDraw < new_ad)
+    {
+        m_AverageDraw = new_ad;
+        Q_EMIT signalAverageDrawChanged(m_AverageDraw);
+    }
+}
+

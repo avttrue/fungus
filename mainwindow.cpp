@@ -144,6 +144,12 @@ void MainWindow::loadGui()
 
     statusBar->addWidget(new SeparatorV(this));
 
+    statusBar->addWidget(new QLabel(tr("Draw time:"), this));
+    m_LabelSceneAvDraw = new QLabel("-", this);
+    statusBar->addWidget(m_LabelSceneAvDraw);
+
+    statusBar->addWidget(new SeparatorV(this));
+
     m_ProgressBar = new QProgressBar(this);
     m_ProgressBar->setAlignment(Qt::AlignLeft);
     m_ProgressBar->setFixedWidth(6 * config->ButtonSize());
@@ -233,7 +239,8 @@ void MainWindow::createScene()
                                                         QString::number(m_Field->height()),
                                                         QString::number(config->SceneCellSize())));
 
-    //    QObject::connect(scene, &QGraphicsScene::focusItemChanged, this, &MainWindow::slotFocusedObjectChanged);
+    m_LabelSceneAvDraw->setText(tr("0 ms"));
+    QObject::connect(scene, &Scene::signalAverageDrawChanged, this, &MainWindow::slotAverageDraw);
 }
 
 void MainWindow::createField(int w, int h)
@@ -387,5 +394,6 @@ void MainWindow::slotZoomUndoScene()
 }
 
 void MainWindow::slotFieldAvCalc(qreal value) { m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1))); }
+void MainWindow::slotAverageDraw(qreal value) { m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1))); }
 void MainWindow::slotFieldAge(qint64 value) { m_LabelFieldAge->setText(QString::number(value)); }
 QProgressBar *MainWindow::ProgressBar() const { return m_ProgressBar; }

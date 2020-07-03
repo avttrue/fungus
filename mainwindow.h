@@ -43,6 +43,7 @@ private:
     QLabel* m_LabelFocusedObject;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldAvCalc;
+    QLabel* m_LabelSceneAvDraw;
     QProgressBar* m_ProgressBar;
 
 private Q_SLOTS:
@@ -55,5 +56,6 @@ private Q_SLOTS:
     void slotRun();
     void slotFieldAge(qint64 value);
     void slotFieldAvCalc(qreal value);
+    void slotAverageDraw(qreal value);
 };
 #endif // MAINWINDOW_H

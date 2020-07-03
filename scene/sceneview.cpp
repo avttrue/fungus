@@ -20,13 +20,13 @@ SceneView::SceneView(QWidget *parent)
       m_Scene(nullptr)
 {
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing | DontSavePainterState);
-    setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate); // TODO: параметризовать setViewportUpdateMode
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
     setCacheMode(QGraphicsView::CacheBackground);
     setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     m_Zoomer = new GraphicsViewZoomer(this);
     m_Zoomer->SetZoomFactorBase(config->SceneScaleStep());

@@ -6,10 +6,13 @@
 class SceneItem;
 class SceneView;
 class Field;
+class Cell;
 
 class Scene : public QGraphicsScene
 {
     Q_OBJECT
+    Q_PROPERTY(qreal AverageDraw READ getAverageDraw WRITE applyAverageDraw NOTIFY signalAverageDrawChanged)
+
 public:
     Scene(SceneView* parent, Field* field);
     void addSceneItem();
@@ -20,7 +23,9 @@ public:
     SceneView *getView() const;
     Field *getField() const;
     void StopAdvanse();
-    SceneItem *getSceneItem() const;
+    SceneItem *getSceneItem() const;    
+    qreal getAverageDraw() const;
+    void applyAverageDraw(qint64 time);
 
 private:
     SceneView* m_View;
@@ -29,14 +34,15 @@ private:
     QColor m_BackgroundColor;
     QGraphicsRectItem* m_BorderRect;
     QSize m_Size;
-    qreal m_AverageDraw;                                    // среднее время отрисовки сцены
-    bool m_StopAdvanse;                                     // остановка отрисовки перед выходом и .т.д
+    qreal m_AverageDraw;                                   // среднее время отрисовки сцены
+    bool m_StopAdvanse;                                    // остановка отрисовки перед выходом и .т.д
 
 private Q_SLOTS:
-    void slotAdvance();                                     // перерисовать сцену
+    void slotAdvance(QVector<Cell*> cells);                   // перерисовать сцену
 
 Q_SIGNALS:
-    void signalProgress(int progress);                      // прогресс создания сцены
+    void signalProgress(int progress);                     // прогресс создания сцены
+    void signalAverageDrawChanged(qreal AverageDraw);      // среднее время отрисовки сцены
 };
 
 #endif // SCENE_H

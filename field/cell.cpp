@@ -12,8 +12,6 @@ Cell::Cell(QObject *parent)
     m_Index({-1, -1})
 {
     m_Information = new CellInformation(this);
-    //QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "Cell"<< objectName() <<"destroyed"; });
-    //qDebug() << "Cell created";
 }
 
 void Cell::clear()

@@ -231,9 +231,7 @@ void Field::calculate()
 
         m_FieldInformation->stepAge();
 
-        clearPixmap();
-        QPainter painter(&m_Pixmap);
-
+        QVector<Cell*> cells;
         for(int h = 0; h < m_Height; h++)
         {
             if(m_StopCalculating) break;
@@ -244,6 +242,7 @@ void Field::calculate()
                 auto c = m_Cells.at(w).at(h);
 
                 // TODO: выполнение правил
+                // test
                 auto state = c->getInformation()->getState();
                 if(state == Kernel::CellState::Dead)
                 {
@@ -257,15 +256,17 @@ void Field::calculate()
                 {
                     c->getInformation()->setState(Kernel::CellState::Dead);
                 }
+                // test
 
-                drawCell(c, &painter);
+                if(c->getInformation()->getState() != Kernel::CellState::Dead) // пустые не передаём
+                    cells.append(c);
             }
-        }
+        }        
 
         if(!m_RunningAlways) m_Running = false;
         m_FieldInformation->applyAverageCalc(time);
         m_WaitScene = true;
-        Q_EMIT signalCalculated();
+        Q_EMIT signalCalculated(cells);
 
         // пауза
         auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
@@ -277,38 +278,6 @@ void Field::calculate()
     Q_EMIT signalCalculatingStopped();
 }
 
-void Field::clearPixmap()
-{
-    m_Pixmap = QPixmap(m_Width * config->SceneCellSize(),
-                          m_Height * config->SceneCellSize());
-
-    m_Pixmap.fill(config->SceneCellDeadColor());
-}
-
-void Field::drawCell(Cell* cell, QPainter *painter)
-{
-    QRect rect(cell->getIndex().x() * config->SceneCellSize(),
-               cell->getIndex().y() * config->SceneCellSize(),
-               config->SceneCellSize(),
-               config->SceneCellSize());
-
-    auto state = cell->getInformation()->getState();
-
-    if(state == Kernel::CellState::Dead)
-    {
-        // ничего не делаем
-    }
-    else if(state == Kernel::CellState::Alive)
-    {
-        painter->fillRect(rect, m_Rule->getColorAlive());
-    }
-    else if(state == Kernel::CellState::Cursed)
-    {
-        painter->fillRect(rect, config->SceneCellCurseColor());
-    }
-}
-
-QPixmap Field::getPixmap() const { return m_Pixmap; }
 CellRule *Field::getRule() const { return m_Rule; }
 Cell *Field::getCell(QPoint index) { return m_Cells[index.x()][index.y()]; }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }
