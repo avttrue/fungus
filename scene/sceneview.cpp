@@ -2,18 +2,12 @@
 #include "scene.h"
 #include "properties.h"
 #include "sceneItem.h"
-#include "field/field.h"
-#include "field/cell.h"
-#include "field/cellinformation.h"
 #include "graphicsviewzoomer.h"
 #include "dialogs/dialogcellinformation.h"
 #include "dialogs/dialogvalueslist.h"
 
-#include <QtMath>
 #include <QDebug>
-#include <QApplication>
 #include <QGraphicsSceneMouseEvent>
-#include <QMessageBox>
 
 SceneView::SceneView(QWidget *parent)
     :QGraphicsView(parent),

@@ -1,7 +1,5 @@
 #include "cell.h"
 #include "cellinformation.h"
-#include "cellrule.h"
-#include "field.h"
 
 #include <QDebug>
 #include <scene/sceneItem.h>

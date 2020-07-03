@@ -2,8 +2,6 @@
 #include "cell.h"
 
 #include <QDebug>
-#include <QMap>
-#include <QMetaProperty>
 
 CellInformation::CellInformation(Cell *parent)
     : QObject(parent),

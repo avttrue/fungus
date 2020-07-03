@@ -10,7 +10,7 @@ class SceneItem : public QGraphicsItem
 public:
     SceneItem(Scene *scene, QGraphicsItem *parent = nullptr);
     Scene *getScene() const;
-    void setPixmap(QPixmap pixmap);
+    QPixmap* getPixmap();
 
 protected:
     QRectF boundingRect() const override;

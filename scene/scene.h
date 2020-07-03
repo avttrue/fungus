@@ -23,7 +23,7 @@ public:
     SceneView *getView() const;
     Field *getField() const;
     void StopAdvanse();
-    SceneItem *getSceneItem() const;    
+    SceneItem *getSceneItem() const;
     qreal getAverageDraw() const;
     void applyAverageDraw(qint64 time);
 

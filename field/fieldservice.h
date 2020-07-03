@@ -1,8 +1,8 @@
-#ifndef FIELDSERVICE_H
+﻿#ifndef FIELDSERVICE_H
 #define FIELDSERVICE_H
 
-#include <QVariant>
 #include <QObject>
+#include <QVariant>
 
 class Kernel: public QObject
 {

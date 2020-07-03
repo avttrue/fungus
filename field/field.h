@@ -53,7 +53,6 @@ private:
     bool m_WaitScene;                           // ожидание готовности сцены
     bool m_StopCalculating;                     // остановка цикла calculate перед выходом и т.д.
 
-
 Q_SIGNALS:
     void signalRuleChanged(CellRule* rule);         // правила изменены
     void signalRunning(bool value);                 // состояние вкл/выкл цикла calculate

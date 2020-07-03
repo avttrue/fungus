@@ -4,7 +4,6 @@
 #include "fieldservice.h"
 
 #include <QObject>
-#include <QVariant>
 
 class Cell;
 
