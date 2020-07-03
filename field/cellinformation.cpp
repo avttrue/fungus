@@ -9,7 +9,7 @@ CellInformation::CellInformation(Cell *parent)
       m_Generation(0),
       m_State(Kernel::CellState::Dead)
 {
-    //QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "CellInformation" <<parent->objectName() <<"destroyed"; });
+
 }
 
 void CellInformation::setState(Kernel::CellState value)

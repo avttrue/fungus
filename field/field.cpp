@@ -12,13 +12,13 @@
 
 Field::Field(int width, int height, QObject *parent)
     : QObject(parent),
-    m_Width(width),
-    m_Height(height),
-    m_Rule(nullptr),
-    m_Running(false),
-    m_RunningAlways(false),
-    m_WaitScene(false),
-    m_StopCalculating(false)
+      m_Width(width),
+      m_Height(height),
+      m_Rule(nullptr),
+      m_Running(false),
+      m_RunningAlways(false),
+      m_WaitScene(false),
+      m_StopCalculating(false)
 {
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
@@ -260,7 +260,7 @@ void Field::calculate()
                 if(c->getInformation()->getState() != Kernel::CellState::Dead) // пустые не передаём
                     cells.append(c);
             }
-        }        
+        }
 
         if(!m_RunningAlways) m_Running = false;
         m_FieldInformation->applyAverageCalc(time);

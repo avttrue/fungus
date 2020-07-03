@@ -48,16 +48,16 @@ private:
     QVector<QVector<Cell*>> m_Cells;
     CellRule* m_Rule;
     FieldInformation* m_FieldInformation;
-    bool m_Running;                             // флаг управления циклом calculate
-    bool m_RunningAlways;                       // флаг управления режимом calculate: одиночный шаг / постоянное выполнение
-    bool m_WaitScene;                           // ожидание готовности сцены
-    bool m_StopCalculating;                     // остановка цикла calculate перед выходом и т.д.
+    bool m_Running;                                 // флаг управления циклом calculate
+    bool m_RunningAlways;                           // флаг управления режимом calculate: одиночный шаг / постоянное выполнение
+    bool m_WaitScene;                               // ожидание готовности сцены
+    bool m_StopCalculating;                         // остановка цикла calculate перед выходом и т.д.
 
 Q_SIGNALS:
     void signalRuleChanged(CellRule* rule);         // правила изменены
     void signalRunning(bool value);                 // состояние вкл/выкл цикла calculate
     void signalCalculatingStopped();                // calculate остановлен/завершён
-    void signalCalculated(QVector<Cell*> cells);       // завершена итерация calculate
+    void signalCalculated(QVector<Cell*> cells);    // завершена итерация calculate
     void signalFillingProgress(int step);
 };
 
