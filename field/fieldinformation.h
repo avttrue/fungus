@@ -7,10 +7,10 @@ class FieldInformation : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(qint64 Age READ getAge NOTIFY signalAgeChanged)
-    Q_PROPERTY(qint64 DeadCells READ getDeadCells WRITE setDeadCells NOTIFY signalDeadCellsChanged)
-    Q_PROPERTY(qint64 AliveCells READ getAliveCells WRITE setAliveCells NOTIFY signalAliveCellsChanged)
-    Q_PROPERTY(qint64 CursedCells READ getCursedCells WRITE setCursedCells NOTIFY signaCursedCellsChanged)
-    Q_PROPERTY(qreal AverageCalc READ getAverageCalc WRITE applyAverageCalc NOTIFY signalAverageCalcChanged)
+    Q_PROPERTY(qint64 DeadCells READ getDeadCells WRITE setDeadCells)
+    Q_PROPERTY(qint64 AliveCells READ getAliveCells WRITE setAliveCells)
+    Q_PROPERTY(qint64 CursedCells READ getCursedCells WRITE setCursedCells)
+    Q_PROPERTY(qreal AverageCalc READ getAverageCalc WRITE applyAverageCalc)
 
 public:
     explicit FieldInformation(QObject *parent = nullptr);
@@ -35,11 +35,11 @@ private:
 
 Q_SIGNALS:
     void signalAgeChanged(qint64 value);
-    void signalAverageCalcChanged(qreal value);
+    void signalAverageCalcChangedUp(qreal value);
+    void signalAverageCalcChangedDown(qreal value);
     void signalDeadCellsChanged(qint64 DeadCells);
     void signalAliveCellsChanged(qint64 AliveCells);
     void signaCursedCellsChanged(qint64 CursedCells);
-
 };
 
 #endif // FIELDINFORMATION_H

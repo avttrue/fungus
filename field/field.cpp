@@ -229,7 +229,6 @@ void Field::calculate()
     qDebug() << "Field calculating started";
     while(m_Running)
     {
-        if(m_StopCalculating) break;
         if(m_WaitScene) continue;
 
         auto time = QDateTime::currentMSecsSinceEpoch();
@@ -283,6 +282,9 @@ void Field::calculate()
                 }
             }
         }
+
+        if(m_StopCalculating) break;
+
         m_FieldInformation->setDeadCells(dead);
         m_FieldInformation->setAliveCells(alive);
         m_FieldInformation->setCursedCells(cursed);

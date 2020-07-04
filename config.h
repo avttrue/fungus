@@ -60,6 +60,8 @@ public:
     void setCellInfoWindowWidth(int value);
     int SceneCalculatingMinPause() const;
     void setSceneCalculatingMinPause(int value);
+    QString SceneViewUpdateMode() const;
+    void setSceneViewUpdateMode(const QString &value);
 
 protected:
     void load();
@@ -74,6 +76,7 @@ private:
     QString m_SceneBgColor;                     // цвет задника сцены
     QString m_SceneCellDeadColor;               // цвет мёртвой ячейки
     QString m_SceneCellCurseColor;              // цвет отравленной ячейки
+    QString m_SceneViewUpdateMode;              // метод отрисовки SceneView
     qreal m_SceneScaleStep;                     // шаг масштабирования сцены
     int m_SceneCalculatingMinPause;             // минимальная допустимая пауза при обсчёте Field
     int m_LogSize;                              // количество строк лога событий

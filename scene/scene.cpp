@@ -100,8 +100,12 @@ void Scene::applyAverageDraw(qint64 time)
 
     if (m_AverageDraw > new_ad || m_AverageDraw < new_ad)
     {
+        auto up = false;
+        if(m_AverageDraw < new_ad) up = true;
         m_AverageDraw = new_ad;
-        Q_EMIT signalAverageDrawChanged(m_AverageDraw);
+
+        if(up) Q_EMIT signalAverageDrawChangedUp(new_ad);
+        else Q_EMIT signalAverageDrawChangedDown(new_ad);
     }
 }
 

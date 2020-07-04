@@ -32,8 +32,12 @@ void FieldInformation::applyAverageCalc(qint64 time)
 
     if (m_AverageCalc > new_ac || m_AverageCalc < new_ac)
     {
+        auto up = false;
+        if(m_AverageCalc < new_ac) up = true;
         m_AverageCalc = new_ac;
-        Q_EMIT signalAverageCalcChanged(m_AverageCalc);
+
+        if(up) Q_EMIT signalAverageCalcChangedUp(m_AverageCalc);
+        else Q_EMIT signalAverageCalcChangedDown(m_AverageCalc);
     }
 }
 

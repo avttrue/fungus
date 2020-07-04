@@ -105,6 +105,10 @@ void Config::load()
         m_Settings->setValue("Scene/SceneSelectColor", SCENE_SELECT_COLOR);
     m_SceneSelectColor = m_Settings->value("Scene/SceneSelectColor").toString();
 
+    if(!m_Settings->contains("Scene/ViewUpdateMode"))
+        m_Settings->setValue("Scene/ViewUpdateMode", SCENE_VIEW_UPDATE_MODE);
+    m_SceneViewUpdateMode = m_Settings->value("Scene/ViewUpdateMode").toString();
+
     if(!m_Settings->contains("Scene/CellCurseColor"))
         m_Settings->setValue("Scene/CellCurseColor", SCENE_CELL_CURSE_COLOR);
     m_SceneCellCurseColor = m_Settings->value("Scene/CellCurseColor").toString();
@@ -112,6 +116,14 @@ void Config::load()
     if(!m_Settings->contains("Scene/CalculatingMinPause"))
         m_Settings->setValue("Scene/CalculatingMinPause", SCENE_CALCULATING_MIN_PAUSE);
     m_SceneCalculatingMinPause = m_Settings->value("Scene/CalculatingMinPause").toInt();
+}
+
+void Config::setSceneViewUpdateMode(const QString &value)
+{
+    if(m_SceneViewUpdateMode == value) return;
+
+    m_SceneViewUpdateMode = value;
+    m_Settings->setValue("Scene/ViewUpdateMode", m_SceneViewUpdateMode);
 }
 
 void Config::setSceneCalculatingMinPause(int value)
@@ -281,6 +293,7 @@ void Config::setButtonSize(int value)
     m_Settings->setValue("MainWindow/ButtonSize", m_ButtonSize);
 }
 
+QString Config::SceneViewUpdateMode() const { return m_SceneViewUpdateMode; }
 int Config::CellInfoWindowWidth() const { return m_CellInfoWindowWidth; }
 int Config::CellInfoWindowHeight() const { return m_CellInfoWindowHeight; }
 QString Config::SceneCellCurseColor() const { return m_SceneCellCurseColor; }

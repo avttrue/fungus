@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 
+const QString LABEL_STYLE = "color: black; font-family: monospace; font: bold;";
+const QString LABEL_STYLE_UP = "color: red; font-family: monospace; font: bold;";
+const QString LABEL_STYLE_DOWN = "color: green; font-family: monospace; font: bold;";
+
 class Field;
 class SceneView;
 class SceneItem;
@@ -40,8 +44,8 @@ private:
     QAction* m_ActionRun;
     QLabel* m_LabelFieldSize;
     QLabel* m_LabelFieldZoom;
-    QLabel* m_LabelFocusedObject;
     QLabel* m_LabelFieldAge;
+    QLabel* m_LabelFieldPause;
     QLabel* m_LabelFieldAvCalc;
     QLabel* m_LabelSceneAvDraw;
     QLabel* m_LabelFieldDeadCells;
@@ -58,8 +62,10 @@ private Q_SLOTS:
     void slotStepStop();
     void slotRun();
     void slotFieldAge(qint64 value);
-    void slotFieldAvCalc(qreal value);
-    void slotAverageDraw(qreal value);
+    void slotFieldAvCalcUp(qreal value);
+    void slotFieldAvCalcDown(qreal value);
+    void slotAverageDrawUp(qreal value);
+    void slotAverageDrawDown(qreal value);
     void slotFieldDeadCells(qint64 value);
     void slotFieldAliveCells(qint64 value);
     void slotFieldCursedCells(qint64 value);

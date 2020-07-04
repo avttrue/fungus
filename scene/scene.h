@@ -11,7 +11,7 @@ class Cell;
 class Scene : public QGraphicsScene
 {
     Q_OBJECT
-    Q_PROPERTY(qreal AverageDraw READ getAverageDraw WRITE applyAverageDraw NOTIFY signalAverageDrawChanged)
+    Q_PROPERTY(qreal AverageDraw READ getAverageDraw WRITE applyAverageDraw)
 
 public:
     Scene(SceneView* parent, Field* field);
@@ -42,7 +42,8 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void signalProgress(int progress);                     // прогресс создания сцены
-    void signalAverageDrawChanged(qreal AverageDraw);      // среднее время отрисовки сцены
+    void signalAverageDrawChangedUp(qreal AverageDraw);    // среднее время отрисовки сцены увеличилось
+    void signalAverageDrawChangedDown(qreal AverageDraw);  // среднее время отрисовки сцены уменьшилось
 };
 
 #endif // SCENE_H
