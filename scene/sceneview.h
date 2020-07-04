@@ -3,6 +3,8 @@
 
 #include<QGraphicsView>
 
+const QStringList VIEW_UPDATE_MODE = {"SMART", "MINIMAL", "FULL"};
+
 class Scene;
 class Field;
 class Cell;
@@ -17,6 +19,7 @@ public:
     Scene* getScene() const;
     GraphicsViewZoomer *zoomer() const;
     void showCellInformationDialog(Cell* cell);
+    void SetUpdateMode();
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);

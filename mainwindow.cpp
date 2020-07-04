@@ -356,13 +356,14 @@ void MainWindow::slotSetup()
                                    tr("04#_Buttons size"),
                                    tr("05#_Scene options"),
                                    tr("06#_Scene antialiasing"),
-                                   tr("07#_Scene background color"),
-                                   tr("08#_Scene selection color"),//
-                                   tr("09#_Dead cell color"),
-                                   tr("10#_Cursed cell color"),
-                                   tr("11#_Scene zoom factor"),
-                                   tr("12#_Indicate age value"),
-                                   tr("13#_Minimum pause at calculating (ms)"),
+                                   tr("07#_Scene update mode"),
+                                   tr("08#_Scene background color"),
+                                   tr("09#_Scene selection color"),//
+                                   tr("10#_Dead cell color"),
+                                   tr("11#_Cursed cell color"),
+                                   tr("12#_Scene zoom factor"),
+                                   tr("13#_Indicate age value"),
+                                   tr("14#_Minimum pause at calculating (ms)"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -372,13 +373,14 @@ void MainWindow::slotSetup()
      {keys.at(4), {QVariant::Int, config->ButtonSize(), 16, 100}},
      {keys.at(5), {}},
      {keys.at(6), {QVariant::Bool, config->SceneViewAntialiasing(), 0, 0}},
-     {keys.at(7), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(8), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(9), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(10), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(11), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-     {keys.at(12), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
-     {keys.at(13), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
+     {keys.at(7), {QVariant::StringList, config->SceneViewUpdateMode(), 0, VIEW_UPDATE_MODE, DialogValueMode::OneFromList}},
+     {keys.at(8), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(9), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(10), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(11), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
+     {keys.at(13), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
+     {keys.at(14), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -392,13 +394,16 @@ void MainWindow::slotSetup()
     config->setButtonSize(map.value(keys.at(4)).value.toInt());
     // scene
     config->setSceneViewAntialiasing(map.value(keys.at(6)).value.toBool());
-    config->setSceneBgColor(map.value(keys.at(7)).value.toString());
-    config->setSceneSelectColor(map.value(keys.at(8)).value.toString());
-    config->setSceneCellDeadColor(map.value(keys.at(9)).value.toString());
-    config->setSceneCellCurseColor(map.value(keys.at(10)).value.toString());
-    config->setSceneScaleStep(map.value(keys.at(11)).value.toDouble());
-    config->setSceneObjectAgeIndicate(map.value(keys.at(12)).value.toBool());
-    config->setSceneCalculatingMinPause(map.value(keys.at(13)).value.toInt());
+    m_SceneView->setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
+    config->setSceneViewUpdateMode(map.value(keys.at(7)).value.toString());
+    m_SceneView->SetUpdateMode();
+    config->setSceneBgColor(map.value(keys.at(8)).value.toString());
+    config->setSceneSelectColor(map.value(keys.at(9)).value.toString());
+    config->setSceneCellDeadColor(map.value(keys.at(10)).value.toString());
+    config->setSceneCellCurseColor(map.value(keys.at(11)).value.toString());
+    config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
+    config->setSceneObjectAgeIndicate(map.value(keys.at(13)).value.toBool());
+    config->setSceneCalculatingMinPause(map.value(keys.at(14)).value.toInt());
     m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
 }
 

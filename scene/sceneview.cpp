@@ -15,19 +15,7 @@ SceneView::SceneView(QWidget *parent)
       m_Scene(nullptr)
 {
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing | DontSavePainterState);
-
-    if(config->SceneViewUpdateMode().toUpper() == "SMART")
-        setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    else if(config->SceneViewUpdateMode().toUpper() == "MINIMAL")
-        setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-    else if(config->SceneViewUpdateMode().toUpper() == "FULL")
-        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    else
-    {
-        qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  config->SceneViewUpdateMode().toUpper();
-        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    }
-
+    SetUpdateMode();
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
     setCacheMode(QGraphicsView::CacheBackground);
@@ -170,6 +158,21 @@ void SceneView::showCellInformationDialog(Cell *cell)
     auto dci = new DialogCellInformation(this, cell);
     dci->show();
 
+}
+
+void SceneView::SetUpdateMode()
+{
+    if(config->SceneViewUpdateMode().toUpper() == VIEW_UPDATE_MODE.at(0))
+        setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    else if(config->SceneViewUpdateMode().toUpper() == VIEW_UPDATE_MODE.at(1))
+        setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+    else if(config->SceneViewUpdateMode().toUpper() == VIEW_UPDATE_MODE.at(2))
+        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    else
+    {
+        qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  config->SceneViewUpdateMode().toUpper();
+        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    }
 }
 
 Scene *SceneView::getScene() const { return m_Scene; }
