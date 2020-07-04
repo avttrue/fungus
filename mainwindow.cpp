@@ -450,25 +450,33 @@ void MainWindow::slotFieldCursedCells(qint64 value)
 
 void MainWindow::slotFieldAvCalcUp(qreal value)
 {
-    m_LabelFieldAvCalc->setStyleSheet(LABEL_STYLE_UP);
+    if(m_LabelFieldAvCalc->styleSheet() != LABEL_STYLE_UP)
+        m_LabelFieldAvCalc->setStyleSheet(LABEL_STYLE_UP);
+
     m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotFieldAvCalcDown(qreal value)
 {
-    m_LabelFieldAvCalc->setStyleSheet(LABEL_STYLE_DOWN);
+    if(m_LabelFieldAvCalc->styleSheet() != LABEL_STYLE_DOWN)
+        m_LabelFieldAvCalc->setStyleSheet(LABEL_STYLE_DOWN);
+
     m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotAverageDrawUp(qreal value)
 {
-    m_LabelSceneAvDraw->setStyleSheet(LABEL_STYLE_UP);
+    if(m_LabelSceneAvDraw->styleSheet() != LABEL_STYLE_UP)
+        m_LabelSceneAvDraw->setStyleSheet(LABEL_STYLE_UP);
+
     m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotAverageDrawDown(qreal value)
 {
-    m_LabelSceneAvDraw->setStyleSheet(LABEL_STYLE_DOWN);
+    if(m_LabelSceneAvDraw->styleSheet() != LABEL_STYLE_DOWN)
+        m_LabelSceneAvDraw->setStyleSheet(LABEL_STYLE_DOWN);
+
     m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 

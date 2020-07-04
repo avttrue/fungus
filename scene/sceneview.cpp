@@ -171,7 +171,7 @@ void SceneView::SetUpdateMode()
     else
     {
         qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  config->SceneViewUpdateMode().toUpper();
-        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     }
 }
 

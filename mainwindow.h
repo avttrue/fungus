@@ -3,9 +3,9 @@
 
 #include <QMainWindow>
 
-const QString LABEL_STYLE = "color: black; font-family: monospace; font: bold;";
-const QString LABEL_STYLE_UP = "color: red; font-family: monospace; font: bold;";
-const QString LABEL_STYLE_DOWN = "color: green; font-family: monospace; font: bold;";
+const QString LABEL_STYLE = "background-color: lightgray; color: black; font-family: monospace; font: bold;";
+const QString LABEL_STYLE_UP = "background-color: lightgray; color: red; font-family: monospace; font: bold;";
+const QString LABEL_STYLE_DOWN = "background-color: lightgray; color: green; font-family: monospace; font: bold;";
 
 class Field;
 class SceneView;
