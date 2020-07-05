@@ -50,7 +50,7 @@ private:
     QVector<QVector<Cell*>> m_Cells;
     CellRule* m_Rule;
     FieldInformation* m_FieldInformation;
-    bool m_RuleOn;                                  // включить расчёт правил
+    bool m_RuleOn;                                  // включить расчёт правил (для отрисовки при редактировании)
     bool m_Running;                                 // флаг управления циклом calculate
     bool m_RunningAlways;                           // флаг управления режимом calculate: одиночный шаг / постоянное выполнение
     bool m_WaitScene;                               // ожидание готовности сцены

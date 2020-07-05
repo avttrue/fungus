@@ -297,9 +297,12 @@ void Field::calculate()
         Q_EMIT signalCalculated(cells);
 
         // пауза
-        auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
-        while(QDateTime::currentDateTime() < pausetime && !m_StopCalculating)
-            QCoreApplication::processEvents(QEventLoop::AllEvents);
+        if(m_RunningAlways && m_RuleOn)
+        {
+            auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
+            while(QDateTime::currentDateTime() < pausetime && !m_StopCalculating)
+                QCoreApplication::processEvents(QEventLoop::AllEvents);
+        }
     }
 
     qDebug() << "Field calculating stopped";
