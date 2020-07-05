@@ -21,8 +21,9 @@ public:
     qint64 getGeneration() const;
     void setState(Kernel::CellState value);
     void setAge(qint64 value);
+    void upAge();
     void setGeneration(qint64 value);
-
+    void upGeneration();
 private:
     qint64 m_Age;
     qint64 m_Generation;

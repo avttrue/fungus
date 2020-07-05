@@ -16,7 +16,7 @@ public:
     explicit FieldInformation(QObject *parent = nullptr);
 
     qint64 getAge() const;
-    qint64 stepAge();
+    qint64 upAge();
     qreal getAverageCalc() const;
     void applyAverageCalc(qint64 time);
     qint64 getDeadCells() const;

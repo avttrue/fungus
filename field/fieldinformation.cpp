@@ -16,7 +16,7 @@ FieldInformation::FieldInformation(QObject *parent)
 }
 
 
-qint64 FieldInformation::stepAge()
+qint64 FieldInformation::upAge()
 {
     m_Age++;
 

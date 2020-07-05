@@ -28,11 +28,23 @@ void CellInformation::setAge(qint64 value)
     Q_EMIT signalAgeChanged(m_Age);
 }
 
+void CellInformation::upAge()
+{
+    m_Age++;
+    Q_EMIT signalAgeChanged(m_Age);
+}
+
 void CellInformation::setGeneration(qint64 value)
 {
     if (m_Generation == value) return;
 
     m_Generation = value;
+    Q_EMIT signalGenerationChanged(m_Generation);
+}
+
+void CellInformation::upGeneration()
+{
+    m_Generation++;
     Q_EMIT signalGenerationChanged(m_Generation);
 }
 

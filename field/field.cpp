@@ -41,7 +41,7 @@ void Field::fill()
         }
         Q_EMIT signalFillingProgress(h + 1);
     }
-    m_FieldInformation->stepAge();
+    m_FieldInformation->upAge();
     m_FieldInformation->setDeadCells(m_Width * m_Height);
     m_FieldInformation->setAliveCells(0);
     m_FieldInformation->setCursedCells(0);
@@ -233,7 +233,7 @@ void Field::calculate()
 
         auto time = QDateTime::currentMSecsSinceEpoch();
 
-        m_FieldInformation->stepAge();
+        m_FieldInformation->upAge();
         qint64 dead = 0;
         qint64 alive = 0;
         qint64 cursed = 0;
@@ -264,6 +264,13 @@ void Field::calculate()
                     {
                         c->getInformation()->setState(Kernel::CellState::Dead);
                     }
+                    // test
+
+                    // cell age
+                    if(c->getInformation()->getState() == Kernel::CellState::Alive)
+                        c->getInformation()->upAge();
+                    else
+                        c->getInformation()->setAge(0);
                 }
 
                 if(c->getInformation()->getState() == Kernel::CellState::Dead)
