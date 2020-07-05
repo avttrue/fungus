@@ -248,21 +248,23 @@ void Field::calculate()
 
                 auto c = m_Cells.at(w).at(h);
 
-                // TODO: выполнение правил
-                // test
-                if(c->getInformation()->getState() == Kernel::CellState::Dead)
+                if(m_RuleOn)
                 {
-                    c->getInformation()->setState(Kernel::CellState::Alive);
+                    // TODO: выполнение правил
+                    // test
+                    if(c->getInformation()->getState() == Kernel::CellState::Dead)
+                    {
+                        c->getInformation()->setState(Kernel::CellState::Alive);
+                    }
+                    else if(c->getInformation()->getState() == Kernel::CellState::Alive)
+                    {
+                        c->getInformation()->setState(Kernel::CellState::Cursed);
+                    }
+                    else if(c->getInformation()->getState() == Kernel::CellState::Cursed)
+                    {
+                        c->getInformation()->setState(Kernel::CellState::Dead);
+                    }
                 }
-                else if(c->getInformation()->getState() == Kernel::CellState::Alive)
-                {
-                    c->getInformation()->setState(Kernel::CellState::Cursed);
-                }
-                else if(c->getInformation()->getState() == Kernel::CellState::Cursed)
-                {
-                    c->getInformation()->setState(Kernel::CellState::Dead);
-                }
-                // test
 
                 if(c->getInformation()->getState() == Kernel::CellState::Dead)
                 {
@@ -315,3 +317,5 @@ FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::setWaitScene(bool value) { m_WaitScene = value; }
 void Field::StopCalculating() { m_StopCalculating = true; }
 bool Field::getWaitScene() const { return m_WaitScene; }
+bool Field::getRuleOn() const { return m_RuleOn; }
+void Field::setRuleOn(bool value) { m_RuleOn = value; }

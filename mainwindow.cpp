@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_Field(nullptr)
 {    
     setWindowIcon(QIcon(":/resources/img/flora.svg"));
-    setWindowTitle(QString("%1 %2 < >").arg(APP_NAME, APP_VERS));
+    setWindowTitle(QString("%1 %2").arg(APP_NAME, APP_VERS));
     loadGui();
     setWidgetToScreenCenter(this);
 }
@@ -112,11 +112,6 @@ void MainWindow::loadGui()
 
     // статусбар
     auto statusBar = new QStatusBar(this);
-    statusBar->addWidget(new QLabel(tr("Size:"), this));
-    m_LabelFieldSize = new QLabel("-", this);
-    statusBar->addWidget(m_LabelFieldSize);
-
-    statusBar->addWidget(new SeparatorV(this)); // TODO: statusBar separator
 
     statusBar->addWidget(new QLabel(tr("Zoom:"), this));
     m_LabelFieldZoom = new QLabel("1", this);
@@ -217,9 +212,14 @@ void MainWindow::slotNewProject()
     config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
 
     createField(config->SceneFieldSize(), config->SceneFieldSize());
-    auto currentrule = map.value(keys.at(3)).value.toString();                  // set rule
-    m_Field->setRule(ruleslist.value(currentrule));                             //
-    setWindowTitle(QString("%1 %2 <%3>").arg(APP_NAME, APP_VERS, currentrule)); // show rule in caption
+    auto currentrule = map.value(keys.at(3)).value.toString();
+    m_Field->setRule(ruleslist.value(currentrule));
+
+    setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
+                   arg(APP_NAME, APP_VERS, currentrule,
+                       QString::number(m_Field->width()),
+                       QString::number(m_Field->height()),
+                       QString::number(config->SceneCellSize())));
 
     m_SceneView->zoomer()->Zoom(-1.0);
     createScene();
@@ -227,13 +227,14 @@ void MainWindow::slotNewProject()
 }
 
 void MainWindow::slotStepStop()
-{
+{    
     if(m_Field->isRunning())
     {
         m_Field->setRunning(false);
     }
     else
     {
+        m_Field->setRuleOn(true);
         m_Field->setRunningAlways(false);
         m_Field->setRunning(true);
         m_ThreadField->start();
@@ -244,6 +245,7 @@ void MainWindow::slotRun()
 {
     if(!m_Field->isRunning())
     {
+        m_Field->setRuleOn(true);
         m_Field->setRunningAlways(true);
         m_Field->setRunning(true);
         m_ThreadField->start();
@@ -254,10 +256,6 @@ void MainWindow::createScene()
 {
     auto scene = m_SceneView->addScene(m_Field);
     scene->addSceneItem();
-
-    m_LabelFieldSize->setText(QString("%1X%2 [%3]").arg(QString::number(m_Field->width()),
-                                                        QString::number(m_Field->height()),
-                                                        QString::number(config->SceneCellSize())));
 
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     QObject::connect(scene, &Scene::signalAverageDrawChangedUp, this, &MainWindow::slotAverageDrawUp);

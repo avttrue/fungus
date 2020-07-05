@@ -37,8 +37,8 @@ private:
     qreal m_AverageDraw;                                   // среднее время отрисовки сцены
     bool m_StopAdvanse;                                    // остановка отрисовки перед выходом и .т.д
 
-private Q_SLOTS:
-    void slotAdvance(QVector<Cell*> cells);                   // перерисовать сцену
+public Q_SLOTS:
+    void slotAdvance(QVector<Cell*> cells);                // перерисовать сцену
 
 Q_SIGNALS:
     void signalProgress(int progress);                     // прогресс создания сцены

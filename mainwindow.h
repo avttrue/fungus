@@ -42,7 +42,6 @@ private:
     QAction* m_ActionZoomUndoScene;
     QAction* m_ActionStepStop;
     QAction* m_ActionRun;
-    QLabel* m_LabelFieldSize;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
