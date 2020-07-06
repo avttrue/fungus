@@ -17,7 +17,7 @@ void CellInformation::setState(Kernel::CellState value)
     if (m_State == value) return;
 
     m_State = value;
-    Q_EMIT signalStateChanged(m_State);
+    Q_EMIT signalStateChanged(static_cast<int>(m_State));
 }
 
 void CellInformation::setAge(qint64 value)

@@ -30,7 +30,7 @@ private:
     Kernel::CellState m_State;
 
 Q_SIGNALS:
-    void signalStateChanged(Kernel::CellState value);
+    void signalStateChanged(int value);
     void signalAgeChanged(qint64 value);
     void signalGenerationChanged(qint64 value);
 };

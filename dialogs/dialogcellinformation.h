@@ -1,23 +1,26 @@
 #ifndef DIALOGCELLINFORMATION_H
 #define DIALOGCELLINFORMATION_H
 
+#include <kernel/kernel.h>
+
 #include <QDialog>
+#include <QFrame>
 
-const auto TB_PROPERTY_CONTENT = "RealHTML";
+const QString LABEL_STYLE = "color: black; font-family: monospace; font: bold;";
+const auto INFOPANEL_KEY_PROPERTY = "KeyValue";
 
-class QTextEdit;
 class Cell;
-class QCheckBox;
+class QGridLayout;
+class QLabel;
 
 class DialogCellInformation : public QDialog
 {
     Q_OBJECT
 
 public:
-    DialogCellInformation(QWidget *parent,
-                          Cell* cell);
-
+    DialogCellInformation(QWidget *parent, Cell* cell);
     Cell *getCell() const;
+    void setValue(const QString& key, const QVariant &value);
     static bool FindPreviousCopy(Cell* cell); // найти предыдущую копию окна, если найдена, то возвращается TRUE и делает его активным
 
 protected:
@@ -25,14 +28,26 @@ protected:
     void loadInformation();
 
 private Q_SLOTS:
-    void slotSaveContent();
     void slotShowPoint();
+    void slotCellAgeChanged(qint64 value);
+    void slotCellStateChanged(int value);
+    void slotCellGenerationChanged(qint64 value);
 
 private:
-    QTextEdit* m_TEContent;
     Cell* m_Cell;
-    QCheckBox* m_CBShowRule;
+    QGridLayout* glContent;
 };
 
+class DialogInfoPanel : public QFrame
+{
+    Q_OBJECT
+
+    public:
+    DialogInfoPanel(QWidget *parent, const QString& caption, const QString& value);
+    void setValue(const QString& value);
+
+    private:
+    QLabel* m_LabelValue;
+};
 
 #endif // DIALOGCELLINFORMATION_H

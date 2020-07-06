@@ -86,6 +86,11 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             }
 
             auto o = static_cast<SceneItem*>(item);
+            auto field = m_Scene->getField();
+            field->setRunning(false);
+            auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneCellSize());
+            auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneCellSize());
+            auto c = field->cells()->at(x).at(y);
 
             // вывод сообщения об отсутствии SceneObject
             if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
@@ -99,14 +104,6 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
                     mouseSceneEvent->button() == Qt::LeftButton)
             {
-                auto field = m_Scene->getField();
-                if(field) field->setRunning(false);
-
-                auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneCellSize());
-                auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneCellSize());
-                auto c = field->cells()->at(x).at(y);
-                qDebug() << c->objectName();
-
                 auto cellinfo = c->getInformation();
                 auto statelist = listKernelEnum("CellState");
 
@@ -139,15 +136,15 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
-            // свойства Cell
-            //            if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
-            //                mouseSceneEvent->button() == Qt::RightButton && o)
-            //            {
-            //                showCellInformationDialog(o->getCell());
-            //                m_Scene->setFocusItem(o);
-            //                findObjectBySell(o->getCell());
-            //                return true;
-            //            }
+            //свойства Cell
+                    if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
+                       mouseSceneEvent->button() == Qt::RightButton && o)
+            {
+                showCellInformationDialog(c);
+                m_Scene->setFocusItem(o);
+                //findObjectBySell(c);
+                return true;
+            }
 
             //qDebug() << "GraphicsSceneMouseRelease" << mouseSceneEvent->scenePos();
         }

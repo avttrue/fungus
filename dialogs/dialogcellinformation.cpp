@@ -11,15 +11,13 @@
 #include "scene/sceneItem.h"
 #include "scene/sceneview.h"
 
-#include <QApplication>
 #include <QDebug>
 #include <QScrollBar>
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QWindowStateChangeEvent>
-#include <QTextEdit>
-#include <QFileDialog>
-#include <QCheckBox>
+#include <QLabel>
+#include <QApplication>
 
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
@@ -36,19 +34,22 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     auto vblForm = new QVBoxLayout();
     vblForm->setAlignment(Qt::AlignAbsolute);
-    vblForm->setMargin(0);
-    vblForm->setSpacing(0);
+    vblForm->setMargin(1);
+    vblForm->setSpacing(1);
     setLayout(vblForm);
 
-    m_TEContent = new QTextEdit(this);
-    m_TEContent->setLineWrapMode(QTextEdit::NoWrap);
-    m_TEContent->setReadOnly(true);
-    m_TEContent->setUndoRedoEnabled(false);
-    m_TEContent->document()->setDocumentMargin(0);
+    auto saContent = new QScrollArea();
+    saContent->setAlignment(Qt::AlignTop);
+    saContent->setWidgetResizable(true);
 
-    m_CBShowRule = new QCheckBox(tr("Show rules"), this);
-    m_CBShowRule->setCheckState(Qt::Unchecked);
-    QObject::connect(m_CBShowRule, &QCheckBox::stateChanged, [=]() { loadInformation(); });
+    auto wContent = new QWidget();
+    saContent->setWidget(wContent);
+
+    glContent = new QGridLayout();
+    wContent->setLayout(glContent);
+    glContent->setAlignment(Qt::AlignTop);
+    glContent->setMargin(1);
+    glContent->setSpacing(1);
 
     auto toolBar = new QToolBar();
     toolBar->setMovable(false);
@@ -59,33 +60,27 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     QObject::connect(actionShowPoint, &QAction::triggered, this, &DialogCellInformation::slotShowPoint);
     toolBar->addAction(actionShowPoint);
 
-    auto actionSave = new QAction(QIcon(":/resources/img/save.svg"), "Save");
-    actionSave->setAutoRepeat(false);
-    QObject::connect(actionSave, &QAction::triggered, this, &DialogCellInformation::slotSaveContent);
-    toolBar->addAction(actionSave);
-
     toolBar->addSeparator();
-    toolBar->addWidget(m_CBShowRule);
 
     toolBar->addWidget(new WidgetSpacer(this));
 
     auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), "Cancel");
     actionCancel->setAutoRepeat(false);
     QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
-    toolBar->addAction(actionCancel);    
+    toolBar->addAction(actionCancel);
 
-    vblForm->addWidget(m_TEContent);
+    vblForm->addWidget(saContent);
     vblForm->addWidget(toolBar);
 
     loadInformation();
 
     QObject::connect(cell->getInformation(), &CellInformation::signalStateChanged,
-                     this, &DialogCellInformation::loadInformation, Qt::QueuedConnection);
+                     this, &DialogCellInformation::slotCellStateChanged, Qt::QueuedConnection);
     QObject::connect(cell->getInformation(), &CellInformation::signalAgeChanged,
-                     this, &DialogCellInformation::loadInformation, Qt::QueuedConnection);
+                     this, &DialogCellInformation::slotCellAgeChanged, Qt::QueuedConnection);
     QObject::connect(cell->getInformation(), &CellInformation::signalGenerationChanged,
-                     this, &DialogCellInformation::loadInformation, Qt::QueuedConnection);
-    QObject::connect(cell, &QObject::destroyed, this, &QDialog::close); // закрывать при уничтожении cell
+                     this, &DialogCellInformation::slotCellGenerationChanged, Qt::QueuedConnection);
+    QObject::connect(cell, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection); // закрывать при уничтожении cell
 
     installEventFilter(this);
     resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());
@@ -121,61 +116,31 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
 
 void DialogCellInformation::loadInformation()
 {
-    auto sb_pos = m_TEContent->verticalScrollBar()->value();
+    glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), ""));
+
     auto map = getPropertiesList(m_Cell->getInformation());
-    QString content;    
+    QString content;
 
     // Cell information
     for(auto key: map.keys())
     {
         QVariant value = m_Cell->getInformation()->property(key.toStdString().c_str());
-        if(key == "State")
-        {
-            value = getNameKernelEnum("CellState", value.toInt());
-        }
-        content.append(QString("<tr><td class = 'TDTEXT'>&#160;%1</td>"
-                               "<td class = 'TDTEXT'>&#160;%2</td></tr>").
-                       arg(key, value.toString()));
+        if(key == "State") value = getNameKernelEnum("CellState", value.toInt());
+
+        glContent->addWidget(new DialogInfoPanel(this, key, value.toString()));
     }
 
-    // Cell rules
-    if(m_CBShowRule->isChecked())
-        content.append(m_Cell->getField()->getRule()->toHtmlTable());
-
-    QString table = getTextFromRes(":/resources/table_content.html").
-                    arg(windowTitle(), content);
-    QString html = getTextFromRes(":/resources/cellinformation.html").
-                   arg(windowTitle(), table);
-
-    m_TEContent->setProperty(TB_PROPERTY_CONTENT, html);
-    m_TEContent->setHtml(html);
-    m_TEContent->verticalScrollBar()->setValue(sb_pos);
-}
-
-void DialogCellInformation::slotSaveContent()
-{
-    auto deffilename = config->LastDir() + QDir::separator() + QString("%1.html").arg(windowTitle());
-    auto filename = QFileDialog::getSaveFileName(this, "Save cell report", deffilename, "HTML files (*.html)");
-
-    if(filename.isNull()) return;
-    config->setLastDir(QFileInfo(filename).dir().path());
-    if(!filename.endsWith(".html", Qt::CaseInsensitive)) filename.append(".html");
-
-    QString text = m_TEContent->property(TB_PROPERTY_CONTENT).toString();
-
-    if(textToFile(text, filename)) return;
-
-    qCritical() << __func__ << "Error at file saving:" << filename;
 }
 
 void DialogCellInformation::slotShowPoint()
 {
-//    auto o = m_Cell->getSceneItem();
-//    o->getScene()->getView()->findObjectBySell(m_Cell);
+    //    auto o = m_Cell->getSceneItem();
+    //    o->getScene()->getView()->findObjectBySell(m_Cell);
+
 }
 
 bool DialogCellInformation::FindPreviousCopy(Cell *cell)
-{
+{    
     for (QWidget *widget: QApplication::topLevelWidgets())
     {
         auto dci = qobject_cast<DialogCellInformation*>(widget);
@@ -192,5 +157,65 @@ bool DialogCellInformation::FindPreviousCopy(Cell *cell)
     return false;
 }
 
-Cell *DialogCellInformation::getCell() const { return m_Cell; }
+void DialogCellInformation::setValue(const QString &key, const QVariant &value)
+{
+    for(int i = 0; i < glContent->count(); i++)
+    {
+        auto item = glContent->itemAt(i)->widget();
+        if(item->property(INFOPANEL_KEY_PROPERTY) == key)
+        {
+            auto dip = qobject_cast<DialogInfoPanel*>(item);
+            dip->setValue(value.toString());
+            return;
+        }
+    }
 
+    qCritical() << __func__ << "property" <<  INFOPANEL_KEY_PROPERTY << "not found";
+}
+
+Cell *DialogCellInformation::getCell() const { return m_Cell; }
+void DialogCellInformation::slotCellAgeChanged(qint64 value) { setValue("Age", value); }
+void DialogCellInformation::slotCellStateChanged(int value) { setValue("State", getNameKernelEnum("CellState", value)); }
+void DialogCellInformation::slotCellGenerationChanged(qint64 value) { setValue("Generation", value); }
+
+//----------------------------------------------------
+
+DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const QString &value)
+    : QFrame(parent)
+{
+    setLineWidth(1);
+
+    auto hbox = new QHBoxLayout();
+    hbox->setSpacing(1);
+    setLayout(hbox);
+
+    auto labelCaption = new QLabel(caption, this);
+    labelCaption->setStyleSheet(LABEL_STYLE);
+
+    if(!value.isEmpty())
+    {
+        hbox->setMargin(2);
+        setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+
+        hbox->setAlignment(Qt::AlignLeft);
+        hbox->addWidget(labelCaption, 1);
+
+        m_LabelValue = new QLabel(value, this);
+        m_LabelValue->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+        m_LabelValue->setLineWidth(1);
+        m_LabelValue->setStyleSheet(LABEL_STYLE);
+        hbox->addWidget(m_LabelValue, 1);
+    }
+    else
+    {
+        hbox->setMargin(3);
+        setFrameStyle(QFrame::Panel | QFrame::Raised);
+
+        hbox->setAlignment(Qt::AlignAbsolute);
+        hbox->addWidget(labelCaption, 0);
+    }
+
+    setProperty(INFOPANEL_KEY_PROPERTY, caption);
+}
+
+void DialogInfoPanel::setValue(const QString &value) { m_LabelValue->setText(value); }
