@@ -61,7 +61,7 @@ Q_SIGNALS:
     void signalRunning(bool value);                 // состояние вкл/выкл цикла calculate
     void signalCalculatingStopped();                // calculate остановлен/завершён
     void signalCalculated(QVector<Cell*> cells);    // завершена итерация calculate
-    void signalFillingProgress(int step);
+    void signalFillingProgress(int step);           // для индикации создания
 };
 
 #endif // FIELD_H

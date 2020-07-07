@@ -21,7 +21,6 @@ protected:
 private:
     Scene* m_Scene;
     QPixmap m_Pixmap;
-    QVariant m_BufferPixmap;
 };
 
 #endif // SCENEITEM_H

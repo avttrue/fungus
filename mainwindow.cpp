@@ -61,6 +61,7 @@ void MainWindow::loadGui()
 
     auto actionNew = new QAction(QIcon(":/resources/img/asterisk.svg"), tr("New project"), this);
     QObject::connect(actionNew, &QAction::triggered, this, &MainWindow::slotNewProject);
+    actionNew->setShortcut(Qt::CTRL + Qt::Key_N);
 
     m_ActionZoomInScene = new QAction(QIcon(":/resources/img/zoom_in.svg"), tr("Zoom IN"), this);
     QObject::connect(m_ActionZoomInScene, &QAction::triggered, this, &MainWindow::slotSceneZoomIn);
@@ -80,22 +81,27 @@ void MainWindow::loadGui()
     m_ActionStepStop = new QAction(QIcon(":/resources/img/step_stop.svg"), tr("Step / Stop"), this);
     QObject::connect(m_ActionStepStop, &QAction::triggered, this, &MainWindow::slotStepStop);
     m_ActionStepStop->setEnabled(false);
+    m_ActionStepStop->setShortcut(Qt::CTRL + Qt::Key_Space);
 
     m_ActionRun = new QAction(QIcon(":/resources/img/run.svg"), tr("Run"), this);
     QObject::connect(m_ActionRun, &QAction::triggered, this, &MainWindow::slotRun);
     m_ActionRun->setEnabled(false);
+    m_ActionRun->setShortcut(Qt::CTRL + Qt::Key_R);
 
     m_ActionEditCell = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit cell"), this);
     QObject::connect(m_ActionEditCell, &QAction::triggered, this, &MainWindow::slotEditCell);
     m_ActionEditCell->setEnabled(false);
+    m_ActionEditCell->setShortcut(Qt::CTRL + Qt::Key_E);
 
     m_ActionInfoCell = new QAction(QIcon(":/resources/img/eye.svg"), tr("Cell information"), this);
     QObject::connect(m_ActionInfoCell, &QAction::triggered, this, &MainWindow::slotInfoCell);
     m_ActionInfoCell->setEnabled(false);
+    m_ActionInfoCell->setShortcut(Qt::CTRL + Qt::Key_I);
 
     m_ActionShowSelectedCell = new QAction(QIcon(":/resources/img/point.svg"), tr("Show selected cell"), this);
     QObject::connect(m_ActionShowSelectedCell, &QAction::triggered, this, &MainWindow::slotShowSelectedCell);
     m_ActionShowSelectedCell->setEnabled(false);
+    m_ActionShowSelectedCell->setShortcut(Qt::CTRL + Qt::Key_S);
 
     // тулбар
     auto tbMain = new QToolBar(this);
