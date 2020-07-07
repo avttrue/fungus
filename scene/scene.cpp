@@ -12,10 +12,12 @@
 #include <QDateTime>
 #include <QDebug>
 
-Scene::Scene(SceneView* parent, Field *field)
+Scene::Scene(QObject* parent, Field *field)
     : QGraphicsScene(parent),
-      m_View(parent),
       m_Field(field),
+      m_SelectedCell(nullptr),
+      m_SceneItem(nullptr),
+      m_SelectionMark(nullptr),
       m_AverageDraw(0),
       m_StopAdvanse(false)
 {
@@ -35,6 +37,7 @@ Scene::Scene(SceneView* parent, Field *field)
     else setBackgroundColor(QColor(SCENE_BG_COLOR));
 
     addSceneItem();
+    addSelectionMark();
 
     QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
 
@@ -46,7 +49,45 @@ void Scene::addSceneItem()
 {
     m_SceneItem = new SceneItem(this);
     m_SceneItem->setPos(m_SceneItem->mapToParent(0, 0));
+    m_SceneItem->setZValue(0);
     addItem(m_SceneItem);
+}
+
+void Scene::addSelectionMark()
+{
+    if(!m_SceneItem)
+    {
+        qCritical() << "SceneItem not created";
+        return;
+    }
+
+    m_SelectionMark = addRect(0, 0, config->SceneCellSize(), config->SceneCellSize(),
+                              QPen(QColor(config->SceneSelectColor())),
+                              QBrush(QColor(config->SceneSelectColor())));
+    m_SelectionMark->setZValue(m_SceneItem->zValue() + 1);
+    m_SelectionMark->hide();
+}
+
+void Scene::selectCell(Cell *cell)
+{
+    if(m_SelectedCell == cell) return;
+
+    if(!cell)
+    {
+        m_SelectionMark->hide();
+    }
+    else
+    {
+        m_SelectionMark->setPos(m_SceneItem->mapToParent(cell->getIndex() * config->SceneCellSize()));
+        m_SelectionMark->show();
+    }
+
+    if(!cell) qDebug() << "Cell unselected:" << m_SelectedCell->objectName();
+    else qDebug() << "Cell selected:" << cell->objectName();
+
+    m_SelectedCell = cell;
+
+    Q_EMIT signalSelectedCellChanged(m_SelectedCell);
 }
 
 void Scene::setBackgroundColor(const QColor &value)
@@ -109,10 +150,9 @@ void Scene::applyAverageDraw(qint64 time)
     }
 }
 
-QGraphicsRectItem *Scene::borderRect() const { return m_BorderRect; }
+Cell *Scene::getSelectedCell() const { return m_SelectedCell; }
 QSize Scene::size() const { return m_Size; }
 QColor Scene::getBackgroundColor() const { return m_BackgroundColor; }
-SceneView *Scene::getView() const { return m_View; }
 Field *Scene::getField() const { return m_Field; }
 void Scene::StopAdvanse() { m_StopAdvanse = true; }
 SceneItem *Scene::getSceneItem() const { return m_SceneItem; }

@@ -7,8 +7,10 @@
 #include "scene/sceneview.h"
 #include "graphicsviewzoomer.h"
 #include "dialogs/dialogvalueslist.h"
+#include "dialogs/dialogcellinformation.h"
 #include "field/field.h"
 #include "field/cell.h"
+#include "field/cellinformation.h"
 #include "field/cellrule.h"
 #include "field/fieldinformation.h"
 
@@ -83,6 +85,18 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionRun, &QAction::triggered, this, &MainWindow::slotRun);
     m_ActionRun->setEnabled(false);
 
+    m_ActionEditCell = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit cell"), this);
+    QObject::connect(m_ActionEditCell, &QAction::triggered, this, &MainWindow::slotEditCell);
+    m_ActionEditCell->setEnabled(false);
+
+    m_ActionInfoCell = new QAction(QIcon(":/resources/img/eye.svg"), tr("Cell information"), this);
+    QObject::connect(m_ActionInfoCell, &QAction::triggered, this, &MainWindow::slotInfoCell);
+    m_ActionInfoCell->setEnabled(false);
+
+    m_ActionShowSelectedCell = new QAction(QIcon(":/resources/img/point.svg"), tr("Show selected cell"), this);
+    QObject::connect(m_ActionShowSelectedCell, &QAction::triggered, this, &MainWindow::slotShowSelectedCell);
+    m_ActionShowSelectedCell->setEnabled(false);
+
     // тулбар
     auto tbMain = new QToolBar(this);
     tbMain->setMovable(false);
@@ -94,6 +108,10 @@ void MainWindow::loadGui()
     tbMain->addAction(m_ActionZoomUndoScene);
     tbMain->addAction(m_ActionZoomInScene);
     tbMain->addAction(m_ActionZoomOutScene);
+    tbMain->addSeparator();
+    tbMain->addAction(m_ActionEditCell);
+    tbMain->addAction(m_ActionInfoCell);
+    tbMain->addAction(m_ActionShowSelectedCell);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionStepStop);
     tbMain->addAction(m_ActionRun);
@@ -123,7 +141,7 @@ void MainWindow::loadGui()
 
     statusBar->addWidget(new QLabel(tr("Age:"), this));
     m_LabelFieldAge = new QLabel("-", this);
-    m_LabelFieldAge->setStyleSheet(LABEL_STYLE);
+    m_LabelFieldAge->setStyleSheet(MW_LABEL_STYLE);
     statusBar->addWidget(m_LabelFieldAge);
 
     statusBar->addWidget(new SeparatorV(this));
@@ -131,19 +149,19 @@ void MainWindow::loadGui()
     statusBar->addWidget(new QLabel(tr("D:"), this));
     m_LabelFieldDeadCells = new QLabel("-", this);
     m_LabelFieldDeadCells->setToolTip(tr("Dead cells"));
-    m_LabelFieldDeadCells->setStyleSheet(LABEL_STYLE);
+    m_LabelFieldDeadCells->setStyleSheet(MW_LABEL_STYLE);
     statusBar->addWidget(m_LabelFieldDeadCells);
 
     statusBar->addWidget(new QLabel(tr("A:"), this));
     m_LabelFieldAliveCells = new QLabel("-", this);
     m_LabelFieldAliveCells->setToolTip(tr("Alive cells"));
-    m_LabelFieldAliveCells->setStyleSheet(LABEL_STYLE);
+    m_LabelFieldAliveCells->setStyleSheet(MW_LABEL_STYLE);
     statusBar->addWidget(m_LabelFieldAliveCells);
 
     statusBar->addWidget(new QLabel(tr("C:"), this));
     m_LabelFieldCursedCells = new QLabel("-", this);
     m_LabelFieldCursedCells->setToolTip(tr("Cursed cells"));
-    m_LabelFieldCursedCells->setStyleSheet(LABEL_STYLE);
+    m_LabelFieldCursedCells->setStyleSheet(MW_LABEL_STYLE);
     statusBar->addWidget(m_LabelFieldCursedCells);
 
     statusBar->addWidget(new SeparatorV(this));
@@ -154,12 +172,12 @@ void MainWindow::loadGui()
 
     statusBar->addWidget(new QLabel(tr("Calc:"), this));
     m_LabelFieldAvCalc = new QLabel("-", this);
-    m_LabelFieldAvCalc->setStyleSheet(LABEL_STYLE);
+    m_LabelFieldAvCalc->setStyleSheet(MW_LABEL_STYLE);
     statusBar->addWidget(m_LabelFieldAvCalc);
 
     statusBar->addWidget(new QLabel(tr("Draw:"), this));
     m_LabelSceneAvDraw = new QLabel("-", this);
-    m_LabelSceneAvDraw->setStyleSheet(LABEL_STYLE);
+    m_LabelSceneAvDraw->setStyleSheet(MW_LABEL_STYLE);
     m_LabelSceneAvDraw->setFont(QFont("monospace"));
     statusBar->addWidget(m_LabelSceneAvDraw);
 
@@ -257,9 +275,14 @@ void MainWindow::createScene()
     auto scene = m_SceneView->addScene(m_Field);
     scene->addSceneItem();
 
+    m_ActionEditCell->setDisabled(true);
+    m_ActionInfoCell->setDisabled(true);
+    m_ActionShowSelectedCell->setDisabled(true);
+
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     QObject::connect(scene, &Scene::signalAverageDrawChangedUp, this, &MainWindow::slotAverageDrawUp);
     QObject::connect(scene, &Scene::signalAverageDrawChangedDown, this, &MainWindow::slotAverageDrawDown);
+    QObject::connect(scene, &Scene::signalSelectedCellChanged, this, &MainWindow::slotSelectedCellChanged);
 }
 
 void MainWindow::createField(int w, int h)
@@ -446,34 +469,127 @@ void MainWindow::slotFieldCursedCells(qint64 value)
     m_LabelFieldCursedCells->setText(QString::number(value).rightJustified(num, '.'));
 }
 
+void MainWindow::slotSelectedCellChanged(Cell *cell)
+{
+    m_ActionEditCell->setDisabled(cell == nullptr);
+    m_ActionInfoCell->setDisabled(cell == nullptr);
+    m_ActionShowSelectedCell->setDisabled(cell == nullptr);
+}
+
+void MainWindow::slotInfoCell()
+{
+    auto cell = m_SceneView->getScene()->getSelectedCell();
+    if(!cell)
+    {
+        m_ActionInfoCell->setDisabled(true);
+        return;
+    }
+
+    slotShowCell(cell);
+
+    if(DialogCellInformation::FindPreviousCopy(cell)) return;
+
+    auto dci = new DialogCellInformation(this, cell);
+
+    QObject::connect(dci, &DialogCellInformation::signalShowCell, this, &MainWindow::slotShowCell);
+    dci->show();
+}
+
+void MainWindow::slotEditCell()
+{
+    m_Field->setRunning(false);
+
+    auto cell = m_SceneView->getScene()->getSelectedCell();
+    if(!cell)
+    {
+        m_ActionEditCell->setDisabled(true);
+        return;
+    }
+
+    slotShowCell(cell);
+
+    auto cellinfo = cell->getInformation();
+    auto statelist = listKernelEnum("CellState");
+
+    const QVector<QString> keys =
+    { tr("00#_Cell properties"),
+      tr("01#_Cell state"),
+      tr("02#_Cell age"),
+      tr("03#_Cell generation") };
+    QMap<QString, DialogValue> map =
+    { {keys.at(0), {}},
+      {keys.at(1), {QVariant::StringList,
+                    getNameKernelEnum("CellState", static_cast<int>(cellinfo->getState())), 0,
+                    statelist, DialogValueMode::OneFromList}},
+      {keys.at(2), {QVariant::Int, cellinfo->getAge(), 0, 0}},
+      {keys.at(3), {QVariant::Int, cellinfo->getGeneration(), 0, 0}} };
+
+    auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
+                                    tr("Edit cell %1").arg(cell->objectName()), &map);
+    if(!dvl->exec()) return;
+
+    cellinfo->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
+    cellinfo->setAge(map.value(keys.at(2)).value.toInt());
+    cellinfo->setGeneration(map.value(keys.at(3)).value.toInt());
+
+    m_Field->setRuleOn(false);
+    m_Field->setRunningAlways(false);
+    m_Field->setRunning(true);
+    m_Field->calculate();
+}
+
+void MainWindow::slotShowCell(Cell *cell)
+{
+    if(!cell)
+    {
+        qWarning() << __func__ << "Cell is null";
+        return;
+    }
+
+    m_SceneView->getScene()->selectCell(cell);
+    m_SceneView->centerOn(cell->getIndex() * config->SceneCellSize());
+}
+
+void MainWindow::slotShowSelectedCell()
+{
+    auto cell = m_SceneView->getScene()->getSelectedCell();
+    if(!cell)
+    {
+        m_ActionShowSelectedCell->setDisabled(true);
+        return;
+    }
+
+    slotShowCell(cell);
+}
+
 void MainWindow::slotFieldAvCalcUp(qreal value)
 {
-    if(m_LabelFieldAvCalc->styleSheet() != LABEL_STYLE_UP)
-        m_LabelFieldAvCalc->setStyleSheet(LABEL_STYLE_UP);
+    if(m_LabelFieldAvCalc->styleSheet() != MW_LABEL_STYLE_UP)
+        m_LabelFieldAvCalc->setStyleSheet(MW_LABEL_STYLE_UP);
 
     m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotFieldAvCalcDown(qreal value)
 {
-    if(m_LabelFieldAvCalc->styleSheet() != LABEL_STYLE_DOWN)
-        m_LabelFieldAvCalc->setStyleSheet(LABEL_STYLE_DOWN);
+    if(m_LabelFieldAvCalc->styleSheet() != MW_LABEL_STYLE_DOWN)
+        m_LabelFieldAvCalc->setStyleSheet(MW_LABEL_STYLE_DOWN);
 
     m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotAverageDrawUp(qreal value)
 {
-    if(m_LabelSceneAvDraw->styleSheet() != LABEL_STYLE_UP)
-        m_LabelSceneAvDraw->setStyleSheet(LABEL_STYLE_UP);
+    if(m_LabelSceneAvDraw->styleSheet() != MW_LABEL_STYLE_UP)
+        m_LabelSceneAvDraw->setStyleSheet(MW_LABEL_STYLE_UP);
 
     m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotAverageDrawDown(qreal value)
 {
-    if(m_LabelSceneAvDraw->styleSheet() != LABEL_STYLE_DOWN)
-        m_LabelSceneAvDraw->setStyleSheet(LABEL_STYLE_DOWN);
+    if(m_LabelSceneAvDraw->styleSheet() != MW_LABEL_STYLE_DOWN)
+        m_LabelSceneAvDraw->setStyleSheet(MW_LABEL_STYLE_DOWN);
 
     m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }

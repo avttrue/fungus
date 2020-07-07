@@ -29,7 +29,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
                    Qt::WindowTitleHint);
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowTitle(tr("Cell %1").arg(cell->objectName()));
-    setWindowIcon(QIcon(":/resources/img/point.svg"));
+    setWindowIcon(QIcon(":/resources/img/eye.svg"));
     setModal(false);
 
     auto vblForm = new QVBoxLayout();
@@ -125,18 +125,10 @@ void DialogCellInformation::loadInformation()
     for(auto key: map.keys())
     {
         QVariant value = m_Cell->getInformation()->property(key.toStdString().c_str());
-        if(key == "State") value = getNameKernelEnum("CellState", value.toInt());
 
+        if(key == "State") value = getNameKernelEnum("CellState", value.toInt());
         glContent->addWidget(new DialogInfoPanel(this, key, value.toString()));
     }
-
-}
-
-void DialogCellInformation::slotShowPoint()
-{
-    //    auto o = m_Cell->getSceneItem();
-    //    o->getScene()->getView()->findObjectBySell(m_Cell);
-
 }
 
 bool DialogCellInformation::FindPreviousCopy(Cell *cell)
@@ -162,7 +154,7 @@ void DialogCellInformation::setValue(const QString &key, const QVariant &value)
     for(int i = 0; i < glContent->count(); i++)
     {
         auto item = glContent->itemAt(i)->widget();
-        if(item->property(INFOPANEL_KEY_PROPERTY) == key)
+        if(item->property(DCI_INFOPANEL_KEY_PROPERTY) == key)
         {
             auto dip = qobject_cast<DialogInfoPanel*>(item);
             dip->setValue(value.toString());
@@ -170,9 +162,10 @@ void DialogCellInformation::setValue(const QString &key, const QVariant &value)
         }
     }
 
-    qCritical() << __func__ << "property" <<  INFOPANEL_KEY_PROPERTY << "not found";
+    qCritical() << __func__ << "property" <<  DCI_INFOPANEL_KEY_PROPERTY << "not found";
 }
 
+void DialogCellInformation::slotShowPoint() { Q_EMIT signalShowCell(m_Cell); }
 Cell *DialogCellInformation::getCell() const { return m_Cell; }
 void DialogCellInformation::slotCellAgeChanged(qint64 value) { setValue("Age", value); }
 void DialogCellInformation::slotCellStateChanged(int value) { setValue("State", getNameKernelEnum("CellState", value)); }
@@ -190,7 +183,7 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
     setLayout(hbox);
 
     auto labelCaption = new QLabel(caption, this);
-    labelCaption->setStyleSheet(LABEL_STYLE);
+    labelCaption->setStyleSheet(DCI_LABEL_STYLE);
 
     if(!value.isEmpty())
     {
@@ -203,7 +196,7 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
         m_LabelValue = new QLabel(value, this);
         m_LabelValue->setFrameStyle(QFrame::Panel | QFrame::Sunken);
         m_LabelValue->setLineWidth(1);
-        m_LabelValue->setStyleSheet(LABEL_STYLE);
+        m_LabelValue->setStyleSheet(DCI_LABEL_STYLE);
         hbox->addWidget(m_LabelValue, 1);
     }
     else
@@ -215,7 +208,7 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
         hbox->addWidget(labelCaption, 0);
     }
 
-    setProperty(INFOPANEL_KEY_PROPERTY, caption);
+    setProperty(DCI_INFOPANEL_KEY_PROPERTY, caption);
 }
 
 void DialogInfoPanel::setValue(const QString &value) { m_LabelValue->setText(value); }

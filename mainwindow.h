@@ -3,13 +3,13 @@
 
 #include <QMainWindow>
 
-const QString LABEL_STYLE = "background-color: lightgray; color: black; font-family: monospace; font: bold;";
-const QString LABEL_STYLE_UP = "background-color: lightgray; color: red; font-family: monospace; font: bold;";
-const QString LABEL_STYLE_DOWN = "background-color: lightgray; color: green; font-family: monospace; font: bold;";
+const QString MW_LABEL_STYLE = "background-color: lightgray; color: black; font-family: monospace; font: bold;";
+const QString MW_LABEL_STYLE_UP = "background-color: lightgray; color: red; font-family: monospace; font: bold;";
+const QString MW_LABEL_STYLE_DOWN = "background-color: lightgray; color: green; font-family: monospace; font: bold;";
 
 class Field;
+class Cell;
 class SceneView;
-class SceneItem;
 class QLabel;
 class QProgressBar;
 class QThread;
@@ -32,7 +32,6 @@ protected:
     void deleteField();
     void stopThreadField();
 
-
 private:
     QThread* m_ThreadField;
     Field* m_Field;
@@ -42,6 +41,9 @@ private:
     QAction* m_ActionZoomUndoScene;
     QAction* m_ActionStepStop;
     QAction* m_ActionRun;
+    QAction* m_ActionEditCell;
+    QAction* m_ActionInfoCell;
+    QAction* m_ActionShowSelectedCell;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -68,5 +70,11 @@ private Q_SLOTS:
     void slotFieldDeadCells(qint64 value);
     void slotFieldAliveCells(qint64 value);
     void slotFieldCursedCells(qint64 value);
+    void slotSelectedCellChanged(Cell* cell);
+    void slotInfoCell();
+    void slotEditCell();
+    void slotShowCell(Cell* cell);
+    void slotShowSelectedCell();
 };
+
 #endif // MAINWINDOW_H

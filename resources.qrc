@@ -26,5 +26,8 @@
         <file>resources/img/check.svg</file>
         <file>resources/img/flora.svg</file>
         <file>resources/table_content.html</file>
+        <file>resources/img/eye.svg</file>
+        <file>resources/img/edit.svg</file>
+        <file>resources/img/field.svg</file>
     </qresource>
 </RCC>

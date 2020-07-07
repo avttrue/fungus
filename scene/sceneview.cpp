@@ -3,16 +3,10 @@
 #include "properties.h"
 #include "sceneItem.h"
 #include "graphicsviewzoomer.h"
-#include "dialogs/dialogcellinformation.h"
-#include "dialogs/dialogvalueslist.h"
 #include "field/field.h"
-#include "field/cell.h"
-#include "field/cellinformation.h"
-#include "kernel/kernel.h"
 
 #include <QtMath>
 #include <QDebug>
-#include <QMessageBox>
 #include <QGraphicsView>
 #include <QGraphicsSceneMouseEvent>
 
@@ -85,64 +79,31 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
-            auto o = static_cast<SceneItem*>(item);
+            auto o = static_cast<SceneItem*>(item);            
+
+            // вывод сообщения об отсутствии SceneObject
+            if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
+                    mouseSceneEvent->button() == Qt::LeftButton && !o)
+            {
+                qCritical() << __func__ << ": GraphicsSceneMouseRelease: SceneObject not detected";
+                return true;
+            }
+
             auto field = m_Scene->getField();
             field->setRunning(false);
             auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneCellSize());
             auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneCellSize());
             auto c = field->cells()->at(x).at(y);
 
-            // вывод сообщения об отсутствии SceneObject
-            if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
-                    mouseSceneEvent->button() == Qt::LeftButton && !o)
+            if(mouseSceneEvent->button() == Qt::LeftButton)
             {
-                QMessageBox::information(this, tr("Information"), tr("Scene object not created yet."));
+                m_Scene->selectCell(c);
                 return true;
             }
 
-            // создать SceneObject и отредактировать Cell
-            if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
-                    mouseSceneEvent->button() == Qt::LeftButton)
+            if(mouseSceneEvent->button() == Qt::RightButton)
             {
-                auto cellinfo = c->getInformation();
-                auto statelist = listKernelEnum("CellState");
-
-                const QVector<QString> keys =
-                { tr("00#_Cell properties"),
-                  tr("01#_Cell state"),
-                  tr("02#_Cell age"),
-                  tr("03#_Cell generation") };
-                QMap<QString, DialogValue> map =
-                { {keys.at(0), {}},
-                  {keys.at(1), {QVariant::StringList,
-                                getNameKernelEnum("CellState", static_cast<int>(cellinfo->getState())), 0,
-                                statelist, DialogValueMode::OneFromList}},
-                  {keys.at(2), {QVariant::Int, cellinfo->getAge(), 0, 0}},
-                  {keys.at(3), {QVariant::Int, cellinfo->getGeneration(), 0, 0}} };
-
-                auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
-                                                tr("Edit cell %1").arg(c->objectName()), &map);
-                if(!dvl->exec()) return false;
-
-                cellinfo->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
-                cellinfo->setAge(map.value(keys.at(2)).value.toInt());
-                cellinfo->setGeneration(map.value(keys.at(3)).value.toInt());
-
-                field->setRuleOn(false);
-                field->setRunningAlways(false);
-                field->setRunning(true);
-                field->calculate();
-
-                return true;
-            }
-
-            //свойства Cell
-                    if(mouseSceneEvent->modifiers() == config->SceneObjectModifier() &&
-                       mouseSceneEvent->button() == Qt::RightButton && o)
-            {
-                showCellInformationDialog(c);
-                m_Scene->setFocusItem(o);
-                //findObjectBySell(c);
+                m_Scene->selectCell(nullptr);
                 return true;
             }
 
@@ -150,15 +111,6 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
         }
     }
     return false;
-}
-
-void SceneView::showCellInformationDialog(Cell *cell)
-{
-    if(DialogCellInformation::FindPreviousCopy(cell)) return;
-
-    auto dci = new DialogCellInformation(this, cell);
-    dci->show();
-
 }
 
 void SceneView::SetUpdateMode()

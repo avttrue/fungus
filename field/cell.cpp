@@ -24,4 +24,3 @@ void Cell::setIndex(const QPoint &value) { m_Index = value; }
 CellInformation *Cell::getInformation() { return m_Information; }
 Field *Cell::getField() const { return m_Field; }
 void Cell::setField(Field *value) { m_Field = value; }
-

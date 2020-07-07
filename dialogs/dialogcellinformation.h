@@ -6,8 +6,8 @@
 #include <QDialog>
 #include <QFrame>
 
-const QString LABEL_STYLE = "color: black; font-family: monospace; font: bold;";
-const auto INFOPANEL_KEY_PROPERTY = "KeyValue";
+const QString DCI_LABEL_STYLE = "color: black; font-family: monospace; font: bold;";
+const auto DCI_INFOPANEL_KEY_PROPERTY = "KeyValue";
 
 class Cell;
 class QGridLayout;
@@ -27,26 +27,30 @@ protected:
     bool eventFilter(QObject *object, QEvent *event);
     void loadInformation();
 
+private:
+    Cell* m_Cell;
+    QGridLayout* glContent;
+
 private Q_SLOTS:
     void slotShowPoint();
     void slotCellAgeChanged(qint64 value);
     void slotCellStateChanged(int value);
     void slotCellGenerationChanged(qint64 value);
 
-private:
-    Cell* m_Cell;
-    QGridLayout* glContent;
+Q_SIGNALS:
+    void signalShowCell(Cell* cell);
+
 };
 
 class DialogInfoPanel : public QFrame
 {
     Q_OBJECT
 
-    public:
+public:
     DialogInfoPanel(QWidget *parent, const QString& caption, const QString& value);
     void setValue(const QString& value);
 
-    private:
+private:
     QLabel* m_LabelValue;
 };
 
