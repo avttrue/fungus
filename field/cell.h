@@ -12,18 +12,23 @@ class Cell : public QObject
     Q_OBJECT
 
 public:
-    explicit Cell(QObject *parent = nullptr);
+    explicit Cell(Field *parent);
     QPoint getIndex();
     void setIndex(const QPoint &value);
-    CellInformation* getInformation();
+    CellInformation* getCurInfo();
+    CellInformation *getNewInfo();
     void clear();
     Field *getField() const;
-    void setField(Field *value);
 
 private:
     Field* m_Field;
     QPoint m_Index;
-    CellInformation* m_Information;
+    CellInformation* m_CurrentInformation;
+    CellInformation* m_NewInformation;
+
+private Q_SLOTS:
+    void slotApplyNewInfo();
+
 };
 
 #endif // CELL_H

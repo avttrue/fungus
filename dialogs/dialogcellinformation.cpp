@@ -74,11 +74,11 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     loadInformation();
 
-    QObject::connect(cell->getInformation(), &CellInformation::signalStateChanged,
+    QObject::connect(cell->getCurInfo(), &CellInformation::signalStateChanged,
                      this, &DialogCellInformation::slotCellStateChanged, Qt::QueuedConnection);
-    QObject::connect(cell->getInformation(), &CellInformation::signalAgeChanged,
+    QObject::connect(cell->getCurInfo(), &CellInformation::signalAgeChanged,
                      this, &DialogCellInformation::slotCellAgeChanged, Qt::QueuedConnection);
-    QObject::connect(cell->getInformation(), &CellInformation::signalGenerationChanged,
+    QObject::connect(cell->getCurInfo(), &CellInformation::signalGenerationChanged,
                      this, &DialogCellInformation::slotCellGenerationChanged, Qt::QueuedConnection);
     QObject::connect(cell, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection); // закрывать при уничтожении cell
 
@@ -118,13 +118,13 @@ void DialogCellInformation::loadInformation()
 {
     glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), ""));
 
-    auto map = getPropertiesList(m_Cell->getInformation());
+    auto map = getPropertiesList(m_Cell->getCurInfo());
     QString content;
 
     // Cell information
     for(auto key: map.keys())
     {
-        QVariant value = m_Cell->getInformation()->property(key.toStdString().c_str());
+        QVariant value = m_Cell->getCurInfo()->property(key.toStdString().c_str());
 
         if(key == "State") value = getNameKernelEnum("CellState", value.toInt());
         glContent->addWidget(new DialogInfoPanel(this, key, value.toString()));

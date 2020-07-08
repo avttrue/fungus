@@ -523,7 +523,7 @@ void MainWindow::slotEditCell()
 
     slotShowCell(cell);
 
-    auto cellinfo = cell->getInformation();
+    auto cellinfo = cell->getCurInfo();
     auto statelist = listKernelEnum("CellState");
 
     const QVector<QString> keys =

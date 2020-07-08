@@ -51,9 +51,8 @@ void Field::fill()
 
 Cell *Field::addCell(int x, int y)
 {
-    auto c = new Cell;
+    auto c = new Cell(this);
     c->moveToThread(thread()); c->setParent(this); // NOTE: field выполняется не в основном потоке
-    c->setField(this);
     c->setIndex({x, y});
     c->setObjectName(QString("[%1X%2]").arg(QString::number(x), QString::number(y)));
     m_Cells[x][y] = c;
@@ -196,17 +195,17 @@ QVector<Cell*> Field::getCellsAround(Cell *c)
 
 void Field::testRules(Cell *c)
 {
-    if(c->getInformation()->getState() == Kernel::CellState::Dead)
+    if(c->getCurInfo()->getState() == Kernel::CellState::Dead)
     {
-        c->getInformation()->setState(Kernel::CellState::Alive);
+        c->getCurInfo()->setState(Kernel::CellState::Alive);
     }
-    else if(c->getInformation()->getState() == Kernel::CellState::Alive)
+    else if(c->getCurInfo()->getState() == Kernel::CellState::Alive)
     {
-        c->getInformation()->setState(Kernel::CellState::Cursed);
+        c->getCurInfo()->setState(Kernel::CellState::Cursed);
     }
-    else if(c->getInformation()->getState() == Kernel::CellState::Cursed)
+    else if(c->getCurInfo()->getState() == Kernel::CellState::Cursed)
     {
-        c->getInformation()->setState(Kernel::CellState::Dead);
+        c->getCurInfo()->setState(Kernel::CellState::Dead);
     }
 }
 
@@ -266,33 +265,33 @@ void Field::calculate()
 
                 if(m_RuleOn)
                 {
-                    auto prevage = c->getInformation()->getAge();
+                    auto prevage = c->getCurInfo()->getAge();
                     // TODO: выполнение правил
                     testRules(c); // test
 
                     // cell Age
-                    if(c->getInformation()->getState() == Kernel::CellState::Alive)
-                        c->getInformation()->upAge();
+                    if(c->getCurInfo()->getState() == Kernel::CellState::Alive)
+                        c->getCurInfo()->upAge();
                     else
-                        c->getInformation()->setAge(0);
+                        c->getCurInfo()->setAge(0);
 
                     // cell Generation
-                    if(prevage == 0 && c->getInformation()->getAge() > 0)
-                      c->getInformation()->upGeneration();
+                    if(prevage == 0 && c->getCurInfo()->getAge() > 0)
+                      c->getCurInfo()->upGeneration();
                 }
 
-                if(c->getInformation()->getState() == Kernel::CellState::Dead)
+                if(c->getCurInfo()->getState() == Kernel::CellState::Dead)
                 {
                     dead++;
                     //cells.append(c); // пустые не передаём
 
                 }
-                else if(c->getInformation()->getState() == Kernel::CellState::Alive)
+                else if(c->getCurInfo()->getState() == Kernel::CellState::Alive)
                 {
                     cells.append(c);
                     alive++;
                 }
-                else if(c->getInformation()->getState() == Kernel::CellState::Cursed)
+                else if(c->getCurInfo()->getState() == Kernel::CellState::Cursed)
                 {
                     cells.append(c);
                     cursed++;
