@@ -10,6 +10,7 @@ class FieldInformation;
 class Field : public QObject
 {
     Q_OBJECT
+
 public:
     Field(int width, int height, QObject *parent = nullptr);
     void fill();

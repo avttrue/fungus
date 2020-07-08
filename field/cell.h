@@ -24,10 +24,6 @@ private:
     Field* m_Field;
     QPoint m_Index;
     CellInformation* m_Information;
-
-
-Q_SIGNALS:
-
 };
 
 #endif // CELL_H

@@ -24,6 +24,7 @@ public:
     void upAge();
     void setGeneration(qint64 value);
     void upGeneration();
+
 private:
     qint64 m_Age;
     qint64 m_Generation;

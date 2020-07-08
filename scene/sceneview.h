@@ -25,9 +25,6 @@ protected:
 private:
     Scene* m_Scene;
     GraphicsViewZoomer* m_Zoomer;
-
-Q_SIGNALS:
-
 };
 
 #endif // SCENEVIEW_H

@@ -89,10 +89,6 @@ void Config::load()
         m_Settings->setValue("Scene/ZoomKeyModifier", SCENE_ZOOM_MODIFIER);
     m_SceneZoomModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ZoomKeyModifier").toInt());
 
-    if(!m_Settings->contains("Scene/ObjectKeyModifier"))
-        m_Settings->setValue("Scene/ObjectKeyModifier", SCENE_OBJECT_MODIFIER);
-    m_SceneObjectModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ObjectKeyModifier").toInt());
-
     if(!m_Settings->contains("Scene/ObjectAgeIndicate"))
         m_Settings->setValue("Scene/ObjectAgeIndicate", SCENE_OBJECT_AGE_INDICATE);
     m_SceneObjectAgeIndicate = m_Settings->value("Scene/ObjectAgeIndicate").toBool();
@@ -188,14 +184,6 @@ void Config::setSceneFieldSize(int value)
     
     m_SceneFieldSize = value;
     m_Settings->setValue("Scene/FieldSize", m_SceneFieldSize);
-}
-
-void Config::setSceneObjectModifier(const Qt::KeyboardModifiers &value)
-{
-    if(m_SceneObjectModifier == value) return;
-    
-    m_SceneObjectModifier = value;
-    m_Settings->setValue("Scene/ObjectKeyModifier", static_cast<int>(m_SceneObjectModifier));
 }
 
 void Config::setSceneZoomModifier(const Qt::KeyboardModifiers &value)
@@ -301,7 +289,6 @@ QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
 bool Config::SceneObjectAgeIndicate() const { return m_SceneObjectAgeIndicate; }
 QString Config::SceneCellDeadColor() const { return m_SceneCellDeadColor; }
 int Config::SceneFieldSize() const { return m_SceneFieldSize; }
-Qt::KeyboardModifiers Config::SceneObjectModifier() const { return m_SceneObjectModifier; }
 Qt::KeyboardModifiers Config::SceneZoomModifier() const { return m_SceneZoomModifier; }
 int Config::SceneBspTreeDepth() const { return m_SceneBspTreeDepth; }
 bool Config::SceneBspTreeIndex() const { return m_SceneBspTreeIndex; }

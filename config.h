@@ -42,8 +42,6 @@ public:
     void setSceneBspTreeDepth(int value);
     Qt::KeyboardModifiers SceneZoomModifier() const;
     void setSceneZoomModifier(const Qt::KeyboardModifiers &value);
-    Qt::KeyboardModifiers SceneObjectModifier() const;
-    void setSceneObjectModifier(const Qt::KeyboardModifiers &value);
     int SceneFieldSize() const;
     void setSceneFieldSize(int value);
     QString SceneCellDeadColor() const;
@@ -87,7 +85,6 @@ private:
     int m_CellInfoWindowHeight;                 // размеры окна информации о ячейке
     int m_CellInfoWindowWidth;                  // размеры окна информации о ячейке
     Qt::KeyboardModifiers m_SceneZoomModifier;  // модификатор управления зумом
-    Qt::KeyboardModifiers m_SceneObjectModifier;// модификатор создания/удаления объектов
     bool m_SceneObjectAgeIndicate;              // отображать возраст живых ячеек
     bool m_SI_metric;                           // использовать систему СИ в отображении размеров файлов
     bool m_SceneViewAntialiasing;               // SceneView: Antialiasing
