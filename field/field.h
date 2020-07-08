@@ -43,6 +43,7 @@ protected:
     Cell* getBottomLeftCell(Cell* c);
     Cell* getBottomRightCell(Cell* c);
     QVector<Cell*> getCellsAround(Cell* c);
+    void testRules(Cell* c);
 
 private:
     int m_Width;

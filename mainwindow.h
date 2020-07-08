@@ -3,10 +3,27 @@
 
 #include <QMainWindow>
 
-const QString MW_LABEL_STYLE = "background-color: lightgray; color: black; font-family: monospace; font: bold;";
-const QString MW_LABEL_STYLE_UP = "background-color: lightgray; color: red; font-family: monospace; font: bold;";
-const QString MW_LABEL_STYLE_DOWN = "background-color: lightgray; color: green; font-family: monospace; font: bold;";
-
+const QString MW_LABEL_STYLE = "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+                               "stop: 0 transparent, "
+                               "stop: 0.5 silver, "
+                               "stop: 0.5 silver, "
+                               "stop: 1 transparent); "
+                               "padding: 0px 1px 0px 1px; border-radius: 3px;"
+                               "color: black; font-family: monospace; font: bold;";
+const QString MW_LABEL_STYLE_UP = "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+                                  "stop: 0 transparent, "
+                                  "stop: 0.5 silver, "
+                                  "stop: 0.5 silver, "
+                                  "stop: 1 transparent); "
+                                  "padding: 0px 1px 0px 1px; border-radius: 3px;"
+                                  "color: red; font-family: monospace; font: bold;";
+const QString MW_LABEL_STYLE_DOWN = "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+                                    "stop: 0 transparent, "
+                                    "stop: 0.5 silver, "
+                                    "stop: 0.5 silver, "
+                                    "stop: 1 transparent); "
+                                    "padding: 0px 1px 0px 1px; border-radius: 3px;"
+                                    "color: green; font-family: monospace; font: bold;";
 class Field;
 class Cell;
 class SceneView;
@@ -52,6 +69,7 @@ private:
     QLabel* m_LabelFieldDeadCells;
     QLabel* m_LabelFieldAliveCells;
     QLabel* m_LabelFieldCursedCells;
+    QLabel* m_LabelSelectedCell;
     QProgressBar* m_ProgressBar;
 
 private Q_SLOTS:

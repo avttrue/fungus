@@ -61,9 +61,12 @@ void Scene::addSelectionMark()
         return;
     }
 
-    m_SelectionMark = addRect(0, 0, config->SceneCellSize(), config->SceneCellSize(),
-                              QPen(QColor(config->SceneSelectColor())),
-                              QBrush(QColor(config->SceneSelectColor())));
+    QPen pen(QColor(config->SceneSelectColor()));
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setJoinStyle(Qt::RoundJoin);
+    QBrush brush(QColor(config->SceneSelectColor()));
+
+    m_SelectionMark = addRect(0, 0, config->SceneCellSize(), config->SceneCellSize(), pen, brush);
     m_SelectionMark->setZValue(m_SceneItem->zValue() + 1);
     m_SelectionMark->hide();
 }

@@ -184,8 +184,13 @@ void MainWindow::loadGui()
     statusBar->addWidget(new QLabel(tr("Draw:"), this));
     m_LabelSceneAvDraw = new QLabel("-", this);
     m_LabelSceneAvDraw->setStyleSheet(MW_LABEL_STYLE);
-    m_LabelSceneAvDraw->setFont(QFont("monospace"));
     statusBar->addWidget(m_LabelSceneAvDraw);
+
+    statusBar->addWidget(new SeparatorV(this));
+
+    statusBar->addWidget(new QLabel(tr("Sel:"), this));
+    m_LabelSelectedCell = new QLabel("-", this);
+    statusBar->addWidget(m_LabelSelectedCell);
 
     statusBar->addWidget(new SeparatorV(this));
 
@@ -246,6 +251,12 @@ void MainWindow::slotNewProject()
                        QString::number(config->SceneCellSize())));
 
     m_SceneView->zoomer()->Zoom(-1.0);
+    m_ActionEditCell->setDisabled(true);
+    m_ActionInfoCell->setDisabled(true);
+    m_ActionShowSelectedCell->setDisabled(true);
+    m_LabelSceneAvDraw->setText(tr("0 ms"));
+    m_LabelSelectedCell->setText("-");
+
     createScene();
     setActionsEnable(true);
 }
@@ -281,11 +292,6 @@ void MainWindow::createScene()
     auto scene = m_SceneView->addScene(m_Field);
     scene->addSceneItem();
 
-    m_ActionEditCell->setDisabled(true);
-    m_ActionInfoCell->setDisabled(true);
-    m_ActionShowSelectedCell->setDisabled(true);
-
-    m_LabelSceneAvDraw->setText(tr("0 ms"));
     QObject::connect(scene, &Scene::signalAverageDrawChangedUp, this, &MainWindow::slotAverageDrawUp);
     QObject::connect(scene, &Scene::signalAverageDrawChangedDown, this, &MainWindow::slotAverageDrawDown);
     QObject::connect(scene, &Scene::signalSelectedCellChanged, this, &MainWindow::slotSelectedCellChanged);
@@ -480,6 +486,9 @@ void MainWindow::slotSelectedCellChanged(Cell *cell)
     m_ActionEditCell->setDisabled(cell == nullptr);
     m_ActionInfoCell->setDisabled(cell == nullptr);
     m_ActionShowSelectedCell->setDisabled(cell == nullptr);
+
+    if(cell) m_LabelSelectedCell->setText(cell->objectName());
+    else m_LabelSelectedCell->setText("-");
 }
 
 void MainWindow::slotInfoCell()

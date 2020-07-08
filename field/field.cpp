@@ -194,6 +194,22 @@ QVector<Cell*> Field::getCellsAround(Cell *c)
     return result;
 }
 
+void Field::testRules(Cell *c)
+{
+    if(c->getInformation()->getState() == Kernel::CellState::Dead)
+    {
+        c->getInformation()->setState(Kernel::CellState::Alive);
+    }
+    else if(c->getInformation()->getState() == Kernel::CellState::Alive)
+    {
+        c->getInformation()->setState(Kernel::CellState::Cursed);
+    }
+    else if(c->getInformation()->getState() == Kernel::CellState::Cursed)
+    {
+        c->getInformation()->setState(Kernel::CellState::Dead);
+    }
+}
+
 void Field::setRunningAlways(bool value)
 {
     if(m_RunningAlways == value) return;
@@ -250,27 +266,19 @@ void Field::calculate()
 
                 if(m_RuleOn)
                 {
+                    auto prevage = c->getInformation()->getAge();
                     // TODO: выполнение правил
-                    // test
-                    if(c->getInformation()->getState() == Kernel::CellState::Dead)
-                    {
-                        c->getInformation()->setState(Kernel::CellState::Alive);
-                    }
-                    else if(c->getInformation()->getState() == Kernel::CellState::Alive)
-                    {
-                        c->getInformation()->setState(Kernel::CellState::Cursed);
-                    }
-                    else if(c->getInformation()->getState() == Kernel::CellState::Cursed)
-                    {
-                        c->getInformation()->setState(Kernel::CellState::Dead);
-                    }
-                    // test
+                    testRules(c); // test
 
-                    // cell age
+                    // cell Age
                     if(c->getInformation()->getState() == Kernel::CellState::Alive)
                         c->getInformation()->upAge();
                     else
                         c->getInformation()->setAge(0);
+
+                    // cell Generation
+                    if(prevage == 0 && c->getInformation()->getAge() > 0)
+                      c->getInformation()->upGeneration();
                 }
 
                 if(c->getInformation()->getState() == Kernel::CellState::Dead)
