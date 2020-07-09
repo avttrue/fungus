@@ -97,9 +97,9 @@ void Config::load()
         m_Settings->setValue("Scene/CellDeadColor", SCENE_CELL_DEAD_COLOR);
     m_SceneCellDeadColor = m_Settings->value("Scene/CellDeadColor").toString();
 
-    if(!m_Settings->contains("Scene/SceneSelectColor"))
-        m_Settings->setValue("Scene/SceneSelectColor", SCENE_SELECT_COLOR);
-    m_SceneSelectColor = m_Settings->value("Scene/SceneSelectColor").toString();
+    if(!m_Settings->contains("Scene/SelectColor"))
+        m_Settings->setValue("Scene/SelectColor", SCENE_SELECT_COLOR);
+    m_SceneSelectColor = m_Settings->value("Scene/SelectColor").toString();
 
     if(!m_Settings->contains("Scene/ViewUpdateMode"))
         m_Settings->setValue("Scene/ViewUpdateMode", SCENE_VIEW_UPDATE_MODE);
@@ -171,7 +171,7 @@ void Config::setSceneSelectColor(const QString &value)
     if(m_SceneSelectColor == value) return;
     
     m_SceneSelectColor = value;
-    m_Settings->setValue("Scene/SceneSelectColor", m_SceneSelectColor);
+    m_Settings->setValue("Scene/SelectColor", m_SceneSelectColor);
 }
 
 void Config::setSceneObjectAgeIndicate(bool value)
