@@ -19,15 +19,13 @@ public:
     CellInformation *getNewInfo();
     void clear();
     Field *getField() const;
+    void applyNewInfo();
 
 private:
     Field* m_Field;
     QPoint m_Index;
     CellInformation* m_CurrentInformation;
     CellInformation* m_NewInformation;
-
-private Q_SLOTS:
-    void slotApplyNewInfo();
 
 };
 

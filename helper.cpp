@@ -110,7 +110,8 @@ QMap<QString, QVariant::Type> getPropertiesList(QObject* object)
 
     for(int i = object->metaObject()->propertyOffset(); i < object->metaObject()->propertyCount(); ++i)
     {
-        result.insert(object->metaObject()->property(i).name(), object->metaObject()->property(i).type());
+        auto p = object->metaObject()->property(i);
+        result.insert(p.name(), p.type());
     }
 
     return result;
@@ -123,4 +124,13 @@ qreal calcAverage(qreal oldAverage, qint64 iteration, qint64 value)
             ? value
             : (oldAverage + static_cast<qreal>(value) / iteration_1) /
               (static_cast<qreal>(iteration) / iteration_1);
+}
+
+void copyProperty(QObject *source, QObject *target)
+{
+    for(int i = source->metaObject()->propertyOffset(); i < source->metaObject()->propertyCount(); ++i)
+    {
+        auto sp  = source->metaObject()->property(i);
+        sp.write(target, source->property(sp.name()));
+    }
 }

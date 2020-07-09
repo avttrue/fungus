@@ -1,6 +1,7 @@
 #include "cell.h"
 #include "cellinformation.h"
 #include "field.h"
+#include "helper.h"
 
 #include <QDebug>
 #include <scene/sceneItem.h>
@@ -22,7 +23,7 @@ void Cell::clear()
     m_CurrentInformation->setGeneration(0);
 }
 
-void Cell::slotApplyNewInfo()
+void Cell::applyNewInfo()
 {
     m_CurrentInformation->setAge(m_NewInformation->getAge());
     m_CurrentInformation->setState(m_NewInformation->getState());

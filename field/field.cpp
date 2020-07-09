@@ -4,6 +4,7 @@
 #include "cellrule.h"
 #include "fieldinformation.h"
 #include "scene/sceneItem.h"
+#include "helper.h"
 #include "properties.h"
 
 #include <QCoreApplication>
@@ -195,17 +196,21 @@ QVector<Cell*> Field::getCellsAround(Cell *c)
 
 void Field::testRules(Cell *c)
 {
-    if(c->getCurInfo()->getState() == Kernel::CellState::Dead)
+    auto ci = c->getCurInfo();
+    auto ni = c->getNewInfo();
+
+
+    if(ci->getState() == Kernel::CellState::Dead)
     {
-        c->getCurInfo()->setState(Kernel::CellState::Alive);
+        ni->setState(Kernel::CellState::Alive);
     }
-    else if(c->getCurInfo()->getState() == Kernel::CellState::Alive)
+    else if(ci->getState() == Kernel::CellState::Alive)
     {
-        c->getCurInfo()->setState(Kernel::CellState::Cursed);
+        ni->setState(Kernel::CellState::Cursed);
     }
-    else if(c->getCurInfo()->getState() == Kernel::CellState::Cursed)
+    else if(ci->getState() == Kernel::CellState::Cursed)
     {
-        c->getCurInfo()->setState(Kernel::CellState::Dead);
+        ni->setState(Kernel::CellState::Dead);
     }
 }
 
@@ -262,40 +267,53 @@ void Field::calculate()
                 if(m_StopCalculating) break;
 
                 auto c = m_Cells.at(w).at(h);
+                auto ci = c->getCurInfo();
+                auto ni = c->getNewInfo();
 
                 if(m_RuleOn)
                 {
-                    auto prevage = c->getCurInfo()->getAge();
                     // TODO: выполнение правил
                     testRules(c); // test
 
                     // cell Age
-                    if(c->getCurInfo()->getState() == Kernel::CellState::Alive)
-                        c->getCurInfo()->upAge();
-                    else
-                        c->getCurInfo()->setAge(0);
+                    if(ci->getState() == Kernel::CellState::Alive) ni->upAge();
+                    else ni->setAge(0);
 
                     // cell Generation
-                    if(prevage == 0 && c->getCurInfo()->getAge() > 0)
-                      c->getCurInfo()->upGeneration();
+                    if(ci->getAge() == 0 && ni->getAge() > 0) ni->upGeneration();
                 }
 
-                if(c->getCurInfo()->getState() == Kernel::CellState::Dead)
+                // Field Information
+                auto nis = ni->getState();
+                if(nis == Kernel::CellState::Dead)
                 {
                     dead++;
                     //cells.append(c); // пустые не передаём
 
                 }
-                else if(c->getCurInfo()->getState() == Kernel::CellState::Alive)
+                else if(nis == Kernel::CellState::Alive)
                 {
                     cells.append(c);
                     alive++;
                 }
-                else if(c->getCurInfo()->getState() == Kernel::CellState::Cursed)
+                else if(nis == Kernel::CellState::Cursed)
                 {
                     cells.append(c);
                     cursed++;
                 }
+            }
+        }
+
+        // применение изменений
+        for(int h = 0; h < m_Height; h++)
+        {
+            if(m_StopCalculating) break;
+            for(int w = 0; w < m_Width; w++)
+            {
+                if(m_StopCalculating) break;
+
+                auto c = m_Cells.at(w).at(h);
+                c->applyNewInfo();
             }
         }
 
