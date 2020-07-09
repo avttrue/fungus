@@ -461,7 +461,7 @@ void MainWindow::slotFieldDeadCells(qint64 value)
 {
     if(!m_Field) return;
 
-    auto num =  QString::number(m_Field->width() * m_Field->height()).length();
+    auto num =  QString::number(m_Field->getCellsCount()).length();
     m_LabelFieldDeadCells->setText(QString::number(value).rightJustified(num, '.'));
 }
 
@@ -469,7 +469,7 @@ void MainWindow::slotFieldAliveCells(qint64 value)
 {
     if(!m_Field) return;
 
-    auto num =  QString::number(m_Field->width() * m_Field->height()).length();
+    auto num =  QString::number(m_Field->getCellsCount()).length();
     m_LabelFieldAliveCells->setText(QString::number(value).rightJustified(num, '.'));
 }
 
@@ -477,7 +477,7 @@ void MainWindow::slotFieldCursedCells(qint64 value)
 {
     if(!m_Field) return;
 
-    auto num =  QString::number(m_Field->width() * m_Field->height()).length();
+    auto num =  QString::number(m_Field->getCellsCount()).length();
     m_LabelFieldCursedCells->setText(QString::number(value).rightJustified(num, '.'));
 }
 

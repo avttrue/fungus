@@ -26,6 +26,7 @@ Field::Field(int width, int height, QObject *parent)
     m_FieldInformation = new FieldInformation(this);
 
     m_Cells = QVector(m_Width, QVector<Cell*>(m_Height, nullptr));
+    m_CellsCount = width * height;
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
@@ -194,6 +195,21 @@ QVector<Cell*> Field::getCellsAround(Cell *c)
     return result;
 }
 
+void Field::applyCalculating()
+{
+    for(int h = 0; h < m_Height; h++)
+    {
+        if(m_StopCalculating) break;
+        for(int w = 0; w < m_Width; w++)
+        {
+            if(m_StopCalculating) break;
+
+            auto c = m_Cells.at(w).at(h);
+            c->applyNewInfo();
+        }
+    }
+}
+
 void Field::testRules(Cell *c)
 {
     auto ci = c->getCurInfo();
@@ -254,7 +270,6 @@ void Field::calculate()
         auto time = QDateTime::currentMSecsSinceEpoch();
 
         m_FieldInformation->upAge();
-        qint64 dead = 0;
         qint64 alive = 0;
         qint64 cursed = 0;
 
@@ -275,6 +290,7 @@ void Field::calculate()
                     // TODO: выполнение правил
                     testRules(c); // test
 
+                    // итог применения правила к ячейке
                     // cell Age
                     if(ci->getState() == Kernel::CellState::Alive) ni->upAge();
                     else ni->setAge(0);
@@ -285,13 +301,8 @@ void Field::calculate()
 
                 // Field Information
                 auto nis = ni->getState();
-                if(nis == Kernel::CellState::Dead)
-                {
-                    dead++;
-                    //cells.append(c); // пустые не передаём
-
-                }
-                else if(nis == Kernel::CellState::Alive)
+                //if(nis == Kernel::CellState::Dead) // не передаём
+                if(nis == Kernel::CellState::Alive)
                 {
                     cells.append(c);
                     alive++;
@@ -305,27 +316,20 @@ void Field::calculate()
         }
 
         // применение изменений
-        for(int h = 0; h < m_Height; h++)
-        {
-            if(m_StopCalculating) break;
-            for(int w = 0; w < m_Width; w++)
-            {
-                if(m_StopCalculating) break;
-
-                auto c = m_Cells.at(w).at(h);
-                c->applyNewInfo();
-            }
-        }
+        applyCalculating();
 
         if(m_StopCalculating) break;
 
-        m_FieldInformation->setDeadCells(dead);
+        m_FieldInformation->setDeadCells(m_CellsCount - alive - cursed);
         m_FieldInformation->setAliveCells(alive);
         m_FieldInformation->setCursedCells(cursed);
 
         if(!m_RunningAlways) m_Running = false;
+
         m_FieldInformation->applyAverageCalc(time);
+
         m_WaitScene = true;
+
         Q_EMIT signalCalculated(cells);
 
         // пауза
@@ -354,3 +358,4 @@ void Field::StopCalculating() { m_StopCalculating = true; }
 bool Field::getWaitScene() const { return m_WaitScene; }
 bool Field::getRuleOn() const { return m_RuleOn; }
 void Field::setRuleOn(bool value) { m_RuleOn = value; }
+qint64 Field::getCellsCount() const { return m_CellsCount; }

@@ -33,6 +33,7 @@ public:
     void StopCalculating();
     bool getRuleOn() const;
     void setRuleOn(bool value);
+    qint64 getCellsCount() const;
 
 protected:
     Cell* getTopCell(Cell* c);
@@ -44,11 +45,13 @@ protected:
     Cell* getBottomLeftCell(Cell* c);
     Cell* getBottomRightCell(Cell* c);
     QVector<Cell*> getCellsAround(Cell* c);
+    void applyCalculating();
     void testRules(Cell* c);
 
 private:
     int m_Width;
     int m_Height;
+    qint64 m_CellsCount;
     QVector<QVector<Cell*>> m_Cells;
     CellRule* m_Rule;
     FieldInformation* m_FieldInformation;
