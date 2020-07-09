@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QVariant>
 
+const QStringList SCENEVIEWUPDATEMODE = {"SMART", "MINIMAL", "FULL"};
+const QStringList SCENEFIELDTHREADPRIORITY = {"LOW", "NORMAL", "HIGH", "HIGHEST"};
+
 class Kernel: public QObject
 {
     Q_OBJECT

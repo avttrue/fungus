@@ -48,6 +48,7 @@ protected:
     void setActionsEnable(bool value);
     void deleteField();
     void stopThreadField();
+    void setSceneFieldThreadPriority();
 
 private:
     QThread* m_ThreadField;

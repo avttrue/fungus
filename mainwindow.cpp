@@ -273,6 +273,7 @@ void MainWindow::slotStepStop()
         m_Field->setRunningAlways(false);
         m_Field->setRunning(true);
         m_ThreadField->start();
+        setSceneFieldThreadPriority();
     }
 }
 
@@ -284,6 +285,7 @@ void MainWindow::slotRun()
         m_Field->setRunningAlways(true);
         m_Field->setRunning(true);
         m_ThreadField->start();
+        setSceneFieldThreadPriority();
     }
 }
 
@@ -380,6 +382,24 @@ void MainWindow::stopThreadField()
     m_ThreadField->requestInterruption();
 }
 
+void MainWindow::setSceneFieldThreadPriority()
+{
+    if(!m_ThreadField || !m_ThreadField->isRunning()) return;
+
+    auto mode = config->SceneFieldThreadPriority().toUpper();
+
+    if(mode == SCENEFIELDTHREADPRIORITY.at(0)) m_ThreadField->setPriority(QThread::LowPriority);
+    else if(mode == SCENEFIELDTHREADPRIORITY.at(1)) m_ThreadField->setPriority(QThread::NormalPriority);
+    else if(mode == SCENEFIELDTHREADPRIORITY.at(2)) m_ThreadField->setPriority(QThread::HighPriority);
+    else if(mode == SCENEFIELDTHREADPRIORITY.at(3)) m_ThreadField->setPriority(QThread::HighestPriority);
+    else
+    {
+        qCritical() << "Wrong settins value 'Scene/FieldThreadPriority'" <<  mode;
+        m_ThreadField->setPriority(QThread::NormalPriority);
+    }
+    qDebug() << "Field thread priority:" << m_ThreadField->priority();
+}
+
 void MainWindow::slotSetup()
 {
     const QVector<QString> keys = {tr("00#_Common options"),
@@ -397,6 +417,7 @@ void MainWindow::slotSetup()
                                    tr("12#_Scene zoom factor"),
                                    tr("13#_Indicate age value"),
                                    tr("14#_Minimum pause at calculating (ms)"),
+                                   tr("15#_Field thread priority"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -406,7 +427,7 @@ void MainWindow::slotSetup()
      {keys.at(4), {QVariant::Int, config->ButtonSize(), 16, 100}},
      {keys.at(5), {}},
      {keys.at(6), {QVariant::Bool, config->SceneViewAntialiasing(), 0, 0}},
-     {keys.at(7), {QVariant::StringList, config->SceneViewUpdateMode(), 0, VIEW_UPDATE_MODE, DialogValueMode::OneFromList}},
+     {keys.at(7), {QVariant::StringList, config->SceneViewUpdateMode(), 0, SCENEVIEWUPDATEMODE, DialogValueMode::OneFromList}},
      {keys.at(8), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(9), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(10), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
@@ -414,6 +435,7 @@ void MainWindow::slotSetup()
      {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
      {keys.at(13), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
      {keys.at(14), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
+     {keys.at(15), {QVariant::StringList, config->SceneFieldThreadPriority(), 1, SCENEFIELDTHREADPRIORITY, DialogValueMode::OneFromList}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -438,6 +460,8 @@ void MainWindow::slotSetup()
     config->setSceneObjectAgeIndicate(map.value(keys.at(13)).value.toBool());
     config->setSceneCalculatingMinPause(map.value(keys.at(14)).value.toInt());
     m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
+    config->setSceneFieldThreadPriority(map.value(keys.at(15)).value.toString());
+    setSceneFieldThreadPriority();
 }
 
 void MainWindow::slotSceneZoomIn()

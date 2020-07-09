@@ -105,6 +105,10 @@ void Config::load()
         m_Settings->setValue("Scene/ViewUpdateMode", SCENE_VIEW_UPDATE_MODE);
     m_SceneViewUpdateMode = m_Settings->value("Scene/ViewUpdateMode").toString();
 
+    if(!m_Settings->contains("Scene/FieldThreadPriority"))
+        m_Settings->setValue("Scene/FieldThreadPriority", SCENE_FIELD_THREAD_PRIORITY);
+    m_SceneFieldThreadPriority = m_Settings->value("Scene/FieldThreadPriority").toString();
+
     if(!m_Settings->contains("Scene/CellCurseColor"))
         m_Settings->setValue("Scene/CellCurseColor", SCENE_CELL_CURSE_COLOR);
     m_SceneCellCurseColor = m_Settings->value("Scene/CellCurseColor").toString();
@@ -112,6 +116,14 @@ void Config::load()
     if(!m_Settings->contains("Scene/CalculatingMinPause"))
         m_Settings->setValue("Scene/CalculatingMinPause", SCENE_CALCULATING_MIN_PAUSE);
     m_SceneCalculatingMinPause = m_Settings->value("Scene/CalculatingMinPause").toInt();
+}
+
+void Config::setSceneFieldThreadPriority(const QString &value)
+{
+    if(m_SceneFieldThreadPriority == value) return;
+
+    m_SceneFieldThreadPriority = value;
+    m_Settings->setValue("Scene/FieldThreadPriority", m_SceneFieldThreadPriority);
 }
 
 void Config::setSceneViewUpdateMode(const QString &value)
@@ -304,3 +316,4 @@ int Config::ButtonSize() const { return m_ButtonSize; }
 QString Config::PathApp() const { return m_PathAppDir; }
 QString Config::PathAppConfig() const { return m_PathAppConfig; }
 int Config::SceneCalculatingMinPause() const { return m_SceneCalculatingMinPause; }
+QString Config::SceneFieldThreadPriority() const { return m_SceneFieldThreadPriority; }

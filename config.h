@@ -60,6 +60,8 @@ public:
     void setSceneCalculatingMinPause(int value);
     QString SceneViewUpdateMode() const;
     void setSceneViewUpdateMode(const QString &value);
+    QString SceneFieldThreadPriority() const;
+    void setSceneFieldThreadPriority(const QString &value);
 
 protected:
     void load();
@@ -75,6 +77,7 @@ private:
     QString m_SceneCellDeadColor;               // цвет мёртвой ячейки
     QString m_SceneCellCurseColor;              // цвет отравленной ячейки
     QString m_SceneViewUpdateMode;              // метод отрисовки SceneView
+    QString m_SceneFieldThreadPriority;         // приоритет потока Field
     qreal m_SceneScaleStep;                     // шаг масштабирования сцены
     int m_SceneCalculatingMinPause;             // минимальная допустимая пауза при обсчёте Field
     int m_LogSize;                              // количество строк лога событий

@@ -118,7 +118,7 @@ void Scene::slotAdvance(QVector<Cell *> cells)
                    config->SceneCellSize(),
                    config->SceneCellSize());
 
-        auto state = c->getNewInfo()->getState();
+        auto state = c->getCurInfo()->getState();
         // Kernel::CellState::Dead не обрабатываем
         if(state == Kernel::CellState::Alive)
             painter.fillRect(rect, m_Field->getRule()->getColorAlive());

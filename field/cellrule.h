@@ -6,8 +6,6 @@
 #include <QColor>
 #include <QObject>
 
-const auto CAPTION_ACTIVITY_COLOR = "#DCDCDC";
-
 class Field;
 
 class CellRule : public QObject
@@ -19,14 +17,15 @@ class CellRule : public QObject
 
 public:
     CellRule(Field *parent = nullptr);
-
     QColor getColorAlive() const;
     void setColorAlive(QColor value);
     CellActivity getActivity() const;
     void setActivity(CellActivity value);
     int getCurseTime() const;
     void setCurseTime(int value);
-    QString toHtmlTable();                  // представить в виде html таблицы (без тэгов <table>)
+
+protected:
+    void setDefault();                      // Conway's LIFE game
 
 private:
     QColor m_ColorAlive;                    // цвет живой ячейки

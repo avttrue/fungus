@@ -78,7 +78,6 @@ void Field::calculate()
 
                 if(m_RuleOn)
                 {
-                    // TODO: выполнение правил
                     testRules(c); // test
 
                     // итог применения правила к ячейке
@@ -145,6 +144,12 @@ void Field::applyCalculating()
             c->applyNewInfo();
         }
     }
+}
+
+void Field::applyReles(Cell *c) // TODO: выполнение правил
+{
+   auto ci = c->getCurInfo();
+
 }
 
 Cell *Field::addCell(int x, int y)

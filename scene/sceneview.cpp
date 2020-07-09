@@ -1,5 +1,6 @@
 #include "sceneview.h"
 #include "scene.h"
+#include "kernel/kernel.h"
 #include "properties.h"
 #include "sceneItem.h"
 #include "graphicsviewzoomer.h"
@@ -115,17 +116,21 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
 
 void SceneView::SetUpdateMode()
 {
-    if(config->SceneViewUpdateMode().toUpper() == VIEW_UPDATE_MODE.at(0))
+    auto mode = config->SceneViewUpdateMode().toUpper();
+
+    if(mode == SCENEVIEWUPDATEMODE.at(0))
         setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    else if(config->SceneViewUpdateMode().toUpper() == VIEW_UPDATE_MODE.at(1))
+    else if(mode == SCENEVIEWUPDATEMODE.at(1))
         setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-    else if(config->SceneViewUpdateMode().toUpper() == VIEW_UPDATE_MODE.at(2))
+    else if(mode == SCENEVIEWUPDATEMODE.at(2))
         setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     else
     {
-        qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  config->SceneViewUpdateMode().toUpper();
+        qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  mode;
         setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     }
+
+    qDebug() << "Scene view update mode:" << viewportUpdateMode();
 }
 
 Scene *SceneView::getScene() const { return m_Scene; }

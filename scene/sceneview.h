@@ -3,8 +3,6 @@
 
 #include<QGraphicsView>
 
-const QStringList VIEW_UPDATE_MODE = {"SMART", "MINIMAL", "FULL"};
-
 class Scene;
 class Field;
 class GraphicsViewZoomer;
