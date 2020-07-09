@@ -45,7 +45,7 @@ protected:
     Cell* getBottomLeftCell(Cell* c);
     Cell* getBottomRightCell(Cell* c);
     QVector<Cell*> getCellsAround(Cell* c);
-    void applyCalculating();
+    void applyCalculating();                       // применение результатов calculate
     void testRules(Cell* c);
 
 private:

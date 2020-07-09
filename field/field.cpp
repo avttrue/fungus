@@ -51,6 +51,102 @@ void Field::fill()
     qDebug() << "Field" << objectName() << "filled in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 }
 
+void Field::calculate()
+{
+    qDebug() << "Field calculating started";
+    while(m_Running)
+    {
+        if(m_WaitScene) continue;
+
+        auto time = QDateTime::currentMSecsSinceEpoch();
+
+        m_FieldInformation->upAge();
+        qint64 alive = 0;
+        qint64 cursed = 0;
+
+        QVector<Cell*> cells;
+        for(int h = 0; h < m_Height; h++)
+        {
+            if(m_StopCalculating) break;
+            for(int w = 0; w < m_Width; w++)
+            {
+                if(m_StopCalculating) break;
+
+                auto c = m_Cells.at(w).at(h);
+                auto ci = c->getCurInfo();
+                auto ni = c->getNewInfo();
+
+                if(m_RuleOn)
+                {
+                    // TODO: выполнение правил
+                    testRules(c); // test
+
+                    // итог применения правила к ячейке
+                    // cell Age
+                    if(ci->getState() == Kernel::CellState::Alive) ni->upAge();
+                    else ni->setAge(0);
+
+                    // cell Generation
+                    if(ci->getAge() == 0 && ni->getAge() > 0) ni->upGeneration();
+                }
+
+                // Field Information
+                auto nis = ni->getState();
+                //if(nis == Kernel::CellState::Dead) // не передаём
+                if(nis == Kernel::CellState::Alive)
+                {
+                    cells.append(c);
+                    alive++;
+                }
+                else if(nis == Kernel::CellState::Cursed)
+                {
+                    cells.append(c);
+                    cursed++;
+                }
+            }
+        }
+        if(m_StopCalculating) break;
+
+        applyCalculating();
+
+        m_FieldInformation->setDeadCells(m_CellsCount - alive - cursed);
+        m_FieldInformation->setAliveCells(alive);
+        m_FieldInformation->setCursedCells(cursed);
+        m_FieldInformation->applyAverageCalc(time);
+
+        m_WaitScene = true;
+        Q_EMIT signalCalculated(cells);
+
+        if(!m_RunningAlways) m_Running = false;
+
+        // пауза
+        if(m_RunningAlways && m_RuleOn)
+        {
+            auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
+            while(QDateTime::currentDateTime() < pausetime && !m_StopCalculating)
+                QCoreApplication::processEvents(QEventLoop::AllEvents);
+        }
+    }
+
+    qDebug() << "Field calculating stopped";
+    Q_EMIT signalCalculatingStopped();
+}
+
+void Field::applyCalculating()
+{
+    for(int h = 0; h < m_Height; h++)
+    {
+        if(m_StopCalculating) break;
+        for(int w = 0; w < m_Width; w++)
+        {
+            if(m_StopCalculating) break;
+
+            auto c = m_Cells.at(w).at(h);
+            c->applyNewInfo();
+        }
+    }
+}
+
 Cell *Field::addCell(int x, int y)
 {
     auto c = new Cell(this);
@@ -195,41 +291,6 @@ QVector<Cell*> Field::getCellsAround(Cell *c)
     return result;
 }
 
-void Field::applyCalculating()
-{
-    for(int h = 0; h < m_Height; h++)
-    {
-        if(m_StopCalculating) break;
-        for(int w = 0; w < m_Width; w++)
-        {
-            if(m_StopCalculating) break;
-
-            auto c = m_Cells.at(w).at(h);
-            c->applyNewInfo();
-        }
-    }
-}
-
-void Field::testRules(Cell *c)
-{
-    auto ci = c->getCurInfo();
-    auto ni = c->getNewInfo();
-
-
-    if(ci->getState() == Kernel::CellState::Dead)
-    {
-        ni->setState(Kernel::CellState::Alive);
-    }
-    else if(ci->getState() == Kernel::CellState::Alive)
-    {
-        ni->setState(Kernel::CellState::Cursed);
-    }
-    else if(ci->getState() == Kernel::CellState::Cursed)
-    {
-        ni->setState(Kernel::CellState::Dead);
-    }
-}
-
 void Field::setRunningAlways(bool value)
 {
     if(m_RunningAlways == value) return;
@@ -260,89 +321,24 @@ void Field::setRunning(bool value)
     Q_EMIT signalRunning(m_Running);
 }
 
-void Field::calculate()
+void Field::testRules(Cell *c)
 {
-    qDebug() << "Field calculating started";
-    while(m_Running)
+    auto ci = c->getCurInfo();
+    auto ni = c->getNewInfo();
+
+
+    if(ci->getState() == Kernel::CellState::Dead)
     {
-        if(m_WaitScene) continue;
-
-        auto time = QDateTime::currentMSecsSinceEpoch();
-
-        m_FieldInformation->upAge();
-        qint64 alive = 0;
-        qint64 cursed = 0;
-
-        QVector<Cell*> cells;
-        for(int h = 0; h < m_Height; h++)
-        {
-            if(m_StopCalculating) break;
-            for(int w = 0; w < m_Width; w++)
-            {
-                if(m_StopCalculating) break;
-
-                auto c = m_Cells.at(w).at(h);
-                auto ci = c->getCurInfo();
-                auto ni = c->getNewInfo();
-
-                if(m_RuleOn)
-                {
-                    // TODO: выполнение правил
-                    testRules(c); // test
-
-                    // итог применения правила к ячейке
-                    // cell Age
-                    if(ci->getState() == Kernel::CellState::Alive) ni->upAge();
-                    else ni->setAge(0);
-
-                    // cell Generation
-                    if(ci->getAge() == 0 && ni->getAge() > 0) ni->upGeneration();
-                }
-
-                // Field Information
-                auto nis = ni->getState();
-                //if(nis == Kernel::CellState::Dead) // не передаём
-                if(nis == Kernel::CellState::Alive)
-                {
-                    cells.append(c);
-                    alive++;
-                }
-                else if(nis == Kernel::CellState::Cursed)
-                {
-                    cells.append(c);
-                    cursed++;
-                }
-            }
-        }
-
-        // применение изменений
-        applyCalculating();
-
-        if(m_StopCalculating) break;
-
-        m_FieldInformation->setDeadCells(m_CellsCount - alive - cursed);
-        m_FieldInformation->setAliveCells(alive);
-        m_FieldInformation->setCursedCells(cursed);
-
-        if(!m_RunningAlways) m_Running = false;
-
-        m_FieldInformation->applyAverageCalc(time);
-
-        m_WaitScene = true;
-
-        Q_EMIT signalCalculated(cells);
-
-        // пауза
-        if(m_RunningAlways && m_RuleOn)
-        {
-            auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
-            while(QDateTime::currentDateTime() < pausetime && !m_StopCalculating)
-                QCoreApplication::processEvents(QEventLoop::AllEvents);
-        }
+        ni->setState(Kernel::CellState::Alive);
     }
-
-    qDebug() << "Field calculating stopped";
-    Q_EMIT signalCalculatingStopped();
+    else if(ci->getState() == Kernel::CellState::Alive)
+    {
+        ni->setState(Kernel::CellState::Cursed);
+    }
+    else if(ci->getState() == Kernel::CellState::Cursed)
+    {
+        ni->setState(Kernel::CellState::Dead);
+    }
 }
 
 CellRule *Field::getRule() const { return m_Rule; }
