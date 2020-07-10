@@ -37,6 +37,6 @@ const auto CELL_INFO_WINDOW_WIDTH =         300;
 const auto LOG_SIZE =                       0;
 const auto BUTTON_SIZE =                    32;
 const auto SI_METRIC =                      false;
-
+const auto SCENE_ITEM_ZVALUE =              0;
 
 #endif // PROPERTIES_H

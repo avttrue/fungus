@@ -106,7 +106,7 @@ void Field::calculate()
         }
         if(m_StopCalculating) break;
 
-        applyCalculating();
+        if(m_RuleOn) applyCalculating();
 
         m_FieldInformation->setDeadCells(m_CellsCount - alive - cursed);
         m_FieldInformation->setAliveCells(alive);
@@ -116,7 +116,7 @@ void Field::calculate()
         m_WaitScene = true;
         Q_EMIT signalCalculated(cells);
 
-        if(!m_RunningAlways) m_Running = false;
+        if(!m_RunningAlways) setRunning(false);
 
         // пауза
         if(m_RunningAlways && m_RuleOn)

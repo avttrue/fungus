@@ -27,5 +27,7 @@
         <file>resources/img/eye.svg</file>
         <file>resources/img/edit.svg</file>
         <file>resources/img/field.svg</file>
+        <file>resources/img/running.svg</file>
+        <file>resources/img/paused.svg</file>
     </qresource>
 </RCC>

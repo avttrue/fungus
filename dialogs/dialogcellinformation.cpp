@@ -55,7 +55,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     toolBar->setMovable(false);
     toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    auto actionShowPoint = new QAction(QIcon(":/resources/img/check.svg"), "Show point");
+    auto actionShowPoint = new QAction(QIcon(":/resources/img/point.svg"), "Show point");
     actionShowPoint->setAutoRepeat(false);
     QObject::connect(actionShowPoint, &QAction::triggered, this, &DialogCellInformation::slotShowPoint);
     toolBar->addAction(actionShowPoint);

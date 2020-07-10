@@ -49,7 +49,7 @@ void Scene::addSceneItem()
 {
     m_SceneItem = new SceneItem(this);
     m_SceneItem->setPos(m_SceneItem->mapToParent(0, 0));
-    m_SceneItem->setZValue(0);
+    m_SceneItem->setZValue(config->SceneItemZValue());
     addItem(m_SceneItem);
 }
 

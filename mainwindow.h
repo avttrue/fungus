@@ -71,6 +71,7 @@ private:
     QLabel* m_LabelFieldAliveCells;
     QLabel* m_LabelFieldCursedCells;
     QLabel* m_LabelSelectedCell;
+    QLabel* m_LabelRunningStatus;
     QProgressBar* m_ProgressBar;
 
 private Q_SLOTS:
@@ -81,6 +82,7 @@ private Q_SLOTS:
     void slotNewProject();
     void slotStepStop();
     void slotRun();
+    void slotFieldRunning(bool value);
     void slotFieldAge(qint64 value);
     void slotFieldAvCalcUp(qreal value);
     void slotFieldAvCalcDown(qreal value);

@@ -116,12 +116,24 @@ void Config::load()
     if(!m_Settings->contains("Scene/CalculatingMinPause"))
         m_Settings->setValue("Scene/CalculatingMinPause", SCENE_CALCULATING_MIN_PAUSE);
     m_SceneCalculatingMinPause = m_Settings->value("Scene/CalculatingMinPause").toInt();
+
+    if(!m_Settings->contains("Scene/ItemZValue"))
+        m_Settings->setValue("Scene/ItemZValue", SCENE_ITEM_ZVALUE);
+    m_SceneItemZValue = m_Settings->value("Scene/ItemZValue").toInt();
+}
+
+void Config::setSceneItemZValue(int value)
+{
+    if(m_SceneItemZValue == value) return;
+
+    m_SceneItemZValue = value;
+    m_Settings->setValue("Scene/ItemZValue", m_SceneItemZValue);
 }
 
 void Config::setSceneFieldThreadPriority(const QString &value)
 {
     if(m_SceneFieldThreadPriority == value) return;
-
+    
     m_SceneFieldThreadPriority = value;
     m_Settings->setValue("Scene/FieldThreadPriority", m_SceneFieldThreadPriority);
 }
@@ -317,3 +329,4 @@ QString Config::PathApp() const { return m_PathAppDir; }
 QString Config::PathAppConfig() const { return m_PathAppConfig; }
 int Config::SceneCalculatingMinPause() const { return m_SceneCalculatingMinPause; }
 QString Config::SceneFieldThreadPriority() const { return m_SceneFieldThreadPriority; }
+int Config::SceneItemZValue() const { return m_SceneItemZValue; }

@@ -137,10 +137,16 @@ void MainWindow::loadGui()
     // статусбар
     auto statusBar = new QStatusBar(this);
 
+    m_LabelRunningStatus = new QLabel(this);
+    slotFieldRunning(false);
+    statusBar->addWidget(m_LabelRunningStatus);
+
+    statusBar->addWidget(new SeparatorV(this));
+
     statusBar->addWidget(new QLabel(tr("Zoom:"), this));
-    m_LabelFieldZoom = new QLabel("1", this);
+    m_LabelFieldZoom = new QLabel("1.00", this);
     QObject::connect(m_SceneView->zoomer(), &GraphicsViewZoomer::signalZoomed,
-                     [=](qreal value){ m_LabelFieldZoom->setText(QString::number(value)); });
+                     [=](qreal value){ m_LabelFieldZoom->setText(QString::number(value, 'f', 2)); });
     statusBar->addWidget(m_LabelFieldZoom);
 
     statusBar->addWidget(new SeparatorV(this));
@@ -173,7 +179,7 @@ void MainWindow::loadGui()
     statusBar->addWidget(new SeparatorV(this));
 
     statusBar->addWidget(new QLabel(tr("Pause:"), this));
-    m_LabelFieldPause = new QLabel(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())), this);
+    m_LabelFieldPause = new QLabel(QString::number(config->SceneCalculatingMinPause()), this);
     statusBar->addWidget(m_LabelFieldPause);
 
     statusBar->addWidget(new QLabel(tr("Calc:"), this));
@@ -188,7 +194,6 @@ void MainWindow::loadGui()
 
     statusBar->addWidget(new SeparatorV(this));
 
-    statusBar->addWidget(new QLabel(tr("Sel:"), this));
     m_LabelSelectedCell = new QLabel("-", this);
     statusBar->addWidget(m_LabelSelectedCell);
 
@@ -196,7 +201,7 @@ void MainWindow::loadGui()
 
     m_ProgressBar = new QProgressBar(this);
     m_ProgressBar->setAlignment(Qt::AlignLeft);
-    m_ProgressBar->setFixedWidth(6 * config->ButtonSize());
+    m_ProgressBar->setFixedWidth(4 * config->ButtonSize());
     m_ProgressBar->setRange(0, 0);
     m_ProgressBar->setVisible(false);
     statusBar->addPermanentWidget(m_ProgressBar);
@@ -254,7 +259,7 @@ void MainWindow::slotNewProject()
     m_ActionEditCell->setDisabled(true);
     m_ActionInfoCell->setDisabled(true);
     m_ActionShowSelectedCell->setDisabled(true);
-    m_LabelSceneAvDraw->setText(tr("0 ms"));
+    m_LabelSceneAvDraw->setText(tr("0"));
     m_LabelSelectedCell->setText("-");
 
     createScene();
@@ -289,6 +294,18 @@ void MainWindow::slotRun()
     }
 }
 
+void MainWindow::slotFieldRunning(bool value)
+{
+    if(value)
+        m_LabelRunningStatus->setPixmap(QPixmap(":/resources/img/running.svg").
+                                        scaled(QFontMetrics(font()).height(), QFontMetrics(font()).height(),
+                                               Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    else
+        m_LabelRunningStatus->setPixmap(QPixmap(":/resources/img/paused.svg").
+                                        scaled(QFontMetrics(font()).height(), QFontMetrics(font()).height(),
+                                               Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+}
+
 void MainWindow::createScene()
 {
     auto scene = m_SceneView->addScene(m_Field);
@@ -315,8 +332,8 @@ void MainWindow::createField(int w, int h)
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalDeadCellsChanged, this, &MainWindow::slotFieldDeadCells);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAliveCellsChanged, this, &MainWindow::slotFieldAliveCells);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signaCursedCellsChanged, this, &MainWindow::slotFieldCursedCells);
-
-    m_LabelFieldAvCalc->setText(tr("0 ms"));
+    QObject::connect(m_Field, &Field::signalRunning, this, &MainWindow::slotFieldRunning);
+    m_LabelFieldAvCalc->setText("0");
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedUp, this, &MainWindow::slotFieldAvCalcUp);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedDown, this, &MainWindow::slotFieldAvCalcDown);
 
@@ -459,7 +476,7 @@ void MainWindow::slotSetup()
     config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
     config->setSceneObjectAgeIndicate(map.value(keys.at(13)).value.toBool());
     config->setSceneCalculatingMinPause(map.value(keys.at(14)).value.toInt());
-    m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
+    m_LabelFieldPause->setText(QString::number(config->SceneCalculatingMinPause()));
     config->setSceneFieldThreadPriority(map.value(keys.at(15)).value.toString());
     setSceneFieldThreadPriority();
 }
@@ -547,7 +564,7 @@ void MainWindow::slotEditCell()
 
     slotShowCell(cell);
 
-    auto cellinfo = cell->getNewInfo();
+    auto cni = cell->getNewInfo();
     auto statelist = listKernelEnum("CellState");
 
     const QVector<QString> keys =
@@ -558,18 +575,20 @@ void MainWindow::slotEditCell()
     QMap<QString, DialogValue> map =
     { {keys.at(0), {}},
       {keys.at(1), {QVariant::StringList,
-                    getNameKernelEnum("CellState", static_cast<int>(cellinfo->getState())), 0,
+                    getNameKernelEnum("CellState", static_cast<int>(cni->getState())), 0,
                     statelist, DialogValueMode::OneFromList}},
-      {keys.at(2), {QVariant::Int, cellinfo->getAge(), 0, 0}},
-      {keys.at(3), {QVariant::Int, cellinfo->getGeneration(), 0, 0}} };
+      {keys.at(2), {QVariant::Int, cni->getAge(), 0, 0}},
+      {keys.at(3), {QVariant::Int, cni->getGeneration(), 0, 0}} };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
                                     tr("Edit cell %1").arg(cell->objectName()), &map);
     if(!dvl->exec()) return;
 
-    cellinfo->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
-    cellinfo->setAge(map.value(keys.at(2)).value.toInt());
-    cellinfo->setGeneration(map.value(keys.at(3)).value.toInt());
+    cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
+    cni->setAge(map.value(keys.at(2)).value.toInt());
+    cni->setGeneration(map.value(keys.at(3)).value.toInt());
+
+    cell->applyNewInfo(); // для ускорения обновления; в m_Field->calculate() applyCalculating выключен
 
     m_Field->setRuleOn(false);
     m_Field->setRunningAlways(false);
@@ -606,7 +625,7 @@ void MainWindow::slotFieldAvCalcUp(qreal value)
     if(m_LabelFieldAvCalc->styleSheet() != MW_LABEL_STYLE_UP)
         m_LabelFieldAvCalc->setStyleSheet(MW_LABEL_STYLE_UP);
 
-    m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
+    m_LabelFieldAvCalc->setText(QString::number(value, 'f', 1));
 }
 
 void MainWindow::slotFieldAvCalcDown(qreal value)
@@ -614,7 +633,7 @@ void MainWindow::slotFieldAvCalcDown(qreal value)
     if(m_LabelFieldAvCalc->styleSheet() != MW_LABEL_STYLE_DOWN)
         m_LabelFieldAvCalc->setStyleSheet(MW_LABEL_STYLE_DOWN);
 
-    m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
+    m_LabelFieldAvCalc->setText(QString::number(value, 'f', 1));
 }
 
 void MainWindow::slotAverageDrawUp(qreal value)
@@ -622,7 +641,7 @@ void MainWindow::slotAverageDrawUp(qreal value)
     if(m_LabelSceneAvDraw->styleSheet() != MW_LABEL_STYLE_UP)
         m_LabelSceneAvDraw->setStyleSheet(MW_LABEL_STYLE_UP);
 
-    m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
+    m_LabelSceneAvDraw->setText(QString::number(value, 'f', 1));
 }
 
 void MainWindow::slotAverageDrawDown(qreal value)
@@ -630,7 +649,7 @@ void MainWindow::slotAverageDrawDown(qreal value)
     if(m_LabelSceneAvDraw->styleSheet() != MW_LABEL_STYLE_DOWN)
         m_LabelSceneAvDraw->setStyleSheet(MW_LABEL_STYLE_DOWN);
 
-    m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
+    m_LabelSceneAvDraw->setText(QString::number(value, 'f', 1));
 }
 
 void MainWindow::slotFieldAge(qint64 value) { m_LabelFieldAge->setText(QString::number(value)); }

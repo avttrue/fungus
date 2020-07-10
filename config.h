@@ -62,6 +62,8 @@ public:
     void setSceneViewUpdateMode(const QString &value);
     QString SceneFieldThreadPriority() const;
     void setSceneFieldThreadPriority(const QString &value);
+    int SceneItemZValue() const;
+    void setSceneItemZValue(int value);
 
 protected:
     void load();
@@ -79,6 +81,7 @@ private:
     QString m_SceneViewUpdateMode;              // метод отрисовки SceneView
     QString m_SceneFieldThreadPriority;         // приоритет потока Field
     qreal m_SceneScaleStep;                     // шаг масштабирования сцены
+    int m_SceneItemZValue;                      // Z-координата SceneItem
     int m_SceneCalculatingMinPause;             // минимальная допустимая пауза при обсчёте Field
     int m_LogSize;                              // количество строк лога событий
     int m_ButtonSize;                           // размеры кнопок интерфейса    
