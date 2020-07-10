@@ -79,6 +79,7 @@ void Field::calculate()
                 if(m_RuleOn)
                 {
                     testRules(c); // test
+                    applyRules(c);
 
                     // итог применения правила к ячейке
                     // cell Age
@@ -144,12 +145,6 @@ void Field::applyCalculating()
             c->applyNewInfo();
         }
     }
-}
-
-void Field::applyReles(Cell *c) // TODO: выполнение правил
-{
-   auto ci = c->getCurInfo();
-
 }
 
 Cell *Field::addCell(int x, int y)
@@ -343,6 +338,56 @@ void Field::testRules(Cell *c)
     else if(ci->getState() == Kernel::CellState::Cursed)
     {
         ni->setState(Kernel::CellState::Dead);
+    }
+}
+
+void Field::applyRules(Cell *c) // TODO: выполнение правил
+{
+    auto ci = c->getCurInfo();
+
+    if(ci->getState() == Kernel::CellState::Dead) return;
+    if(ci->getState() == Kernel::CellState::Cursed) return;
+
+    //auto ni = c->getNewInfo();
+
+    // {CellActivityType, CellActivityTarget, [оператор: <,>,=], [значение]};
+    for(auto a: m_Rule->getActivity())
+    {
+        auto catype = a.value(0).toInt(); // CellActivityType
+        auto catarget = a.value(1).toInt(); // CellActivityType
+        if(catype == static_cast<int>(Kernel::CellActivityType::Birth))
+        {
+            if(catarget == static_cast<int>(Kernel::CellActivityTarget::Self))
+            {
+
+            }
+            else if(catarget == static_cast<int>(Kernel::CellActivityTarget::Near))
+            {
+
+            }
+        }
+        else if(catype == static_cast<int>(Kernel::CellActivityType::Death))
+        {
+            if(catarget == static_cast<int>(Kernel::CellActivityTarget::Self))
+            {
+
+            }
+            else if(catarget == static_cast<int>(Kernel::CellActivityTarget::Near))
+            {
+
+            }
+        }
+        else if(catype == static_cast<int>(Kernel::CellActivityType::Bomb))
+        {
+            if(catarget == static_cast<int>(Kernel::CellActivityTarget::Self))
+            {
+
+            }
+            else if(catarget == static_cast<int>(Kernel::CellActivityTarget::Near))
+            {
+
+            }
+        }
     }
 }
 
