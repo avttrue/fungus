@@ -60,7 +60,7 @@ QString CellActivityElementToString(const QVector<QVariant> &activity)
 
     auto activitytype = getNameKernelEnum("CellActivityType", activity.at(0).toInt());
     auto activitytarget = getNameKernelEnum("CellActivityTarget", activity.at(1).toInt());
-    auto activityoperator = activity.at(2).toString();
+    auto activityoperator = getNameKernelEnum("CellActivityOperator", activity.at(2).toInt());;
     auto activityvalue = activity.at(3).toString();
 
     return QString("%1 %2 %3 %4").arg(activitytype, activitytarget, activityoperator, activityvalue);

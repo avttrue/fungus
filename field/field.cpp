@@ -78,7 +78,7 @@ void Field::calculate()
 
                 if(m_RuleOn)
                 {
-                    testRules(c); // test
+                    //testRules(c); // test
                     applyRules(c);
 
                     // итог применения правила к ячейке

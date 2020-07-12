@@ -4,9 +4,6 @@
 #include <QObject>
 #include <QVariant>
 
-const QStringList SCENEVIEWUPDATEMODE = {"SMART", "MINIMAL", "FULL"};
-const QStringList SCENEFIELDTHREADPRIORITY = {"LOW", "NORMAL", "HIGH", "HIGHEST"};
-
 class Kernel: public QObject
 {
     Q_OBJECT
@@ -44,6 +41,17 @@ public:
         Near                // соседние ячейки любые
     };
     Q_ENUM(CellActivityTarget)
+
+    /*!
+     * \brief The CellActivityOperator enum - оператор проверок активности
+     */
+    enum class CellActivityOperator: int
+    {
+        Equal = 0,          // равен
+        More,               // больше
+        Less                // меньше
+    };
+    Q_ENUM(CellActivityOperator)
 };
 
 /*!
@@ -76,6 +84,7 @@ typedef QVector<QVector<QVariant>> CellActivity;
 
 Q_DECLARE_METATYPE(Kernel::CellActivityTarget)
 Q_DECLARE_METATYPE(Kernel::CellActivityType)
+Q_DECLARE_METATYPE(Kernel::CellActivityOperator)
 Q_DECLARE_METATYPE(Kernel::CellState)
 Q_DECLARE_METATYPE(CellActivity)
 

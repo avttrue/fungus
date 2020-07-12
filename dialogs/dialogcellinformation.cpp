@@ -6,7 +6,6 @@
 #include "field/field.h"
 #include "field/cellrule.h"
 #include "field/cellinformation.h"
-#include "kernel/kernel.h"
 #include "scene/scene.h"
 #include "scene/sceneItem.h"
 #include "scene/sceneview.h"

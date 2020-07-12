@@ -1,8 +1,6 @@
 #ifndef DIALOGCELLINFORMATION_H
 #define DIALOGCELLINFORMATION_H
 
-#include <kernel/kernel.h>
-
 #include <QDialog>
 #include <QFrame>
 

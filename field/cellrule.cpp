@@ -43,12 +43,15 @@ void CellRule::setDefault()
 {
     setObjectName(tr("Conway's LIFE game"));
 
-    m_Activity.append({static_cast<int>(Kernel::CellActivityType::Birth),
-                       static_cast<int>(Kernel::CellActivityTarget::Near), "=", 3});
-    m_Activity.append({static_cast<int>(Kernel::CellActivityType::Death),
-                       static_cast<int>(Kernel::CellActivityTarget::Near), "<", 2});
-    m_Activity.append({static_cast<int>(Kernel::CellActivityType::Death),
-                       static_cast<int>(Kernel::CellActivityTarget::Near), ">", 3});
+    m_Activity.append({QVariant::fromValue(Kernel::CellActivityType::Birth),
+                       QVariant::fromValue(Kernel::CellActivityTarget::Near),
+                       QVariant::fromValue(Kernel::CellActivityOperator::Equal), 3});
+    m_Activity.append({QVariant::fromValue(Kernel::CellActivityType::Death),
+                       QVariant::fromValue(Kernel::CellActivityTarget::Near),
+                       QVariant::fromValue(Kernel::CellActivityOperator::Less), 2});
+    m_Activity.append({QVariant::fromValue(Kernel::CellActivityType::Death),
+                       QVariant::fromValue(Kernel::CellActivityTarget::Near),
+                       QVariant::fromValue(Kernel::CellActivityOperator::More), 3});
 }
 
 QColor CellRule::getColorAlive() const { return m_ColorAlive; }
