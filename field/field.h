@@ -27,11 +27,9 @@ public:
     void setRunning(bool value);
     bool isRunning();
     void calculate();
-    bool getRunningAlways() const;
     void setRunningAlways(bool value);
     FieldInformation *getInformation() const;
     void StopCalculating();
-    bool getRuleOn() const;
     void setRuleOn(bool value);
     qint64 getCellsCount() const;
 
@@ -47,7 +45,7 @@ protected:
     QVector<Cell*> getCellsAround(Cell* cell);
     QVector<Cell*> getCellsAroundByStatus(Cell* cell, Kernel::CellState status);
     void applyCalculating();                        // применение результатов calculate
-    void applyRules(Cell* cell);                       // применение правил
+    void applyRules(Cell* cell);                    // применение правил
     void testRules(Cell* c);
 
 private:
@@ -67,7 +65,7 @@ public Q_SLOTS:
     void slotSceneReady();
 
 Q_SIGNALS:
-    void signalRuleChanged(FieldRule* rule);         // правила изменены
+    void signalRuleChanged(FieldRule* rule);        // правила изменены
     void signalRunning(bool value);                 // состояние вкл/выкл цикла calculate
     void signalCalculatingStopped();                // calculate остановлен/завершён
     void signalCalculated(QVector<Cell*> cells);    // завершена итерация calculate

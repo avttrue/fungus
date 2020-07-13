@@ -422,7 +422,6 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
             { for(Cell* c: list) c->getCurInfo()->setState(Kernel::CellState::Cursed); }
         };
 
-
         // применение оператора к операнду
         switch(aoperator)
         {
@@ -478,11 +477,9 @@ Cell *Field::getCell(QPoint index) { return m_Cells[index.x()][index.y()]; }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }
 int Field::height() { return m_Height; }
 int Field::width() { return m_Width; }
-bool Field::getRunningAlways() const { return m_RunningAlways; }
 bool Field::isRunning() { return m_Running; }
 FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::slotSceneReady() { m_WaitScene = false; }
 void Field::StopCalculating() { m_StopCalculating = true; }
-bool Field::getRuleOn() const { return m_RuleOn; }
 void Field::setRuleOn(bool value) { m_RuleOn = value; }
 qint64 Field::getCellsCount() const { return m_CellsCount; }
