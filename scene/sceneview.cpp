@@ -63,11 +63,9 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             auto item = m_Scene->itemAt(mouseSceneEvent->scenePos(), transform());
             if(!item)
             {
-                qCritical() << __func__ << ": GraphicsSceneMousePress: target item not detected";
+                qWarning() << __func__ << ": GraphicsSceneMousePress: target item not detected";
                 return true;
             }
-
-            //qDebug() << "GraphicsSceneMousePress" << mouseSceneEvent->scenePos();
         }
 
         else if (event->type() == QEvent::GraphicsSceneMouseRelease)
@@ -75,17 +73,17 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             auto item = m_Scene->itemAt(mouseSceneEvent->scenePos(), transform());
             if(!item)
             {
-                qCritical() << __func__ << ": GraphicsSceneMouseRelease: target item not detected";
+                qWarning() << __func__ << ": GraphicsSceneMouseRelease: target item not detected";
                 return true;
             }
 
             auto o = static_cast<SceneItem*>(item);            
 
-            // вывод сообщения об отсутствии SceneObject
+            // вывод сообщения об отсутствии SceneItem
             if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
                     mouseSceneEvent->button() == Qt::LeftButton && !o)
             {
-                qCritical() << __func__ << ": GraphicsSceneMouseRelease: SceneObject not detected";
+                qWarning() << __func__ << ": GraphicsSceneMouseRelease: SceneItem not detected";
                 return true;
             }
 
@@ -105,8 +103,6 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 m_Scene->selectCell(nullptr);
                 return true;
             }
-
-            //qDebug() << "GraphicsSceneMouseRelease" << mouseSceneEvent->scenePos();
         }
     }
     return false;

@@ -122,7 +122,7 @@ void Field::calculate()
         {
             auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
             while(QDateTime::currentDateTime() < pausetime && !m_AbortCalculating)
-                QCoreApplication::processEvents(QEventLoop::AllEvents);
+                QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
         }
     }
 
