@@ -23,13 +23,12 @@ public:
     Cell* getCell(QPoint index);
     QVector<QVector<Cell *>>* cells() const; 
     FieldRule *getRule() const;
-    void setRule(FieldRule *value);
-    void setRunning(bool value);
-    bool isRunning();
+    void setRule(FieldRule *value);    
+    bool isCalculating();
     void calculate();
-    void setRunningAlways(bool value);
+    void setCalculatingNonstop(bool value);
     FieldInformation *getInformation() const;
-    void StopCalculating();
+    void AbortCalculating();
     void setRuleOn(bool value);
     qint64 getCellsCount() const;
 
@@ -56,18 +55,20 @@ private:
     FieldRule* m_Rule;
     FieldInformation* m_FieldInformation;
     bool m_RuleOn;                                  // включить расчёт правил (для отрисовки при редактировании)
-    bool m_Running;                                 // флаг управления циклом calculate
-    bool m_RunningAlways;                           // флаг управления режимом calculate: одиночный шаг / постоянное выполнение
+    bool m_Calculating;                             // флаг управления циклом calculate
+    bool m_CalculatingNonstop;                      // флаг управления режимом calculate: одиночный шаг / постоянное выполнение
     bool m_WaitScene;                               // ожидание готовности сцены
-    bool m_StopCalculating;                         // остановка цикла calculate перед выходом и т.д.
+    bool m_AbortCalculating;                        // остановка цикла calculate перед выходом и т.д.
 
 public Q_SLOTS:
     void slotSceneReady();
+    void slotStopCalculating();                     // флаг m_Calculating = false
+    void slotStartCalculating();                    // флаг m_Calculating = true
 
 Q_SIGNALS:
     void signalRuleChanged(FieldRule* rule);        // правила изменены
-    void signalRunning(bool value);                 // состояние вкл/выкл цикла calculate
-    void signalCalculatingStopped();                // calculate остановлен/завершён
+    void signalCalculating(bool value);             // состояние вкл/выкл цикла calculate
+    void signalCalculatingDone();                   // calculate остановлен/завершён
     void signalCalculated(QVector<Cell*> cells);    // завершена итерация calculate
     void signalFillingProgress(int step);           // для индикации создания
 };

@@ -96,6 +96,9 @@ private Q_SLOTS:
     void slotEditCell();
     void slotShowCell(Cell* cell);
     void slotShowSelectedCell();
+
+Q_SIGNALS:
+    void signalStopField();
 };
 
 #endif // MAINWINDOW_H

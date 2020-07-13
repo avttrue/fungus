@@ -14,10 +14,10 @@ Field::Field(int width, int height, QObject *parent)
       m_Width(width),
       m_Height(height),
       m_Rule(nullptr),
-      m_Running(false),
-      m_RunningAlways(false),
+      m_Calculating(false),
+      m_CalculatingNonstop(false),
       m_WaitScene(false),
-      m_StopCalculating(false)
+      m_AbortCalculating(false)
 {
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
@@ -52,7 +52,7 @@ void Field::fill()
 void Field::calculate()
 {
     qDebug() << "Field calculating started";
-    while(m_Running)
+    while(m_Calculating)
     {
         if(m_WaitScene) continue;
 
@@ -65,10 +65,10 @@ void Field::calculate()
         QVector<Cell*> cells;
         for(int h = 0; h < m_Height; h++)
         {
-            if(m_StopCalculating) break;
+            if(m_AbortCalculating) break;
             for(int w = 0; w < m_Width; w++)
             {
-                if(m_StopCalculating) break;
+                if(m_AbortCalculating) break;
 
                 auto c = m_Cells.at(w).at(h);
                 auto ci = c->getCurInfo();
@@ -103,7 +103,7 @@ void Field::calculate()
                 }
             }
         }
-        if(m_StopCalculating) break;
+        if(m_AbortCalculating) break;
 
         if(m_RuleOn) applyCalculating();
 
@@ -115,29 +115,29 @@ void Field::calculate()
         m_WaitScene = true;
         Q_EMIT signalCalculated(cells);
 
-        if(!m_RunningAlways) setRunning(false);
+        if(!m_CalculatingNonstop) slotStopCalculating();
 
         // пауза
-        if(m_RunningAlways && m_RuleOn)
+        if(m_CalculatingNonstop && m_RuleOn)
         {
             auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
-            while(QDateTime::currentDateTime() < pausetime && !m_StopCalculating)
+            while(QDateTime::currentDateTime() < pausetime && !m_AbortCalculating)
                 QCoreApplication::processEvents(QEventLoop::AllEvents);
         }
     }
 
     qDebug() << "Field calculating stopped";
-    Q_EMIT signalCalculatingStopped();
+    Q_EMIT signalCalculatingDone();
 }
 
 void Field::applyCalculating()
 {
     for(int h = 0; h < m_Height; h++)
     {
-        if(m_StopCalculating) break;
+        if(m_AbortCalculating) break;
         for(int w = 0; w < m_Width; w++)
         {
-            if(m_StopCalculating) break;
+            if(m_AbortCalculating) break;
 
             auto c = m_Cells.at(w).at(h);
             c->applyNewInfo();
@@ -320,11 +320,11 @@ QVector<Cell *> Field::getCellsAroundByStatus(Cell *cell, Kernel::CellState stat
     return result;
 }
 
-void Field::setRunningAlways(bool value)
+void Field::setCalculatingNonstop(bool value)
 {
-    if(m_RunningAlways == value) return;
+    if(m_CalculatingNonstop == value) return;
 
-    m_RunningAlways = value;
+    m_CalculatingNonstop = value;
 }
 
 void Field::setRule(FieldRule *value)
@@ -342,12 +342,16 @@ void Field::setRule(FieldRule *value)
     Q_EMIT signalRuleChanged(m_Rule);
 }
 
-void Field::setRunning(bool value)
+void Field::slotStartCalculating()
 {
-    if(m_Running == value) return;
+    m_Calculating = true;
+    Q_EMIT signalCalculating(m_Calculating);
+}
 
-    m_Running = value;
-    Q_EMIT signalRunning(m_Running);
+void Field::slotStopCalculating()
+{
+    m_Calculating = false;
+    Q_EMIT signalCalculating(m_Calculating);
 }
 
 void Field::testRules(Cell *c)
@@ -477,9 +481,9 @@ Cell *Field::getCell(QPoint index) { return m_Cells[index.x()][index.y()]; }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }
 int Field::height() { return m_Height; }
 int Field::width() { return m_Width; }
-bool Field::isRunning() { return m_Running; }
+bool Field::isCalculating() { return m_Calculating; }
 FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::slotSceneReady() { m_WaitScene = false; }
-void Field::StopCalculating() { m_StopCalculating = true; }
+void Field::AbortCalculating() { m_AbortCalculating = true; }
 void Field::setRuleOn(bool value) { m_RuleOn = value; }
 qint64 Field::getCellsCount() const { return m_CellsCount; }

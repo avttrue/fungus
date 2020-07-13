@@ -90,7 +90,6 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             }
 
             auto field = m_Scene->getField();
-            field->setRunning(false);
             auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneCellSize());
             auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneCellSize());
             auto c = field->cells()->at(x).at(y);

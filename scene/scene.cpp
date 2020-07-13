@@ -105,10 +105,10 @@ void Scene::slotAdvance(QVector<Cell *> cells)
     auto time = QDateTime::currentMSecsSinceEpoch();
     auto pixmap = m_SceneItem->getPixmap();
 
-    pixmap->fill(config->SceneCellDeadColor());
-
     QPainter painter;
     painter.begin(pixmap);
+
+    pixmap->fill(config->SceneCellDeadColor());
 
     for(auto c: cells)
     {
@@ -120,9 +120,12 @@ void Scene::slotAdvance(QVector<Cell *> cells)
                    config->SceneCellSize());
 
         auto state = c->getCurInfo()->getState();
+
         // Kernel::CellState::Dead не обрабатываем
+
         if(state == Kernel::CellState::Alive)
             painter.fillRect(rect, m_Field->getRule()->getColorAlive());
+
         else if(state == Kernel::CellState::Cursed)
             painter.fillRect(rect, config->SceneCellCurseColor());
     }

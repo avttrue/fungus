@@ -216,7 +216,7 @@ void MainWindow::loadGui()
 
 void MainWindow::slotNewProject()
 {
-    if(m_Field) m_Field->setRunning(false);
+    Q_EMIT signalStopField();
 
     QMap<QString, FieldRule*> ruleslist;
     auto rule = new FieldRule; // default rule
@@ -268,15 +268,15 @@ void MainWindow::slotNewProject()
 
 void MainWindow::slotStepStop()
 {    
-    if(m_Field->isRunning())
+    if(m_Field->isCalculating())
     {
-        m_Field->setRunning(false);
+        Q_EMIT signalStopField();
     }
     else
     {
         m_Field->setRuleOn(true);
-        m_Field->setRunningAlways(false);
-        m_Field->setRunning(true);
+        m_Field->setCalculatingNonstop(false);
+        m_Field->slotStartCalculating();
         m_ThreadField->start();
         setSceneFieldThreadPriority();
     }
@@ -284,11 +284,11 @@ void MainWindow::slotStepStop()
 
 void MainWindow::slotRun()
 {
-    if(!m_Field->isRunning())
+    if(!m_Field->isCalculating())
     {
         m_Field->setRuleOn(true);
-        m_Field->setRunningAlways(true);
-        m_Field->setRunning(true);
+        m_Field->setCalculatingNonstop(true);
+        m_Field->slotStartCalculating();
         m_ThreadField->start();
         setSceneFieldThreadPriority();
     }
@@ -332,16 +332,17 @@ void MainWindow::createField(int w, int h)
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalDeadCellsChanged, this, &MainWindow::slotFieldDeadCells);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAliveCellsChanged, this, &MainWindow::slotFieldAliveCells);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signaCursedCellsChanged, this, &MainWindow::slotFieldCursedCells);
-    QObject::connect(m_Field, &Field::signalRunning, this, &MainWindow::slotFieldRunning);
+    QObject::connect(m_Field, &Field::signalCalculating, this, &MainWindow::slotFieldRunning);
     m_LabelFieldAvCalc->setText("0");
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedUp, this, &MainWindow::slotFieldAvCalcUp);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedDown, this, &MainWindow::slotFieldAvCalcDown);
+    QObject::connect(this, &MainWindow::signalStopField, m_Field, &Field::slotStopCalculating, Qt::DirectConnection);
 
     fillField();
-
-    QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
-    QObject::connect(m_Field, &Field::signalCalculatingStopped, this, &MainWindow::stopThreadField, Qt::DirectConnection);
     m_Field->moveToThread(m_ThreadField);  // NOTE: field выполняется не в основном потоке
+
+    QObject::connect(m_Field, &Field::signalCalculatingDone, this, &MainWindow::stopThreadField, Qt::DirectConnection);
+    QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);    
 }
 
 void MainWindow::fillField()
@@ -376,10 +377,10 @@ void MainWindow::setActionsEnable(bool value)
 
 void MainWindow::deleteField()
 {
+    Q_EMIT signalStopField();
     if(m_Field)
     {
-        m_Field->setRunning(false);
-        m_Field->StopCalculating();
+        m_Field->AbortCalculating();
         while(m_ThreadField->isRunning()) qDebug() << "Waiting ThreadField";
 
         delete m_Field;
@@ -553,7 +554,7 @@ void MainWindow::slotInfoCell()
 
 void MainWindow::slotEditCell()
 {
-    m_Field->setRunning(false);
+    Q_EMIT signalStopField();
 
     auto cell = m_SceneView->getScene()->getSelectedCell();
     if(!cell)
@@ -591,8 +592,8 @@ void MainWindow::slotEditCell()
     cell->applyNewInfo(); // для ускорения обновления; в m_Field->calculate() applyCalculating выключен
 
     m_Field->setRuleOn(false);
-    m_Field->setRunningAlways(false);
-    m_Field->setRunning(true);
+    m_Field->setCalculatingNonstop(false);
+    m_Field->slotStartCalculating();
     m_Field->calculate();
 }
 

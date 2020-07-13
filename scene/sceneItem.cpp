@@ -37,9 +37,9 @@ void SceneItem::paint(QPainter *painter, const QStyleOptionGraphicsItem* option,
 
 void SceneItem::advance(int step)
 {
-    if (step == 0) return;
+    if (!step) return;
 
-    else if(step == 1) update();
+    update();
 }
 
 QPixmap *SceneItem::getPixmap() { return &m_Pixmap; }
