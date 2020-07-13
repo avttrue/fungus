@@ -1,10 +1,8 @@
 #include "field.h"
 #include "cell.h"
 #include "cellinformation.h"
-#include "cellrule.h"
+#include "fieldrule.h"
 #include "fieldinformation.h"
-#include "scene/sceneItem.h"
-#include "helper.h"
 #include "properties.h"
 
 #include <QCoreApplication>
@@ -159,61 +157,61 @@ Cell *Field::addCell(int x, int y)
 
 Cell *Field::addCell(QPoint index) { return addCell(index.x(), index.y()); }
 
-Cell *Field::getTopCell(Cell *c)
+Cell *Field::getTopCell(Cell *cell)
 {
-    auto index = c->getIndex();
+    auto index = cell->getIndex();
 
     if(index.y() == 0) index.setY(height() - 1);
     else index.setY(index.y() - 1);
 
-    auto cell = getCell(index);
-    if(!cell) cell = addCell(index);
+    auto c = getCell(index);
+    if(!c) c = addCell(index);
 
-    return cell;
+    return c;
 }
 
-Cell *Field::getRightCell(Cell *c)
+Cell *Field::getRightCell(Cell *cell)
 {
-    auto index = c->getIndex();
+    auto index = cell->getIndex();
 
     if(index.x() == width() - 1) index.setX(0);
     else index.setX(index.x() + 1);
 
-    auto cell = getCell(index);
-    if(!cell) cell = addCell(index);
+    auto c = getCell(index);
+    if(!c) c = addCell(index);
 
-    return cell;
+    return c;
 }
 
-Cell *Field::getBottomCell(Cell *c)
+Cell *Field::getBottomCell(Cell *cell)
 {
-    auto index = c->getIndex();
+    auto index = cell->getIndex();
 
     if(index.y() == height() - 1) index.setY(0);
     else index.setY(index.y() + 1);
 
-    auto cell = getCell(index);
-    if(!cell) cell = addCell(index);
+    auto c = getCell(index);
+    if(!c) c = addCell(index);
 
-    return cell;
+    return c;
 }
 
-Cell *Field::getLeftCell(Cell *c)
+Cell *Field::getLeftCell(Cell *cell)
 {
-    auto index = c->getIndex();
+    auto index = cell->getIndex();
 
     if(index.x() == 0) index.setX(width() - 1);
     else index.setX(index.x() - 1);
 
-    auto cell = getCell(index);
-    if(!cell) cell = addCell(index);
+    auto c = getCell(index);
+    if(!c) c = addCell(index);
 
-    return cell;
+    return c;
 }
 
-Cell *Field::getTopLeftCell(Cell *c)
+Cell *Field::getTopLeftCell(Cell *cell)
 {
-    auto index = c->getIndex();
+    auto index = cell->getIndex();
 
     if(index.x() == 0) index.setX(width() - 1);
     else index.setX(index.x() - 1);
@@ -221,15 +219,15 @@ Cell *Field::getTopLeftCell(Cell *c)
     if(index.y() == 0) index.setY(height() - 1);
     else index.setY(index.y() - 1);
 
-    auto cell = getCell(index);
-    if(!cell) cell = addCell(index);
+    auto c = getCell(index);
+    if(!c) c = addCell(index);
 
-    return cell;
+    return c;
 }
 
-Cell *Field::getTopRightCell(Cell *c)
+Cell *Field::getTopRightCell(Cell *cell)
 {
-    auto index = c->getIndex();
+    auto index = cell->getIndex();
 
     if(index.y() == 0) index.setY(height() - 1);
     else index.setY(index.y() - 1);
@@ -237,15 +235,15 @@ Cell *Field::getTopRightCell(Cell *c)
     if(index.x() == width() - 1) index.setX(0);
     else index.setX(index.x() + 1);
 
-    auto cell = getCell(index);
-    if(!cell) cell = addCell(index);
+    auto c = getCell(index);
+    if(!c) c = addCell(index);
 
-    return cell;
+    return c;
 }
 
-Cell *Field::getBottomLeftCell(Cell *c)
+Cell *Field::getBottomLeftCell(Cell *cell)
 {
-    auto index = c->getIndex();
+    auto index = cell->getIndex();
 
     if(index.y() == height() - 1) index.setY(0);
     else index.setY(index.y() + 1);
@@ -253,15 +251,15 @@ Cell *Field::getBottomLeftCell(Cell *c)
     if(index.x() == 0) index.setX(width() - 1);
     else index.setX(index.x() - 1);
 
-    auto cell = getCell(index);
-    if(!cell) cell = addCell(index);
+    auto c = getCell(index);
+    if(!c) c = addCell(index);
 
-    return cell;
+    return c;
 }
 
-Cell *Field::getBottomRightCell(Cell *c)
+Cell *Field::getBottomRightCell(Cell *cell)
 {
-    auto index = c->getIndex();
+    auto index = cell->getIndex();
 
     if(index.y() == height() - 1) index.setY(0);
     else index.setY(index.y() + 1);
@@ -269,24 +267,55 @@ Cell *Field::getBottomRightCell(Cell *c)
     if(index.x() == width() - 1) index.setX(0);
     else index.setX(index.x() + 1);
 
-    auto cell = getCell(index);
-    if(!cell) cell = addCell(index);
+    auto c = getCell(index);
+    if(!c) c = addCell(index);
 
-    return cell;
+    return c;
 }
 
-QVector<Cell*> Field::getCellsAround(Cell *c)
+QVector<Cell*> Field::getCellsAround(Cell *cell)
 {
     QVector<Cell*> result;
 
-    result.append(getTopCell(c));
-    result.append(getTopRightCell(c));
-    result.append(getRightCell(c));
-    result.append(getBottomRightCell(c));
-    result.append(getBottomCell(c));
-    result.append(getBottomLeftCell(c));
-    result.append(getLeftCell(c));
-    result.append(getTopLeftCell(c));
+    result.append(getTopCell(cell));
+    result.append(getTopRightCell(cell));
+    result.append(getRightCell(cell));
+    result.append(getBottomRightCell(cell));
+    result.append(getBottomCell(cell));
+    result.append(getBottomLeftCell(cell));
+    result.append(getLeftCell(cell));
+    result.append(getTopLeftCell(cell));
+
+    return result;
+}
+
+QVector<Cell *> Field::getCellsAroundByStatus(Cell *cell, Kernel::CellState status)
+{
+    QVector<Cell*> result;
+
+    auto nc = getTopCell(cell);
+    if(nc->getCurInfo()->getState() == status) result.append(nc);
+
+    nc = getTopRightCell(cell);
+    if(nc->getCurInfo()->getState() == status) result.append(nc);
+
+    nc = getRightCell(cell);
+    if(nc->getCurInfo()->getState() == status) result.append(nc);
+
+    nc = getBottomRightCell(cell);
+    if(nc->getCurInfo()->getState() == status) result.append(nc);
+
+    nc = getBottomCell(cell);
+    if(nc->getCurInfo()->getState() == status) result.append(nc);
+
+    nc = getBottomLeftCell(cell);
+    if(nc->getCurInfo()->getState() == status) result.append(nc);
+
+    nc = getLeftCell(cell);
+    if(nc->getCurInfo()->getState() == status) result.append(nc);
+
+    nc = getTopLeftCell(cell);
+    if(nc->getCurInfo()->getState() == status) result.append(nc);
 
     return result;
 }
@@ -298,7 +327,7 @@ void Field::setRunningAlways(bool value)
     m_RunningAlways = value;
 }
 
-void Field::setRule(CellRule *value)
+void Field::setRule(FieldRule *value)
 {
     if(!value) return;
     if(m_Rule == value) return;
@@ -341,57 +370,110 @@ void Field::testRules(Cell *c)
     }
 }
 
-void Field::applyRules(Cell *c) // TODO: выполнение правил
+void Field::applyRules(Cell *cell) // TODO: выполнение правил
 {
-    auto ci = c->getCurInfo();
+    auto ci = cell->getCurInfo();
+    auto ni = cell->getNewInfo();
 
-    if(ci->getState() == Kernel::CellState::Dead) return;
-    if(ci->getState() == Kernel::CellState::Cursed) return;
-
-    //auto ni = c->getNewInfo();
-
-    // {CellActivityType, CellActivityTarget, [оператор: <,>,=], [значение]};
+    // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение]};
     for(auto a: m_Rule->getActivity())
     {
-        auto catype = a.value(0).toInt(); // CellActivityType
-        auto catarget = a.value(1).toInt(); // CellActivityType
-        if(catype == static_cast<int>(Kernel::CellActivityType::Birth))
+        if(a.count() < 7)
         {
-            if(catarget == static_cast<int>(Kernel::CellActivityTarget::Self))
-            {
-
-            }
-            else if(catarget == static_cast<int>(Kernel::CellActivityTarget::Near))
-            {
-
-            }
+            qCritical() << "Incorrect activity:" << a;
+            continue;
         }
-        else if(catype == static_cast<int>(Kernel::CellActivityType::Death))
+
+        auto sstate = static_cast<Kernel::CellState>(a.value(1).toInt());   // self state
+        if(ci->getState() != sstate) continue;
+
+        auto atype = static_cast<Kernel::ActivityType>(a.value(0).toInt());
+        auto atarget = static_cast<Kernel::ActivityTarget>(a.value(2).toInt());
+        auto tstate = static_cast<Kernel::CellState>(a.value(3).toInt());
+        auto aoperand = static_cast<Kernel::ActivityOperand>(a.value(4).toInt());
+        auto aoperator = static_cast<Kernel::ActivityOperator>(a.value(5).toInt());
+        auto value =  a.value(6).toInt();
+
+        auto list = getCellsAroundByStatus(cell, tstate);
+
+        // значение в операнде
+        auto operand_value = [aoperand, list]()
         {
-            if(catarget == static_cast<int>(Kernel::CellActivityTarget::Self))
-            {
+            auto count = 0;
+            if(aoperand == Kernel::ActivityOperand::Count)
+            { count = list.count(); }
 
-            }
-            else if(catarget == static_cast<int>(Kernel::CellActivityTarget::Near))
-            {
+            else if(aoperand == Kernel::ActivityOperand::Age)
+            { for(Cell* c: list) count += c->getCurInfo()->getAge(); }
 
-            }
-        }
-        else if(catype == static_cast<int>(Kernel::CellActivityType::Bomb))
+            return count;
+        };
+
+        // учёт ActivityType
+        auto activity_reaction = [atype, ni, list]()
         {
-            if(catarget == static_cast<int>(Kernel::CellActivityTarget::Self))
-            {
+            if(atype == Kernel::ActivityType::Birth)
+            { ni->setState(Kernel::CellState::Alive);}
 
-            }
-            else if(catarget == static_cast<int>(Kernel::CellActivityTarget::Near))
-            {
+            else if(atype == Kernel::ActivityType::Death)
+            { ni->setState(Kernel::CellState::Dead); }
 
+            else if(atype == Kernel::ActivityType::Bomb)
+            { for(Cell* c: list) c->getCurInfo()->setState(Kernel::CellState::Cursed); }
+        };
+
+
+        // применение оператора к операнду
+        switch(aoperator)
+        {
+        case Kernel::ActivityOperator::Equal:
+
+            if(atarget == Kernel::ActivityTarget::Self)
+            {
+                auto count = cell->getCurInfo()->getAge();
+                if(count == value) activity_reaction();
             }
+            else if(atarget == Kernel::ActivityTarget::Near)
+            {
+                auto count = operand_value();
+                if(count == value) activity_reaction();
+            }
+            break;
+
+        case Kernel::ActivityOperator::Less:
+
+            if(atarget == Kernel::ActivityTarget::Self)
+            {
+                auto count = cell->getCurInfo()->getAge();
+                if(count < value) activity_reaction();
+            }
+            else if(atarget == Kernel::ActivityTarget::Near)
+            {
+                auto count = operand_value();
+                if(count < value) activity_reaction();
+            }
+            break;
+
+        case Kernel::ActivityOperator::More:
+
+            if(atarget == Kernel::ActivityTarget::Self)
+            {
+                auto count = cell->getCurInfo()->getAge();
+                if(count > value) activity_reaction();
+            }
+            else if(atarget == Kernel::ActivityTarget::Near)
+            {
+                auto count = operand_value();
+                if(count > value) activity_reaction();
+            }
+            break;
+
+        default: break;
         }
     }
 }
 
-CellRule *Field::getRule() const { return m_Rule; }
+FieldRule *Field::getRule() const { return m_Rule; }
 Cell *Field::getCell(QPoint index) { return m_Cells[index.x()][index.y()]; }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }
 int Field::height() { return m_Height; }
@@ -399,9 +481,8 @@ int Field::width() { return m_Width; }
 bool Field::getRunningAlways() const { return m_RunningAlways; }
 bool Field::isRunning() { return m_Running; }
 FieldInformation *Field::getInformation() const { return m_FieldInformation; }
-void Field::setWaitScene(bool value) { m_WaitScene = value; }
+void Field::slotSceneReady() { m_WaitScene = false; }
 void Field::StopCalculating() { m_StopCalculating = true; }
-bool Field::getWaitScene() const { return m_WaitScene; }
 bool Field::getRuleOn() const { return m_RuleOn; }
 void Field::setRuleOn(bool value) { m_RuleOn = value; }
 qint64 Field::getCellsCount() const { return m_CellsCount; }

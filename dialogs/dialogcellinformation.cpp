@@ -4,7 +4,7 @@
 #include "helper.h"
 #include "field/cell.h"
 #include "field/field.h"
-#include "field/cellrule.h"
+#include "field/fieldrule.h"
 #include "field/cellinformation.h"
 #include "scene/scene.h"
 #include "scene/sceneItem.h"

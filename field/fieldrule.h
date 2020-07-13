@@ -1,5 +1,5 @@
-#ifndef CELLRULE_H
-#define CELLRULE_H
+#ifndef FIELDRULE_H
+#define FIELDRULE_H
 
 #include "kernel/kernel.h"
 
@@ -8,19 +8,19 @@
 
 class Field;
 
-class CellRule : public QObject
+class FieldRule : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QColor ColorAlive READ getColorAlive WRITE setColorAlive NOTIFY signalChanged)
-    Q_PROPERTY(CellActivity Activity READ getActivity WRITE setActivity NOTIFY signalChanged)
+    Q_PROPERTY(Activity Activity READ getActivity WRITE setActivity NOTIFY signalChanged)
     Q_PROPERTY(int CurseTime READ getCurseTime WRITE setCurseTime NOTIFY signalChanged)
 
 public:
-    CellRule(Field *parent = nullptr);
+    FieldRule(Field *parent = nullptr);
     QColor getColorAlive() const;
     void setColorAlive(QColor value);
-    CellActivity getActivity() const;
-    void setActivity(CellActivity value);
+    Activity getActivity() const;
+    void setActivity(Activity value);
     int getCurseTime() const;
     void setCurseTime(int value);
 
@@ -29,7 +29,7 @@ protected:
 
 private:
     QColor m_ColorAlive;                    // цвет живой ячейки
-    CellActivity m_Activity;                // активность ячейки
+    Activity m_Activity;                // активность ячейки
     int m_CurseTime;                        // время отравления ячейки после смерти или взрыва (0 - не отравляется)
 
 Q_SIGNALS:
@@ -38,4 +38,4 @@ Q_SIGNALS:
 
 
 
-#endif // CELLRULE_H
+#endif // FIELDRULE_H

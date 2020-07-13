@@ -3,8 +3,10 @@
 
 #include <QObject>
 
+#include <kernel/kernel.h>
+
 class Cell;
-class CellRule;
+class FieldRule;
 class FieldInformation;
 
 class Field : public QObject
@@ -20,33 +22,32 @@ public:
     Cell* addCell(QPoint index);
     Cell* getCell(QPoint index);
     QVector<QVector<Cell *>>* cells() const; 
-    CellRule *getRule() const;
-    void setRule(CellRule *value);
+    FieldRule *getRule() const;
+    void setRule(FieldRule *value);
     void setRunning(bool value);
     bool isRunning();
     void calculate();
     bool getRunningAlways() const;
     void setRunningAlways(bool value);
     FieldInformation *getInformation() const;
-    void setWaitScene(bool value);
-    bool getWaitScene() const;
     void StopCalculating();
     bool getRuleOn() const;
     void setRuleOn(bool value);
     qint64 getCellsCount() const;
 
 protected:
-    Cell* getTopCell(Cell* c);
-    Cell* getLeftCell(Cell* c);
-    Cell* getRightCell(Cell* c);
-    Cell* getBottomCell(Cell* c);
-    Cell* getTopLeftCell(Cell* c);
-    Cell* getTopRightCell(Cell* c);
-    Cell* getBottomLeftCell(Cell* c);
-    Cell* getBottomRightCell(Cell* c);
-    QVector<Cell*> getCellsAround(Cell* c);
+    Cell* getTopCell(Cell* cell);
+    Cell* getLeftCell(Cell* cell);
+    Cell* getRightCell(Cell* cell);
+    Cell* getBottomCell(Cell* cell);
+    Cell* getTopLeftCell(Cell* cell);
+    Cell* getTopRightCell(Cell* cell);
+    Cell* getBottomLeftCell(Cell* cell);
+    Cell* getBottomRightCell(Cell* cell);
+    QVector<Cell*> getCellsAround(Cell* cell);
+    QVector<Cell*> getCellsAroundByStatus(Cell* cell, Kernel::CellState status);
     void applyCalculating();                        // применение результатов calculate
-    void applyRules(Cell* c);                       // применение правил
+    void applyRules(Cell* cell);                       // применение правил
     void testRules(Cell* c);
 
 private:
@@ -54,7 +55,7 @@ private:
     int m_Height;
     qint64 m_CellsCount;
     QVector<QVector<Cell*>> m_Cells;
-    CellRule* m_Rule;
+    FieldRule* m_Rule;
     FieldInformation* m_FieldInformation;
     bool m_RuleOn;                                  // включить расчёт правил (для отрисовки при редактировании)
     bool m_Running;                                 // флаг управления циклом calculate
@@ -62,8 +63,11 @@ private:
     bool m_WaitScene;                               // ожидание готовности сцены
     bool m_StopCalculating;                         // остановка цикла calculate перед выходом и т.д.
 
+public Q_SLOTS:
+    void slotSceneReady();
+
 Q_SIGNALS:
-    void signalRuleChanged(CellRule* rule);         // правила изменены
+    void signalRuleChanged(FieldRule* rule);         // правила изменены
     void signalRunning(bool value);                 // состояние вкл/выкл цикла calculate
     void signalCalculatingStopped();                // calculate остановлен/завершён
     void signalCalculated(QVector<Cell*> cells);    // завершена итерация calculate

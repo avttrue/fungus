@@ -11,7 +11,7 @@
 #include "field/field.h"
 #include "field/cell.h"
 #include "field/cellinformation.h"
-#include "field/cellrule.h"
+#include "field/fieldrule.h"
 #include "field/fieldinformation.h"
 
 #include <QDebug>
@@ -218,8 +218,8 @@ void MainWindow::slotNewProject()
 {
     if(m_Field) m_Field->setRunning(false);
 
-    QMap<QString, CellRule*> ruleslist;
-    auto rule = new CellRule; // default rule
+    QMap<QString, FieldRule*> ruleslist;
+    auto rule = new FieldRule; // default rule
     ruleslist.insert(rule->objectName(), rule);
 
     //TODO: загружать здесь остальные возможные правила

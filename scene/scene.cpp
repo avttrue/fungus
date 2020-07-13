@@ -5,7 +5,7 @@
 #include "helper.h"
 #include "field/field.h"
 #include "field/cell.h"
-#include "field/cellrule.h"
+#include "field/fieldrule.h"
 #include "field/cellinformation.h"
 #include "field/fieldinformation.h"
 
@@ -40,6 +40,7 @@ Scene::Scene(QObject* parent, Field *field)
     addSelectionMark();
 
     QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
+    QObject::connect(this, &Scene::signalReady, m_Field, &Field::slotSceneReady, Qt::DirectConnection);
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
@@ -133,7 +134,7 @@ void Scene::slotAdvance(QVector<Cell *> cells)
     applyAverageDraw(time);
 
     advance();
-    m_Field->setWaitScene(false);
+    Q_EMIT signalReady();
 }
 
 void Scene::applyAverageDraw(qint64 time)

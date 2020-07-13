@@ -50,8 +50,8 @@ int countKernelEnum(const QString &enumname)
     return me.keyCount();
 }
 
-QString CellActivityElementToString(const QVector<QVariant> &activity)
-{
+QString ActivityElementToString(const QVector<QVariant> &activity)
+{ // TODO: переделать
     if(activity.count() < 4)
     {
         qCritical() << __func__ << "Wrong CellActivity format, count" << activity.count();
