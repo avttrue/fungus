@@ -31,6 +31,8 @@ Field::Field(int width, int height, QObject *parent)
     qDebug() << objectName() << "created";
 }
 
+Cell *Field::addCell(QPoint index) { return addCell(index.x(), index.y()); }
+
 void Field::fill(bool random)
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
@@ -183,7 +185,120 @@ Cell *Field::addCell(int x, int y)
     return c;
 }
 
-Cell *Field::addCell(QPoint index) { return addCell(index.x(), index.y()); }
+void Field::testRules(Cell *c)
+{
+    auto ci = c->getCurInfo();
+    auto ni = c->getNewInfo();
+
+    if(ci->getState() == Kernel::CellState::Dead)
+        ni->setState(Kernel::CellState::Alive);
+    else if(ci->getState() == Kernel::CellState::Alive)
+        ni->setState(Kernel::CellState::Cursed);
+    else if(ci->getState() == Kernel::CellState::Cursed)
+        ni->setState(Kernel::CellState::Dead);
+}
+
+void Field::applyRules(Cell *cell) // TODO: выполнение правил
+{
+    auto ci = cell->getCurInfo();
+    auto ni = cell->getNewInfo();
+
+    // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение]};
+    for(auto a: m_Rule->getActivity())
+    {
+        if(a.count() < 7)
+        {
+            qCritical() << "Incorrect activity:" << a;
+            continue;
+        }
+
+        auto sstate = static_cast<Kernel::CellState>(a.value(1).toInt());   // self state
+        if(ci->getState() != sstate) continue;
+
+        auto atype = static_cast<Kernel::ActivityType>(a.value(0).toInt());
+        auto atarget = static_cast<Kernel::ActivityTarget>(a.value(2).toInt());
+        auto tstate = static_cast<Kernel::CellState>(a.value(3).toInt());
+        auto aoperand = static_cast<Kernel::ActivityOperand>(a.value(4).toInt());
+        auto aoperator = static_cast<Kernel::ActivityOperator>(a.value(5).toInt());
+        auto value =  a.value(6).toInt();
+
+        auto list = getCellsAroundByStatus(cell, tstate);
+
+        // значение в операнде
+        auto operand_value = [aoperand, list]()
+        {
+            auto count = 0;
+            if(aoperand == Kernel::ActivityOperand::Count)
+            { count = list.count(); }
+
+            else if(aoperand == Kernel::ActivityOperand::Age)
+            { for(Cell* c: list) count += c->getCurInfo()->getAge(); }
+
+            return count;
+        };
+
+        // учёт ActivityType
+        auto activity_reaction = [atype, ni, list]()
+        {
+            if(atype == Kernel::ActivityType::Birth)
+            { ni->setState(Kernel::CellState::Alive);}
+
+            else if(atype == Kernel::ActivityType::Death)
+            { ni->setState(Kernel::CellState::Dead); }
+
+            else if(atype == Kernel::ActivityType::Bomb)
+            { for(Cell* c: list) c->getCurInfo()->setState(Kernel::CellState::Cursed); }
+        };
+
+        // применение оператора к операнду
+        switch(aoperator)
+        {
+        case Kernel::ActivityOperator::Equal:
+        {
+            if(atarget == Kernel::ActivityTarget::Self)
+            {
+                auto count = cell->getCurInfo()->getAge();
+                if(count == value) activity_reaction();
+            }
+            else if(atarget == Kernel::ActivityTarget::Near)
+            {
+                auto count = operand_value();
+                if(count == value) activity_reaction();
+            }
+            break;
+        }
+        case Kernel::ActivityOperator::Less:
+        {
+            if(atarget == Kernel::ActivityTarget::Self)
+            {
+                auto count = cell->getCurInfo()->getAge();
+                if(count < value) activity_reaction();
+            }
+            else if(atarget == Kernel::ActivityTarget::Near)
+            {
+                auto count = operand_value();
+                if(count < value) activity_reaction();
+            }
+            break;
+        }
+        case Kernel::ActivityOperator::More:
+        {
+            if(atarget == Kernel::ActivityTarget::Self)
+            {
+                auto count = cell->getCurInfo()->getAge();
+                if(count > value) activity_reaction();
+            }
+            else if(atarget == Kernel::ActivityTarget::Near)
+            {
+                auto count = operand_value();
+                if(count > value) activity_reaction();
+            }
+            break;
+        }
+        default: break;
+        }
+    }
+}
 
 Cell *Field::getTopCell(Cell *cell)
 {
@@ -380,128 +495,6 @@ void Field::slotStopCalculating()
 {
     m_Calculating = false;
     Q_EMIT signalCalculating(m_Calculating);
-}
-
-void Field::testRules(Cell *c)
-{
-    auto ci = c->getCurInfo();
-    auto ni = c->getNewInfo();
-
-
-    if(ci->getState() == Kernel::CellState::Dead)
-    {
-        ni->setState(Kernel::CellState::Alive);
-    }
-    else if(ci->getState() == Kernel::CellState::Alive)
-    {
-        ni->setState(Kernel::CellState::Cursed);
-    }
-    else if(ci->getState() == Kernel::CellState::Cursed)
-    {
-        ni->setState(Kernel::CellState::Dead);
-    }
-}
-
-void Field::applyRules(Cell *cell) // TODO: выполнение правил
-{
-    auto ci = cell->getCurInfo();
-    auto ni = cell->getNewInfo();
-
-    // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение]};
-    for(auto a: m_Rule->getActivity())
-    {
-        if(a.count() < 7)
-        {
-            qCritical() << "Incorrect activity:" << a;
-            continue;
-        }
-
-        auto sstate = static_cast<Kernel::CellState>(a.value(1).toInt());   // self state
-        if(ci->getState() != sstate) continue;
-
-        auto atype = static_cast<Kernel::ActivityType>(a.value(0).toInt());
-        auto atarget = static_cast<Kernel::ActivityTarget>(a.value(2).toInt());
-        auto tstate = static_cast<Kernel::CellState>(a.value(3).toInt());
-        auto aoperand = static_cast<Kernel::ActivityOperand>(a.value(4).toInt());
-        auto aoperator = static_cast<Kernel::ActivityOperator>(a.value(5).toInt());
-        auto value =  a.value(6).toInt();
-
-        auto list = getCellsAroundByStatus(cell, tstate);
-
-        // значение в операнде
-        auto operand_value = [aoperand, list]()
-        {
-            auto count = 0;
-            if(aoperand == Kernel::ActivityOperand::Count)
-            { count = list.count(); }
-
-            else if(aoperand == Kernel::ActivityOperand::Age)
-            { for(Cell* c: list) count += c->getCurInfo()->getAge(); }
-
-            return count;
-        };
-
-        // учёт ActivityType
-        auto activity_reaction = [atype, ni, list]()
-        {
-            if(atype == Kernel::ActivityType::Birth)
-            { ni->setState(Kernel::CellState::Alive);}
-
-            else if(atype == Kernel::ActivityType::Death)
-            { ni->setState(Kernel::CellState::Dead); }
-
-            else if(atype == Kernel::ActivityType::Bomb)
-            { for(Cell* c: list) c->getCurInfo()->setState(Kernel::CellState::Cursed); }
-        };
-
-        // применение оператора к операнду
-        switch(aoperator)
-        {
-        case Kernel::ActivityOperator::Equal:
-
-            if(atarget == Kernel::ActivityTarget::Self)
-            {
-                auto count = cell->getCurInfo()->getAge();
-                if(count == value) activity_reaction();
-            }
-            else if(atarget == Kernel::ActivityTarget::Near)
-            {
-                auto count = operand_value();
-                if(count == value) activity_reaction();
-            }
-            break;
-
-        case Kernel::ActivityOperator::Less:
-
-            if(atarget == Kernel::ActivityTarget::Self)
-            {
-                auto count = cell->getCurInfo()->getAge();
-                if(count < value) activity_reaction();
-            }
-            else if(atarget == Kernel::ActivityTarget::Near)
-            {
-                auto count = operand_value();
-                if(count < value) activity_reaction();
-            }
-            break;
-
-        case Kernel::ActivityOperator::More:
-
-            if(atarget == Kernel::ActivityTarget::Self)
-            {
-                auto count = cell->getCurInfo()->getAge();
-                if(count > value) activity_reaction();
-            }
-            else if(atarget == Kernel::ActivityTarget::Near)
-            {
-                auto count = operand_value();
-                if(count > value) activity_reaction();
-            }
-            break;
-
-        default: break;
-        }
-    }
 }
 
 FieldRule *Field::getRule() const { return m_Rule; }

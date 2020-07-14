@@ -8,8 +8,8 @@
 
 Cell::Cell(Field *parent)
     : QObject(parent),
-    m_Field(parent),
-    m_Index({-1, -1})
+      m_Field(parent),
+      m_Index({-1, -1})
 {
     m_CurrentInformation = new CellInformation(this);
     m_NewInformation = new CellInformation(this);
@@ -36,7 +36,3 @@ void Cell::setIndex(const QPoint &value) { m_Index = value; }
 CellInformation *Cell::getCurInfo() { return m_CurrentInformation; }
 CellInformation *Cell::getNewInfo() { return m_NewInformation; }
 Field *Cell::getField() const { return m_Field; }
-
-
-
-
