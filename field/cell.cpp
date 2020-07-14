@@ -28,6 +28,7 @@ void Cell::applyNewInfo()
     m_CurrentInformation->setAge(m_NewInformation->getAge());
     m_CurrentInformation->setState(m_NewInformation->getState());
     m_CurrentInformation->setGeneration(m_NewInformation->getGeneration());
+    m_CurrentInformation->setActive(m_NewInformation->isActive());
 }
 
 QPoint Cell::getIndex() { return m_Index; }

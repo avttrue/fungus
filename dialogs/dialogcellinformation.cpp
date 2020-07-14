@@ -79,6 +79,9 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
                      this, &DialogCellInformation::slotCellAgeChanged, Qt::QueuedConnection);
     QObject::connect(cell->getCurInfo(), &CellInformation::signalGenerationChanged,
                      this, &DialogCellInformation::slotCellGenerationChanged, Qt::QueuedConnection);
+    QObject::connect(cell->getCurInfo(), &CellInformation::signalActivityChanged,
+                     this, &DialogCellInformation::slotCellActivityChanged, Qt::QueuedConnection);
+
     QObject::connect(cell, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection); // закрывать при уничтожении cell
 
     installEventFilter(this);
@@ -126,6 +129,8 @@ void DialogCellInformation::loadInformation()
         QVariant value = m_Cell->getCurInfo()->property(key.toStdString().c_str());
 
         if(key == "State") value = getNameKernelEnum("CellState", value.toInt());
+        else if(key == "Active") value = value.toBool() ? tr("YES") : tr("NO");
+
         glContent->addWidget(new DialogInfoPanel(this, key, value.toString()));
     }
 }
@@ -169,6 +174,7 @@ Cell *DialogCellInformation::getCell() const { return m_Cell; }
 void DialogCellInformation::slotCellAgeChanged(qint64 value) { setValue("Age", value); }
 void DialogCellInformation::slotCellStateChanged(int value) { setValue("State", getNameKernelEnum("CellState", value)); }
 void DialogCellInformation::slotCellGenerationChanged(qint64 value) { setValue("Generation", value); }
+void DialogCellInformation::slotCellActivityChanged(bool value) { setValue("Active", value ? tr("YES") : tr("NO")); }
 
 //----------------------------------------------------
 

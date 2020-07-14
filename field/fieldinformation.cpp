@@ -10,7 +10,8 @@ FieldInformation::FieldInformation(QObject *parent)
       m_AverageCalc(0),
       m_DeadCells(-1),
       m_AliveCells(-1),
-      m_CursedCells(-1)
+      m_CursedCells(-1),
+      m_ActiveCells(-1)
 {
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldInformation destroyed"; });
 }
@@ -62,9 +63,29 @@ void FieldInformation::setCursedCells(qint64 value)
     if (m_CursedCells == value) return;
 
     m_CursedCells = value;
-    Q_EMIT signaCursedCellsChanged(m_CursedCells);
+    Q_EMIT signalCursedCellsChanged(m_CursedCells);
 }
 
+void FieldInformation::setActiveCells(qint64 value)
+{
+    if (m_ActiveCells == value) return;
+
+    setLastActiveAge(m_Age);
+
+    m_ActiveCells = value;
+    Q_EMIT signalActiveCellsChanged(m_ActiveCells);
+}
+
+void FieldInformation::setLastActiveAge(qint64 value)
+{
+    if (m_LastActiveAge == value) return;
+
+    m_LastActiveAge = value;
+    Q_EMIT signalLastActiveAgeChanged(m_LastActiveAge);
+}
+
+qint64 FieldInformation::getLastActiveAge() const { return m_LastActiveAge; }
+qint64 FieldInformation::getActiveCells() const { return m_ActiveCells; }
 qreal FieldInformation::getAverageCalc() const { return m_AverageCalc; }
 qint64 FieldInformation::getAge() const { return m_Age; }
 qint64 FieldInformation::getDeadCells() const { return m_DeadCells; }

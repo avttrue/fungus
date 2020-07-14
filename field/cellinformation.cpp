@@ -7,10 +7,9 @@ CellInformation::CellInformation(Cell *parent)
     : QObject(parent),
       m_Age(0),
       m_Generation(0),
-      m_State(Kernel::CellState::Dead)
-{
-
-}
+      m_State(Kernel::CellState::Dead),
+      m_Active(false)
+{ }
 
 void CellInformation::setState(Kernel::CellState value)
 {
@@ -48,6 +47,15 @@ void CellInformation::upGeneration()
     Q_EMIT signalGenerationChanged(m_Generation);
 }
 
+void CellInformation::setActive(bool value)
+{
+    if (m_Active == value) return;
+
+    m_Active = value;
+    emit signalActivityChanged(m_Active);
+}
+
+bool CellInformation::isActive() const { return m_Active; }
 Kernel::CellState CellInformation::getState() const { return m_State; }
 qint64 CellInformation::getAge() const { return m_Age; }
 qint64 CellInformation::getGeneration() const { return m_Generation; }

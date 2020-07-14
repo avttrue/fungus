@@ -8,6 +8,7 @@
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
+#include <QRandomGenerator>
 
 Field::Field(int width, int height, QObject *parent)
     : QObject(parent),
@@ -30,21 +31,37 @@ Field::Field(int width, int height, QObject *parent)
     qDebug() << objectName() << "created";
 }
 
-void Field::fill()
+void Field::fill(bool random)
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
+    qint64 alive = 0;
+    qint64 cursed = 0;
+    auto rg = QRandomGenerator::securelySeeded();
+
     for(int h = 0; h < m_Height; h++)
     {
         for(int w = 0; w < m_Width; w++)
         {
-            addCell(w, h);
+            auto c = addCell(w, h);
+            if(random)
+            {
+                auto v = rg.bounded(0, 2);
+                if(v)
+                {
+                    c->getCurInfo()->setState(Kernel::CellState::Alive);
+                    c->getNewInfo()->setState(Kernel::CellState::Alive);
+                    alive++;
+                }
+            }
         }
         Q_EMIT signalFillingProgress(h + 1);
     }
+
     m_FieldInformation->upAge();
-    m_FieldInformation->setDeadCells(m_Width * m_Height);
-    m_FieldInformation->setAliveCells(0);
-    m_FieldInformation->setCursedCells(0);
+    m_FieldInformation->setDeadCells(m_CellsCount - alive - cursed);
+    m_FieldInformation->setAliveCells(alive);
+    m_FieldInformation->setCursedCells(cursed);
+    m_FieldInformation->setActiveCells(0);
 
     qDebug() << "Field" << objectName() << "filled in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 }
@@ -58,9 +75,10 @@ void Field::calculate()
 
         auto time = QDateTime::currentMSecsSinceEpoch();
 
-        m_FieldInformation->upAge();
+        if(m_RuleOn) m_FieldInformation->upAge();
         qint64 alive = 0;
         qint64 cursed = 0;
+        qint64 active = 0;
 
         QVector<Cell*> cells;
         for(int h = 0; h < m_Height; h++)
@@ -86,11 +104,20 @@ void Field::calculate()
 
                     // cell Generation
                     if(ci->getAge() == 0 && ni->getAge() > 0) ni->upGeneration();
+
+                    // cell Activity
+                    if(ci->getGeneration() < ni->getGeneration())
+                    {
+                        ni->setActive(true);
+                        active++;
+                    } else ni->setActive(false);
                 }
 
                 // Field Information
                 auto nis = ni->getState();
+
                 //if(nis == Kernel::CellState::Dead) // не передаём
+
                 if(nis == Kernel::CellState::Alive)
                 {
                     cells.append(c);
@@ -110,6 +137,7 @@ void Field::calculate()
         m_FieldInformation->setDeadCells(m_CellsCount - alive - cursed);
         m_FieldInformation->setAliveCells(alive);
         m_FieldInformation->setCursedCells(cursed);
+        m_FieldInformation->setActiveCells(active);
         m_FieldInformation->applyAverageCalc(time);
 
         m_WaitScene = true;

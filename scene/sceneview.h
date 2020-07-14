@@ -18,7 +18,7 @@ public:
     void SetUpdateMode();
 
 protected:
-    bool eventFilter(QObject *object, QEvent *event);
+    bool eventFilter(QObject *object, QEvent *event);    
 
 private:
     Scene* m_Scene;

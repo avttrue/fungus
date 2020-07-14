@@ -120,7 +120,7 @@ QMap<QString, QVariant::Type> getPropertiesList(QObject* object)
 qreal calcAverage(qreal oldAverage, qint64 iteration, qint64 value)
 {
     auto iteration_1 = static_cast<qreal>(iteration - 1);
-    return iteration == 1
+    return iteration < 2
             ? value
             : (oldAverage + static_cast<qreal>(value) / iteration_1) /
               (static_cast<qreal>(iteration) / iteration_1);

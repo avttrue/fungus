@@ -43,12 +43,13 @@ protected:
     void closeEvent(QCloseEvent *event);
     void loadGui();
     void createScene();
-    void createField(int w, int h);
-    void fillField();
+    void createField(int w, int h, bool random = false);
+    void fillField(bool random = false);
     void setActionsEnable(bool value);
     void deleteField();
     void stopThreadField();
     void setSceneFieldThreadPriority();
+    void redrawScene();
 
 private:
     QThread* m_ThreadField;
@@ -70,6 +71,7 @@ private:
     QLabel* m_LabelFieldDeadCells;
     QLabel* m_LabelFieldAliveCells;
     QLabel* m_LabelFieldCursedCells;
+    QLabel* m_LabelFieldActiveCells;
     QLabel* m_LabelSelectedCell;
     QLabel* m_LabelRunningStatus;
     QProgressBar* m_ProgressBar;
@@ -91,6 +93,7 @@ private Q_SLOTS:
     void slotFieldDeadCells(qint64 value);
     void slotFieldAliveCells(qint64 value);
     void slotFieldCursedCells(qint64 value);
+    void slotFieldActiveCells(qint64 value);
     void slotSelectedCellChanged(Cell* cell);
     void slotInfoCell();
     void slotEditCell();

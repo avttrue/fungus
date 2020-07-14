@@ -176,6 +176,12 @@ void MainWindow::loadGui()
     m_LabelFieldCursedCells->setStyleSheet(MW_LABEL_STYLE);
     statusBar->addWidget(m_LabelFieldCursedCells);
 
+    statusBar->addWidget(new QLabel(tr("Act:"), this));
+    m_LabelFieldActiveCells = new QLabel("-", this);
+    m_LabelFieldActiveCells->setToolTip(tr("Active cells"));
+    m_LabelFieldActiveCells->setStyleSheet(MW_LABEL_STYLE);
+    statusBar->addWidget(m_LabelFieldActiveCells);
+
     statusBar->addWidget(new SeparatorV(this));
 
     statusBar->addWidget(new QLabel(tr("Pause:"), this));
@@ -212,58 +218,6 @@ void MainWindow::loadGui()
     QSettings settings(config->PathAppConfig(), QSettings::IniFormat);
     resize(settings.value("MainWindow/Width", WINDOW_WIDTH).toInt(),
            settings.value("MainWindow/Height", WINDOW_HEIGHT).toInt());
-}
-
-void MainWindow::slotNewProject()
-{
-    Q_EMIT signalStopField();
-
-    QMap<QString, FieldRule*> ruleslist;
-    auto rule = new FieldRule; // default rule
-    ruleslist.insert(rule->objectName(), rule);
-
-    //TODO: загружать здесь остальные возможные правила
-    const QVector<QString> keys = {tr("00#_Field properties"),
-                                   tr("01#_Size"),
-                                   tr("02#_Cell size"),
-                                   tr("03#_Rule [%1]:").arg(QString::number(ruleslist.count()))};
-    QMap<QString, DialogValue> map =
-    {{keys.at(0), {}},
-     {keys.at(1), {QVariant::Int, config->SceneFieldSize(), 2, 10000}},
-     {keys.at(2), {QVariant::Int, config->SceneCellSize(), 1, 100}},
-     {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
-    };
-
-    auto dvl = new DialogValuesList(this, ":/resources/img/asterisk.svg", tr("New project"), &map);
-
-    if(!dvl->exec())
-    {
-        rule->deleteLater();
-        return;
-    }
-
-    config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
-    config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
-
-    createField(config->SceneFieldSize(), config->SceneFieldSize());
-    auto currentrule = map.value(keys.at(3)).value.toString();
-    m_Field->setRule(ruleslist.value(currentrule));
-
-    setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
-                   arg(APP_NAME, APP_VERS, currentrule,
-                       QString::number(m_Field->width()),
-                       QString::number(m_Field->height()),
-                       QString::number(config->SceneCellSize())));
-
-    m_SceneView->zoomer()->Zoom(-1.0);
-    m_ActionEditCell->setDisabled(true);
-    m_ActionInfoCell->setDisabled(true);
-    m_ActionShowSelectedCell->setDisabled(true);
-    m_LabelSceneAvDraw->setText(tr("0"));
-    m_LabelSelectedCell->setText("-");
-
-    createScene();
-    setActionsEnable(true);
 }
 
 void MainWindow::slotStepStop()
@@ -316,7 +270,7 @@ void MainWindow::createScene()
     QObject::connect(scene, &Scene::signalSelectedCellChanged, this, &MainWindow::slotSelectedCellChanged);
 }
 
-void MainWindow::createField(int w, int h)
+void MainWindow::createField(int w, int h, bool random)
 {
     auto scene = m_SceneView->getScene();
     if(scene) scene->StopAdvanse();
@@ -331,21 +285,21 @@ void MainWindow::createField(int w, int h)
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAgeChanged, this, &MainWindow::slotFieldAge);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalDeadCellsChanged, this, &MainWindow::slotFieldDeadCells);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAliveCellsChanged, this, &MainWindow::slotFieldAliveCells);
-    QObject::connect(m_Field->getInformation(), &FieldInformation::signaCursedCellsChanged, this, &MainWindow::slotFieldCursedCells);
+    QObject::connect(m_Field->getInformation(), &FieldInformation::signalCursedCellsChanged, this, &MainWindow::slotFieldCursedCells);
+    QObject::connect(m_Field->getInformation(), &FieldInformation::signalActiveCellsChanged, this, &MainWindow::slotFieldActiveCells);
     QObject::connect(m_Field, &Field::signalCalculating, this, &MainWindow::slotFieldRunning);
-    m_LabelFieldAvCalc->setText("0");
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedUp, this, &MainWindow::slotFieldAvCalcUp);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedDown, this, &MainWindow::slotFieldAvCalcDown);
     QObject::connect(this, &MainWindow::signalStopField, m_Field, &Field::slotStopCalculating, Qt::DirectConnection);
 
-    fillField();
+    fillField(random);
     m_Field->moveToThread(m_ThreadField);  // NOTE: field выполняется не в основном потоке
 
     QObject::connect(m_Field, &Field::signalCalculatingDone, this, &MainWindow::stopThreadField, Qt::DirectConnection);
-    QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);    
+    QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
 }
 
-void MainWindow::fillField()
+void MainWindow::fillField(bool random)
 {
     m_ProgressBar->setRange(0, m_Field->height());
     m_ProgressBar->setValue(0);
@@ -363,7 +317,7 @@ void MainWindow::fillField()
     };
     *conn = QObject::connect(m_Field, &Field::signalFillingProgress, func);
 
-    m_Field->fill();
+    m_Field->fill(random);
 }
 
 void MainWindow::setActionsEnable(bool value)
@@ -416,6 +370,14 @@ void MainWindow::setSceneFieldThreadPriority()
         m_ThreadField->setPriority(QThread::NormalPriority);
     }
     qDebug() << "Field thread priority:" << m_ThreadField->priority();
+}
+
+void MainWindow::redrawScene()
+{
+    m_Field->setRuleOn(false);
+    m_Field->setCalculatingNonstop(false);
+    m_Field->slotStartCalculating();
+    m_Field->calculate();
 }
 
 void MainWindow::slotSetup()
@@ -482,6 +444,106 @@ void MainWindow::slotSetup()
     setSceneFieldThreadPriority();
 }
 
+void MainWindow::slotEditCell()
+{
+    Q_EMIT signalStopField();
+
+    auto cell = m_SceneView->getScene()->getSelectedCell();
+    if(!cell) { m_ActionEditCell->setDisabled(true); return; }
+
+    slotShowCell(cell);
+
+    auto cni = cell->getNewInfo();
+    auto statelist = listKernelEnum("CellState");
+
+    const QVector<QString> keys =
+    { tr("00#_Cell properties"),
+      tr("01#_Cell state"),
+      tr("02#_Cell age"),
+      tr("03#_Cell generation") };
+    QMap<QString, DialogValue> map =
+    { {keys.at(0), {}},
+      {keys.at(1), {QVariant::StringList,
+                    getNameKernelEnum("CellState", static_cast<int>(cni->getState())), 0,
+                    statelist, DialogValueMode::OneFromList}},
+      {keys.at(2), {QVariant::Int, cni->getAge(), 0, 0}},
+      {keys.at(3), {QVariant::Int, cni->getGeneration(), 0, 0}} };
+
+    auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
+                                    tr("Edit cell %1").arg(cell->objectName()), &map);
+    if(!dvl->exec()) return;
+
+    cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
+    cni->setAge(map.value(keys.at(2)).value.toInt());
+    cni->setGeneration(map.value(keys.at(3)).value.toInt());
+
+    cell->applyNewInfo(); // для ускорения обновления; в m_Field->calculate() applyCalculating выключен
+    redrawScene();
+}
+
+void MainWindow::slotNewProject()
+{
+    Q_EMIT signalStopField();
+
+    QMap<QString, FieldRule*> ruleslist;
+    auto rule = new FieldRule; // default rule
+    ruleslist.insert(rule->objectName(), rule);
+
+    //TODO: загружать здесь остальные возможные правила
+    const QVector<QString> keys = {
+        tr("00#_Field properties"),
+        tr("01#_Size"),
+        tr("02#_Cell size"),
+        tr("03#_Rule [%1]:").arg(QString::number(ruleslist.count())),
+        tr("04#_Options"),
+        tr("05#_Random filling"),
+    };
+    QMap<QString, DialogValue> map =
+    {{keys.at(0), {}},
+     {keys.at(1), {QVariant::Int, config->SceneFieldSize(), 2, 10000}},
+     {keys.at(2), {QVariant::Int, config->SceneCellSize(), 1, 100}},
+     {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
+     {keys.at(4), {}},
+     {keys.at(5), {QVariant::Bool, false}},
+    };
+
+    auto dvl = new DialogValuesList(this, ":/resources/img/asterisk.svg", tr("New project"), &map);
+
+    if(!dvl->exec())
+    {
+        rule->deleteLater();
+        return;
+    }
+
+    config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
+    config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
+    auto random = map.value(keys.at(5)).value.toBool();
+
+    createField(config->SceneFieldSize(), config->SceneFieldSize(), random);
+
+    auto currentrule = map.value(keys.at(3)).value.toString();
+    m_Field->setRule(ruleslist.value(currentrule));
+
+    setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
+                   arg(APP_NAME, APP_VERS, currentrule,
+                       QString::number(m_Field->width()),
+                       QString::number(m_Field->height()),
+                       QString::number(config->SceneCellSize())));
+
+    m_SceneView->zoomer()->Zoom(-1.0);
+    m_ActionEditCell->setDisabled(true);
+    m_ActionInfoCell->setDisabled(true);
+    m_ActionShowSelectedCell->setDisabled(true);
+    m_LabelFieldAvCalc->setText("0");
+    m_LabelSceneAvDraw->setText(tr("0"));
+    m_LabelSelectedCell->setText("-");
+
+    createScene();
+    setActionsEnable(true);
+
+    if(random) redrawScene();
+}
+
 void MainWindow::slotSceneZoomIn()
 {
     auto factor = config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1);
@@ -523,6 +585,14 @@ void MainWindow::slotFieldCursedCells(qint64 value)
     m_LabelFieldCursedCells->setText(QString::number(value).rightJustified(num, '.'));
 }
 
+void MainWindow::slotFieldActiveCells(qint64 value)
+{
+    if(!m_Field) return;
+
+    auto num =  QString::number(m_Field->getCellsCount()).length();
+    m_LabelFieldActiveCells->setText(QString::number(value).rightJustified(num, '.'));
+}
+
 void MainWindow::slotSelectedCellChanged(Cell *cell)
 {
     m_ActionEditCell->setDisabled(cell == nullptr);
@@ -550,51 +620,6 @@ void MainWindow::slotInfoCell()
 
     QObject::connect(dci, &DialogCellInformation::signalShowCell, this, &MainWindow::slotShowCell);
     dci->show();
-}
-
-void MainWindow::slotEditCell()
-{
-    Q_EMIT signalStopField();
-
-    auto cell = m_SceneView->getScene()->getSelectedCell();
-    if(!cell)
-    {
-        m_ActionEditCell->setDisabled(true);
-        return;
-    }
-
-    slotShowCell(cell);
-
-    auto cni = cell->getNewInfo();
-    auto statelist = listKernelEnum("CellState");
-
-    const QVector<QString> keys =
-    { tr("00#_Cell properties"),
-      tr("01#_Cell state"),
-      tr("02#_Cell age"),
-      tr("03#_Cell generation") };
-    QMap<QString, DialogValue> map =
-    { {keys.at(0), {}},
-      {keys.at(1), {QVariant::StringList,
-                    getNameKernelEnum("CellState", static_cast<int>(cni->getState())), 0,
-                    statelist, DialogValueMode::OneFromList}},
-      {keys.at(2), {QVariant::Int, cni->getAge(), 0, 0}},
-      {keys.at(3), {QVariant::Int, cni->getGeneration(), 0, 0}} };
-
-    auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
-                                    tr("Edit cell %1").arg(cell->objectName()), &map);
-    if(!dvl->exec()) return;
-
-    cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
-    cni->setAge(map.value(keys.at(2)).value.toInt());
-    cni->setGeneration(map.value(keys.at(3)).value.toInt());
-
-    cell->applyNewInfo(); // для ускорения обновления; в m_Field->calculate() applyCalculating выключен
-
-    m_Field->setRuleOn(false);
-    m_Field->setCalculatingNonstop(false);
-    m_Field->slotStartCalculating();
-    m_Field->calculate();
 }
 
 void MainWindow::slotShowCell(Cell *cell)

@@ -11,6 +11,8 @@ class FieldInformation : public QObject
     Q_PROPERTY(qint64 AliveCells READ getAliveCells WRITE setAliveCells)
     Q_PROPERTY(qint64 CursedCells READ getCursedCells WRITE setCursedCells)
     Q_PROPERTY(qreal AverageCalc READ getAverageCalc WRITE applyAverageCalc)
+    Q_PROPERTY(qint64 ActiveCells READ getActiveCells WRITE setActiveCells)
+    Q_PROPERTY(qint64 LastActiveAge READ getLastActiveAge WRITE setLastActiveAge)
 
 public:
     explicit FieldInformation(QObject *parent = nullptr);
@@ -24,7 +26,11 @@ public:
     qint64 getAliveCells() const;
     void setAliveCells(qint64 value);
     qint64 getCursedCells() const;
-    void setCursedCells(qint64 value);
+    void setCursedCells(qint64 value);    
+    qint64 getActiveCells() const;
+    void setActiveCells(qint64 value);   
+    qint64 getLastActiveAge() const;
+    void setLastActiveAge(qint64 value);
 
 private:
     qint64 m_Age;
@@ -33,13 +39,19 @@ private:
     qint64 m_AliveCells;
     qint64 m_CursedCells;
 
+    qint64 m_ActiveCells;
+
+    qint64 m_LastActiveAge;
+
 Q_SIGNALS:
     void signalAgeChanged(qint64 value);
     void signalAverageCalcChangedUp(qreal value);
     void signalAverageCalcChangedDown(qreal value);
-    void signalDeadCellsChanged(qint64 DeadCells);
-    void signalAliveCellsChanged(qint64 AliveCells);
-    void signaCursedCellsChanged(qint64 CursedCells);
+    void signalDeadCellsChanged(qint64 value);
+    void signalAliveCellsChanged(qint64 value);
+    void signalCursedCellsChanged(qint64 value);
+    void signalActiveCellsChanged(qint64 value);
+    void signalLastActiveAgeChanged(qint64 value);
 };
 
 #endif // FIELDINFORMATION_H

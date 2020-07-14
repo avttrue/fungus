@@ -64,37 +64,40 @@ public:
     void setSceneFieldThreadPriority(const QString &value);
     int SceneItemZValue() const;
     void setSceneItemZValue(int value);
+    Qt::KeyboardModifiers SceneToolTipModifier() const;
+    void setSceneToolTipModifier(const Qt::KeyboardModifiers &value);
 
 protected:
     void load();
 
 private:
     QSettings* m_Settings;
-    QString m_DateTimeFormat;                   // формат отображения даты и времени
-    QString m_PathAppConfig;                    // путь до конфига приложения
-    QString m_PathAppDir;                       // путь до приложения
-    QString m_LastDir;                          // путь до последнего каталога
-    QString m_SceneSelectColor;                 // цвет выбранного объекта сцены
-    QString m_SceneBgColor;                     // цвет задника сцены
-    QString m_SceneCellDeadColor;               // цвет мёртвой ячейки
-    QString m_SceneCellCurseColor;              // цвет отравленной ячейки
-    QString m_SceneViewUpdateMode;              // метод отрисовки SceneView
-    QString m_SceneFieldThreadPriority;         // приоритет потока Field
-    qreal m_SceneScaleStep;                     // шаг масштабирования сцены
-    int m_SceneItemZValue;                      // Z-координата SceneItem
-    int m_SceneCalculatingMinPause;             // минимальная допустимая пауза при обсчёте Field
-    int m_LogSize;                              // количество строк лога событий
-    int m_ButtonSize;                           // размеры кнопок интерфейса    
-    int m_SceneCellSize;                        // размер объекта сцены
-    int m_SceneBspTreeDepth;                    // глубина BspTreeIndex в сцене (0 - авто, 10 - максимум)
-    int m_SceneFieldSize;                       // размер сцены при создании
-    int m_CellInfoWindowHeight;                 // размеры окна информации о ячейке
-    int m_CellInfoWindowWidth;                  // размеры окна информации о ячейке
-    Qt::KeyboardModifiers m_SceneZoomModifier;  // модификатор управления зумом
-    bool m_SceneObjectAgeIndicate;              // отображать возраст живых ячеек
-    bool m_SI_metric;                           // использовать систему СИ в отображении размеров файлов
-    bool m_SceneViewAntialiasing;               // SceneView: Antialiasing
-    bool m_SceneBspTreeIndex;                   // использовать BspTreeIndex в сцене
+    QString m_DateTimeFormat;                       // формат отображения даты и времени
+    QString m_PathAppConfig;                        // путь до конфига приложения
+    QString m_PathAppDir;                           // путь до приложения
+    QString m_LastDir;                              // путь до последнего каталога
+    QString m_SceneSelectColor;                     // цвет выбранного объекта сцены
+    QString m_SceneBgColor;                         // цвет задника сцены
+    QString m_SceneCellDeadColor;                   // цвет мёртвой ячейки
+    QString m_SceneCellCurseColor;                  // цвет отравленной ячейки
+    QString m_SceneViewUpdateMode;                  // метод отрисовки SceneView
+    QString m_SceneFieldThreadPriority;             // приоритет потока Field
+    qreal m_SceneScaleStep;                         // шаг масштабирования сцены
+    int m_SceneItemZValue;                          // Z-координата SceneItem
+    int m_SceneCalculatingMinPause;                 // минимальная допустимая пауза при обсчёте Field
+    int m_LogSize;                                  // количество строк лога событий
+    int m_ButtonSize;                               // размеры кнопок интерфейса
+    int m_SceneCellSize;                            // размер объекта сцены
+    int m_SceneBspTreeDepth;                        // глубина BspTreeIndex в сцене (0 - авто, 10 - максимум)
+    int m_SceneFieldSize;                           // размер сцены при создании
+    int m_CellInfoWindowHeight;                     // размеры окна информации о ячейке
+    int m_CellInfoWindowWidth;                      // размеры окна информации о ячейке
+    Qt::KeyboardModifiers m_SceneZoomModifier;      // модификатор управления зумом
+    Qt::KeyboardModifiers m_SceneToolTipModifier;   // модификатор отображения координат Field
+    bool m_SceneObjectAgeIndicate;                  // отображать возраст живых ячеек
+    bool m_SI_metric;                               // использовать систему СИ в отображении размеров файлов
+    bool m_SceneViewAntialiasing;                   // SceneView: Antialiasing
+    bool m_SceneBspTreeIndex;                       // использовать BspTreeIndex в сцене
 };
 
 #endif // CONFIG_H

@@ -4,11 +4,13 @@
 #include "sceneItem.h"
 #include "graphicsviewzoomer.h"
 #include "field/field.h"
+#include "field/cell.h"
 
 #include <QtMath>
 #include <QDebug>
 #include <QGraphicsView>
 #include <QGraphicsSceneMouseEvent>
+#include <QToolTip>
 
 SceneView::SceneView(QWidget *parent)
     :QGraphicsView(parent),
@@ -47,7 +49,8 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
     if(object == m_Scene)
     {
         if(event->type() != QEvent::GraphicsSceneMousePress &&
-                event->type() != QEvent::GraphicsSceneMouseRelease)
+                event->type() != QEvent::GraphicsSceneMouseRelease &&
+                event->type() != QEvent::GraphicsSceneMouseMove)
         { return false; }
 
         auto mouseSceneEvent = static_cast<QGraphicsSceneMouseEvent *>(event);
@@ -56,9 +59,23 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 mouseSceneEvent->scenePos().x() >= m_Scene->size().width() ||
                 mouseSceneEvent->scenePos().y() < 0 ||
                 mouseSceneEvent->scenePos().y() >= m_Scene->size().height())
-        { return false; }
+        {
+            QToolTip::hideText();
+            return false;
+        }
 
-        else if(event->type() == QEvent::GraphicsSceneMousePress)
+        if(event->type() == QEvent::GraphicsSceneMouseMove &&
+                mouseSceneEvent->modifiers() == config->SceneToolTipModifier())
+        {
+            auto field = m_Scene->getField();
+            auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneCellSize());
+            auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneCellSize());
+            auto c = field->cells()->at(x).at(y);
+
+            QToolTip::showText(QCursor::pos(), c->objectName(), this, rect());
+        }
+
+        if(event->type() == QEvent::GraphicsSceneMousePress)
         {
             auto item = m_Scene->itemAt(mouseSceneEvent->scenePos(), transform());
             if(!item)
@@ -68,7 +85,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             }
         }
 
-        else if (event->type() == QEvent::GraphicsSceneMouseRelease)
+        if (event->type() == QEvent::GraphicsSceneMouseRelease)
         {
             auto item = m_Scene->itemAt(mouseSceneEvent->scenePos(), transform());
             if(!item)
@@ -77,7 +94,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
-            auto o = static_cast<SceneItem*>(item);            
+            auto o = static_cast<SceneItem*>(item);
 
             // вывод сообщения об отсутствии SceneItem
             if(mouseSceneEvent->modifiers() == Qt::NoModifier &&

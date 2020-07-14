@@ -40,6 +40,7 @@ private Q_SLOTS:
     void slotCellAgeChanged(qint64 value);
     void slotCellStateChanged(int value);
     void slotCellGenerationChanged(qint64 value);
+    void slotCellActivityChanged(bool value);
 
 Q_SIGNALS:
     void signalShowCell(Cell* cell);

@@ -30,6 +30,7 @@ const auto SCENE_BSP_TREE_INDEX =                   false;
 const auto SCENE_BSP_TREE_DEPTH =                   10;
 const auto SCENE_VIEW_ANTIALIASING =                true;
 const auto SCENE_ZOOM_MODIFIER =                    Qt::ControlModifier;
+const auto SCENE_TOOLTIP_MODIFIER =                 Qt::ShiftModifier;
 const auto SCENE_CALCULATING_MIN_PAUSE =            200;
 const auto SCENE_FIELD_SIZE =                       100;
 const auto WINDOW_HEIGHT =                          700;

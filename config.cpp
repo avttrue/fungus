@@ -89,6 +89,10 @@ void Config::load()
         m_Settings->setValue("Scene/ZoomKeyModifier", SCENE_ZOOM_MODIFIER);
     m_SceneZoomModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ZoomKeyModifier").toInt());
 
+    if(!m_Settings->contains("Scene/ToolTipModifier"))
+        m_Settings->setValue("Scene/ToolTipModifier", SCENE_TOOLTIP_MODIFIER);
+    m_SceneToolTipModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ToolTipModifier").toInt());
+
     if(!m_Settings->contains("Scene/ObjectAgeIndicate"))
         m_Settings->setValue("Scene/ObjectAgeIndicate", SCENE_OBJECT_AGE_INDICATE);
     m_SceneObjectAgeIndicate = m_Settings->value("Scene/ObjectAgeIndicate").toBool();
@@ -122,10 +126,18 @@ void Config::load()
     m_SceneItemZValue = m_Settings->value("Scene/ItemZValue").toInt();
 }
 
+void Config::setSceneToolTipModifier(const Qt::KeyboardModifiers &value)
+{
+    if(m_SceneToolTipModifier == value) return;
+
+    m_SceneToolTipModifier = value;
+    m_Settings->setValue("Scene/ToolTipModifier", static_cast<int>(m_SceneToolTipModifier));
+}
+
 void Config::setSceneItemZValue(int value)
 {
     if(m_SceneItemZValue == value) return;
-
+    
     m_SceneItemZValue = value;
     m_Settings->setValue("Scene/ItemZValue", m_SceneItemZValue);
 }
@@ -314,6 +326,7 @@ bool Config::SceneObjectAgeIndicate() const { return m_SceneObjectAgeIndicate; }
 QString Config::SceneCellDeadColor() const { return m_SceneCellDeadColor; }
 int Config::SceneFieldSize() const { return m_SceneFieldSize; }
 Qt::KeyboardModifiers Config::SceneZoomModifier() const { return m_SceneZoomModifier; }
+Qt::KeyboardModifiers Config::SceneToolTipModifier() const { return m_SceneToolTipModifier; }
 int Config::SceneBspTreeDepth() const { return m_SceneBspTreeDepth; }
 bool Config::SceneBspTreeIndex() const { return m_SceneBspTreeIndex; }
 bool Config::SceneViewAntialiasing() const { return m_SceneViewAntialiasing; }
