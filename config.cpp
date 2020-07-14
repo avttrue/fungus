@@ -57,6 +57,14 @@ void Config::load()
         m_Settings->setValue("MainWindow/CellInfoWindowWidth", CELL_INFO_WINDOW_WIDTH);
     m_CellInfoWindowWidth = m_Settings->value("MainWindow/CellInfoWindowWidth").toInt();
 
+    if(!m_Settings->contains("MainWindow/FieldInfoWindowWidth"))
+        m_Settings->setValue("MainWindow/FieldInfoWindowWidth", FIELD_INFO_WINDOW_WIDTH);
+    m_FieldInfoWindowWidth = m_Settings->value("MainWindow/FieldInfoWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/FieldInfoWindowHeight"))
+        m_Settings->setValue("MainWindow/FieldInfoWindowHeight", FIELD_INFO_WINDOW_HEIGHT);
+    m_FieldInfoWindowHeight = m_Settings->value("MainWindow/FieldInfoWindowHeight").toInt();
+
     if(!m_Settings->contains("Scene/BackgroundColor"))
         m_Settings->setValue("Scene/BackgroundColor", SCENE_BG_COLOR);
     m_SceneBgColor = m_Settings->value("Scene/BackgroundColor").toString();
@@ -124,6 +132,23 @@ void Config::load()
     if(!m_Settings->contains("Scene/ItemZValue"))
         m_Settings->setValue("Scene/ItemZValue", SCENE_ITEM_ZVALUE);
     m_SceneItemZValue = m_Settings->value("Scene/ItemZValue").toInt();
+}
+
+
+void Config::setFieldInfoWindowWidth(int value)
+{
+    if(m_FieldInfoWindowWidth == value) return;
+
+    m_FieldInfoWindowWidth = value;
+    m_Settings->setValue("MainWindow/FieldInfoWindowWidth", m_FieldInfoWindowWidth);
+}
+
+void Config::setFieldInfoWindowHeight(int value)
+{
+    if(m_FieldInfoWindowHeight == value) return;
+
+    m_FieldInfoWindowHeight = value;
+    m_Settings->setValue("MainWindow/FieldInfoWindowHeight", m_FieldInfoWindowHeight);
 }
 
 void Config::setSceneToolTipModifier(const Qt::KeyboardModifiers &value)
@@ -343,3 +368,5 @@ QString Config::PathAppConfig() const { return m_PathAppConfig; }
 int Config::SceneCalculatingMinPause() const { return m_SceneCalculatingMinPause; }
 QString Config::SceneFieldThreadPriority() const { return m_SceneFieldThreadPriority; }
 int Config::SceneItemZValue() const { return m_SceneItemZValue; }
+int Config::FieldInfoWindowWidth() const { return m_FieldInfoWindowWidth; }
+int Config::FieldInfoWindowHeight() const { return m_FieldInfoWindowHeight; }

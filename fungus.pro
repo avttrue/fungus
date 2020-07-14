@@ -14,6 +14,8 @@ DEFINES     += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     dialogs/dialogcellinformation.cpp \
+    dialogs/dialogfieldinformation.cpp \
+    dialogs/dialoginfopanel.cpp \
     dialogs/dialogvalueslist.cpp \
     dialogs/helpergraphics.cpp \
     field/cellinformation.cpp \
@@ -35,6 +37,8 @@ SOURCES += \
 
 HEADERS += \
     dialogs/dialogcellinformation.h \
+    dialogs/dialogfieldinformation.h \
+    dialogs/dialoginfopanel.h \
     dialogs/dialogvalueslist.h \
     dialogs/helpergraphics.h \
     field/cellinformation.h \

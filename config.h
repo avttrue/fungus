@@ -66,6 +66,10 @@ public:
     void setSceneItemZValue(int value);
     Qt::KeyboardModifiers SceneToolTipModifier() const;
     void setSceneToolTipModifier(const Qt::KeyboardModifiers &value);
+    int FieldInfoWindowHeight() const;
+    void setFieldInfoWindowHeight(int value);
+    int FieldInfoWindowWidth() const;
+    void setFieldInfoWindowWidth(int value);
 
 protected:
     void load();
@@ -90,8 +94,10 @@ private:
     int m_SceneCellSize;                            // размер объекта сцены
     int m_SceneBspTreeDepth;                        // глубина BspTreeIndex в сцене (0 - авто, 10 - максимум)
     int m_SceneFieldSize;                           // размер сцены при создании
-    int m_CellInfoWindowHeight;                     // размеры окна информации о ячейке
-    int m_CellInfoWindowWidth;                      // размеры окна информации о ячейке
+    int m_CellInfoWindowHeight;                     // размеры окна информации о Cell
+    int m_CellInfoWindowWidth;                      // размеры окна информации о Cell
+    int m_FieldInfoWindowHeight;                    // размеры окна информации о Field
+    int m_FieldInfoWindowWidth;                     // размеры окна информации о Field
     Qt::KeyboardModifiers m_SceneZoomModifier;      // модификатор управления зумом
     Qt::KeyboardModifiers m_SceneToolTipModifier;   // модификатор отображения координат Field
     bool m_SceneObjectAgeIndicate;                  // отображать возраст живых ячеек

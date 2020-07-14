@@ -25,6 +25,8 @@
 #include <QProgressBar>
 #include <QThread>
 
+#include <dialogs/dialogfieldinformation.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_ThreadField(nullptr),
@@ -96,7 +98,12 @@ void MainWindow::loadGui()
     m_ActionInfoCell = new QAction(QIcon(":/resources/img/eye.svg"), tr("Cell information"), this);
     QObject::connect(m_ActionInfoCell, &QAction::triggered, this, &MainWindow::slotInfoCell);
     m_ActionInfoCell->setEnabled(false);
-    m_ActionInfoCell->setShortcut(Qt::CTRL + Qt::Key_I);
+    m_ActionInfoCell->setShortcut(Qt::CTRL + Qt::Key_C);
+
+    m_ActionInfoField = new QAction(QIcon(":/resources/img/field.svg"), tr("Fielf information"), this);
+    QObject::connect(m_ActionInfoField, &QAction::triggered, this, &MainWindow::slotInfoField);
+    m_ActionInfoField->setEnabled(false);
+    m_ActionInfoField->setShortcut(Qt::CTRL + Qt::Key_F);
 
     m_ActionShowSelectedCell = new QAction(QIcon(":/resources/img/point.svg"), tr("Show selected cell"), this);
     QObject::connect(m_ActionShowSelectedCell, &QAction::triggered, this, &MainWindow::slotShowSelectedCell);
@@ -118,6 +125,8 @@ void MainWindow::loadGui()
     tbMain->addAction(m_ActionEditCell);
     tbMain->addAction(m_ActionInfoCell);
     tbMain->addAction(m_ActionShowSelectedCell);
+    tbMain->addSeparator();
+    tbMain->addAction(m_ActionInfoField);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionStepStop);
     tbMain->addAction(m_ActionRun);
@@ -326,6 +335,7 @@ void MainWindow::setActionsEnable(bool value)
     m_ActionZoomOutScene->setEnabled(value);
     m_ActionZoomUndoScene->setEnabled(value);
     m_ActionStepStop->setEnabled(value);
+    m_ActionInfoField->setEnabled(value);
     m_ActionRun->setEnabled(value);
 }
 
@@ -606,11 +616,7 @@ void MainWindow::slotSelectedCellChanged(Cell *cell)
 void MainWindow::slotInfoCell()
 {
     auto cell = m_SceneView->getScene()->getSelectedCell();
-    if(!cell)
-    {
-        m_ActionInfoCell->setDisabled(true);
-        return;
-    }
+    if(!cell) { m_ActionInfoCell->setDisabled(true); return; }
 
     slotShowCell(cell);
 
@@ -620,6 +626,16 @@ void MainWindow::slotInfoCell()
 
     QObject::connect(dci, &DialogCellInformation::signalShowCell, this, &MainWindow::slotShowCell);
     dci->show();
+}
+
+void MainWindow::slotInfoField()
+{
+    if(!m_Field) { m_ActionInfoField->setDisabled(true); return; }
+
+    if(DialogFieldInformation::FindPreviousCopy(m_Field)) return;
+
+    auto dfi = new DialogFieldInformation(this, m_Field);
+    dfi->show();
 }
 
 void MainWindow::slotShowCell(Cell *cell)

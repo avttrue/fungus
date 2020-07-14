@@ -1,22 +1,17 @@
 #include "dialogcellinformation.h"
+#include "dialoginfopanel.h"
 #include "properties.h"
 #include "controls.h"
 #include "helper.h"
 #include "field/cell.h"
-#include "field/field.h"
-#include "field/fieldrule.h"
 #include "field/cellinformation.h"
-#include "scene/scene.h"
-#include "scene/sceneItem.h"
-#include "scene/sceneview.h"
 
 #include <QDebug>
-#include <QScrollBar>
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QWindowStateChangeEvent>
-#include <QLabel>
 #include <QApplication>
+#include <QScrollArea>
 
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
@@ -105,9 +100,8 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
     {
         if(object != this || isMinimized() || isMaximized()) return false;
 
-        QSettings settings(config->PathAppConfig(), QSettings::IniFormat);
-        settings.setValue("MainWindow/CellInfoWindowHeight", height());
-        settings.setValue("MainWindow/CellInfoWindowWidth", width());
+        config->setCellInfoWindowWidth(width());
+        config->setCellInfoWindowHeight(height());
 
         return true;
     }
@@ -175,45 +169,3 @@ void DialogCellInformation::slotCellAgeChanged(qint64 value) { setValue("Age", v
 void DialogCellInformation::slotCellStateChanged(int value) { setValue("State", getNameKernelEnum("CellState", value)); }
 void DialogCellInformation::slotCellGenerationChanged(qint64 value) { setValue("Generation", value); }
 void DialogCellInformation::slotCellActivityChanged(bool value) { setValue("Active", value ? tr("YES") : tr("NO")); }
-
-//----------------------------------------------------
-
-DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const QString &value)
-    : QFrame(parent)
-{
-    setLineWidth(1);
-
-    auto hbox = new QHBoxLayout();
-    hbox->setSpacing(1);
-    setLayout(hbox);
-
-    auto labelCaption = new QLabel(caption, this);
-    labelCaption->setStyleSheet(DCI_LABEL_STYLE);
-
-    if(!value.isEmpty())
-    {
-        hbox->setMargin(2);
-        setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
-
-        hbox->setAlignment(Qt::AlignLeft);
-        hbox->addWidget(labelCaption, 1);
-
-        m_LabelValue = new QLabel(value, this);
-        m_LabelValue->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-        m_LabelValue->setLineWidth(1);
-        m_LabelValue->setStyleSheet(DCI_LABEL_STYLE);
-        hbox->addWidget(m_LabelValue, 1);
-    }
-    else
-    {
-        hbox->setMargin(3);
-        setFrameStyle(QFrame::Panel | QFrame::Raised);
-
-        hbox->setAlignment(Qt::AlignAbsolute);
-        hbox->addWidget(labelCaption, 0);
-    }
-
-    setProperty(DCI_INFOPANEL_KEY_PROPERTY, caption);
-}
-
-void DialogInfoPanel::setValue(const QString &value) { m_LabelValue->setText(value); }

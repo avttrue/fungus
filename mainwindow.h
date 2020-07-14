@@ -62,6 +62,7 @@ private:
     QAction* m_ActionRun;
     QAction* m_ActionEditCell;
     QAction* m_ActionInfoCell;
+    QAction* m_ActionInfoField;
     QAction* m_ActionShowSelectedCell;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
@@ -96,6 +97,7 @@ private Q_SLOTS:
     void slotFieldActiveCells(qint64 value);
     void slotSelectedCellChanged(Cell* cell);
     void slotInfoCell();
+    void slotInfoField();
     void slotEditCell();
     void slotShowCell(Cell* cell);
     void slotShowSelectedCell();
