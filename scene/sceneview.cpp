@@ -20,7 +20,7 @@ SceneView::SceneView(QWidget *parent)
     SetUpdateMode();
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
-    //setCacheMode(QGraphicsView::CacheBackground);
+    setCacheMode(QGraphicsView::CacheNone);
     setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);

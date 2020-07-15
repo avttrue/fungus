@@ -15,15 +15,17 @@ SceneItem::SceneItem(Scene* scene, QGraphicsItem* parent)
     m_Pixmap = QPixmap(scene->getField()->width() * config->SceneCellSize(),
                        scene->getField()->height() * config->SceneCellSize());
 
+    m_Rect = QRect(0, 0,
+                   scene->getField()->width() * config->SceneCellSize(),
+                   scene->getField()->height() * config->SceneCellSize());
+
     m_Pixmap.fill(config->SceneCellDeadColor());
 }
 
 QPainterPath SceneItem::shape() const
 {
     QPainterPath path;
-
-    path.addRect(0, 0, m_Pixmap.width(), m_Pixmap.height());
-
+    path.addRect(m_Rect);
     return path;
 }
 
@@ -34,13 +36,6 @@ void SceneItem::paint(QPainter *painter, const QStyleOptionGraphicsItem* option,
 
     //qDebug() << m_Pixmap.cacheKey();
     painter->drawPixmap(0, 0, m_Pixmap);
-}
-
-void SceneItem::advance(int step)
-{
-    if (!step) return;
-
-    update();
 }
 
 QPixmap *SceneItem::getPixmap() { return &m_Pixmap; }

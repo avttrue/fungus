@@ -16,11 +16,11 @@ protected:
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
-    void advance(int step) override;
 
 private:
     Scene* m_Scene;
     QPixmap m_Pixmap;
+    QRect m_Rect;
 };
 
 #endif // SCENEITEM_H

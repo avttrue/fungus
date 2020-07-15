@@ -32,9 +32,7 @@ Scene::Scene(QObject* parent, Field *field)
     }
     else setItemIndexMethod(QGraphicsScene::NoIndex);
 
-    if(QColor::isValidColor(config->SceneBgColor()))
-        setBackgroundColor(QColor(config->SceneBgColor()));
-    else setBackgroundColor(QColor(SCENE_BG_COLOR));
+    setBackgroundColor(QColor(config->SceneBgColor()));
 
     addSceneItem();
     addSelectionMark();
@@ -76,10 +74,7 @@ void Scene::selectCell(Cell *cell)
 {
     if(m_SelectedCell == cell) return;
 
-    if(!cell)
-    {
-        m_SelectionMark->hide();
-    }
+    if(!cell) m_SelectionMark->hide();
     else
     {
         m_SelectionMark->setPos(m_SceneItem->mapToParent(cell->getIndex() * config->SceneCellSize()));
@@ -104,12 +99,12 @@ void Scene::slotAdvance(QVector<Cell *> cells)
 {
     //qDebug() << __func__ << cells.count() << "cells received";
     auto time = QDateTime::currentMSecsSinceEpoch();
-    auto pixmap = m_SceneItem->getPixmap();
+    //auto pixmap = m_SceneItem->getPixmap();
+    auto pixmap = QPixmap(m_SceneItem->getPixmap()->size());
 
     QPainter painter;
-    painter.begin(pixmap);
-
-    pixmap->fill(config->SceneCellDeadColor());
+    painter.begin(&pixmap);
+    pixmap.fill(config->SceneCellDeadColor());
 
     for(auto c: cells)
     {
@@ -126,14 +121,14 @@ void Scene::slotAdvance(QVector<Cell *> cells)
         else if(state == Kernel::CellState::Cursed)
             painter.fillRect(rect, config->SceneCellCurseColor());
     }
-
     painter.end();
 
     if(m_StopAdvanse) return;
 
+    m_SceneItem->getPixmap()->swap(pixmap);
+    m_SceneItem->update();
     applyAverageDraw(time);
 
-    advance();
     Q_EMIT signalReady();
 }
 
