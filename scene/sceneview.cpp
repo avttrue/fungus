@@ -16,7 +16,7 @@ SceneView::SceneView(QWidget *parent)
     :QGraphicsView(parent),
       m_Scene(nullptr)
 {
-    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing | DontSavePainterState);
+    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing);// | DontSavePainterState);
     SetUpdateMode();
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
@@ -138,7 +138,7 @@ void SceneView::SetUpdateMode()
     else
     {
         qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  mode;
-        setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     }
 
     qDebug() << "SceneView update mode:" << viewportUpdateMode();

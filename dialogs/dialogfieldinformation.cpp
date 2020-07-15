@@ -2,7 +2,9 @@
 #include "dialoginfopanel.h"
 #include "properties.h"
 #include "controls.h"
+#include "helper.h"
 #include "field/field.h"
+#include "field/fieldinformation.h"
 
 #include <QDebug>
 #include <QApplication>
@@ -58,8 +60,7 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, Field* field)
     vblForm->addWidget(saContent);
     vblForm->addWidget(toolBar);
 
-    //loadInformation();
-
+    loadInformation();
 
     QObject::connect(field, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection); // закрывать при уничтожении field
 
@@ -108,6 +109,38 @@ bool DialogFieldInformation::eventFilter(QObject *object, QEvent *event)
     }
 
     default: { return false; }
+    }
+}
+
+void DialogFieldInformation::loadInformation()
+{
+    glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), ""));
+
+    auto fi = m_Field->getInformation();
+    auto map = getPropertiesList(fi);
+
+    // Cell information
+    for(auto key: map.keys())
+    {
+        if(key == "AverageCalc") continue;
+
+        QVariant value = fi->property(key.toStdString().c_str());
+
+        auto dip = new DialogInfoPanel(this, key, value.toString());
+        glContent->addWidget(dip);
+
+        if(key == "Age")
+            QObject::connect(fi, &FieldInformation::signalAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+        else if(key == "DeadCells")
+            QObject::connect(fi, &FieldInformation::signalDeadCellsChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+        else if(key == "AliveCells")
+            QObject::connect(fi, &FieldInformation::signalAliveCellsChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+        else if(key == "CursedCells")
+            QObject::connect(fi, &FieldInformation::signalCursedCellsChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+        else if(key == "ActiveCells")
+            QObject::connect(fi, &FieldInformation::signalActiveCellsChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+        else if(key == "LastActiveAge")
+            QObject::connect(fi, &FieldInformation::signalLastActiveAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
     }
 }
 

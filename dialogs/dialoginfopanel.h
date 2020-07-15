@@ -20,7 +20,7 @@ class DialogInfoPanel : public QFrame
 
 public:
     DialogInfoPanel(QWidget *parent, const QString& caption, const QString& value);
-    void setValue(const QString& value);
+    void setValue(const QVariant &value);
 
 private:
     QLabel* m_LabelValue;

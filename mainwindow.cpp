@@ -167,32 +167,6 @@ void MainWindow::loadGui()
 
     statusBar->addWidget(new SeparatorV(this));
 
-    statusBar->addWidget(new QLabel(tr("D:"), this));
-    m_LabelFieldDeadCells = new QLabel("-", this);
-    m_LabelFieldDeadCells->setToolTip(tr("Dead cells"));
-    m_LabelFieldDeadCells->setStyleSheet(MW_LABEL_STYLE);
-    statusBar->addWidget(m_LabelFieldDeadCells);
-
-    statusBar->addWidget(new QLabel(tr("A:"), this));
-    m_LabelFieldAliveCells = new QLabel("-", this);
-    m_LabelFieldAliveCells->setToolTip(tr("Alive cells"));
-    m_LabelFieldAliveCells->setStyleSheet(MW_LABEL_STYLE);
-    statusBar->addWidget(m_LabelFieldAliveCells);
-
-    statusBar->addWidget(new QLabel(tr("C:"), this));
-    m_LabelFieldCursedCells = new QLabel("-", this);
-    m_LabelFieldCursedCells->setToolTip(tr("Cursed cells"));
-    m_LabelFieldCursedCells->setStyleSheet(MW_LABEL_STYLE);
-    statusBar->addWidget(m_LabelFieldCursedCells);
-
-    statusBar->addWidget(new QLabel(tr("Act:"), this));
-    m_LabelFieldActiveCells = new QLabel("-", this);
-    m_LabelFieldActiveCells->setToolTip(tr("Active cells"));
-    m_LabelFieldActiveCells->setStyleSheet(MW_LABEL_STYLE);
-    statusBar->addWidget(m_LabelFieldActiveCells);
-
-    statusBar->addWidget(new SeparatorV(this));
-
     statusBar->addWidget(new QLabel(tr("Pause:"), this));
     m_LabelFieldPause = new QLabel(QString::number(config->SceneCalculatingMinPause()), this);
     statusBar->addWidget(m_LabelFieldPause);
@@ -292,10 +266,6 @@ void MainWindow::createField(int w, int h, bool random)
     m_Field = new Field(w, h);
 
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAgeChanged, this, &MainWindow::slotFieldAge);
-    QObject::connect(m_Field->getInformation(), &FieldInformation::signalDeadCellsChanged, this, &MainWindow::slotFieldDeadCells);
-    QObject::connect(m_Field->getInformation(), &FieldInformation::signalAliveCellsChanged, this, &MainWindow::slotFieldAliveCells);
-    QObject::connect(m_Field->getInformation(), &FieldInformation::signalCursedCellsChanged, this, &MainWindow::slotFieldCursedCells);
-    QObject::connect(m_Field->getInformation(), &FieldInformation::signalActiveCellsChanged, this, &MainWindow::slotFieldActiveCells);
     QObject::connect(m_Field, &Field::signalCalculating, this, &MainWindow::slotFieldRunning);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedUp, this, &MainWindow::slotFieldAvCalcUp);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedDown, this, &MainWindow::slotFieldAvCalcDown);
@@ -379,7 +349,7 @@ void MainWindow::setSceneFieldThreadPriority()
         qCritical() << "Wrong settins value 'Scene/FieldThreadPriority'" <<  mode;
         m_ThreadField->setPriority(QThread::NormalPriority);
     }
-    qDebug() << "Field thread priority:" << m_ThreadField->priority();
+    qInfo() << "Field thread priority:" << m_ThreadField->priority() << mode;
 }
 
 void MainWindow::redrawScene()
@@ -487,7 +457,7 @@ void MainWindow::slotEditCell()
     cni->setAge(map.value(keys.at(2)).value.toInt());
     cni->setGeneration(map.value(keys.at(3)).value.toInt());
 
-    cell->applyNewInfo(); // для ускорения обновления; в m_Field->calculate() applyCalculating выключен
+    cell->applyInfo(); // для ускорения обновления; в m_Field->calculate() applyCalculating выключен
     redrawScene();
 }
 
@@ -569,38 +539,6 @@ void MainWindow::slotSceneZoomOut()
 void MainWindow::slotZoomUndoScene()
 {
     m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET);
-}
-
-void MainWindow::slotFieldDeadCells(qint64 value)
-{
-    if(!m_Field) return;
-
-    auto num =  QString::number(m_Field->getCellsCount()).length();
-    m_LabelFieldDeadCells->setText(QString::number(value).rightJustified(num, '.'));
-}
-
-void MainWindow::slotFieldAliveCells(qint64 value)
-{
-    if(!m_Field) return;
-
-    auto num =  QString::number(m_Field->getCellsCount()).length();
-    m_LabelFieldAliveCells->setText(QString::number(value).rightJustified(num, '.'));
-}
-
-void MainWindow::slotFieldCursedCells(qint64 value)
-{
-    if(!m_Field) return;
-
-    auto num =  QString::number(m_Field->getCellsCount()).length();
-    m_LabelFieldCursedCells->setText(QString::number(value).rightJustified(num, '.'));
-}
-
-void MainWindow::slotFieldActiveCells(qint64 value)
-{
-    if(!m_Field) return;
-
-    auto num =  QString::number(m_Field->getCellsCount()).length();
-    m_LabelFieldActiveCells->setText(QString::number(value).rightJustified(num, '.'));
 }
 
 void MainWindow::slotSelectedCellChanged(Cell *cell)

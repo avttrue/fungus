@@ -114,12 +114,8 @@ void Scene::slotAdvance(QVector<Cell *> cells)
     {
         if(m_StopAdvanse) break;
 
-        QRect rect(c->getIndex().x() * config->SceneCellSize(),
-                   c->getIndex().y() * config->SceneCellSize(),
-                   config->SceneCellSize(),
-                   config->SceneCellSize());
-
-        auto state = c->getCurInfo()->getState();
+        auto rect = c->getRect();
+        auto state = c->getNewInfo()->getState();
 
         // Kernel::CellState::Dead не обрабатываем
 

@@ -69,10 +69,6 @@ private:
     QLabel* m_LabelFieldPause;
     QLabel* m_LabelFieldAvCalc;
     QLabel* m_LabelSceneAvDraw;
-    QLabel* m_LabelFieldDeadCells;
-    QLabel* m_LabelFieldAliveCells;
-    QLabel* m_LabelFieldCursedCells;
-    QLabel* m_LabelFieldActiveCells;
     QLabel* m_LabelSelectedCell;
     QLabel* m_LabelRunningStatus;
     QProgressBar* m_ProgressBar;
@@ -91,10 +87,6 @@ private Q_SLOTS:
     void slotFieldAvCalcDown(qreal value);
     void slotAverageDrawUp(qreal value);
     void slotAverageDrawDown(qreal value);
-    void slotFieldDeadCells(qint64 value);
-    void slotFieldAliveCells(qint64 value);
-    void slotFieldCursedCells(qint64 value);
-    void slotFieldActiveCells(qint64 value);
     void slotSelectedCellChanged(Cell* cell);
     void slotInfoCell();
     void slotInfoField();

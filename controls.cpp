@@ -3,6 +3,7 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QKeyEvent>
+#include <QApplication>
 
 WidgetSpacer::WidgetSpacer(QWidget *parent): QWidget(parent)
 { setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); }
@@ -46,4 +47,20 @@ void setWidgetToParentCenter(QWidget* w)
     center.setX(center.x() - (w->width()/2));
     center.setY(center.y() - (w->height()/2));
     w->move(center);
+}
+
+bool findPreviousWindowCopy(const QString& caption)
+{
+    for (auto w: QApplication::topLevelWidgets())
+    {
+        if (!w) continue;
+
+        if(w->windowTitle() == caption)
+        {
+            w->showNormal();
+            w->setWindowState(Qt::WindowActive);
+            return true;
+        }
+    }
+    return false;
 }

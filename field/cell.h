@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QPoint>
+#include <QRect>
 
 class CellInformation;
 class Field;
@@ -19,13 +20,15 @@ public:
     CellInformation *getNewInfo();
     void clear();
     Field *getField() const;
-    void applyNewInfo();
+    void applyInfo();
+    QRect getRect() const;
 
 private:
     Field* m_Field;
     QPoint m_Index;
     CellInformation* m_CurrentInformation;
     CellInformation* m_NewInformation;
+    QRect m_Rect;
 
 };
 

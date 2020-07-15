@@ -42,4 +42,4 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
     setProperty(DCI_INFOPANEL_KEY_PROPERTY, caption);
 }
 
-void DialogInfoPanel::setValue(const QString &value) { m_LabelValue->setText(value); }
+void DialogInfoPanel::setValue(const QVariant &value) { m_LabelValue->setText(value.toString()); }

@@ -115,9 +115,7 @@ void DialogCellInformation::loadInformation()
     glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), ""));
 
     auto map = getPropertiesList(m_Cell->getCurInfo());
-    QString content;
 
-    // Cell information
     for(auto key: map.keys())
     {
         QVariant value = m_Cell->getCurInfo()->property(key.toStdString().c_str());
@@ -152,10 +150,12 @@ void DialogCellInformation::setValue(const QString &key, const QVariant &value)
     for(int i = 0; i < glContent->count(); i++)
     {
         auto item = glContent->itemAt(i)->widget();
-        if(item->property(DCI_INFOPANEL_KEY_PROPERTY) == key)
+        auto dip = qobject_cast<DialogInfoPanel*>(item);
+        if(!dip) continue;
+
+        if(dip->property(DCI_INFOPANEL_KEY_PROPERTY) == key)
         {
-            auto dip = qobject_cast<DialogInfoPanel*>(item);
-            dip->setValue(value.toString());
+            dip->setValue(value);
             return;
         }
     }

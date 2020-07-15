@@ -32,4 +32,6 @@ void setWidgetToScreenCenter(QWidget* w);
  */
 void setWidgetToParentCenter(QWidget* w);
 
+bool findPreviousWindowCopy(const QString& caption);
+
 #endif // CONTROLS_H

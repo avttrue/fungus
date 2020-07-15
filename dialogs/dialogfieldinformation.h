@@ -15,7 +15,8 @@ public:
     Field *getField() const;
 
 protected:
-    bool eventFilter(QObject *object, QEvent *event);
+    bool eventFilter(QObject *object, QEvent *event);    
+    void loadInformation();
 
 private:
     Field* m_Field;

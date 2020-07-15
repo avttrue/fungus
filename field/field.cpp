@@ -73,7 +73,11 @@ void Field::calculate()
     qDebug() << "Field calculating started";
     while(m_Calculating)
     {
-        if(m_WaitScene) continue;
+        if(m_WaitScene)
+        {
+            qDebug() << "Wait scene";
+            continue;
+        }
 
         auto time = QDateTime::currentMSecsSinceEpoch();
 
@@ -152,7 +156,7 @@ void Field::calculate()
         {
             auto pausetime = QDateTime::currentDateTime().addMSecs(config->SceneCalculatingMinPause());
             while(QDateTime::currentDateTime() < pausetime && !m_AbortCalculating)
-                QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+                QCoreApplication::processEvents(QEventLoop::AllEvents);
         }
     }
 
@@ -170,7 +174,7 @@ void Field::applyCalculating()
             if(m_AbortCalculating) break;
 
             auto c = m_Cells.at(w).at(h);
-            c->applyNewInfo();
+            c->applyInfo();
         }
     }
 }
