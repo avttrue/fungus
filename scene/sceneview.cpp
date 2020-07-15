@@ -16,11 +16,11 @@ SceneView::SceneView(QWidget *parent)
     :QGraphicsView(parent),
       m_Scene(nullptr)
 {
-    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing);// | DontSavePainterState);
+    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing | DontSavePainterState);
     SetUpdateMode();
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
-    setCacheMode(QGraphicsView::CacheBackground);
+    //setCacheMode(QGraphicsView::CacheBackground);
     setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);

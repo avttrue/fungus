@@ -32,6 +32,7 @@ void SceneItem::paint(QPainter *painter, const QStyleOptionGraphicsItem* option,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
+    //qDebug() << m_Pixmap.cacheKey();
     painter->drawPixmap(0, 0, m_Pixmap);
 }
 
