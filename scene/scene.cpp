@@ -99,16 +99,16 @@ void Scene::slotAdvance(QVector<Cell *> cells)
     {
         if(m_StopAdvanse) break;
 
-        auto rect = c->getRect();
+        QColor color = QColor(config->SceneCellDeadColor());
         auto state = c->getNewInfo()->getState();
 
-        // Kernel::CellState::Dead не обрабатываем
-
         if(state == Kernel::CellState::Alive)
-            painter.fillRect(rect, m_Field->getRule()->getColorAlive());
+            color = m_Field->getRule()->getColorAlive();
 
         else if(state == Kernel::CellState::Cursed)
-            painter.fillRect(rect, config->SceneCellCurseColor());
+            color = QColor(config->SceneCellCurseColor());
+
+        painter.fillRect(c->getRect(), color);
     }
     painter.end();
 
