@@ -36,10 +36,6 @@ public:
     void setSceneCellSize(int value);
     bool SceneViewAntialiasing() const;
     void setSceneViewAntialiasing(bool value);
-    bool SceneBspTreeIndex() const;
-    void setSceneBspTreeIndex(bool value);
-    int SceneBspTreeDepth() const;
-    void setSceneBspTreeDepth(int value);
     Qt::KeyboardModifiers SceneZoomModifier() const;
     void setSceneZoomModifier(const Qt::KeyboardModifiers &value);
     int SceneFieldSize() const;
@@ -70,6 +66,10 @@ public:
     void setFieldInfoWindowHeight(int value);
     int FieldInfoWindowWidth() const;
     void setFieldInfoWindowWidth(int value);
+    QString SceneImageFileFormat() const;
+    void setSceneImageFileFormat(const QString &value);
+    bool WindowShowFieldInfo() const;
+    void setWindowShowFieldInfo(bool value);
 
 protected:
     void load();
@@ -86,13 +86,13 @@ private:
     QString m_SceneCellCurseColor;                  // цвет отравленной ячейки
     QString m_SceneViewUpdateMode;                  // метод отрисовки SceneView
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
+    QString m_SceneImageFileFormat;                 // формат файлов для сохранения сцены
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
     int m_SceneItemZValue;                          // Z-координата SceneItem
     int m_SceneCalculatingMinPause;                 // минимальная допустимая пауза при обсчёте Field
     int m_LogSize;                                  // количество строк лога событий
     int m_ButtonSize;                               // размеры кнопок интерфейса
     int m_SceneCellSize;                            // размер объекта сцены
-    int m_SceneBspTreeDepth;                        // глубина BspTreeIndex в сцене (0 - авто, 10 - максимум)
     int m_SceneFieldSize;                           // размер сцены при создании
     int m_CellInfoWindowHeight;                     // размеры окна информации о Cell
     int m_CellInfoWindowWidth;                      // размеры окна информации о Cell
@@ -103,7 +103,7 @@ private:
     bool m_SceneObjectAgeIndicate;                  // отображать возраст живых ячеек
     bool m_SI_metric;                               // использовать систему СИ в отображении размеров файлов
     bool m_SceneViewAntialiasing;                   // SceneView: Antialiasing
-    bool m_SceneBspTreeIndex;                       // использовать BspTreeIndex в сцене
+    bool m_WindowShowFieldInfo;                     // отображать окно информации о Field при создании Field
 };
 
 #endif // CONFIG_H

@@ -25,13 +25,7 @@ Scene::Scene(QObject* parent, Field *field)
     setObjectName(QString("SCENE[%1X%2]").
                   arg(QString::number(m_Field->width()), QString::number(m_Field->height())));
 
-    if(config->SceneBspTreeIndex())
-    {
-        setItemIndexMethod(QGraphicsScene::BspTreeIndex);
-        setBspTreeDepth(config->SceneBspTreeDepth());
-    }
-    else setItemIndexMethod(QGraphicsScene::NoIndex);
-
+    setItemIndexMethod(QGraphicsScene::NoIndex);
     setBackgroundColor(QColor(config->SceneBgColor()));
 
     addSceneItem();
@@ -54,11 +48,7 @@ void Scene::addSceneItem()
 
 void Scene::addSelectionMark()
 {
-    if(!m_SceneItem)
-    {
-        qCritical() << "SceneItem not created";
-        return;
-    }
+    if(!m_SceneItem) { qCritical() << "SceneItem not created"; return; }
 
     QPen pen(QColor(config->SceneSelectColor()));
     pen.setCapStyle(Qt::RoundCap);
@@ -99,12 +89,11 @@ void Scene::slotAdvance(QVector<Cell *> cells)
 {
     //qDebug() << __func__ << cells.count() << "cells received";
     auto time = QDateTime::currentMSecsSinceEpoch();
-    //auto pixmap = m_SceneItem->getPixmap();
-    auto pixmap = QPixmap(m_SceneItem->getPixmap()->size());
+    auto pixmap = m_SceneItem->getBuffer();
 
     QPainter painter;
-    painter.begin(&pixmap);
-    pixmap.fill(config->SceneCellDeadColor());
+    painter.begin(pixmap);
+    pixmap->fill(config->SceneCellDeadColor());
 
     for(auto c: cells)
     {
@@ -125,8 +114,7 @@ void Scene::slotAdvance(QVector<Cell *> cells)
 
     if(m_StopAdvanse) return;
 
-    m_SceneItem->getPixmap()->swap(pixmap);
-    m_SceneItem->update();
+    advance();
     applyAverageDraw(time);
 
     Q_EMIT signalReady();
@@ -147,6 +135,19 @@ void Scene::applyAverageDraw(qint64 time)
         if(up) Q_EMIT signalAverageDrawChangedUp(new_ad);
         else Q_EMIT signalAverageDrawChangedDown(new_ad);
     }
+}
+
+void Scene::setSelectionMarkColor(const QString &color)
+{
+    if(!m_SelectionMark) return;
+
+    auto pen = QPen(QColor(color));
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setJoinStyle(Qt::RoundJoin);
+    auto brush = QBrush(QColor(color));
+
+    m_SelectionMark->setPen(pen);
+    m_SelectionMark->setBrush(brush);
 }
 
 Cell *Scene::getSelectedCell() const { return m_SelectedCell; }

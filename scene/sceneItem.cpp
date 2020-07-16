@@ -15,18 +15,21 @@ SceneItem::SceneItem(Scene* scene, QGraphicsItem* parent)
     m_Pixmap = QPixmap(scene->getField()->width() * config->SceneCellSize(),
                        scene->getField()->height() * config->SceneCellSize());
 
+    m_Pixmap.fill(config->SceneCellDeadColor());
+
+    m_Buffer = QPixmap(m_Pixmap.size());
+
     m_Rect = QRect(0, 0,
                    scene->getField()->width() * config->SceneCellSize(),
                    scene->getField()->height() * config->SceneCellSize());
-
-    m_Pixmap.fill(config->SceneCellDeadColor());
 }
 
-QPainterPath SceneItem::shape() const
+void SceneItem::advance(int phase)
 {
-    QPainterPath path;
-    path.addRect(m_Rect);
-    return path;
+    if(!phase) { m_Pixmap.swap(m_Buffer); return; }
+
+    update();
+    m_Scene->update(); // ? костыль для случая остановки обновления SceneItem
 }
 
 void SceneItem::paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
@@ -34,10 +37,10 @@ void SceneItem::paint(QPainter *painter, const QStyleOptionGraphicsItem* option,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    //qDebug() << m_Pixmap.cacheKey();
     painter->drawPixmap(0, 0, m_Pixmap);
 }
 
-QPixmap *SceneItem::getPixmap() { return &m_Pixmap; }
-Scene *SceneItem::getScene() const { return m_Scene; }
+QPixmap* SceneItem::getPixmap() { return &m_Pixmap; }
+QPixmap* SceneItem::getBuffer() { return &m_Buffer; }
+Scene* SceneItem::getScene() const { return m_Scene; }
 QRectF SceneItem::boundingRect() const { return QRectF(0, 0, m_Pixmap.width(), m_Pixmap.height()); }

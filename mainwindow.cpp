@@ -8,6 +8,7 @@
 #include "graphicsviewzoomer.h"
 #include "dialogs/dialogvalueslist.h"
 #include "dialogs/dialogcellinformation.h"
+#include "dialogs/dialogfieldinformation.h"
 #include "field/field.h"
 #include "field/cell.h"
 #include "field/cellinformation.h"
@@ -24,8 +25,8 @@
 #include <QLabel>
 #include <QProgressBar>
 #include <QThread>
-
-#include <dialogs/dialogfieldinformation.h>
+#include <QFileDialog>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -95,12 +96,12 @@ void MainWindow::loadGui()
     m_ActionEditCell->setEnabled(false);
     m_ActionEditCell->setShortcut(Qt::CTRL + Qt::Key_E);
 
-    m_ActionInfoCell = new QAction(QIcon(":/resources/img/eye.svg"), tr("Cell information"), this);
+    m_ActionInfoCell = new QAction(QIcon(":/resources/img/check.svg"), tr("Cell information"), this);
     QObject::connect(m_ActionInfoCell, &QAction::triggered, this, &MainWindow::slotInfoCell);
     m_ActionInfoCell->setEnabled(false);
     m_ActionInfoCell->setShortcut(Qt::CTRL + Qt::Key_C);
 
-    m_ActionInfoField = new QAction(QIcon(":/resources/img/field.svg"), tr("Fielf information"), this);
+    m_ActionInfoField = new QAction(QIcon(":/resources/img/field.svg"), tr("Field information"), this);
     QObject::connect(m_ActionInfoField, &QAction::triggered, this, &MainWindow::slotInfoField);
     m_ActionInfoField->setEnabled(false);
     m_ActionInfoField->setShortcut(Qt::CTRL + Qt::Key_F);
@@ -109,6 +110,10 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionShowSelectedCell, &QAction::triggered, this, &MainWindow::slotShowSelectedCell);
     m_ActionShowSelectedCell->setEnabled(false);
     m_ActionShowSelectedCell->setShortcut(Qt::CTRL + Qt::Key_S);
+
+    m_ActionSaveImageToFile = new QAction(QIcon(":/resources/img/save.svg"), tr("Save image to file"), this);
+    QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
+    m_ActionSaveImageToFile->setEnabled(false);
 
     // тулбар
     auto tbMain = new QToolBar(this);
@@ -127,6 +132,7 @@ void MainWindow::loadGui()
     tbMain->addAction(m_ActionShowSelectedCell);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionInfoField);
+    tbMain->addAction(m_ActionSaveImageToFile);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionStepStop);
     tbMain->addAction(m_ActionRun);
@@ -306,6 +312,7 @@ void MainWindow::setActionsEnable(bool value)
     m_ActionZoomUndoScene->setEnabled(value);
     m_ActionStepStop->setEnabled(value);
     m_ActionInfoField->setEnabled(value);
+    m_ActionSaveImageToFile->setEnabled(value);
     m_ActionRun->setEnabled(value);
 }
 
@@ -413,7 +420,17 @@ void MainWindow::slotSetup()
     config->setSceneViewUpdateMode(map.value(keys.at(7)).value.toString());
     m_SceneView->SetUpdateMode();
     config->setSceneBgColor(map.value(keys.at(8)).value.toString());
+    if(m_SceneView->getScene())
+    {
+        m_SceneView->getScene()->setBackgroundColor(config->SceneBgColor());
+        m_SceneView->update();
+    }
     config->setSceneSelectColor(map.value(keys.at(9)).value.toString());
+    if(m_SceneView->getScene())
+    {
+        m_SceneView->getScene()->setSelectionMarkColor(config->SceneSelectColor());
+        m_SceneView->update();
+    }
     config->setSceneCellDeadColor(map.value(keys.at(10)).value.toString());
     config->setSceneCellCurseColor(map.value(keys.at(11)).value.toString());
     config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
@@ -477,6 +494,7 @@ void MainWindow::slotNewProject()
         tr("03#_Rule [%1]:").arg(QString::number(ruleslist.count())),
         tr("04#_Options"),
         tr("05#_Random filling"),
+        tr("06#_Show field information"),
     };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -485,6 +503,7 @@ void MainWindow::slotNewProject()
      {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
      {keys.at(4), {}},
      {keys.at(5), {QVariant::Bool, false}},
+     {keys.at(6), {QVariant::Bool, config->WindowShowFieldInfo()}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/asterisk.svg", tr("New project"), &map);
@@ -498,6 +517,7 @@ void MainWindow::slotNewProject()
     config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
     config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
     auto random = map.value(keys.at(5)).value.toBool();
+    config->setWindowShowFieldInfo(map.value(keys.at(6)).value.toBool());
 
     createField(config->SceneFieldSize(), config->SceneFieldSize(), random);
 
@@ -514,14 +534,15 @@ void MainWindow::slotNewProject()
     m_ActionEditCell->setDisabled(true);
     m_ActionInfoCell->setDisabled(true);
     m_ActionShowSelectedCell->setDisabled(true);
-    m_LabelFieldAvCalc->setText("0");
-    m_LabelSceneAvDraw->setText(tr("0"));
+    m_LabelFieldAvCalc->setText("0 ms");
+    m_LabelSceneAvDraw->setText(tr("0 ms"));
     m_LabelSelectedCell->setText("-");
 
     createScene();
     setActionsEnable(true);
 
     if(random) redrawScene();
+    if(config->WindowShowFieldInfo()) slotInfoField();
 }
 
 void MainWindow::slotSceneZoomIn()
@@ -600,12 +621,33 @@ void MainWindow::slotShowSelectedCell()
     slotShowCell(cell);
 }
 
+void MainWindow::slotSaveImageToFile()
+{
+    if(!m_Field) { m_ActionSaveImageToFile->setDisabled(true); return; }
+
+    auto fileformat = config->SceneImageFileFormat().toLower();
+    auto filename = QFileDialog::getSaveFileName(this, "Save image", config->LastDir(),
+                                                 tr("%1 files (*.%2)").arg(fileformat.toUpper(), fileformat));
+
+    if(filename.isNull()) return;
+
+    config->setLastDir(QFileInfo(filename).dir().path());
+
+    auto dot_fileformat = QString(".%1").arg(fileformat);
+    if(!filename.endsWith(dot_fileformat, Qt::CaseInsensitive)) filename.append(dot_fileformat);
+
+    auto pixmap = m_SceneView->getScene()->getSceneItem()->getPixmap();
+    if(!pixmap->save(filename, fileformat.toUpper().toLatin1().constData()))
+        QMessageBox::critical(this, tr("Error"),
+                             tr("Error at file saving. Path: '%1'").arg(filename));
+}
+
 void MainWindow::slotFieldAvCalcUp(qreal value)
 {
     if(m_LabelFieldAvCalc->styleSheet() != MW_LABEL_STYLE_UP)
         m_LabelFieldAvCalc->setStyleSheet(MW_LABEL_STYLE_UP);
 
-    m_LabelFieldAvCalc->setText(QString::number(value, 'f', 1));
+    m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotFieldAvCalcDown(qreal value)
@@ -613,7 +655,7 @@ void MainWindow::slotFieldAvCalcDown(qreal value)
     if(m_LabelFieldAvCalc->styleSheet() != MW_LABEL_STYLE_DOWN)
         m_LabelFieldAvCalc->setStyleSheet(MW_LABEL_STYLE_DOWN);
 
-    m_LabelFieldAvCalc->setText(QString::number(value, 'f', 1));
+    m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotAverageDrawUp(qreal value)
@@ -621,7 +663,7 @@ void MainWindow::slotAverageDrawUp(qreal value)
     if(m_LabelSceneAvDraw->styleSheet() != MW_LABEL_STYLE_UP)
         m_LabelSceneAvDraw->setStyleSheet(MW_LABEL_STYLE_UP);
 
-    m_LabelSceneAvDraw->setText(QString::number(value, 'f', 1));
+    m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotAverageDrawDown(qreal value)
@@ -629,7 +671,7 @@ void MainWindow::slotAverageDrawDown(qreal value)
     if(m_LabelSceneAvDraw->styleSheet() != MW_LABEL_STYLE_DOWN)
         m_LabelSceneAvDraw->setStyleSheet(MW_LABEL_STYLE_DOWN);
 
-    m_LabelSceneAvDraw->setText(QString::number(value, 'f', 1));
+    m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotFieldAge(qint64 value) { m_LabelFieldAge->setText(QString::number(value)); }

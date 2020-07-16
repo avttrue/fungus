@@ -26,6 +26,7 @@ public:
     qreal getAverageDraw() const;
     void applyAverageDraw(qint64 time);
     Cell *getSelectedCell() const;
+    void setSelectionMarkColor(const QString& color);
 
 private:
     Field* m_Field;

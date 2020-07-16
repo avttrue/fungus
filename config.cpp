@@ -65,6 +65,10 @@ void Config::load()
         m_Settings->setValue("MainWindow/FieldInfoWindowHeight", FIELD_INFO_WINDOW_HEIGHT);
     m_FieldInfoWindowHeight = m_Settings->value("MainWindow/FieldInfoWindowHeight").toInt();
 
+    if(!m_Settings->contains("MainWindow/ShowFieldInformation"))
+        m_Settings->setValue("MainWindow/ShowFieldInformation", WINDOW_SHOW_FIELD_INFO);
+    m_WindowShowFieldInfo = m_Settings->value("MainWindow/ShowFieldInformation").toBool();
+
     if(!m_Settings->contains("Scene/BackgroundColor"))
         m_Settings->setValue("Scene/BackgroundColor", SCENE_BG_COLOR);
     m_SceneBgColor = m_Settings->value("Scene/BackgroundColor").toString();
@@ -84,14 +88,6 @@ void Config::load()
     if(!m_Settings->contains("Scene/ViewAntialiasing"))
         m_Settings->setValue("Scene/ViewAntialiasing", SCENE_VIEW_ANTIALIASING);
     m_SceneViewAntialiasing = m_Settings->value("Scene/ViewAntialiasing").toBool();
-
-    if(!m_Settings->contains("Scene/BspTreeIndex"))
-        m_Settings->setValue("Scene/BspTreeIndex", SCENE_BSP_TREE_INDEX);
-    m_SceneBspTreeIndex = m_Settings->value("Scene/BspTreeIndex").toBool();
-
-    if(!m_Settings->contains("Scene/BspTreeDepth"))
-        m_Settings->setValue("Scene/BspTreeDepth", SCENE_BSP_TREE_DEPTH);
-    m_SceneBspTreeDepth = m_Settings->value("Scene/BspTreeDepth").toInt();
 
     if(!m_Settings->contains("Scene/ZoomKeyModifier"))
         m_Settings->setValue("Scene/ZoomKeyModifier", SCENE_ZOOM_MODIFIER);
@@ -121,6 +117,10 @@ void Config::load()
         m_Settings->setValue("Scene/FieldThreadPriority", SCENE_FIELD_THREAD_PRIORITY);
     m_SceneFieldThreadPriority = m_Settings->value("Scene/FieldThreadPriority").toString();
 
+    if(!m_Settings->contains("Scene/ImageFileFormat"))
+        m_Settings->setValue("Scene/ImageFileFormat", SCENE_IMAGE_FILE_FORMAT);
+    m_SceneImageFileFormat = m_Settings->value("Scene/ImageFileFormat").toString();
+
     if(!m_Settings->contains("Scene/CellCurseColor"))
         m_Settings->setValue("Scene/CellCurseColor", SCENE_CELL_CURSE_COLOR);
     m_SceneCellCurseColor = m_Settings->value("Scene/CellCurseColor").toString();
@@ -132,6 +132,22 @@ void Config::load()
     if(!m_Settings->contains("Scene/ItemZValue"))
         m_Settings->setValue("Scene/ItemZValue", SCENE_ITEM_ZVALUE);
     m_SceneItemZValue = m_Settings->value("Scene/ItemZValue").toInt();
+}
+
+void Config::setWindowShowFieldInfo(bool value)
+{
+    if(m_WindowShowFieldInfo == value) return;
+
+    m_WindowShowFieldInfo = value;
+    m_Settings->setValue("MainWindow/ShowFieldInformation", m_WindowShowFieldInfo);
+}
+
+void Config::setSceneImageFileFormat(const QString &value)
+{
+    if(m_SceneImageFileFormat == value) return;
+
+    m_SceneImageFileFormat = value;
+    m_Settings->setValue("Scene/ImageFileFormat", m_SceneImageFileFormat);
 }
 
 
@@ -255,22 +271,6 @@ void Config::setSceneZoomModifier(const Qt::KeyboardModifiers &value)
     m_Settings->setValue("Scene/ZoomKeyModifier", static_cast<int>(m_SceneZoomModifier));
 }
 
-void Config::setSceneBspTreeDepth(int value)
-{
-    if(m_SceneBspTreeDepth == value) return;
-    
-    m_SceneBspTreeDepth = value;
-    m_Settings->setValue("Scene/BspTreeDepth", m_SceneBspTreeDepth);
-}
-
-void Config::setSceneBspTreeIndex(bool value)
-{
-    if(m_SceneBspTreeIndex == value) return;
-
-    m_SceneBspTreeIndex = value;
-    m_Settings->setValue("Scene/BspTreeIndex", m_SceneBspTreeIndex);
-}
-
 void Config::setSceneViewAntialiasing(bool value)
 {
     if(m_SceneViewAntialiasing == value) return;
@@ -352,8 +352,6 @@ QString Config::SceneCellDeadColor() const { return m_SceneCellDeadColor; }
 int Config::SceneFieldSize() const { return m_SceneFieldSize; }
 Qt::KeyboardModifiers Config::SceneZoomModifier() const { return m_SceneZoomModifier; }
 Qt::KeyboardModifiers Config::SceneToolTipModifier() const { return m_SceneToolTipModifier; }
-int Config::SceneBspTreeDepth() const { return m_SceneBspTreeDepth; }
-bool Config::SceneBspTreeIndex() const { return m_SceneBspTreeIndex; }
 bool Config::SceneViewAntialiasing() const { return m_SceneViewAntialiasing; }
 int Config::SceneCellSize() const { return m_SceneCellSize; }
 qreal Config::SceneScaleStep() const { return m_SceneScaleStep; }
@@ -370,3 +368,5 @@ QString Config::SceneFieldThreadPriority() const { return m_SceneFieldThreadPrio
 int Config::SceneItemZValue() const { return m_SceneItemZValue; }
 int Config::FieldInfoWindowWidth() const { return m_FieldInfoWindowWidth; }
 int Config::FieldInfoWindowHeight() const { return m_FieldInfoWindowHeight; }
+QString Config::SceneImageFileFormat() const { return m_SceneImageFileFormat; }
+bool Config::WindowShowFieldInfo() const { return m_WindowShowFieldInfo; }
