@@ -43,4 +43,4 @@ void SceneItem::paint(QPainter *painter, const QStyleOptionGraphicsItem* option,
 QPixmap* SceneItem::getPixmap() { return &m_Pixmap; }
 QPixmap* SceneItem::getBuffer() { return &m_Buffer; }
 Scene* SceneItem::getScene() const { return m_Scene; }
-QRectF SceneItem::boundingRect() const { return QRectF(0, 0, m_Pixmap.width(), m_Pixmap.height()); }
+QRectF SceneItem::boundingRect() const { return m_Rect; }
