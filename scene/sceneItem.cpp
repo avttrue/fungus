@@ -29,7 +29,7 @@ void SceneItem::advance(int phase)
     if(!phase) { m_Pixmap.swap(m_Buffer); return; }
 
     update();
-    m_Scene->update(); // ? костыль для случая остановки обновления SceneItem
+    m_Scene->update(); // NOTE: ? костыль для ситуации остановки обновления SceneItem
 }
 
 void SceneItem::paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget)

@@ -75,6 +75,7 @@ void Scene::selectCell(Cell *cell)
     else qDebug() << "Cell selected:" << cell->objectName();
 
     m_SelectedCell = cell;
+    update(); // NOTE: ? костыль для ситуации остановки обновления SceneItem
 
     Q_EMIT signalSelectedCellChanged(m_SelectedCell);
 }
