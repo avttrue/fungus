@@ -62,17 +62,23 @@ void Scene::addSelectionMark()
 
 void Scene::selectCell(Cell *cell)
 {
-    if(m_SelectedCell == cell) return;
+    if(cell && m_SelectedCell == cell)
+    {
+        Q_EMIT signalShowCellInfo();
+        return;
+    }
 
-    if(!cell) m_SelectionMark->hide();
-    else
+    if(!cell)
+    {
+        m_SelectionMark->hide();
+        if(m_SelectedCell) qDebug() << "Cell unselected:" << m_SelectedCell->objectName();
+    }
+        else
     {
         m_SelectionMark->setPos(m_SceneItem->mapToParent(cell->getIndex() * config->SceneCellSize()));
         m_SelectionMark->show();
+        qDebug() << "Cell selected:" << cell->objectName();
     }
-
-    if(!cell) qDebug() << "Cell unselected:" << m_SelectedCell->objectName();
-    else qDebug() << "Cell selected:" << cell->objectName();
 
     m_SelectedCell = cell;
     update(); // NOTE: ? костыль для ситуации остановки обновления SceneItem

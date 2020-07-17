@@ -47,6 +47,7 @@ Q_SIGNALS:
     void signalAverageDrawChangedDown(qreal AverageDraw);  // среднее время отрисовки сцены уменьшилось
     void signalSelectedCellChanged(Cell* cell);            // выбор Cell
     void signalReady();                                    // slotAdvance отработал
+    void signalShowCellInfo();                             // показать окно информации о Cell
 };
 
 #endif // SCENE_H

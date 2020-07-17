@@ -257,6 +257,7 @@ void MainWindow::createScene()
     QObject::connect(scene, &Scene::signalAverageDrawChangedUp, this, &MainWindow::slotAverageDrawUp);
     QObject::connect(scene, &Scene::signalAverageDrawChangedDown, this, &MainWindow::slotAverageDrawDown);
     QObject::connect(scene, &Scene::signalSelectedCellChanged, this, &MainWindow::slotSelectedCellChanged);
+    QObject::connect(scene, &Scene::signalShowCellInfo, this, &MainWindow::slotInfoCell);
 }
 
 void MainWindow::createField(int w, int h, bool random)
@@ -576,8 +577,6 @@ void MainWindow::slotInfoCell()
 {
     auto cell = m_SceneView->getScene()->getSelectedCell();
     if(!cell) { m_ActionInfoCell->setDisabled(true); return; }
-
-    slotShowCell(cell);
 
     if(DialogCellInformation::FindPreviousCopy(cell)) return;
 
