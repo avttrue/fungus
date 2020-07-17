@@ -68,15 +68,6 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     loadInformation();
 
-    QObject::connect(cell->getCurInfo(), &CellInformation::signalStateChanged,
-                     this, &DialogCellInformation::slotCellStateChanged, Qt::QueuedConnection);
-    QObject::connect(cell->getCurInfo(), &CellInformation::signalAgeChanged,
-                     this, &DialogCellInformation::slotCellAgeChanged, Qt::QueuedConnection);
-    QObject::connect(cell->getCurInfo(), &CellInformation::signalGenerationChanged,
-                     this, &DialogCellInformation::slotCellGenerationChanged, Qt::QueuedConnection);
-    QObject::connect(cell->getCurInfo(), &CellInformation::signalActivityChanged,
-                     this, &DialogCellInformation::slotCellActivityChanged, Qt::QueuedConnection);
-
     QObject::connect(cell, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection); // закрывать при уничтожении cell
 
     installEventFilter(this);
@@ -112,18 +103,31 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
 
 void DialogCellInformation::loadInformation()
 {
-    glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), ""));
+    glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), QVariant()));
 
-    auto map = getPropertiesList(m_Cell->getCurInfo());
+    auto ci = m_Cell->getCurInfo();
+    auto map = getPropertiesList(ci);
 
     for(auto key: map.keys())
     {
-        QVariant value = m_Cell->getCurInfo()->property(key.toStdString().c_str());
+        QVariant value = ci->property(key.toStdString().c_str());
 
-        if(key == "State") value = getNameKernelEnum("CellState", value.toInt());
-        else if(key == "Active") value = value.toBool() ? tr("YES") : tr("NO");
+        auto dip = new DialogInfoPanel(this, key, value);
+        glContent->addWidget(dip);
 
-        glContent->addWidget(new DialogInfoPanel(this, key, value.toString()));
+        if(key == "Age")
+            QObject::connect(ci, &CellInformation::signalAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+        else if(key == "State")
+        {
+            QObject::connect(ci, &CellInformation::signalStateChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            qDebug() << value.typeName();
+        }
+        else if(key == "Generation")
+            QObject::connect(ci, &CellInformation::signalGenerationChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+        else if(key == "Active")
+            QObject::connect(ci, &CellInformation::signalActivityChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+        else if(key == "CursedAge")
+            QObject::connect(ci, &CellInformation::signalCursedAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
     }
 }
 
@@ -145,27 +149,5 @@ bool DialogCellInformation::FindPreviousCopy(Cell *cell)
     return false;
 }
 
-void DialogCellInformation::setValue(const QString &key, const QVariant &value)
-{
-    for(int i = 0; i < glContent->count(); i++)
-    {
-        auto item = glContent->itemAt(i)->widget();
-        auto dip = qobject_cast<DialogInfoPanel*>(item);
-        if(!dip) continue;
-
-        if(dip->property(DCI_INFOPANEL_KEY_PROPERTY) == key)
-        {
-            dip->setValue(value);
-            return;
-        }
-    }
-
-    qCritical() << __func__ << "property" <<  DCI_INFOPANEL_KEY_PROPERTY << "not found";
-}
-
 void DialogCellInformation::slotShowPoint() { Q_EMIT signalShowCell(m_Cell); }
 Cell *DialogCellInformation::getCell() const { return m_Cell; }
-void DialogCellInformation::slotCellAgeChanged(qint64 value) { setValue("Age", value); }
-void DialogCellInformation::slotCellStateChanged(int value) { setValue("State", getNameKernelEnum("CellState", value)); }
-void DialogCellInformation::slotCellGenerationChanged(qint64 value) { setValue("Generation", value); }
-void DialogCellInformation::slotCellActivityChanged(bool value) { setValue("Active", value ? tr("YES") : tr("NO")); }

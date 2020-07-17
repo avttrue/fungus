@@ -114,19 +114,18 @@ bool DialogFieldInformation::eventFilter(QObject *object, QEvent *event)
 
 void DialogFieldInformation::loadInformation()
 {
-    glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), ""));
+    glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), QVariant()));
 
     auto fi = m_Field->getInformation();
     auto map = getPropertiesList(fi);
 
-    // Cell information
     for(auto key: map.keys())
     {
         if(key == "AverageCalc") continue;
 
         QVariant value = fi->property(key.toStdString().c_str());
 
-        auto dip = new DialogInfoPanel(this, key, value.toString());
+        auto dip = new DialogInfoPanel(this, key, value);
         glContent->addWidget(dip);
 
         if(key == "Age")

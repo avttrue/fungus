@@ -5,6 +5,7 @@
 
 class Scene;
 class Field;
+class Cell;
 class GraphicsViewZoomer;
 
 class SceneView : public QGraphicsView
@@ -18,7 +19,8 @@ public:
     void SetUpdateMode();
 
 protected:
-    bool eventFilter(QObject *object, QEvent *event);    
+    bool eventFilter(QObject *object, QEvent *event);
+    Cell* getCell(qreal x, qreal y);
 
 private:
     Scene* m_Scene;

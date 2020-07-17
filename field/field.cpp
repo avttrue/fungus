@@ -210,11 +210,7 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
     // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение]};
     for(auto a: m_Rule->getActivity())
     {
-        if(a.count() < 7)
-        {
-            qCritical() << "Incorrect activity:" << a;
-            continue;
-        }
+        if(a.count() < 7) { qCritical() << "Incorrect activity:" << a; continue; }
 
         auto sstate = static_cast<Kernel::CellState>(a.value(1).toInt());   // self state
         if(ci->getState() != sstate) continue;
@@ -301,6 +297,8 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
         }
         default: break;
         }
+
+        if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::Alive) return;
     }
 }
 

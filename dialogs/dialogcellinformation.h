@@ -13,7 +13,6 @@ class DialogCellInformation : public QDialog
 public:
     DialogCellInformation(QWidget *parent, Cell* cell);
     Cell *getCell() const;
-    void setValue(const QString& key, const QVariant &value);
     static bool FindPreviousCopy(Cell* cell); // найти предыдущую копию окна, если найдена, то возвращается TRUE и делает его активным
 
 protected:
@@ -26,10 +25,6 @@ private:
 
 private Q_SLOTS:
     void slotShowPoint();
-    void slotCellAgeChanged(qint64 value);
-    void slotCellStateChanged(int value);
-    void slotCellGenerationChanged(qint64 value);
-    void slotCellActivityChanged(bool value);
 
 Q_SIGNALS:
     void signalShowCell(Cell* cell);

@@ -7,7 +7,8 @@
 FieldRule::FieldRule(Field *parent)
     : QObject(parent),
       m_ColorAlive(Qt::black),
-      m_CurseTime(0)
+      m_CurseTime(0),
+      m_DeathEnd(true)
 {
     setDefault();
 
@@ -18,25 +19,25 @@ FieldRule::FieldRule(Field *parent)
 void FieldRule::setColorAlive(QColor value)
 {
     if (m_ColorAlive == value) return;
-
     m_ColorAlive = value;
-    Q_EMIT signalChanged();
 }
 
 void FieldRule::setActivity(Activity value)
 {
     if (m_Activity == value) return;
-
     m_Activity = value;
-    Q_EMIT signalChanged();
 }
 
 void FieldRule::setCurseTime(int value)
 {
     if (m_CurseTime == value) return;
-
     m_CurseTime = value;
-    Q_EMIT signalChanged();
+}
+
+void FieldRule::setDeathEnd(bool value)
+{
+    if (m_DeathEnd == value) return;
+    m_DeathEnd = value;
 }
 
 void FieldRule::setDefault()
@@ -71,3 +72,4 @@ void FieldRule::setDefault()
 QColor FieldRule::getColorAlive() const { return m_ColorAlive; }
 Activity FieldRule::getActivity() const { return m_Activity; }
 int FieldRule::getCurseTime() const { return m_CurseTime; }
+bool FieldRule::isDeathEnd() const { return m_DeathEnd; }

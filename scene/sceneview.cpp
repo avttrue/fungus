@@ -16,7 +16,7 @@ SceneView::SceneView(QWidget *parent)
     :QGraphicsView(parent),
       m_Scene(nullptr)
 {
-    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing);// | DontSavePainterState);
+    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing | DontSavePainterState);
     SetUpdateMode();
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
@@ -67,11 +67,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
         if(event->type() == QEvent::GraphicsSceneMouseMove &&
                 mouseSceneEvent->modifiers() == config->SceneToolTipModifier())
         {
-            auto field = m_Scene->getField();
-            auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneCellSize());
-            auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneCellSize());
-            auto c = field->cells()->at(x).at(y);
-
+            auto c = getCell(mouseSceneEvent->scenePos().x(), mouseSceneEvent->scenePos().y());
             QToolTip::showText(QCursor::pos(), c->objectName(), this, rect());
         }
 
@@ -104,10 +100,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
-            auto field = m_Scene->getField();
-            auto x = qFloor(mouseSceneEvent->scenePos().x() / config->SceneCellSize());
-            auto y = qFloor(mouseSceneEvent->scenePos().y() / config->SceneCellSize());
-            auto c = field->cells()->at(x).at(y);
+            auto c = getCell(mouseSceneEvent->scenePos().x(), mouseSceneEvent->scenePos().y());
 
             if(mouseSceneEvent->button() == Qt::LeftButton)
             {
@@ -123,6 +116,17 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
         }
     }
     return false;
+}
+
+Cell *SceneView::getCell(qreal x, qreal y)
+{
+    if(!m_Scene) return nullptr;
+    auto field = m_Scene->getField();
+    if(!field) return nullptr;
+
+    auto cx = qFloor(x / config->SceneCellSize());
+    auto cy = qFloor(y / config->SceneCellSize());
+    return field->cells()->at(cx).at(cy);
 }
 
 void SceneView::SetUpdateMode()

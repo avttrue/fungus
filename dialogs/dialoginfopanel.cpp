@@ -1,10 +1,11 @@
 #include "dialoginfopanel.h"
+#include "kernel/kernel.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QVariant>
 
-DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const QString &value)
+DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const QVariant &value)
     : QFrame(parent)
 {
     setLineWidth(1);
@@ -16,7 +17,7 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
     auto labelCaption = new QLabel(caption, this);
     labelCaption->setStyleSheet(DCI_LABEL_STYLE);
 
-    if(!value.isEmpty())
+    if(value.isValid())
     {
         hbox->setMargin(2);
         setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
@@ -24,10 +25,11 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
         hbox->setAlignment(Qt::AlignLeft);
         hbox->addWidget(labelCaption, 1);
 
-        m_LabelValue = new QLabel(value, this);
+        m_LabelValue = new QLabel(this);
         m_LabelValue->setFrameStyle(QFrame::Panel | QFrame::Sunken);
         m_LabelValue->setLineWidth(1);
         m_LabelValue->setStyleSheet(DCI_LABEL_STYLE);
+        setValue(value);
         hbox->addWidget(m_LabelValue, 1);
     }
     else
@@ -42,4 +44,11 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
     setProperty(DCI_INFOPANEL_KEY_PROPERTY, caption);
 }
 
-void DialogInfoPanel::setValue(const QVariant &value) { m_LabelValue->setText(value.toString()); }
+void DialogInfoPanel::setValue(const QVariant &value)
+{
+    if(value.type() == QVariant::Bool)
+        value.toBool() ? m_LabelValue->setText("[+]") : m_LabelValue->setText("[ ]");
+
+    else
+        m_LabelValue->setText(value.toString());
+}
