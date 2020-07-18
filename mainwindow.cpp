@@ -604,6 +604,8 @@ void MainWindow::slotShowCell(Cell *cell)
         return;
     }
 
+    m_SceneView->getScene()->selectCell(nullptr);
+
     m_SceneView->getScene()->selectCell(cell);
     m_SceneView->centerOn(cell->getIndex() * config->SceneCellSize());
 }
