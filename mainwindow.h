@@ -64,7 +64,6 @@ private:
     QAction* m_ActionInfoCell;
     QAction* m_ActionInfoField;
     QAction* m_ActionSaveImageToFile;
-    QAction* m_ActionShowSelectedCell;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -93,7 +92,6 @@ private Q_SLOTS:
     void slotInfoField();
     void slotEditCell();
     void slotShowCell(Cell* cell);
-    void slotShowSelectedCell();
     void slotSaveImageToFile();
 
 Q_SIGNALS:

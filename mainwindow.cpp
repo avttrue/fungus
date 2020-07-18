@@ -106,11 +106,6 @@ void MainWindow::loadGui()
     m_ActionInfoField->setEnabled(false);
     m_ActionInfoField->setShortcut(Qt::CTRL + Qt::Key_F);
 
-    m_ActionShowSelectedCell = new QAction(QIcon(":/resources/img/point.svg"), tr("Show selected cell"), this);
-    QObject::connect(m_ActionShowSelectedCell, &QAction::triggered, this, &MainWindow::slotShowSelectedCell);
-    m_ActionShowSelectedCell->setEnabled(false);
-    m_ActionShowSelectedCell->setShortcut(Qt::CTRL + Qt::Key_S);
-
     m_ActionSaveImageToFile = new QAction(QIcon(":/resources/img/save.svg"), tr("Save image to file"), this);
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
     m_ActionSaveImageToFile->setEnabled(false);
@@ -129,7 +124,6 @@ void MainWindow::loadGui()
     tbMain->addSeparator();
     tbMain->addAction(m_ActionEditCell);
     tbMain->addAction(m_ActionInfoCell);
-    tbMain->addAction(m_ActionShowSelectedCell);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionInfoField);
     tbMain->addAction(m_ActionSaveImageToFile);
@@ -449,6 +443,7 @@ void MainWindow::slotEditCell()
     auto cell = m_SceneView->getScene()->getSelectedCell();
     if(!cell) { m_ActionEditCell->setDisabled(true); return; }
 
+    m_SceneView->getScene()->selectCell(nullptr);
     slotShowCell(cell);
 
     auto cni = cell->getNewInfo();
@@ -534,7 +529,6 @@ void MainWindow::slotNewProject()
     m_SceneView->zoomer()->Zoom(-1.0);
     m_ActionEditCell->setDisabled(true);
     m_ActionInfoCell->setDisabled(true);
-    m_ActionShowSelectedCell->setDisabled(true);
     m_LabelFieldAvCalc->setText("0 ms");
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     m_LabelSelectedCell->setText("-");
@@ -567,7 +561,6 @@ void MainWindow::slotSelectedCellChanged(Cell *cell)
 {
     m_ActionEditCell->setDisabled(cell == nullptr);
     m_ActionInfoCell->setDisabled(cell == nullptr);
-    m_ActionShowSelectedCell->setDisabled(cell == nullptr);
 
     if(cell) m_LabelSelectedCell->setText(cell->objectName());
     else m_LabelSelectedCell->setText("-");
@@ -604,22 +597,8 @@ void MainWindow::slotShowCell(Cell *cell)
         return;
     }
 
-    m_SceneView->getScene()->selectCell(nullptr);
-
     m_SceneView->getScene()->selectCell(cell);
     m_SceneView->centerOn(cell->getIndex() * config->SceneCellSize());
-}
-
-void MainWindow::slotShowSelectedCell()
-{
-    auto cell = m_SceneView->getScene()->getSelectedCell();
-    if(!cell)
-    {
-        m_ActionShowSelectedCell->setDisabled(true);
-        return;
-    }
-
-    slotShowCell(cell);
 }
 
 void MainWindow::slotSaveImageToFile()
