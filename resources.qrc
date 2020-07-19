@@ -29,5 +29,9 @@
         <file>resources/img/running.svg</file>
         <file>resources/img/paused.svg</file>
         <file>resources/img/rule.svg</file>
+        <file>resources/img/copy.svg</file>
+        <file>resources/img/paste.svg</file>
+        <file>resources/img/preset_load.svg</file>
+        <file>resources/img/preset_save.svg</file>
     </qresource>
 </RCC>
