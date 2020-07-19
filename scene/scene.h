@@ -51,6 +51,7 @@ Q_SIGNALS:
     void signalAverageDrawChangedUp(qreal AverageDraw);    // среднее время отрисовки сцены увеличилось
     void signalAverageDrawChangedDown(qreal AverageDraw);  // среднее время отрисовки сцены уменьшилось
     void signalSelectedCellChanged(Cell* cell);            // выбор Cell
+    void signalSelectedCellsChanged(Cell* first, Cell* second);// выбор группы Cell
     void signalReady();                                    // slotAdvance отработал
     void signalShowCellInfo();                             // показать окно информации о Cell
 };

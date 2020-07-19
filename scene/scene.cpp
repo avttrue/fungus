@@ -105,9 +105,7 @@ void Scene::setMultiSelectionMarkColor(const QString &color)
 
 void Scene::selectCell(Cell *cell)
 {
-    m_MultiSelectionMark->hide();
-    if(m_MultiSelectedCell) qDebug() << "Second cell unselected:" << m_MultiSelectedCell->objectName();
-    m_MultiSelectedCell = nullptr;
+    MultiselectCell(nullptr);
 
     if(cell && m_SelectedCell == cell)
     {
@@ -135,15 +133,22 @@ void Scene::selectCell(Cell *cell)
 
 void Scene::MultiselectCell(Cell *cell)
 {
-    if(!m_SelectedCell || !cell || m_SelectedCell == cell) return;
-
-    m_MultiSelectedCell = cell;
-    auto rect = m_SelectedCell->getRect().united(cell->getRect());
-    m_MultiSelectionMark->setRect(rect);
-    m_MultiSelectionMark->show();
+    if(!cell)
+    {
+        m_MultiSelectionMark->hide();
+        if(m_MultiSelectedCell) qDebug() << "Second cell unselected:" << m_MultiSelectedCell->objectName();
+        m_MultiSelectedCell = nullptr;
+    }
+    else if(m_SelectedCell && m_SelectedCell != cell)
+    {
+        m_MultiSelectedCell = cell;
+        auto rect = m_SelectedCell->getRect().united(cell->getRect());
+        m_MultiSelectionMark->setRect(rect);
+        m_MultiSelectionMark->show();
+        qDebug() << "Second cell selected:" << cell->objectName();
+    }
     update(); // NOTE: ? костыль для ситуации остановки обновления SceneItem
-
-    qDebug() << "Second cell selected:" << cell->objectName();
+    Q_EMIT signalSelectedCellsChanged(m_SelectedCell, m_MultiSelectedCell);
 }
 
 void Scene::setBackgroundColor(const QColor &value)
