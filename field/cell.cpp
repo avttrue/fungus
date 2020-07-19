@@ -4,13 +4,13 @@
 #include "helper.h"
 #include "properties.h"
 #include <QDebug>
-#include <scene/sceneItem.h>
+#include <scene/sceneitem.h>
 
 Cell::Cell(Field *parent)
     : QObject(parent),
       m_Field(parent),
-      m_Index({-1, -1}),
-      m_Rect({-1, -1, -1, -1})
+      m_Index(-1, -1),
+      m_Rect(-1, -1, -1, -1)
 {
     m_CurrentInformation = new CellInformation(this);
     m_NewInformation = new CellInformation(this);

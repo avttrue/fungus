@@ -1,4 +1,4 @@
-#include "sceneItem.h"
+#include "sceneitem.h"
 #include "scene.h"
 #include "properties.h"
 #include "field/field.h"

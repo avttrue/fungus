@@ -97,9 +97,13 @@ void Config::load()
         m_Settings->setValue("Scene/ToolTipModifier", SCENE_TOOLTIP_MODIFIER);
     m_SceneToolTipModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ToolTipModifier").toInt());
 
-    if(!m_Settings->contains("Scene/ObjectAgeIndicate"))
-        m_Settings->setValue("Scene/ObjectAgeIndicate", SCENE_OBJECT_AGE_INDICATE);
-    m_SceneObjectAgeIndicate = m_Settings->value("Scene/ObjectAgeIndicate").toBool();
+    if(!m_Settings->contains("Scene/MultiselectModifier"))
+        m_Settings->setValue("Scene/MultiselectModifier", SCENE_MULTISELECT_MODIFIER);
+    m_SceneMultiselModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/MultiselectModifier").toInt());
+
+    if(!m_Settings->contains("Scene/CellAgeIndicate"))
+        m_Settings->setValue("Scene/CellAgeIndicate", SCENE_CELL_AGE_INDICATE);
+    m_SceneCellAgeIndicate = m_Settings->value("Scene/CellAgeIndicate").toBool();
 
     if(!m_Settings->contains("Scene/CellDeadColor"))
         m_Settings->setValue("Scene/CellDeadColor", SCENE_CELL_DEAD_COLOR);
@@ -132,6 +136,26 @@ void Config::load()
     if(!m_Settings->contains("Scene/ItemZValue"))
         m_Settings->setValue("Scene/ItemZValue", SCENE_ITEM_ZVALUE);
     m_SceneItemZValue = m_Settings->value("Scene/ItemZValue").toInt();
+
+    if(!m_Settings->contains("Scene/MultiselectAlfa"))
+        m_Settings->setValue("Scene/MultiselectAlfa", SCENE_MULTISELECT_ALFA);
+    m_SceneMultiselAlfa = m_Settings->value("Scene/MultiselectAlfa").toInt();
+}
+
+void Config::setSceneMultiselAlfa(int value)
+{
+    if(m_SceneMultiselAlfa == value) return;
+
+    m_SceneMultiselAlfa = value;
+    m_Settings->setValue("Scene/MultiselectAlfa", m_SceneMultiselAlfa);
+}
+
+void Config::setSceneMultiselModifier(const Qt::KeyboardModifiers &value)
+{
+    if(m_SceneMultiselModifier == value) return;
+
+    m_SceneMultiselModifier = value;
+    m_Settings->setValue("Scene/MultiselectModifier", static_cast<int>(m_SceneMultiselModifier));
 }
 
 void Config::setWindowShowFieldInfo(bool value)
@@ -239,12 +263,12 @@ void Config::setSceneSelectColor(const QString &value)
     m_Settings->setValue("Scene/SelectColor", m_SceneSelectColor);
 }
 
-void Config::setSceneObjectAgeIndicate(bool value)
+void Config::setSceneCellAgeIndicate(bool value)
 {
-    if(m_SceneObjectAgeIndicate == value) return;
+    if(m_SceneCellAgeIndicate == value) return;
 
-    m_SceneObjectAgeIndicate = value;
-    m_Settings->setValue("Scene/ObjectAgeIndicate", m_SceneObjectAgeIndicate);
+    m_SceneCellAgeIndicate = value;
+    m_Settings->setValue("Scene/CellAgeIndicate", m_SceneCellAgeIndicate);
 }
 
 void Config::setSceneCellDeadColor(const QString &value)
@@ -342,12 +366,13 @@ void Config::setButtonSize(int value)
     m_Settings->setValue("MainWindow/ButtonSize", m_ButtonSize);
 }
 
+Qt::KeyboardModifiers Config::SceneMultiselModifier() const { return m_SceneMultiselModifier; }
 QString Config::SceneViewUpdateMode() const { return m_SceneViewUpdateMode; }
 int Config::CellInfoWindowWidth() const { return m_CellInfoWindowWidth; }
 int Config::CellInfoWindowHeight() const { return m_CellInfoWindowHeight; }
 QString Config::SceneCellCurseColor() const { return m_SceneCellCurseColor; }
 QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
-bool Config::SceneObjectAgeIndicate() const { return m_SceneObjectAgeIndicate; }
+bool Config::SceneCellAgeIndicate() const { return m_SceneCellAgeIndicate; }
 QString Config::SceneCellDeadColor() const { return m_SceneCellDeadColor; }
 int Config::SceneFieldSize() const { return m_SceneFieldSize; }
 Qt::KeyboardModifiers Config::SceneZoomModifier() const { return m_SceneZoomModifier; }
@@ -370,3 +395,4 @@ int Config::FieldInfoWindowWidth() const { return m_FieldInfoWindowWidth; }
 int Config::FieldInfoWindowHeight() const { return m_FieldInfoWindowHeight; }
 QString Config::SceneImageFileFormat() const { return m_SceneImageFileFormat; }
 bool Config::WindowShowFieldInfo() const { return m_WindowShowFieldInfo; }
+int Config::SceneMultiselAlfa() const { return m_SceneMultiselAlfa; }

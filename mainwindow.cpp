@@ -3,7 +3,7 @@
 #include "helper.h"
 #include "controls.h"
 #include "scene/scene.h"
-#include "scene/sceneItem.h"
+#include "scene/sceneitem.h"
 #include "scene/sceneview.h"
 #include "graphicsviewzoomer.h"
 #include "dialogs/dialogvalueslist.h"
@@ -395,7 +395,7 @@ void MainWindow::slotSetup()
      {keys.at(10), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(11), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-     {keys.at(13), {QVariant::Bool, config->SceneObjectAgeIndicate(), 0, 0}},
+     {keys.at(13), {QVariant::Bool, config->SceneCellAgeIndicate(), 0, 0}},
      {keys.at(14), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
      {keys.at(15), {QVariant::StringList, config->SceneFieldThreadPriority(), 1, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
     };
@@ -429,7 +429,7 @@ void MainWindow::slotSetup()
     config->setSceneCellDeadColor(map.value(keys.at(10)).value.toString());
     config->setSceneCellCurseColor(map.value(keys.at(11)).value.toString());
     config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
-    config->setSceneObjectAgeIndicate(map.value(keys.at(13)).value.toBool());
+    config->setSceneCellAgeIndicate(map.value(keys.at(13)).value.toBool());
     config->setSceneCalculatingMinPause(map.value(keys.at(14)).value.toInt());
     m_LabelFieldPause->setText(QString::number(config->SceneCalculatingMinPause()));
     config->setSceneFieldThreadPriority(map.value(keys.at(15)).value.toString());

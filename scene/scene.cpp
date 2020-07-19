@@ -1,6 +1,6 @@
 #include "scene.h"
 #include "properties.h"
-#include "sceneItem.h"
+#include "sceneitem.h"
 #include "sceneview.h"
 #include "helper.h"
 #include "field/field.h"
@@ -16,8 +16,10 @@ Scene::Scene(QObject* parent, Field *field)
     : QGraphicsScene(parent),
       m_Field(field),
       m_SelectedCell(nullptr),
+      m_MultiSelectedCell(nullptr),
       m_SceneItem(nullptr),
       m_SelectionMark(nullptr),
+      m_MultiSelectionMark(nullptr),
       m_AverageDraw(0),
       m_StopAdvanse(false)
 {
@@ -30,6 +32,7 @@ Scene::Scene(QObject* parent, Field *field)
 
     addSceneItem();
     addSelectionMark();
+    addMultiSelectionMark();
 
     QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
     QObject::connect(this, &Scene::signalReady, m_Field, &Field::slotSceneReady, Qt::DirectConnection);
@@ -50,18 +53,62 @@ void Scene::addSelectionMark()
 {
     if(!m_SceneItem) { qCritical() << "SceneItem not created"; return; }
 
-    QPen pen(QColor(config->SceneSelectColor()));
+    QPen pen;
+    QBrush brush;
+    QRect rect(0, 0, config->SceneCellSize(), config->SceneCellSize());
+    m_SelectionMark = addRect(rect, pen, brush);
+    m_SelectionMark->setZValue(m_SceneItem->zValue() + 1);
+    setSelectionMarkColor(config->SceneSelectColor());
+
+    m_SelectionMark->hide();
+}
+
+void Scene::addMultiSelectionMark()
+{
+    QPen pen;
+    QBrush brush;
+    QRect rect(0, 0, 0, 0);
+    m_MultiSelectionMark = addRect(rect, pen, brush);
+    m_MultiSelectionMark->setZValue(m_SceneItem->zValue() + 2);
+    setMultiSelectionMarkColor(config->SceneSelectColor());
+
+    m_MultiSelectionMark->hide();
+}
+
+void Scene::setSelectionMarkColor(const QString &color)
+{
+    if(!m_SelectionMark) return;
+
+    auto pen = QPen(QColor(color));
     pen.setCapStyle(Qt::RoundCap);
     pen.setJoinStyle(Qt::RoundJoin);
-    QBrush brush(QColor(config->SceneSelectColor()));
+    auto brush = QBrush(QColor(color));
 
-    m_SelectionMark = addRect(0, 0, config->SceneCellSize(), config->SceneCellSize(), pen, brush);
-    m_SelectionMark->setZValue(m_SceneItem->zValue() + 1);
-    m_SelectionMark->hide();
+    m_SelectionMark->setPen(pen);
+    m_SelectionMark->setBrush(brush);
+}
+
+void Scene::setMultiSelectionMarkColor(const QString &color)
+{
+    if(!m_MultiSelectionMark) return;
+
+    auto pen = QPen(QColor(color));
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setJoinStyle(Qt::RoundJoin);
+    auto brushColor = QColor(color);
+    brushColor.setAlpha(config->SceneMultiselAlfa());
+    auto brush = QBrush(brushColor);
+
+    m_MultiSelectionMark->setPen(pen);
+    m_MultiSelectionMark->setBrush(brush);
 }
 
 void Scene::selectCell(Cell *cell)
 {
+    m_MultiSelectionMark->hide();
+    if(m_MultiSelectedCell) qDebug() << "Second cell unselected:" << m_MultiSelectedCell->objectName();
+    m_MultiSelectedCell = nullptr;
+
     if(cell && m_SelectedCell == cell)
     {
         Q_EMIT signalShowCellInfo();
@@ -73,9 +120,9 @@ void Scene::selectCell(Cell *cell)
         m_SelectionMark->hide();
         if(m_SelectedCell) qDebug() << "Cell unselected:" << m_SelectedCell->objectName();
     }
-        else
+    else
     {
-        m_SelectionMark->setPos(m_SceneItem->mapToParent(cell->getIndex() * config->SceneCellSize()));
+        m_SelectionMark->setPos(cell->getRect().topLeft());
         m_SelectionMark->show();
         qDebug() << "Cell selected:" << cell->objectName();
     }
@@ -84,6 +131,19 @@ void Scene::selectCell(Cell *cell)
     update(); // NOTE: ? костыль для ситуации остановки обновления SceneItem
 
     Q_EMIT signalSelectedCellChanged(m_SelectedCell);
+}
+
+void Scene::MultiselectCell(Cell *cell)
+{
+    if(!m_SelectedCell || !cell || m_SelectedCell == cell) return;
+
+    m_MultiSelectedCell = cell;
+    auto rect = m_SelectedCell->getRect().united(cell->getRect());
+    m_MultiSelectionMark->setRect(rect);
+    m_MultiSelectionMark->show();
+    update(); // NOTE: ? костыль для ситуации остановки обновления SceneItem
+
+    qDebug() << "Second cell selected:" << cell->objectName();
 }
 
 void Scene::setBackgroundColor(const QColor &value)
@@ -142,19 +202,6 @@ void Scene::applyAverageDraw(qint64 time)
         if(up) Q_EMIT signalAverageDrawChangedUp(new_ad);
         else Q_EMIT signalAverageDrawChangedDown(new_ad);
     }
-}
-
-void Scene::setSelectionMarkColor(const QString &color)
-{
-    if(!m_SelectionMark) return;
-
-    auto pen = QPen(QColor(color));
-    pen.setCapStyle(Qt::RoundCap);
-    pen.setJoinStyle(Qt::RoundJoin);
-    auto brush = QBrush(QColor(color));
-
-    m_SelectionMark->setPen(pen);
-    m_SelectionMark->setBrush(brush);
 }
 
 Cell *Scene::getSelectedCell() const { return m_SelectedCell; }

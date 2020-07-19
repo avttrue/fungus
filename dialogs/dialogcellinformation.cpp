@@ -118,10 +118,7 @@ void DialogCellInformation::loadInformation()
         if(key == "Age")
             QObject::connect(ci, &CellInformation::signalAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
         else if(key == "State")
-        {
             QObject::connect(ci, &CellInformation::signalStateChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
-            qDebug() << value.typeName();
-        }
         else if(key == "Generation")
             QObject::connect(ci, &CellInformation::signalGenerationChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
         else if(key == "Active")

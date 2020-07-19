@@ -42,8 +42,8 @@ public:
     void setSceneFieldSize(int value);
     QString SceneCellDeadColor() const;
     void setSceneCellDeadColor(const QString &value);
-    bool SceneObjectAgeIndicate() const;
-    void setSceneObjectAgeIndicate(bool value);
+    bool SceneCellAgeIndicate() const;
+    void setSceneCellAgeIndicate(bool value);
     QString SceneSelectColor() const;
     void setSceneSelectColor(const QString &value);
     QString SceneCellCurseColor() const;
@@ -70,6 +70,10 @@ public:
     void setSceneImageFileFormat(const QString &value);
     bool WindowShowFieldInfo() const;
     void setWindowShowFieldInfo(bool value);
+    Qt::KeyboardModifiers SceneMultiselModifier() const;
+    void setSceneMultiselModifier(const Qt::KeyboardModifiers &value);
+    int SceneMultiselAlfa() const;
+    void setSceneMultiselAlfa(int value);
 
 protected:
     void load();
@@ -88,6 +92,7 @@ private:
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
     QString m_SceneImageFileFormat;                 // формат файлов для сохранения сцены
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
+    int m_SceneMultiselAlfa;                        // прозрачность рамки выделения 0-254
     int m_SceneItemZValue;                          // Z-координата SceneItem
     int m_SceneCalculatingMinPause;                 // минимальная допустимая пауза при обсчёте Field
     int m_LogSize;                                  // количество строк лога событий
@@ -100,7 +105,8 @@ private:
     int m_FieldInfoWindowWidth;                     // размеры окна информации о Field
     Qt::KeyboardModifiers m_SceneZoomModifier;      // модификатор управления зумом
     Qt::KeyboardModifiers m_SceneToolTipModifier;   // модификатор отображения координат Field
-    bool m_SceneObjectAgeIndicate;                  // отображать возраст живых ячеек
+    Qt::KeyboardModifiers m_SceneMultiselModifier;  // модификатор выбора группы Cell
+    bool m_SceneCellAgeIndicate;                    // отображать возраст живых ячеек
     bool m_SI_metric;                               // использовать систему СИ в отображении размеров файлов
     bool m_SceneViewAntialiasing;                   // SceneView: Antialiasing
     bool m_WindowShowFieldInfo;                     // отображать окно информации о Field при создании Field

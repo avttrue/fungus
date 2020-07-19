@@ -1,7 +1,7 @@
 #include "sceneview.h"
 #include "scene.h"
 #include "properties.h"
-#include "sceneItem.h"
+#include "sceneitem.h"
 #include "graphicsviewzoomer.h"
 #include "field/field.h"
 #include "field/cell.h"
@@ -69,6 +69,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
         {
             auto c = getCell(mouseSceneEvent->scenePos().x(), mouseSceneEvent->scenePos().y());
             QToolTip::showText(QCursor::pos(), c->objectName(), this, rect());
+            return true;
         }
 
         if(event->type() == QEvent::GraphicsSceneMousePress)
@@ -81,30 +82,21 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             }
         }
 
-        if (event->type() == QEvent::GraphicsSceneMouseRelease)
+        if(event->type() == QEvent::GraphicsSceneMouseRelease)
         {
-            auto item = m_Scene->itemAt(mouseSceneEvent->scenePos(), transform());
-            if(!item)
-            {
-                qWarning() << __func__ << ": GraphicsSceneMouseRelease: target item not detected";
-                return true;
-            }
-
-            auto o = static_cast<SceneItem*>(item);
-
-            // вывод сообщения об отсутствии SceneItem
             if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
-                    mouseSceneEvent->button() == Qt::LeftButton && !o)
+                    mouseSceneEvent->button() == Qt::LeftButton)
             {
-                qWarning() << __func__ << ": GraphicsSceneMouseRelease: SceneItem not detected";
+                auto c = getCell(mouseSceneEvent->scenePos().x(), mouseSceneEvent->scenePos().y());
+                m_Scene->selectCell(c);
                 return true;
             }
 
-            auto c = getCell(mouseSceneEvent->scenePos().x(), mouseSceneEvent->scenePos().y());
-
-            if(mouseSceneEvent->button() == Qt::LeftButton)
+            if(mouseSceneEvent->modifiers() == config->SceneMultiselModifier() &&
+                    mouseSceneEvent->button() == Qt::LeftButton)
             {
-                m_Scene->selectCell(c);
+                auto c = getCell(mouseSceneEvent->scenePos().x(), mouseSceneEvent->scenePos().y());
+                m_Scene->MultiselectCell(c);
                 return true;
             }
 

@@ -16,7 +16,9 @@ public:
     Scene(QObject *parent, Field* field);
     void addSceneItem();
     void addSelectionMark();
+    void addMultiSelectionMark();
     void selectCell(Cell* cell);
+    void MultiselectCell(Cell* cell);
     QColor getBackgroundColor() const;
     void setBackgroundColor(const QColor &value);
     QSize size() const;
@@ -27,12 +29,15 @@ public:
     void applyAverageDraw(qint64 time);
     Cell *getSelectedCell() const;
     void setSelectionMarkColor(const QString& color);
+    void setMultiSelectionMarkColor(const QString& color);
 
 private:
     Field* m_Field;
     Cell* m_SelectedCell;                                  // выбранная Cell
+    Cell* m_MultiSelectedCell;                             // вторая выбранная Cell для группового выбора
     SceneItem* m_SceneItem;                                // основной объект для отрисовки Field
     QGraphicsRectItem* m_SelectionMark;                    // метка выбраной Cell
+    QGraphicsRectItem* m_MultiSelectionMark;               // метка выбраной группы Cell
     QColor m_BackgroundColor;
     QSize m_Size;
     qreal m_AverageDraw;                                   // среднее время отрисовки сцены
