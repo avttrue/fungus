@@ -27,6 +27,10 @@
 #include <QThread>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QClipboard>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -99,7 +103,16 @@ void MainWindow::loadGui()
     m_ActionInfoCell = new QAction(QIcon(":/resources/img/check.svg"), tr("Cell information"), this);
     QObject::connect(m_ActionInfoCell, &QAction::triggered, this, &MainWindow::slotInfoCell);
     m_ActionInfoCell->setEnabled(false);
-    m_ActionInfoCell->setShortcut(Qt::CTRL + Qt::Key_C);
+
+    m_ActionSaveCellsToClipbord = new QAction(QIcon(":/resources/img/copy.svg"), tr("Copy selected cells to clipboard"), this);
+    QObject::connect(m_ActionSaveCellsToClipbord, &QAction::triggered, this, &MainWindow::slotSaveCellsToClipbord);
+    m_ActionSaveCellsToClipbord->setEnabled(false);
+    m_ActionSaveCellsToClipbord->setShortcut(Qt::CTRL + Qt::Key_C);
+
+    m_ActionLoadCellsFromClipbord = new QAction(QIcon(":/resources/img/paste.svg"), tr("Paste cells from clipboard"), this);
+    QObject::connect(m_ActionLoadCellsFromClipbord, &QAction::triggered, this, &MainWindow::slotLoadCellsFromClipbord);
+    m_ActionLoadCellsFromClipbord->setEnabled(false);
+    m_ActionLoadCellsFromClipbord->setShortcut(Qt::CTRL + Qt::Key_V);
 
     m_ActionInfoField = new QAction(QIcon(":/resources/img/field.svg"), tr("Field information"), this);
     QObject::connect(m_ActionInfoField, &QAction::triggered, this, &MainWindow::slotInfoField);
@@ -124,6 +137,8 @@ void MainWindow::loadGui()
     tbMain->addSeparator();
     tbMain->addAction(m_ActionEditCell);
     tbMain->addAction(m_ActionInfoCell);
+    tbMain->addAction(m_ActionSaveCellsToClipbord);
+    tbMain->addAction(m_ActionLoadCellsFromClipbord);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionInfoField);
     tbMain->addAction(m_ActionSaveImageToFile);
@@ -205,10 +220,11 @@ void MainWindow::loadGui()
 
 void MainWindow::slotStepStop()
 {    
-    if(m_Field->isCalculating())
-    {
-        Q_EMIT signalStopField();
-    }
+    m_ActionSaveCellsToClipbord->setDisabled(true);
+    m_ActionLoadCellsFromClipbord->setEnabled(true);
+    m_SceneView->getScene()->clearMultiSelection();
+
+    if(m_Field->isCalculating()) Q_EMIT signalStopField();
     else
     {
         m_Field->setRuleOn(true);
@@ -223,6 +239,9 @@ void MainWindow::slotRun()
 {
     if(!m_Field->isCalculating())
     {
+        m_ActionSaveCellsToClipbord->setDisabled(true);
+        m_ActionLoadCellsFromClipbord->setDisabled(true);
+        m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
         m_Field->setCalculatingNonstop(true);
         m_Field->slotStartCalculating();
@@ -252,6 +271,7 @@ void MainWindow::createScene()
     QObject::connect(scene, &Scene::signalAverageDrawChangedDown, this, &MainWindow::slotAverageDrawDown);
     QObject::connect(scene, &Scene::signalSelectedCellChanged, this, &MainWindow::slotSelectedCellChanged);
     QObject::connect(scene, &Scene::signalShowCellInfo, this, &MainWindow::slotInfoCell);
+    QObject::connect(scene, &Scene::signalSelectedCellsChanged, this, &MainWindow::slotSelectedCellsChanged);
 }
 
 void MainWindow::createField(int w, int h, bool random)
@@ -360,6 +380,42 @@ void MainWindow::redrawScene()
     m_Field->setCalculatingNonstop(false);
     m_Field->slotStartCalculating();
     m_Field->calculate();
+}
+
+void MainWindow::CellsToJsonObject(QJsonObject* object, Cell *firstcell, Cell *secondcell)
+{
+    auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+
+    QJsonArray cells;
+    for(int x = xmin; x <= xmax; x++)
+    {
+        for(int y = ymin; y <= ymax; y++)
+        {
+          auto ci = m_Field->cells()->at(x).at(y)->getCurInfo();
+          auto map = getPropertiesList(ci);
+
+          QJsonObject obj_index;
+          obj_index.insert("X", x - xmin);
+          obj_index.insert("Y", y - ymin);
+
+          QJsonObject obj_prop;
+          for(auto key: map.keys())
+          {
+              QVariant value = ci->property(key.toStdString().c_str());
+              obj_prop.insert(key, value.toString());
+          }
+
+          QJsonObject obj_cell;
+          obj_cell["Index"] = obj_index;
+          obj_cell["Properties"] = obj_prop;
+          cells.append(obj_cell);
+        }
+    }
+    object->insert("Cells", cells);
+    qDebug() << "Copied to JsonObject" << cells.count() << "cells";
 }
 
 void MainWindow::slotSetup()
@@ -527,13 +583,15 @@ void MainWindow::slotNewProject()
                        QString::number(config->SceneCellSize())));
 
     m_SceneView->zoomer()->Zoom(-1.0);
-    m_ActionEditCell->setDisabled(true);
-    m_ActionInfoCell->setDisabled(true);
     m_LabelFieldAvCalc->setText("0 ms");
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     m_LabelSelectedCell->setText("-");
 
     createScene();
+
+    m_ActionEditCell->setDisabled(true);
+    m_ActionInfoCell->setDisabled(true);
+    m_ActionSaveCellsToClipbord->setDisabled(true);
     setActionsEnable(true);
 
     if(random) redrawScene();
@@ -564,6 +622,32 @@ void MainWindow::slotSelectedCellChanged(Cell *cell)
 
     if(cell) m_LabelSelectedCell->setText(cell->objectName());
     else m_LabelSelectedCell->setText("-");
+}
+
+void MainWindow::slotSaveCellsToClipbord()
+{
+    auto scene = m_SceneView->getScene();
+    if(!scene) {m_ActionSaveCellsToClipbord->setDisabled(true); return; }
+
+    auto firstcell = scene->getSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
+    if(!firstcell || !secondcell || firstcell == secondcell)  {m_ActionSaveCellsToClipbord->setDisabled(true); return; }
+
+    QJsonDocument document;
+    QJsonObject obj_root;
+    obj_root.insert("application", APP_NAME);
+    obj_root.insert("version", APP_VERS);
+
+    CellsToJsonObject(&obj_root, firstcell, secondcell);
+    document.setObject(obj_root);
+
+    auto clipboard = QGuiApplication::clipboard();
+    clipboard->setText(document.toJson(QJsonDocument::Indented));
+}
+
+void MainWindow::slotLoadCellsFromClipbord()
+{
+
 }
 
 void MainWindow::slotInfoCell()
@@ -619,7 +703,16 @@ void MainWindow::slotSaveImageToFile()
     auto pixmap = m_SceneView->getScene()->getSceneItem()->getPixmap();
     if(!pixmap->save(filename, fileformat.toUpper().toLatin1().constData()))
         QMessageBox::critical(this, tr("Error"),
-                             tr("Error at file saving. Path: '%1'").arg(filename));
+                              tr("Error at file saving. Path: '%1'").arg(filename));
+}
+
+void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
+{
+    if(!first || !second || first == second) { m_ActionSaveCellsToClipbord->setDisabled(true); return; }
+
+    Q_EMIT signalStopField();
+    m_ActionSaveCellsToClipbord->setEnabled(true);
+
 }
 
 void MainWindow::slotFieldAvCalcUp(qreal value)

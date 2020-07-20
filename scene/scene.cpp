@@ -16,7 +16,7 @@ Scene::Scene(QObject* parent, Field *field)
     : QGraphicsScene(parent),
       m_Field(field),
       m_SelectedCell(nullptr),
-      m_MultiSelectedCell(nullptr),
+      m_SecondSelectedCell(nullptr),
       m_SceneItem(nullptr),
       m_SelectionMark(nullptr),
       m_MultiSelectionMark(nullptr),
@@ -135,20 +135,19 @@ void Scene::MultiselectCell(Cell *cell)
 {
     if(!cell)
     {
-        m_MultiSelectionMark->hide();
-        if(m_MultiSelectedCell) qDebug() << "Second cell unselected:" << m_MultiSelectedCell->objectName();
-        m_MultiSelectedCell = nullptr;
+        clearMultiSelection();
+        if(m_SecondSelectedCell) qDebug() << "Second cell unselected:" << m_SecondSelectedCell->objectName();
     }
     else if(m_SelectedCell && m_SelectedCell != cell)
     {
-        m_MultiSelectedCell = cell;
+        m_SecondSelectedCell = cell;
         auto rect = m_SelectedCell->getRect().united(cell->getRect());
         m_MultiSelectionMark->setRect(rect);
         m_MultiSelectionMark->show();
         qDebug() << "Second cell selected:" << cell->objectName();
     }
     update(); // NOTE: ? костыль для ситуации остановки обновления SceneItem
-    Q_EMIT signalSelectedCellsChanged(m_SelectedCell, m_MultiSelectedCell);
+    Q_EMIT signalSelectedCellsChanged(m_SelectedCell, m_SecondSelectedCell);
 }
 
 void Scene::setBackgroundColor(const QColor &value)
@@ -209,6 +208,13 @@ void Scene::applyAverageDraw(qint64 time)
     }
 }
 
+void Scene::clearMultiSelection()
+{
+    m_SecondSelectedCell = nullptr;
+    m_MultiSelectionMark->hide();
+}
+
+Cell *Scene::getSecondSelectedCell() const { return m_SecondSelectedCell; }
 Cell *Scene::getSelectedCell() const { return m_SelectedCell; }
 QSize Scene::size() const { return m_Size; }
 QColor Scene::getBackgroundColor() const { return m_BackgroundColor; }

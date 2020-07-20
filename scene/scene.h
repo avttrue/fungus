@@ -28,13 +28,15 @@ public:
     qreal getAverageDraw() const;
     void applyAverageDraw(qint64 time);
     Cell *getSelectedCell() const;
+    Cell *getSecondSelectedCell() const;
+    void clearMultiSelection();
     void setSelectionMarkColor(const QString& color);
     void setMultiSelectionMarkColor(const QString& color);
 
 private:
     Field* m_Field;
     Cell* m_SelectedCell;                                  // выбранная Cell
-    Cell* m_MultiSelectedCell;                             // вторая выбранная Cell для группового выбора
+    Cell* m_SecondSelectedCell;                            // вторая выбранная Cell для группового выбора
     SceneItem* m_SceneItem;                                // основной объект для отрисовки Field
     QGraphicsRectItem* m_SelectionMark;                    // метка выбраной Cell
     QGraphicsRectItem* m_MultiSelectionMark;               // метка выбраной группы Cell

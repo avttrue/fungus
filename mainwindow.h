@@ -50,6 +50,7 @@ protected:
     void stopThreadField();
     void setSceneFieldThreadPriority();
     void redrawScene();
+    void CellsToJsonObject(QJsonObject *object, Cell* firstcell, Cell* secondcell);
 
 private:
     QThread* m_ThreadField;
@@ -64,6 +65,8 @@ private:
     QAction* m_ActionInfoCell;
     QAction* m_ActionInfoField;
     QAction* m_ActionSaveImageToFile;
+    QAction* m_ActionSaveCellsToClipbord;
+    QAction* m_ActionLoadCellsFromClipbord;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -88,11 +91,14 @@ private Q_SLOTS:
     void slotAverageDrawUp(qreal value);
     void slotAverageDrawDown(qreal value);
     void slotSelectedCellChanged(Cell* cell);
+    void slotSaveCellsToClipbord();
+    void slotLoadCellsFromClipbord();
     void slotInfoCell();
     void slotInfoField();
     void slotEditCell();
     void slotShowCell(Cell* cell);
     void slotSaveImageToFile();
+    void slotSelectedCellsChanged(Cell* first, Cell* second);
 
 Q_SIGNALS:
     void signalStopField();
