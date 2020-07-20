@@ -382,46 +382,55 @@ void MainWindow::redrawScene()
     m_Field->calculate();
 }
 
-void MainWindow::CellsToJsonObject(QJsonObject* object, Cell *firstcell, Cell *secondcell)
+void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *secondcell)
 {
     auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
     auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
 
-    m_ProgressBar->setRange(0, xmax - xmin);
+    m_ProgressBar->setRange(0, xmax - xmin); // индикация без затей по X
     m_ProgressBar->setValue(0);
     m_ProgressBar->show();
 
+    int dx = 0, dy = 0;
     QJsonArray cells;
     for(int x = xmin; x <= xmax; x++)
     {
         for(int y = ymin; y <= ymax; y++)
         {
-          auto ci = m_Field->cells()->at(x).at(y)->getCurInfo();
-          auto map = getPropertiesList(ci);
+            dx = x - xmin; dy = y - ymin;
+            auto ci = m_Field->cells()->at(x).at(y)->getCurInfo();
+            auto map = getPropertiesList(ci);
 
-          QJsonObject obj_index;
-          obj_index.insert("X", x - xmin);
-          obj_index.insert("Y", y - ymin);
+            QJsonObject obj_index;
+            obj_index.insert("X", dx);
+            obj_index.insert("Y", dy);
 
-          QJsonObject obj_prop;
-          for(auto key: map.keys())
-          {
-              QVariant value = ci->property(key.toStdString().c_str());
-              obj_prop.insert(key, value.toString());
-          }
+            QJsonObject obj_prop;
+            for(auto key: map.keys())
+            {
+                QVariant value = ci->property(key.toStdString().c_str());
+                obj_prop.insert(key, value.toString());
+            }
 
-          QJsonObject obj_cell;
-          obj_cell["Index"] = obj_index;
-          obj_cell["Properties"] = obj_prop;
-          cells.append(obj_cell);
+            QJsonObject obj_cell;
+            obj_cell["Index"] = obj_index;
+            obj_cell["Properties"] = obj_prop;
+            cells.append(obj_cell);
         }
-        m_ProgressBar->setValue(x - xmin + 1);
+        m_ProgressBar->setValue(dx);
     }
-    object->insert("Cells", cells);
+    jobject->insert("Cells", cells);
     qDebug() << "Copied to JsonObject" << cells.count() << "cells";
     m_ProgressBar->hide();
+}
+
+void MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
+{
+    Q_UNUSED(jobject);
+    Q_UNUSED(cell);
+
 }
 
 void MainWindow::slotSetup()
