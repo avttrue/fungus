@@ -221,7 +221,7 @@ void MainWindow::loadGui()
 void MainWindow::slotStepStop()
 {    
     m_ActionSaveCellsToClipbord->setDisabled(true);
-    m_ActionLoadCellsFromClipbord->setEnabled(true);
+    if(m_SceneView->getScene()->getSelectedCell()) m_ActionLoadCellsFromClipbord->setEnabled(true);
     m_SceneView->getScene()->clearMultiSelection();
 
     if(m_Field->isCalculating()) Q_EMIT signalStopField();
@@ -389,6 +389,10 @@ void MainWindow::CellsToJsonObject(QJsonObject* object, Cell *firstcell, Cell *s
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
     auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
 
+    m_ProgressBar->setRange(0, xmax - xmin);
+    m_ProgressBar->setValue(0);
+    m_ProgressBar->show();
+
     QJsonArray cells;
     for(int x = xmin; x <= xmax; x++)
     {
@@ -413,9 +417,11 @@ void MainWindow::CellsToJsonObject(QJsonObject* object, Cell *firstcell, Cell *s
           obj_cell["Properties"] = obj_prop;
           cells.append(obj_cell);
         }
+        m_ProgressBar->setValue(x - xmin + 1);
     }
     object->insert("Cells", cells);
     qDebug() << "Copied to JsonObject" << cells.count() << "cells";
+    m_ProgressBar->hide();
 }
 
 void MainWindow::slotSetup()
@@ -619,7 +625,7 @@ void MainWindow::slotSelectedCellChanged(Cell *cell)
 {
     m_ActionEditCell->setDisabled(cell == nullptr);
     m_ActionInfoCell->setDisabled(cell == nullptr);
-
+    m_ActionLoadCellsFromClipbord->setDisabled(cell == nullptr);
     if(cell) m_LabelSelectedCell->setText(cell->objectName());
     else m_LabelSelectedCell->setText("-");
 }
