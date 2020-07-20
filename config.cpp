@@ -31,6 +31,14 @@ void Config::load()
         m_Settings->setValue("SIMetric", SI_METRIC);
     m_SI_metric = m_Settings->value("SIMetric").toBool();
 
+    if(!m_Settings->contains("JsonCompactMode"))
+        m_Settings->setValue("JsonCompactMode", JSON_COMPACT_MODE);
+    m_JsonCompactMode = m_Settings->value("JsonCompactMode").toBool();
+
+    if(!m_Settings->contains("DateTimeFormat"))
+        m_Settings->setValue("DateTimeFormat", DT_FORMAT);
+    m_DateTimeFormat = m_Settings->value("DateTimeFormat").toString();
+
     if(!m_Settings->contains("MainWindow/Height"))
         m_Settings->setValue("MainWindow/Height", WINDOW_HEIGHT);
 
@@ -44,10 +52,6 @@ void Config::load()
     if(!m_Settings->contains("MainWindow/ButtonSize"))
         m_Settings->setValue("MainWindow/ButtonSize", BUTTON_SIZE);
     m_ButtonSize = m_Settings->value("MainWindow/ButtonSize").toInt();
-
-    if(!m_Settings->contains("MainWindow/DateTimeFormat"))
-        m_Settings->setValue("MainWindow/DateTimeFormat", DT_FORMAT);
-    m_DateTimeFormat = m_Settings->value("MainWindow/DateTimeFormat").toString();
 
     if(!m_Settings->contains("MainWindow/CellInfoWindowHeight"))
         m_Settings->setValue("MainWindow/CellInfoWindowHeight", CELL_INFO_WINDOW_HEIGHT);
@@ -68,10 +72,6 @@ void Config::load()
     if(!m_Settings->contains("MainWindow/ShowFieldInformation"))
         m_Settings->setValue("MainWindow/ShowFieldInformation", WINDOW_SHOW_FIELD_INFO);
     m_WindowShowFieldInfo = m_Settings->value("MainWindow/ShowFieldInformation").toBool();
-
-    if(!m_Settings->contains("MainWindow/JsonCompactMode"))
-        m_Settings->setValue("MainWindow/JsonCompactMode", JSON_COMPACT_MODE);
-    m_JsonCompactMode = m_Settings->value("MainWindow/JsonCompactMode").toBool();
 
     if(!m_Settings->contains("Scene/BackgroundColor"))
         m_Settings->setValue("Scene/BackgroundColor", SCENE_BG_COLOR);
@@ -151,7 +151,7 @@ void Config::setJsonCompactMode(bool value)
     if(m_JsonCompactMode == value) return;
 
     m_JsonCompactMode = value;
-    m_Settings->setValue("MainWindow/JsonCompactMode", m_JsonCompactMode);
+    m_Settings->setValue("JsonCompactMode", m_JsonCompactMode);
 }
 
 void Config::setSceneMultiselAlfa(int value)
@@ -367,7 +367,7 @@ void Config::setDateTimeFormat(const QString &value)
     if(m_DateTimeFormat == value) return;
     
     m_DateTimeFormat = value;
-    m_Settings->setValue("MainWindow/DateTimeFormat", m_DateTimeFormat);
+    m_Settings->setValue("DateTimeFormat", m_DateTimeFormat);
 }
 
 void Config::setButtonSize(int value)
