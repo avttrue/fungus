@@ -69,6 +69,10 @@ void Config::load()
         m_Settings->setValue("MainWindow/ShowFieldInformation", WINDOW_SHOW_FIELD_INFO);
     m_WindowShowFieldInfo = m_Settings->value("MainWindow/ShowFieldInformation").toBool();
 
+    if(!m_Settings->contains("MainWindow/JsonCompactMode"))
+        m_Settings->setValue("MainWindow/JsonCompactMode", JSON_COMPACT_MODE);
+    m_JsonCompactMode = m_Settings->value("MainWindow/JsonCompactMode").toBool();
+
     if(!m_Settings->contains("Scene/BackgroundColor"))
         m_Settings->setValue("Scene/BackgroundColor", SCENE_BG_COLOR);
     m_SceneBgColor = m_Settings->value("Scene/BackgroundColor").toString();
@@ -142,10 +146,18 @@ void Config::load()
     m_SceneMultiselAlfa = m_Settings->value("Scene/MultiselectAlfa").toInt();
 }
 
+void Config::setJsonCompactMode(bool value)
+{
+    if(m_JsonCompactMode == value) return;
+
+    m_JsonCompactMode = value;
+    m_Settings->setValue("MainWindow/JsonCompactMode", m_JsonCompactMode);
+}
+
 void Config::setSceneMultiselAlfa(int value)
 {
     if(m_SceneMultiselAlfa == value) return;
-
+    
     m_SceneMultiselAlfa = value;
     m_Settings->setValue("Scene/MultiselectAlfa", m_SceneMultiselAlfa);
 }
@@ -396,3 +408,4 @@ int Config::FieldInfoWindowHeight() const { return m_FieldInfoWindowHeight; }
 QString Config::SceneImageFileFormat() const { return m_SceneImageFileFormat; }
 bool Config::WindowShowFieldInfo() const { return m_WindowShowFieldInfo; }
 int Config::SceneMultiselAlfa() const { return m_SceneMultiselAlfa; }
+bool Config::JsonCompactMode() const { return m_JsonCompactMode; }

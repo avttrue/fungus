@@ -74,6 +74,8 @@ public:
     void setSceneMultiselModifier(const Qt::KeyboardModifiers &value);
     int SceneMultiselAlfa() const;
     void setSceneMultiselAlfa(int value);
+    bool JsonCompactMode() const;
+    void setJsonCompactMode(bool value);
 
 protected:
     void load();
@@ -110,6 +112,7 @@ private:
     bool m_SI_metric;                               // использовать систему СИ в отображении размеров файлов
     bool m_SceneViewAntialiasing;                   // SceneView: Antialiasing
     bool m_WindowShowFieldInfo;                     // отображать окно информации о Field при создании Field
+    bool m_JsonCompactMode;                         // формат записи json
 };
 
 #endif // CONFIG_H

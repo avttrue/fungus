@@ -24,11 +24,9 @@ const QString SCENE_CELL_CURSE_COLOR =              "#FF0000";
 const QString SCENE_VIEW_UPDATE_MODE =              "MINIMAL";
 const QString SCENE_FIELD_THREAD_PRIORITY=          "NORMAL";
 const QString SCENE_IMAGE_FILE_FORMAT=              "PNG";
-const bool SCENE_CELL_AGE_INDICATE =                true;
-const bool WINDOW_SHOW_FIELD_INFO =                 false;
 const qreal SCENE_SCALE_STEP =                      1.001;
 const auto SCENE_CELL_SIZE =                        10;
-const auto SCENE_MULTISELECT_ALFA =                 50; // 0-254
+const auto SCENE_MULTISELECT_ALFA =                 50; // 0-254 TODO: добавить в диалог настроек
 const auto SCENE_VIEW_ANTIALIASING =                true;
 const auto SCENE_ZOOM_MODIFIER =                    Qt::ControlModifier;
 const auto SCENE_TOOLTIP_MODIFIER =                 Qt::ShiftModifier;
@@ -45,5 +43,8 @@ const auto LOG_SIZE =                               0;
 const auto BUTTON_SIZE =                            32;
 const auto SI_METRIC =                              false;
 const auto SCENE_ITEM_ZVALUE =                      0;
+const auto SCENE_CELL_AGE_INDICATE =                true;
+const auto WINDOW_SHOW_FIELD_INFO =                 false;
+const auto JSON_COMPACT_MODE =                      true;
 
 #endif // PROPERTIES_H

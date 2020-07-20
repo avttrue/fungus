@@ -124,19 +124,14 @@ Cell *SceneView::getCell(qreal x, qreal y)
 void SceneView::SetUpdateMode()
 {
     auto mode = config->SceneViewUpdateMode().toUpper();
+    QGraphicsView::ViewportUpdateMode viewport_update_mode = QGraphicsView::FullViewportUpdate;
 
-    if(mode == SCENE_VIEW_UPDATE_MODES.at(0))
-        setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    else if(mode == SCENE_VIEW_UPDATE_MODES.at(1))
-        setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-    else if(mode == SCENE_VIEW_UPDATE_MODES.at(2))
-        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    else
-    {
-        qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  mode;
-        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    }
+    if(mode == SCENE_VIEW_UPDATE_MODES.at(0)) viewport_update_mode = QGraphicsView::SmartViewportUpdate;
+    else if(mode == SCENE_VIEW_UPDATE_MODES.at(1)) viewport_update_mode = QGraphicsView::MinimalViewportUpdate;
+    else if(mode == SCENE_VIEW_UPDATE_MODES.at(2)) viewport_update_mode = QGraphicsView::FullViewportUpdate;
+    else qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  mode;
 
+    setViewportUpdateMode(viewport_update_mode);
     qDebug() << "SceneView update mode:" << viewportUpdateMode();
 }
 

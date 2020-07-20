@@ -123,7 +123,7 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
     m_ActionSaveImageToFile->setEnabled(false);
 
-    // тулбар
+    // тулбар основной
     auto tbMain = new QToolBar(this);
     tbMain->setMovable(false);
     tbMain->setOrientation(Qt::Horizontal);
@@ -137,8 +137,6 @@ void MainWindow::loadGui()
     tbMain->addSeparator();
     tbMain->addAction(m_ActionEditCell);
     tbMain->addAction(m_ActionInfoCell);
-    tbMain->addAction(m_ActionSaveCellsToClipbord);
-    tbMain->addAction(m_ActionLoadCellsFromClipbord);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionInfoField);
     tbMain->addAction(m_ActionSaveImageToFile);
@@ -152,7 +150,20 @@ void MainWindow::loadGui()
     tbMain->addAction(actionQt);
     tbMain->addAction(actionExit);
 
-    addToolBar(tbMain);
+    addToolBar(Qt::TopToolBarArea, tbMain);
+
+    // тулбар действий
+    auto tbActions = new QToolBar(this);
+    tbActions->setMovable(false);
+    tbActions->setOrientation(Qt::Vertical);
+    tbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+
+    tbActions->addSeparator();
+
+    tbActions->addAction(m_ActionSaveCellsToClipbord);
+    tbActions->addAction(m_ActionLoadCellsFromClipbord);
+
+    addToolBar(Qt::LeftToolBarArea, tbActions);
 
     // SceneView
     m_SceneView = new SceneView(this);
@@ -359,18 +370,17 @@ void MainWindow::stopThreadField()
 void MainWindow::setSceneFieldThreadPriority()
 {
     if(!m_ThreadField || !m_ThreadField->isRunning()) return;
+     QThread::Priority thread_priority = QThread::NormalPriority;
 
     auto mode = config->SceneFieldThreadPriority().toUpper();
 
-    if(mode == SCENE_FIELD_THREAD_PRIORITIES.at(0)) m_ThreadField->setPriority(QThread::LowPriority);
-    else if(mode == SCENE_FIELD_THREAD_PRIORITIES.at(1)) m_ThreadField->setPriority(QThread::NormalPriority);
-    else if(mode == SCENE_FIELD_THREAD_PRIORITIES.at(2)) m_ThreadField->setPriority(QThread::HighPriority);
-    else if(mode == SCENE_FIELD_THREAD_PRIORITIES.at(3)) m_ThreadField->setPriority(QThread::HighestPriority);
-    else
-    {
-        qCritical() << "Wrong settins value 'Scene/FieldThreadPriority'" <<  mode;
-        m_ThreadField->setPriority(QThread::NormalPriority);
-    }
+    if(mode == SCENE_FIELD_THREAD_PRIORITIES.at(0)) thread_priority = QThread::LowPriority;
+    else if(mode == SCENE_FIELD_THREAD_PRIORITIES.at(1)) thread_priority = QThread::NormalPriority;
+    else if(mode == SCENE_FIELD_THREAD_PRIORITIES.at(2)) thread_priority = QThread::HighPriority;
+    else if(mode == SCENE_FIELD_THREAD_PRIORITIES.at(3)) thread_priority = QThread::HighestPriority;
+    else qCritical() << "Wrong settins value 'Scene/FieldThreadPriority'" <<  mode;
+
+    m_ThreadField->setPriority(thread_priority);
     qInfo() << "Field thread priority:" << m_ThreadField->priority() << mode;
 }
 
@@ -658,7 +668,9 @@ void MainWindow::slotSaveCellsToClipbord()
     document.setObject(obj_root);
 
     auto clipboard = QGuiApplication::clipboard();
-    clipboard->setText(document.toJson(QJsonDocument::Indented));
+    auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
+
+    clipboard->setText(document.toJson(json_mode));
 }
 
 void MainWindow::slotLoadCellsFromClipbord()
