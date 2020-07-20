@@ -397,9 +397,10 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     QJsonArray cells;
     for(int x = xmin; x <= xmax; x++)
     {
+        dx = x - xmin;
         for(int y = ymin; y <= ymax; y++)
         {
-            dx = x - xmin; dy = y - ymin;
+            dy = y - ymin;
             auto ci = m_Field->cells()->at(x).at(y)->getCurInfo();
             auto map = getPropertiesList(ci);
 
