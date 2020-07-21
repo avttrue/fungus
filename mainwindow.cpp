@@ -426,7 +426,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
                 auto p = ci_mo->property(i);
                 auto value = ci->property(p.name());
                 QJsonValue jvalue;
-                if(value.userType() == qMetaTypeId<Kernel::CellState>()) jvalue = value.toString();
+                if(value.userType() == qMetaTypeId<Kernel::CellState>()) jvalue = value.toInt();
                 else jvalue = value.toJsonValue();
                 obj_prop.insert(p.name(), jvalue);
             }
@@ -439,7 +439,10 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
         m_ProgressBar->setValue(dx);
     }
     jobject->insert("Cells", cells);
-    jobject->insert("CellsCount", cells.count());
+    QJsonObject obj_size;
+    obj_size.insert("Height", dx + 1);
+    obj_size.insert("Width", dy + 1);
+    jobject->insert("Size", obj_size);
     qDebug() << "Copied to JsonObject" << cells.count() << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
     m_ProgressBar->hide();
 }
