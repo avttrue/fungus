@@ -441,8 +441,8 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     }
     jobject->insert("Cells", cells);
     QJsonObject obj_size;
-    obj_size.insert("Height", dx + 1);
-    obj_size.insert("Width", dy + 1);
+    obj_size.insert("Height", dy + 1);
+    obj_size.insert("Width", dx + 1);
     jobject->insert("Size", obj_size);
     qDebug() << "Copied to JsonObject" << cells.count() << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
     m_ProgressBar->hide();
@@ -759,7 +759,8 @@ void MainWindow::slotLoadCellsFromClipbord() // TODO: refactoring
                                QString::number(scene->getField()->height()),
                                QString::number(w), QString::number(h))); return; }
 
-    if(cell->getIndex().x() + w > scene->getField()->width() || cell->getIndex().y() + h > scene->getField()->height())
+    if(cell->getIndex().x() + w > scene->getField()->width() ||
+            cell->getIndex().y() + h > scene->getField()->height())
     { QMessageBox::warning(this, tr("Warning"),
                            tr("Pasted field (%1X%2) does not fit in the cell coordinates (%3X%4).").
                            arg(QString::number(w), QString::number(h),
