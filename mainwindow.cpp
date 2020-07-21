@@ -195,7 +195,7 @@ void MainWindow::loadGui()
     statusBar->addWidget(new SeparatorV(this));
 
     statusBar->addWidget(new QLabel(tr("Pause:"), this));
-    m_LabelFieldPause = new QLabel(QString::number(config->SceneCalculatingMinPause()), this);
+    m_LabelFieldPause = new QLabel(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())), this);
     statusBar->addWidget(m_LabelFieldPause);
 
     statusBar->addWidget(new QLabel(tr("Calc:"), this));
@@ -401,7 +401,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
     auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
 
-    m_ProgressBar->setRange(0, xmax - xmin); // индикация без затей по X
+    m_ProgressBar->setRange(0, 0);
     m_ProgressBar->setValue(0);
     m_ProgressBar->show();
 
@@ -435,8 +435,9 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
             obj_cell["Index"] = obj_index;
             obj_cell["Properties"] = obj_prop;
             cells.append(obj_cell);
+
+            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         }
-        m_ProgressBar->setValue(dx);
     }
     jobject->insert("Cells", cells);
     QJsonObject obj_size;
@@ -456,11 +457,10 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)  // TODO:
 
     if(obj_cells.isEmpty()) {qDebug() << __func__ << "JsonArray 'Cells' is empty"; return false; }
 
-    m_ProgressBar->setRange(0, obj_cells.count());
+    m_ProgressBar->setRange(0, 0);
     m_ProgressBar->setValue(0);
     m_ProgressBar->show();
 
-    int counter = 0;
     for(auto o: obj_cells)
     {
         auto obj_index = o.toObject().value("Index").toObject();
@@ -483,10 +483,12 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)  // TODO:
             ci->setProperty(key.toLatin1(), obj_prop.value(key).toVariant().toInt());
         }
         m_Field->getCell({cx + x, cy + y})->applyInfo();
-        m_ProgressBar->setValue(++counter);
+
+        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     }
 
     qDebug() << "Pasted from JsonObject" << obj_cells.count() << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    m_ProgressBar->hide();
     return true;
 }
 
@@ -559,7 +561,7 @@ void MainWindow::slotSetup()
     config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
     config->setSceneCellAgeIndicate(map.value(keys.at(13)).value.toBool());
     config->setSceneCalculatingMinPause(map.value(keys.at(14)).value.toInt());
-    m_LabelFieldPause->setText(QString::number(config->SceneCalculatingMinPause()));
+    m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
     config->setSceneFieldThreadPriority(map.value(keys.at(15)).value.toString());
     setSceneFieldThreadPriority();
 }
@@ -768,7 +770,6 @@ void MainWindow::slotLoadCellsFromClipbord() // TODO: refactoring
     if(!CellsFromJsonObject(&root_object, cell))
         QMessageBox::critical(this, tr("Error"), tr("Error at field pasting from clipboard."));
 
-    m_ProgressBar->hide();
     redrawScene();
 }
 
