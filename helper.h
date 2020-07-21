@@ -32,11 +32,6 @@ QString longTimeToString(long datetime, const QString& format);
  */
 QString humanReadableByteCount(long long bytes, bool si = true);
 
-/*!
- * \brief getPropertiesList - получить список пользовательских QProperty объекта в виде <имя, тип>
- */
-QMap<QString, QVariant::Type> getPropertiesList(QObject *object);
-
 void copyProperty(QObject *source, QObject *target);
 
 qreal calcAverage(qreal oldAverage, qint64 iteration, qint64 value);

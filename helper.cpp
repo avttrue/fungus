@@ -104,19 +104,6 @@ QString getSystemInfo()
     return "unknown";
 }
 
-QMap<QString, QVariant::Type> getPropertiesList(QObject* object)
-{
-    QMap<QString, QVariant::Type> result;
-
-    for(int i = object->metaObject()->propertyOffset(); i < object->metaObject()->propertyCount(); ++i)
-    {
-        auto p = object->metaObject()->property(i);
-        result.insert(p.name(), p.type());
-    }
-
-    return result;
-}
-
 qreal calcAverage(qreal oldAverage, qint64 iteration, qint64 value)
 {
     auto iteration_1 = static_cast<qreal>(iteration - 1);

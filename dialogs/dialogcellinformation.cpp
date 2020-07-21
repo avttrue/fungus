@@ -2,7 +2,6 @@
 #include "dialoginfopanel.h"
 #include "properties.h"
 #include "controls.h"
-#include "helper.h"
 #include "field/cell.h"
 #include "field/cellinformation.h"
 
@@ -12,6 +11,7 @@
 #include <QWindowStateChangeEvent>
 #include <QApplication>
 #include <QScrollArea>
+#include <QMetaProperty>
 
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
@@ -106,24 +106,24 @@ void DialogCellInformation::loadInformation()
     glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), QVariant()));
 
     auto ci = m_Cell->getCurInfo();
-    auto map = getPropertiesList(ci);
+    auto ci_mo = ci->metaObject();
 
-    for(auto key: map.keys())
+    for(int i = ci_mo->propertyOffset(); i < ci_mo->propertyCount(); ++i)
     {
-        QVariant value = ci->property(key.toStdString().c_str());
-
-        auto dip = new DialogInfoPanel(this, key, value);
+        auto p = ci_mo->property(i);
+        auto value = ci->property(p.name());
+        auto dip = new DialogInfoPanel(this, p.name(), value);
         glContent->addWidget(dip);
 
-        if(key == "Age")
+        if(QString(p.name()) == "Age")
             QObject::connect(ci, &CellInformation::signalAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
-        else if(key == "State")
+        else if(QString(p.name()) == "State")
             QObject::connect(ci, &CellInformation::signalStateChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
-        else if(key == "Generation")
+        else if(QString(p.name()) == "Generation")
             QObject::connect(ci, &CellInformation::signalGenerationChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
-        else if(key == "Active")
+        else if(QString(p.name()) == "Active")
             QObject::connect(ci, &CellInformation::signalActivityChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
-        else if(key == "CursedAge")
+        else if(QString(p.name()) == "CursedAge")
             QObject::connect(ci, &CellInformation::signalCursedAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
     }
 }
