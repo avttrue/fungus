@@ -501,7 +501,7 @@ void Field::slotStopCalculating()
 }
 
 FieldRule *Field::getRule() const { return m_Rule; }
-Cell *Field::getCell(QPoint index) { return m_Cells[index.x()][index.y()]; }
+Cell *Field::getCell(QPoint index) { return m_Cells.at(index.x()).at(index.y()); }
 QVector<QVector<Cell *>> *Field::cells() const { return const_cast<QVector<QVector<Cell*>>*>(&m_Cells); }
 int Field::height() { return m_Height; }
 int Field::width() { return m_Width; }

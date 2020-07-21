@@ -413,7 +413,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
         for(int y = ymin; y <= ymax; y++)
         {
             dy = y - ymin;
-            auto ci = m_Field->cells()->at(x).at(y)->getCurInfo();
+            auto ci = m_Field->getCell({x, y})->getCurInfo();
             auto ci_mo = ci->metaObject();
 
             QJsonObject obj_index;
@@ -447,11 +447,47 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     m_ProgressBar->hide();
 }
 
-void MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
+bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)  // TODO: refactoring
 {
-    Q_UNUSED(jobject);
-    Q_UNUSED(cell);
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    auto cx = cell->getIndex().x();
+    auto cy = cell->getIndex().y();
+    auto obj_cells = jobject->value("Cells").toArray();
 
+    if(obj_cells.isEmpty()) {qDebug() << __func__ << "JsonArray 'Cells' is empty"; return false; }
+
+    m_ProgressBar->setRange(0, obj_cells.count());
+    m_ProgressBar->setValue(0);
+    m_ProgressBar->show();
+
+    int counter = 0;
+    for(auto o: obj_cells)
+    {
+        auto obj_index = o.toObject().value("Index").toObject();
+        if(obj_index.isEmpty()) {qDebug() << __func__ << "JsonObject 'Index' is empty"; return false; }
+
+        auto obj_x = obj_index.value("X");
+        if(obj_x.isUndefined()) {qDebug() << __func__ << "JsonValue 'Index.X' is undefined"; return false; }
+        auto obj_y = obj_index.value("Y");
+        if(obj_y.isUndefined()) {qDebug() << __func__ << "JsonValue 'Index.Y' is undefined"; return false; }
+
+        auto x = obj_index.value("X").toInt();
+        auto y = obj_index.value("Y").toInt();
+
+        auto obj_prop = o.toObject().value("Properties").toObject();
+        if(obj_prop.isEmpty()) {qDebug() << __func__ << "JsonObject 'Properties' is empty"; return false; }
+
+        for(auto key : obj_prop.keys())
+        {
+            auto ci = m_Field->getCell({cx + x, cy + y})->getNewInfo();
+            ci->setProperty(key.toLatin1(), obj_prop.value(key).toVariant().toInt());
+        }
+        m_Field->getCell({cx + x, cy + y})->applyInfo();
+        m_ProgressBar->setValue(++counter);
+    }
+
+    qDebug() << "Pasted from JsonObject" << obj_cells.count() << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    return true;
 }
 
 void MainWindow::slotSetup()
@@ -683,9 +719,57 @@ void MainWindow::slotSaveCellsToClipbord()
     clipboard->setText(document.toJson(json_mode));
 }
 
-void MainWindow::slotLoadCellsFromClipbord()
+void MainWindow::slotLoadCellsFromClipbord() // TODO: refactoring
 {
+    auto scene = m_SceneView->getScene();
+    if(!scene) {m_ActionLoadCellsFromClipbord->setDisabled(true); return; }
 
+    auto cell = scene->getSelectedCell();
+    auto clipboard = QGuiApplication::clipboard();
+    auto text = clipboard->text();
+
+    if (text.isNull() || text.isEmpty()) { qDebug() << __func__ << "Clipboard text is empty"; return; }
+
+    QJsonParseError p_error;
+    QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
+
+    if(document.isNull() || document.isEmpty()) { qDebug() << __func__ << "QJsonDocument is empty"; return; }
+    if(p_error.error != QJsonParseError::NoError) { qDebug() << __func__ << "JsonParseError:" << p_error.errorString(); return; }
+
+    auto root_object = document.object();
+    if(root_object.isEmpty()) { qDebug() << __func__  << "Root JsonObject is empty"; return; }
+
+    if(root_object.value("application").toString() != APP_NAME ||
+            root_object.value("version").toString() != APP_VERS)
+    { qDebug() << __func__  << "Incorrect Json data version:" << root_object.value("application").toString() <<
+                  root_object.value("version").toString();
+        return; }
+
+    auto obj_size = root_object.value("Size").toObject();
+    int w = obj_size.value("Width").toInt();
+    int h = obj_size.value("Height").toInt();
+    qDebug() << __func__  << "Json field size:" << h << "X" << w;
+
+    if(scene->getField()->width() < w || scene->getField()->height() < h)
+    { QMessageBox::warning(this, tr("Warning"),
+                           tr("Pasted field size (%1X%2) exceeds the allowed size (%3X%4).").
+                           arg(QString::number(scene->getField()->width()),
+                               QString::number(scene->getField()->height()),
+                               QString::number(w), QString::number(h))); return; }
+
+    if(cell->getIndex().x() + w > scene->getField()->width() || cell->getIndex().y() + h > scene->getField()->height())
+    { QMessageBox::warning(this, tr("Warning"),
+                           tr("Pasted field (%1X%2) does not fit in the cell coordinates (%3X%4).").
+                           arg(QString::number(w), QString::number(h),
+                               QString::number(cell->getIndex().x()),
+                               QString::number(cell->getIndex().y()))); return; }
+
+
+    if(!CellsFromJsonObject(&root_object, cell))
+        QMessageBox::critical(this, tr("Error"), tr("Error at field pasting from clipboard."));
+
+    m_ProgressBar->hide();
+    redrawScene();
 }
 
 void MainWindow::slotInfoCell()

@@ -51,7 +51,7 @@ protected:
     void setSceneFieldThreadPriority();
     void redrawScene();
     void CellsToJsonObject(QJsonObject *jobject, Cell* firstcell, Cell* secondcell);
-    void CellsFromJsonObject(QJsonObject *jobject, Cell* cell);
+    bool CellsFromJsonObject(QJsonObject *jobject, Cell* cell);
 
 private:
     QThread* m_ThreadField;

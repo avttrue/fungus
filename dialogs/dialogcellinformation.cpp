@@ -113,6 +113,7 @@ void DialogCellInformation::loadInformation()
         auto p = ci_mo->property(i);
         auto value = ci->property(p.name());
         auto dip = new DialogInfoPanel(this, p.name(), value);
+
         glContent->addWidget(dip);
 
         if(QString(p.name()) == "Age")

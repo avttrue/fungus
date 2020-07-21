@@ -123,6 +123,7 @@ void DialogFieldInformation::loadInformation()
         auto p = fi_mo->property(i);
         auto value = fi->property(p.name());
         auto dip = new DialogInfoPanel(this, p.name(), value);
+
         glContent->addWidget(dip);
 
         if(QString(p.name()) == "Age")
