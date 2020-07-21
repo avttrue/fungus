@@ -65,7 +65,8 @@ void Field::fill(bool random)
     m_FieldInformation->setCursedCells(cursed);
     m_FieldInformation->setActiveCells(0);
 
-    qDebug() << "Field" << objectName() << "filled in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    qDebug() << "Field" << objectName() << ":" << m_Height * m_Width <<
+                "cells filled in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 }
 
 void Field::calculate()

@@ -31,6 +31,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QClipboard>
+#include <QMetaProperty>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -370,7 +371,7 @@ void MainWindow::stopThreadField()
 void MainWindow::setSceneFieldThreadPriority()
 {
     if(!m_ThreadField || !m_ThreadField->isRunning()) return;
-     QThread::Priority thread_priority = QThread::NormalPriority;
+    QThread::Priority thread_priority = QThread::NormalPriority;
 
     auto mode = config->SceneFieldThreadPriority().toUpper();
 
@@ -394,6 +395,7 @@ void MainWindow::redrawScene()
 
 void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *secondcell)
 {
+    auto time = QDateTime::currentMSecsSinceEpoch();
     auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
@@ -412,17 +414,21 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
         {
             dy = y - ymin;
             auto ci = m_Field->cells()->at(x).at(y)->getCurInfo();
-            auto map = getPropertiesList(ci);
+            auto ci_mo = ci->metaObject();
 
             QJsonObject obj_index;
             obj_index.insert("X", dx);
             obj_index.insert("Y", dy);
 
             QJsonObject obj_prop;
-            for(auto key: map.keys())
+            for(int i = ci_mo->propertyOffset(); i < ci_mo->propertyCount(); ++i)
             {
-                QVariant value = ci->property(key.toStdString().c_str());
-                obj_prop.insert(key, value.toString());
+                auto p = ci_mo->property(i);
+                auto value = ci->property(p.name());
+                QJsonValue jvalue;
+                if(value.userType() == qMetaTypeId<Kernel::CellState>()) jvalue = value.toString();
+                else jvalue = value.toJsonValue();
+                obj_prop.insert(p.name(), jvalue);
             }
 
             QJsonObject obj_cell;
@@ -433,7 +439,8 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
         m_ProgressBar->setValue(dx);
     }
     jobject->insert("Cells", cells);
-    qDebug() << "Copied to JsonObject" << cells.count() << "cells";
+    jobject->insert("CellsCount", cells.count());
+    qDebug() << "Copied to JsonObject" << cells.count() << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
     m_ProgressBar->hide();
 }
 
