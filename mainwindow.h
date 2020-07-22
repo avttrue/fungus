@@ -51,6 +51,8 @@ protected:
     void setSceneFieldThreadPriority();
     void redrawScene();
     void CellsToJsonObject(QJsonObject *jobject, Cell* firstcell, Cell* secondcell);
+    QString CellsToJsonText(Cell *firstcell, Cell *secondcell);
+    bool CellsFromJsonText(Cell *cell, const QString& text);
     bool CellsFromJsonObject(QJsonObject *jobject, Cell* cell);
 
 private:
@@ -68,6 +70,8 @@ private:
     QAction* m_ActionSaveImageToFile;
     QAction* m_ActionSaveCellsToClipbord;
     QAction* m_ActionLoadCellsFromClipbord;
+    QAction* m_ActionSaveCellsToFile;
+    QAction* m_ActionLoadCellsFromFile;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -94,6 +98,8 @@ private Q_SLOTS:
     void slotSelectedCellChanged(Cell* cell);
     void slotSaveCellsToClipbord();
     void slotLoadCellsFromClipbord();
+    void slotSaveCellsToFile();
+    void slotLoadCellsFromFile();
     void slotInfoCell();
     void slotInfoField();
     void slotEditCell();

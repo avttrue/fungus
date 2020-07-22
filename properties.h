@@ -24,6 +24,7 @@ const QString SCENE_CELL_CURSE_COLOR =              "#FF0000";
 const QString SCENE_VIEW_UPDATE_MODE =              "MINIMAL";
 const QString SCENE_FIELD_THREAD_PRIORITY=          "NORMAL";
 const QString SCENE_IMAGE_FILE_FORMAT=              "PNG";
+const QString PRESET_FILE_EXTENSION=                "FPR";
 const qreal SCENE_SCALE_STEP =                      1.001;
 const auto SCENE_CELL_SIZE =                        10;
 const auto SCENE_MULTISELECT_ALFA =                 50; // 0-254 TODO: добавить в диалог настроек

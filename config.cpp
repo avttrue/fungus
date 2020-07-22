@@ -39,6 +39,10 @@ void Config::load()
         m_Settings->setValue("DateTimeFormat", DT_FORMAT);
     m_DateTimeFormat = m_Settings->value("DateTimeFormat").toString();
 
+    if(!m_Settings->contains("PresetFileExtension"))
+        m_Settings->setValue("PresetFileExtension", PRESET_FILE_EXTENSION);
+    m_PresetFileExtension = m_Settings->value("PresetFileExtension").toString();
+
     if(!m_Settings->contains("MainWindow/Height"))
         m_Settings->setValue("MainWindow/Height", WINDOW_HEIGHT);
 
@@ -146,10 +150,18 @@ void Config::load()
     m_SceneMultiselAlfa = m_Settings->value("Scene/MultiselectAlfa").toInt();
 }
 
+void Config::setPresetFileExtension(const QString &value)
+{
+    if(m_PresetFileExtension == value) return;
+
+    m_PresetFileExtension = value;
+    m_Settings->setValue("PresetFileExtension", m_PresetFileExtension);
+}
+
 void Config::setJsonCompactMode(bool value)
 {
     if(m_JsonCompactMode == value) return;
-
+    
     m_JsonCompactMode = value;
     m_Settings->setValue("JsonCompactMode", m_JsonCompactMode);
 }
@@ -409,3 +421,4 @@ QString Config::SceneImageFileFormat() const { return m_SceneImageFileFormat; }
 bool Config::WindowShowFieldInfo() const { return m_WindowShowFieldInfo; }
 int Config::SceneMultiselAlfa() const { return m_SceneMultiselAlfa; }
 bool Config::JsonCompactMode() const { return m_JsonCompactMode; }
+QString Config::PresetFileExtension() const { return m_PresetFileExtension; }

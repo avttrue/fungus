@@ -33,5 +33,6 @@
         <file>resources/img/paste.svg</file>
         <file>resources/img/preset_load.svg</file>
         <file>resources/img/preset_save.svg</file>
+        <file>resources/img/camera.svg</file>
     </qresource>
 </RCC>

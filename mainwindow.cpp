@@ -114,12 +114,20 @@ void MainWindow::loadGui()
     m_ActionLoadCellsFromClipbord->setEnabled(false);
     m_ActionLoadCellsFromClipbord->setShortcut(Qt::CTRL + Qt::Key_V);
 
+    m_ActionSaveCellsToFile = new QAction(QIcon(":/resources/img/preset_save.svg"), tr("Save selected cells as preset to file"), this);
+    QObject::connect(m_ActionSaveCellsToFile, &QAction::triggered, this, &MainWindow::slotSaveCellsToFile);
+    m_ActionSaveCellsToFile->setEnabled(false);
+
+    m_ActionLoadCellsFromFile = new QAction(QIcon(":/resources/img/preset_load.svg"), tr("Load preset from file"), this);
+    QObject::connect(m_ActionLoadCellsFromFile, &QAction::triggered, this, &MainWindow::slotLoadCellsFromFile);
+    m_ActionLoadCellsFromFile->setEnabled(false);
+
     m_ActionInfoField = new QAction(QIcon(":/resources/img/field.svg"), tr("Field information"), this);
     QObject::connect(m_ActionInfoField, &QAction::triggered, this, &MainWindow::slotInfoField);
     m_ActionInfoField->setEnabled(false);
     m_ActionInfoField->setShortcut(Qt::CTRL + Qt::Key_F);
 
-    m_ActionSaveImageToFile = new QAction(QIcon(":/resources/img/save.svg"), tr("Save image to file"), this);
+    m_ActionSaveImageToFile = new QAction(QIcon(":/resources/img/camera.svg"), tr("Save image to file"), this);
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
     m_ActionSaveImageToFile->setEnabled(false);
 
@@ -139,7 +147,6 @@ void MainWindow::loadGui()
     tbMain->addAction(m_ActionInfoCell);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionInfoField);
-    tbMain->addAction(m_ActionSaveImageToFile);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionStepStop);
     tbMain->addAction(m_ActionRun);
@@ -158,10 +165,17 @@ void MainWindow::loadGui()
     tbActions->setOrientation(Qt::Vertical);
     tbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
+    tbActions->addAction(m_ActionSaveImageToFile);
+
     tbActions->addSeparator();
 
     tbActions->addAction(m_ActionSaveCellsToClipbord);
     tbActions->addAction(m_ActionLoadCellsFromClipbord);
+
+    tbActions->addSeparator();
+
+    tbActions->addAction(m_ActionSaveCellsToFile);
+    tbActions->addAction(m_ActionLoadCellsFromFile);
 
     addToolBar(Qt::LeftToolBarArea, tbActions);
 
@@ -232,7 +246,12 @@ void MainWindow::loadGui()
 void MainWindow::slotStepStop()
 {    
     m_ActionSaveCellsToClipbord->setDisabled(true);
-    if(m_SceneView->getScene()->getSelectedCell()) m_ActionLoadCellsFromClipbord->setEnabled(true);
+    m_ActionSaveCellsToFile->setDisabled(true);
+    if(m_SceneView->getScene()->getSelectedCell())
+    {
+        m_ActionLoadCellsFromClipbord->setEnabled(true);
+        m_ActionLoadCellsFromFile->setEnabled(true);
+    }
     m_SceneView->getScene()->clearMultiSelection();
 
     if(m_Field->isCalculating()) Q_EMIT signalStopField();
@@ -251,7 +270,9 @@ void MainWindow::slotRun()
     if(!m_Field->isCalculating())
     {
         m_ActionSaveCellsToClipbord->setDisabled(true);
+        m_ActionSaveCellsToFile->setDisabled(true);
         m_ActionLoadCellsFromClipbord->setDisabled(true);
+        m_ActionLoadCellsFromFile->setDisabled(true);
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
         m_Field->setCalculatingNonstop(true);
@@ -436,7 +457,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
             cells.append(obj_cell);
 
             m_ProgressBar->setValue(cells.count());
-            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
         }
     }
     jobject->insert("Cells", cells);
@@ -446,6 +467,71 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     jobject->insert("Size", obj_size);
     qDebug() << "Copied to JsonObject" << cells.count() << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
     m_ProgressBar->hide();
+}
+
+QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell)
+{
+    QJsonDocument document;
+    QJsonObject obj_root;
+    obj_root.insert("application", APP_NAME);
+    obj_root.insert("version", APP_VERS);
+
+    CellsToJsonObject(&obj_root, firstcell, secondcell);
+    document.setObject(obj_root);
+
+    auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
+    return document.toJson(json_mode);
+}
+
+bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
+{
+    auto scene = m_SceneView->getScene();
+
+    if (text.isNull() || text.isEmpty()) { qDebug() << __func__ << "Text is empty"; return false; }
+
+    QJsonParseError p_error;
+    QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
+
+    if(document.isNull() || document.isEmpty()) { qDebug() << __func__ << "QJsonDocument is empty"; return false; }
+    if(p_error.error != QJsonParseError::NoError) { qDebug() << __func__ << "JsonParseError:" << p_error.errorString(); return false; }
+
+    auto root_object = document.object();
+    if(root_object.isEmpty()) { qDebug() << __func__  << "Root JsonObject is empty"; return false; }
+
+    if(root_object.value("application").toString() != APP_NAME ||
+            root_object.value("version").toString() != APP_VERS)
+    { qDebug() << __func__  << "Incorrect Json data version:" << root_object.value("application").toString() <<
+                  root_object.value("version").toString();
+        return false; }
+
+    auto obj_size = root_object.value("Size").toObject();
+    int w = obj_size.value("Width").toInt();
+    int h = obj_size.value("Height").toInt();
+    qDebug() << __func__  << "Json field size:" << h << "X" << w;
+
+    if(scene->getField()->width() < w || scene->getField()->height() < h)
+    { QMessageBox::warning(this, tr("Warning"),
+                           tr("Pasted field size (%1X%2) exceeds the allowed size (%3X%4).").
+                           arg(QString::number(scene->getField()->width()),
+                               QString::number(scene->getField()->height()),
+                               QString::number(w), QString::number(h))); return false; }
+
+    if(cell->getIndex().x() + w > scene->getField()->width() ||
+            cell->getIndex().y() + h > scene->getField()->height())
+    { QMessageBox::warning(this, tr("Warning"),
+                           tr("Pasted field (%1X%2) does not fit in the cell coordinates (%3X%4).").
+                           arg(QString::number(w), QString::number(h),
+                               QString::number(cell->getIndex().x()),
+                               QString::number(cell->getIndex().y()))); return false; }
+
+
+    if(!CellsFromJsonObject(&root_object, cell))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Error at inserting cells."));
+        return false;
+    }
+
+    return true;
 }
 
 bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
@@ -487,7 +573,7 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
         m_Field->getCell({cx + x, cy + y})->applyInfo();
 
         m_ProgressBar->setValue(++counter);
-        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
     }
 
     qDebug() << "Pasted from JsonObject" << obj_cells.count() << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
@@ -669,6 +755,7 @@ void MainWindow::slotNewProject()
     m_ActionEditCell->setDisabled(true);
     m_ActionInfoCell->setDisabled(true);
     m_ActionSaveCellsToClipbord->setDisabled(true);
+    m_ActionSaveCellsToFile->setDisabled(true);
     setActionsEnable(true);
 
     if(random) redrawScene();
@@ -697,6 +784,7 @@ void MainWindow::slotSelectedCellChanged(Cell *cell)
     m_ActionEditCell->setDisabled(cell == nullptr);
     m_ActionInfoCell->setDisabled(cell == nullptr);
     m_ActionLoadCellsFromClipbord->setDisabled(cell == nullptr || m_Field->isCalculating());
+    m_ActionLoadCellsFromFile->setDisabled(cell == nullptr || m_Field->isCalculating());
     if(cell) m_LabelSelectedCell->setText(cell->objectName());
     else m_LabelSelectedCell->setText("-");
 }
@@ -710,69 +798,76 @@ void MainWindow::slotSaveCellsToClipbord()
     auto secondcell = scene->getSecondSelectedCell();
     if(!firstcell || !secondcell || firstcell == secondcell)  {m_ActionSaveCellsToClipbord->setDisabled(true); return; }
 
-    QJsonDocument document;
-    QJsonObject obj_root;
-    obj_root.insert("application", APP_NAME);
-    obj_root.insert("version", APP_VERS);
-
-    CellsToJsonObject(&obj_root, firstcell, secondcell);
-    document.setObject(obj_root);
-
     auto clipboard = QGuiApplication::clipboard();
-    auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
 
-    clipboard->setText(document.toJson(json_mode));
+    clipboard->setText(CellsToJsonText(firstcell, secondcell));
 }
 
-void MainWindow::slotLoadCellsFromClipbord() // TODO: refactoring
+void MainWindow::slotLoadCellsFromClipbord()
 {
     auto scene = m_SceneView->getScene();
     if(!scene) {m_ActionLoadCellsFromClipbord->setDisabled(true); return; }
 
     auto cell = scene->getSelectedCell();
+    if(!cell) {m_ActionLoadCellsFromClipbord->setDisabled(true); return; }
+
     auto clipboard = QGuiApplication::clipboard();
     auto text = clipboard->text();
 
-    if (text.isNull() || text.isEmpty()) { qDebug() << __func__ << "Clipboard text is empty"; return; }
+    CellsFromJsonText(cell, text);
 
-    QJsonParseError p_error;
-    QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
+    redrawScene();
+}
 
-    if(document.isNull() || document.isEmpty()) { qDebug() << __func__ << "QJsonDocument is empty"; return; }
-    if(p_error.error != QJsonParseError::NoError) { qDebug() << __func__ << "JsonParseError:" << p_error.errorString(); return; }
+void MainWindow::slotSaveCellsToFile()
+{
+    auto scene = m_SceneView->getScene();
+    if(!scene) {m_ActionSaveCellsToFile->setDisabled(true); return; }
 
-    auto root_object = document.object();
-    if(root_object.isEmpty()) { qDebug() << __func__  << "Root JsonObject is empty"; return; }
+    auto firstcell = scene->getSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
+    if(!firstcell || !secondcell || firstcell == secondcell)  {m_ActionSaveCellsToFile->setDisabled(true); return; }
 
-    if(root_object.value("application").toString() != APP_NAME ||
-            root_object.value("version").toString() != APP_VERS)
-    { qDebug() << __func__  << "Incorrect Json data version:" << root_object.value("application").toString() <<
-                  root_object.value("version").toString();
-        return; }
+    auto text = CellsToJsonText(firstcell, secondcell);
 
-    auto obj_size = root_object.value("Size").toObject();
-    int w = obj_size.value("Width").toInt();
-    int h = obj_size.value("Height").toInt();
-    qDebug() << __func__  << "Json field size:" << h << "X" << w;
+    auto fileext = config->PresetFileExtension().toLower();
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->LastDir(),
+                                                 tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
-    if(scene->getField()->width() < w || scene->getField()->height() < h)
-    { QMessageBox::warning(this, tr("Warning"),
-                           tr("Pasted field size (%1X%2) exceeds the allowed size (%3X%4).").
-                           arg(QString::number(scene->getField()->width()),
-                               QString::number(scene->getField()->height()),
-                               QString::number(w), QString::number(h))); return; }
+    if(filename.isNull() || filename.isEmpty()) return;
 
-    if(cell->getIndex().x() + w > scene->getField()->width() ||
-            cell->getIndex().y() + h > scene->getField()->height())
-    { QMessageBox::warning(this, tr("Warning"),
-                           tr("Pasted field (%1X%2) does not fit in the cell coordinates (%3X%4).").
-                           arg(QString::number(w), QString::number(h),
-                               QString::number(cell->getIndex().x()),
-                               QString::number(cell->getIndex().y()))); return; }
+    auto dot_fileext = QString(".%1").arg(fileext);
+    if(!filename.endsWith(dot_fileext, Qt::CaseInsensitive)) filename.append(dot_fileext);
 
+    config->setLastDir(QFileInfo(filename).dir().path());
 
-    if(!CellsFromJsonObject(&root_object, cell))
-        QMessageBox::critical(this, tr("Error"), tr("Error at field pasting from clipboard."));
+    textToFile(text, filename);
+}
+
+void MainWindow::slotLoadCellsFromFile()
+{
+    auto scene = m_SceneView->getScene();
+    if(!scene) {m_ActionLoadCellsFromFile->setDisabled(true); return; }
+
+    auto cell = scene->getSelectedCell();
+    if(!cell) {m_ActionLoadCellsFromFile->setDisabled(true); return; }
+
+    auto fileext = config->PresetFileExtension().toLower();
+    auto filename = QFileDialog::getOpenFileName(this, tr("Load preset"), config->LastDir(),
+                                                 tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
+
+    if(filename.isNull() || filename.isEmpty()) return;
+
+    bool ok;
+    auto text = fileToText(filename, &ok);
+
+    if(!ok)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Error at loading data from file: '%1'").arg(filename));
+        return;
+    }
+
+    CellsFromJsonText(cell, text);
 
     redrawScene();
 }
@@ -817,10 +912,10 @@ void MainWindow::slotSaveImageToFile()
     if(!m_Field) { m_ActionSaveImageToFile->setDisabled(true); return; }
 
     auto fileformat = config->SceneImageFileFormat().toLower();
-    auto filename = QFileDialog::getSaveFileName(this, "Save image", config->LastDir(),
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), config->LastDir(),
                                                  tr("%1 files (*.%2)").arg(fileformat.toUpper(), fileformat));
 
-    if(filename.isNull()) return;
+    if(filename.isNull() || filename.isEmpty()) return;
 
     config->setLastDir(QFileInfo(filename).dir().path());
 
@@ -835,10 +930,16 @@ void MainWindow::slotSaveImageToFile()
 
 void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
 {
-    if(!first || !second || first == second) { m_ActionSaveCellsToClipbord->setDisabled(true); return; }
+    if(!first || !second || first == second)
+    {
+        m_ActionSaveCellsToClipbord->setDisabled(true);
+        m_ActionSaveCellsToFile->setDisabled(true);
+        return;
+    }
 
     Q_EMIT signalStopField();
     m_ActionSaveCellsToClipbord->setEnabled(true);
+    m_ActionSaveCellsToFile->setEnabled(true);
 
 }
 

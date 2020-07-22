@@ -76,6 +76,8 @@ public:
     void setSceneMultiselAlfa(int value);
     bool JsonCompactMode() const;
     void setJsonCompactMode(bool value);
+    QString PresetFileExtension() const;
+    void setPresetFileExtension(const QString &value);
 
 protected:
     void load();
@@ -92,7 +94,8 @@ private:
     QString m_SceneCellCurseColor;                  // цвет отравленной ячейки
     QString m_SceneViewUpdateMode;                  // метод отрисовки SceneView
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
-    QString m_SceneImageFileFormat;                 // формат файлов для сохранения сцены
+    QString m_SceneImageFileFormat;                 // формат файлов для сохранения картинки сцены
+    QString m_PresetFileExtension;                  // формат файлов для сохранения пресетов
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
     int m_SceneMultiselAlfa;                        // прозрачность рамки выделения 0-254
     int m_SceneItemZValue;                          // Z-координата SceneItem
