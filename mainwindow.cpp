@@ -15,6 +15,7 @@
 #include "field/fieldrule.h"
 #include "field/fieldinformation.h"
 
+#include <cstring>
 #include <QDebug>
 #include <QApplication>
 #include <QCloseEvent>
@@ -420,6 +421,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
     auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+    const auto tag_active = QString("Active").toStdString().c_str(); // поле "Active" исключается
 
     m_ProgressBar->setRange(0, (xmax - xmin) * (ymax - ymin));
     m_ProgressBar->setValue(0);
@@ -446,14 +448,18 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
                 auto p = ci_mo->property(i);
                 auto value = ci->property(p.name());
                 QJsonValue jvalue;
+
+                if(std::strcmp(p.name(), tag_active) == 0) continue;
+
                 if(value.userType() == qMetaTypeId<Kernel::CellState>()) jvalue = value.toInt();
                 else jvalue = value.toJsonValue();
+
                 obj_prop.insert(p.name(), jvalue);
             }
 
             QJsonObject obj_cell;
-            obj_cell["Index"] = obj_index;
-            obj_cell["Properties"] = obj_prop;
+            obj_cell.insert("Index", obj_index);
+            obj_cell.insert("Properties", obj_prop);
             cells.append(obj_cell);
 
             m_ProgressBar->setValue(cells.count());
