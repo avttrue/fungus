@@ -121,6 +121,9 @@ void DialogFieldInformation::loadInformation()
     for(int i = fi_mo->propertyOffset(); i < fi_mo->propertyCount(); ++i)
     {
         auto p = fi_mo->property(i);
+
+        if(QString(p.name()) == "AverageCalc") continue;
+
         auto value = fi->property(p.name());
         auto dip = new DialogInfoPanel(this, p.name(), value);
 

@@ -16,7 +16,6 @@
 #include "field/fieldinformation.h"
 
 #include <QDebug>
-#include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
 #include <QGraphicsView>
@@ -371,8 +370,8 @@ void MainWindow::stopThreadField()
 void MainWindow::setSceneFieldThreadPriority()
 {
     if(!m_ThreadField || !m_ThreadField->isRunning()) return;
-    QThread::Priority thread_priority = QThread::NormalPriority;
 
+    auto thread_priority = QThread::NormalPriority;
     auto mode = config->SceneFieldThreadPriority().toUpper();
 
     if(mode == SCENE_FIELD_THREAD_PRIORITIES.at(0)) thread_priority = QThread::LowPriority;
@@ -401,7 +400,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
     auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
 
-    m_ProgressBar->setRange(0, 0);
+    m_ProgressBar->setRange(0, (xmax - xmin) * (ymax - ymin));
     m_ProgressBar->setValue(0);
     m_ProgressBar->show();
 
@@ -436,6 +435,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
             obj_cell["Properties"] = obj_prop;
             cells.append(obj_cell);
 
+            m_ProgressBar->setValue(cells.count());
             QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         }
     }
@@ -448,7 +448,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     m_ProgressBar->hide();
 }
 
-bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)  // TODO: refactoring
+bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
     auto cx = cell->getIndex().x();
@@ -457,10 +457,11 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)  // TODO:
 
     if(obj_cells.isEmpty()) {qDebug() << __func__ << "JsonArray 'Cells' is empty"; return false; }
 
-    m_ProgressBar->setRange(0, 0);
+    m_ProgressBar->setRange(0, obj_cells.count());
     m_ProgressBar->setValue(0);
     m_ProgressBar->show();
 
+    int counter = 0;
     for(auto o: obj_cells)
     {
         auto obj_index = o.toObject().value("Index").toObject();
@@ -468,6 +469,7 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)  // TODO:
 
         auto obj_x = obj_index.value("X");
         if(obj_x.isUndefined()) {qDebug() << __func__ << "JsonValue 'Index.X' is undefined"; return false; }
+
         auto obj_y = obj_index.value("Y");
         if(obj_y.isUndefined()) {qDebug() << __func__ << "JsonValue 'Index.Y' is undefined"; return false; }
 
@@ -484,6 +486,7 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)  // TODO:
         }
         m_Field->getCell({cx + x, cy + y})->applyInfo();
 
+        m_ProgressBar->setValue(++counter);
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     }
 
@@ -693,7 +696,7 @@ void MainWindow::slotSelectedCellChanged(Cell *cell)
 {
     m_ActionEditCell->setDisabled(cell == nullptr);
     m_ActionInfoCell->setDisabled(cell == nullptr);
-    m_ActionLoadCellsFromClipbord->setDisabled(cell == nullptr);
+    m_ActionLoadCellsFromClipbord->setDisabled(cell == nullptr || m_Field->isCalculating());
     if(cell) m_LabelSelectedCell->setText(cell->objectName());
     else m_LabelSelectedCell->setText("-");
 }
