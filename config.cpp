@@ -43,6 +43,10 @@ void Config::load()
         m_Settings->setValue("SaveToPresetExceptDead", SAVE_TO_PRESET_EXCEPT_DEAD);
     m_SaveToPresetExceptDead = m_Settings->value("SaveToPresetExceptDead").toBool();
 
+    if(!m_Settings->contains("IgnoreJsonDataVersion"))
+        m_Settings->setValue("IgnoreJsonDataVersion", IGNORE_JSON_DATA_VERSION);
+    m_IgnoreJsonDataVersion = m_Settings->value("IgnoreJsonDataVersion").toBool();
+
     if(!m_Settings->contains("DateTimeFormat"))
         m_Settings->setValue("DateTimeFormat", DT_FORMAT);
     m_DateTimeFormat = m_Settings->value("DateTimeFormat").toString();
@@ -158,10 +162,18 @@ void Config::load()
     m_SceneMultiselAlfa = m_Settings->value("Scene/MultiselectAlfa").toInt();
 }
 
+void Config::setIgnoreJsonDataVersion(bool value)
+{
+    if(m_IgnoreJsonDataVersion == value) return;
+
+    m_IgnoreJsonDataVersion = value;
+    m_Settings->setValue("IgnoreJsonDataVersion", m_IgnoreJsonDataVersion);
+}
+
 void Config::setSaveToPresetExceptDead(bool value)
 {
     if(m_SaveToPresetExceptDead == value) return;
-
+    
     m_SaveToPresetExceptDead = value;
     m_Settings->setValue("SaveToPresetExceptDead", m_SaveToPresetExceptDead);
 }
@@ -448,3 +460,4 @@ bool Config::JsonCompactMode() const { return m_JsonCompactMode; }
 QString Config::PresetFileExtension() const { return m_PresetFileExtension; }
 bool Config::SaveToPresetExceptDead() const { return m_SaveToPresetExceptDead; }
 bool Config::CopyToClipboardExceptDead() const { return m_CopyToClipboardExceptDead; }
+bool Config::IgnoreJsonDataVersion() const { return m_IgnoreJsonDataVersion; }

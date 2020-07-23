@@ -47,6 +47,7 @@ const auto SCENE_ITEM_ZVALUE =                      0;
 const auto SCENE_CELL_AGE_INDICATE =                true;
 const auto WINDOW_SHOW_FIELD_INFO =                 false;
 const auto JSON_COMPACT_MODE =                      true;
+const auto IGNORE_JSON_DATA_VERSION =               false;
 const auto COPY_TO_CLIPBOARD_EXCEPT_DEAD =          true;
 const auto SAVE_TO_PRESET_EXCEPT_DEAD =             true;
 

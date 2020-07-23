@@ -82,6 +82,8 @@ public:
     void setCopyToClipboardExceptDead(bool value);
     bool SaveToPresetExceptDead() const;
     void setSaveToPresetExceptDead(bool value);
+    bool IgnoreJsonDataVersion() const;
+    void setIgnoreJsonDataVersion(bool value);
 
 protected:
     void load();
@@ -120,6 +122,7 @@ private:
     bool m_SceneViewAntialiasing;                   // SceneView: Antialiasing
     bool m_WindowShowFieldInfo;                     // отображать окно информации о Field при создании Field
     bool m_JsonCompactMode;                         // формат записи json
+    bool m_IgnoreJsonDataVersion;                   // игнорировать версию в данных json
     bool m_CopyToClipboardExceptDead;               // при копировании в буфер обмена исключать мёртвые
     bool m_SaveToPresetExceptDead;                  // при сохранении в пресет исключать мёртвые
 };

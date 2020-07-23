@@ -506,10 +506,12 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
     auto root_object = document.object();
     if(root_object.isEmpty()) { qDebug() << __func__  << "Root JsonObject is empty"; return false; }
 
-    if(root_object.value("application").toString() != APP_NAME ||
-            root_object.value("version").toString() != APP_VERS)
-    { qDebug() << __func__  << "Incorrect Json data version:" << root_object.value("application").toString() <<
-                  root_object.value("version").toString();
+    if(root_object.value("application").toString() != APP_NAME)
+    { qDebug() << __func__  << "Incorrect Json data: 'application' =" << root_object.value("application").toString();
+        return false; }
+
+    if(!config->IgnoreJsonDataVersion() && root_object.value("version").toString() != APP_VERS)
+    { qDebug() << __func__  << "Incorrect Json: 'version' =" << root_object.value("version").toString();
         return false; }
 
     auto obj_size = root_object.value("Size").toObject();
