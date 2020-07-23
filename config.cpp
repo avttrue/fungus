@@ -35,6 +35,14 @@ void Config::load()
         m_Settings->setValue("JsonCompactMode", JSON_COMPACT_MODE);
     m_JsonCompactMode = m_Settings->value("JsonCompactMode").toBool();
 
+    if(!m_Settings->contains("CopyToClipboardExceptDead"))
+        m_Settings->setValue("CopyToClipboardExceptDead", COPY_TO_CLIPBOARD_EXCEPT_DEAD);
+    m_CopyToClipboardExceptDead = m_Settings->value("CopyToClipboardExceptDead").toBool();
+
+    if(!m_Settings->contains("SaveToPresetExceptDead"))
+        m_Settings->setValue("SaveToPresetExceptDead", SAVE_TO_PRESET_EXCEPT_DEAD);
+    m_SaveToPresetExceptDead = m_Settings->value("SaveToPresetExceptDead").toBool();
+
     if(!m_Settings->contains("DateTimeFormat"))
         m_Settings->setValue("DateTimeFormat", DT_FORMAT);
     m_DateTimeFormat = m_Settings->value("DateTimeFormat").toString();
@@ -148,6 +156,22 @@ void Config::load()
     if(!m_Settings->contains("Scene/MultiselectAlfa"))
         m_Settings->setValue("Scene/MultiselectAlfa", SCENE_MULTISELECT_ALFA);
     m_SceneMultiselAlfa = m_Settings->value("Scene/MultiselectAlfa").toInt();
+}
+
+void Config::setSaveToPresetExceptDead(bool value)
+{
+    if(m_SaveToPresetExceptDead == value) return;
+
+    m_SaveToPresetExceptDead = value;
+    m_Settings->setValue("SaveToPresetExceptDead", m_SaveToPresetExceptDead);
+}
+
+void Config::setCopyToClipboardExceptDead(bool value)
+{
+    if(m_CopyToClipboardExceptDead == value) return;
+
+    m_CopyToClipboardExceptDead = value;
+    m_Settings->setValue("CopyToClipboardExceptDead", m_CopyToClipboardExceptDead);
 }
 
 void Config::setPresetFileExtension(const QString &value)
@@ -422,3 +446,5 @@ bool Config::WindowShowFieldInfo() const { return m_WindowShowFieldInfo; }
 int Config::SceneMultiselAlfa() const { return m_SceneMultiselAlfa; }
 bool Config::JsonCompactMode() const { return m_JsonCompactMode; }
 QString Config::PresetFileExtension() const { return m_PresetFileExtension; }
+bool Config::SaveToPresetExceptDead() const { return m_SaveToPresetExceptDead; }
+bool Config::CopyToClipboardExceptDead() const { return m_CopyToClipboardExceptDead; }

@@ -36,8 +36,8 @@ Cell *Field::addCell(QPoint index) { return addCell(index.x(), index.y()); }
 void Field::fill(bool random)
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
-    qint64 alive = 0;
-    qint64 cursed = 0;
+    uint alive = 0;
+    uint cursed = 0;
     auto rg = QRandomGenerator::securelySeeded();
 
     for(int h = 0; h < m_Height; h++)
@@ -81,13 +81,12 @@ void Field::calculate()
         }
 
         auto time = QDateTime::currentMSecsSinceEpoch();
+        uint alive = 0;
+        uint cursed = 0;
+        uint active = 0;
+        QVector<Cell*> cells_to_redraw;
 
         if(m_RuleOn) m_FieldInformation->upAge();
-        qint64 alive = 0;
-        qint64 cursed = 0;
-        qint64 active = 0;
-
-        QVector<Cell*> cells;
         for(int h = 0; h < m_Height; h++)
         {
             if(m_AbortCalculating) break;
@@ -101,7 +100,6 @@ void Field::calculate()
 
                 if(m_RuleOn)
                 {
-                    //testRules(c); // test
                     applyRules(c);
 
                     // итог применения правила к ячейке
@@ -123,16 +121,15 @@ void Field::calculate()
                 // Field Information
                 auto nis = ni->getState();
 
-                //if(nis == Kernel::CellState::Dead) // не передаём
-
+                //Kernel::CellState::Dead не считаем
                 if(nis == Kernel::CellState::Alive)
                 {
-                    cells.append(c);
+                    cells_to_redraw.append(c);
                     alive++;
                 }
                 else if(nis == Kernel::CellState::Cursed)
                 {
-                    cells.append(c);
+                    cells_to_redraw.append(c);
                     cursed++;
                 }
             }
@@ -148,7 +145,7 @@ void Field::calculate()
         m_FieldInformation->applyAverageCalc(time);
 
         m_WaitScene = true;
-        Q_EMIT signalCalculated(cells);
+        Q_EMIT signalCalculated(cells_to_redraw);
 
         if(!m_CalculatingNonstop) slotStopCalculating();
 
@@ -190,19 +187,6 @@ Cell *Field::addCell(int x, int y)
     return c;
 }
 
-void Field::testRules(Cell *c)
-{
-    auto ci = c->getCurInfo();
-    auto ni = c->getNewInfo();
-
-    if(ci->getState() == Kernel::CellState::Dead)
-        ni->setState(Kernel::CellState::Alive);
-    else if(ci->getState() == Kernel::CellState::Alive)
-        ni->setState(Kernel::CellState::Cursed);
-    else if(ci->getState() == Kernel::CellState::Cursed)
-        ni->setState(Kernel::CellState::Dead);
-}
-
 void Field::applyRules(Cell *cell) // TODO: выполнение правил
 {
     auto ci = cell->getCurInfo();
@@ -221,14 +205,14 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
         auto tstate = static_cast<Kernel::CellState>(a.value(3).toInt());
         auto aoperand = static_cast<Kernel::ActivityOperand>(a.value(4).toInt());
         auto aoperator = static_cast<Kernel::ActivityOperator>(a.value(5).toInt());
-        auto value =  a.value(6).toInt();
+        auto value =  a.value(6).toUInt();
 
         auto list = getCellsAroundByStatus(cell, tstate);
 
         // значение в операнде
         auto operand_value = [aoperand, list]()
         {
-            auto count = 0;
+            uint count = 0;
             if(aoperand == Kernel::ActivityOperand::Count)
             { count = list.count(); }
 
@@ -510,4 +494,4 @@ FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::slotSceneReady() { m_WaitScene = false; }
 void Field::AbortCalculating() { m_AbortCalculating = true; }
 void Field::setRuleOn(bool value) { m_RuleOn = value; }
-qint64 Field::getCellsCount() const { return m_CellsCount; }
+uint Field::getCellsCount() const { return m_CellsCount; }

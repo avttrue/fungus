@@ -26,7 +26,7 @@ public:
     void StopAdvanse();
     SceneItem *getSceneItem() const;
     qreal getAverageDraw() const;
-    void applyAverageDraw(qint64 time);
+    void applyAverageDraw(uint time);
     Cell *getSelectedCell() const;
     Cell *getSecondSelectedCell() const;
     void clearMultiSelection();

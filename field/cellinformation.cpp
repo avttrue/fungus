@@ -20,7 +20,7 @@ void CellInformation::setState(Kernel::CellState value)
     Q_EMIT signalStateChanged(QVariant::fromValue(m_State));
 }
 
-void CellInformation::setAge(qint64 value)
+void CellInformation::setAge(uint value)
 {
     if (m_Age == value) return;
 
@@ -34,7 +34,7 @@ void CellInformation::upAge()
     Q_EMIT signalAgeChanged(m_Age);
 }
 
-void CellInformation::setGeneration(qint64 value)
+void CellInformation::setGeneration(uint value)
 {
     if (m_Generation == value) return;
 
@@ -67,5 +67,5 @@ void CellInformation::setCursedAge(int CursedAge)
 int CellInformation::getCursedAge() const { return m_CursedAge; }
 bool CellInformation::isActive() const { return m_Active; }
 Kernel::CellState CellInformation::getState() const { return m_State; }
-qint64 CellInformation::getAge() const { return m_Age; }
-qint64 CellInformation::getGeneration() const { return m_Generation; }
+uint CellInformation::getAge() const { return m_Age; }
+uint CellInformation::getGeneration() const { return m_Generation; }

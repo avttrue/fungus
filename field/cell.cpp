@@ -18,9 +18,12 @@ Cell::Cell(Field *parent)
 
 void Cell::clear()
 {
-    m_CurrentInformation->setAge(0);
-    m_CurrentInformation->setState(Kernel::CellState::Dead);
-    m_CurrentInformation->setGeneration(0);
+    m_NewInformation->setAge(0);
+    m_NewInformation->setState(Kernel::CellState::Dead);
+    m_NewInformation->setGeneration(0);
+    m_NewInformation->setActive(false);
+    m_NewInformation->setCursedAge(0);
+    applyInfo();
 }
 
 void Cell::applyInfo()
@@ -29,6 +32,7 @@ void Cell::applyInfo()
     m_CurrentInformation->setState(m_NewInformation->getState());
     m_CurrentInformation->setGeneration(m_NewInformation->getGeneration());
     m_CurrentInformation->setActive(m_NewInformation->isActive());
+    m_CurrentInformation->setCursedAge(m_NewInformation->getCursedAge());
 }
 
 void Cell::setIndex(const QPoint &value)

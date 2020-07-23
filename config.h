@@ -78,6 +78,10 @@ public:
     void setJsonCompactMode(bool value);
     QString PresetFileExtension() const;
     void setPresetFileExtension(const QString &value);
+    bool CopyToClipboardExceptDead() const;
+    void setCopyToClipboardExceptDead(bool value);
+    bool SaveToPresetExceptDead() const;
+    void setSaveToPresetExceptDead(bool value);
 
 protected:
     void load();
@@ -116,6 +120,8 @@ private:
     bool m_SceneViewAntialiasing;                   // SceneView: Antialiasing
     bool m_WindowShowFieldInfo;                     // отображать окно информации о Field при создании Field
     bool m_JsonCompactMode;                         // формат записи json
+    bool m_CopyToClipboardExceptDead;               // при копировании в буфер обмена исключать мёртвые
+    bool m_SaveToPresetExceptDead;                  // при сохранении в пресет исключать мёртвые
 };
 
 #endif // CONFIG_H

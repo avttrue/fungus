@@ -17,7 +17,7 @@ FieldInformation::FieldInformation(QObject *parent)
 }
 
 
-qint64 FieldInformation::upAge()
+uint FieldInformation::upAge()
 {
     m_Age++;
 
@@ -25,7 +25,7 @@ qint64 FieldInformation::upAge()
     return m_Age;
 }
 
-void FieldInformation::applyAverageCalc(qint64 time)
+void FieldInformation::applyAverageCalc(uint time)
 {
     auto new_c = QDateTime::currentMSecsSinceEpoch() - time;
 
@@ -42,7 +42,7 @@ void FieldInformation::applyAverageCalc(qint64 time)
     }
 }
 
-void FieldInformation::setDeadCells(qint64 value)
+void FieldInformation::setDeadCells(uint value)
 {
     if (m_DeadCells == value) return;
 
@@ -50,7 +50,7 @@ void FieldInformation::setDeadCells(qint64 value)
     Q_EMIT signalDeadCellsChanged(m_DeadCells);
 }
 
-void FieldInformation::setAliveCells(qint64 value)
+void FieldInformation::setAliveCells(uint value)
 {
     if (m_AliveCells == value) return;
 
@@ -58,7 +58,7 @@ void FieldInformation::setAliveCells(qint64 value)
     Q_EMIT signalAliveCellsChanged(m_AliveCells);
 }
 
-void FieldInformation::setCursedCells(qint64 value)
+void FieldInformation::setCursedCells(uint value)
 {
     if (m_CursedCells == value) return;
 
@@ -66,7 +66,7 @@ void FieldInformation::setCursedCells(qint64 value)
     Q_EMIT signalCursedCellsChanged(m_CursedCells);
 }
 
-void FieldInformation::setActiveCells(qint64 value)
+void FieldInformation::setActiveCells(uint value)
 {
     if (m_ActiveCells == value) return;
 
@@ -76,7 +76,7 @@ void FieldInformation::setActiveCells(qint64 value)
     Q_EMIT signalActiveCellsChanged(m_ActiveCells);
 }
 
-void FieldInformation::setLastActiveAge(qint64 value)
+void FieldInformation::setLastActiveAge(uint value)
 {
     if (m_LastActiveAge == value) return;
 
@@ -84,10 +84,10 @@ void FieldInformation::setLastActiveAge(qint64 value)
     Q_EMIT signalLastActiveAgeChanged(m_LastActiveAge);
 }
 
-qint64 FieldInformation::getLastActiveAge() const { return m_LastActiveAge; }
-qint64 FieldInformation::getActiveCells() const { return m_ActiveCells; }
+uint FieldInformation::getLastActiveAge() const { return m_LastActiveAge; }
+uint FieldInformation::getActiveCells() const { return m_ActiveCells; }
 qreal FieldInformation::getAverageCalc() const { return m_AverageCalc; }
-qint64 FieldInformation::getAge() const { return m_Age; }
-qint64 FieldInformation::getDeadCells() const { return m_DeadCells; }
-qint64 FieldInformation::getAliveCells() const { return m_AliveCells; }
-qint64 FieldInformation::getCursedCells() const { return m_CursedCells; }
+uint FieldInformation::getAge() const { return m_Age; }
+uint FieldInformation::getDeadCells() const { return m_DeadCells; }
+uint FieldInformation::getAliveCells() const { return m_AliveCells; }
+uint FieldInformation::getCursedCells() const { return m_CursedCells; }

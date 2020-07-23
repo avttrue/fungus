@@ -190,7 +190,7 @@ void Scene::slotAdvance(QVector<Cell *> cells)
     Q_EMIT signalReady();
 }
 
-void Scene::applyAverageDraw(qint64 time)
+void Scene::applyAverageDraw(uint time)
 {
     auto new_d = QDateTime::currentMSecsSinceEpoch() - time;
 

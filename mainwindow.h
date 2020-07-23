@@ -50,8 +50,8 @@ protected:
     void stopThreadField();
     void setSceneFieldThreadPriority();
     void redrawScene();
-    void CellsToJsonObject(QJsonObject *jobject, Cell* firstcell, Cell* secondcell);
-    QString CellsToJsonText(Cell *firstcell, Cell *secondcell);
+    void CellsToJsonObject(QJsonObject *jobject, Cell* firstcell, Cell* secondcell, bool except_dead);
+    QString CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exceptdead);
     bool CellsFromJsonText(Cell *cell, const QString& text);
     bool CellsFromJsonObject(QJsonObject *jobject, Cell* cell);
 
@@ -90,7 +90,7 @@ private Q_SLOTS:
     void slotStepStop();
     void slotRun();
     void slotFieldRunning(bool value);
-    void slotFieldAge(qint64 value);
+    void slotFieldAge(uint value);
     void slotFieldAvCalcUp(qreal value);
     void slotFieldAvCalcDown(qreal value);
     void slotAverageDrawUp(qreal value);

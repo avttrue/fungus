@@ -34,7 +34,7 @@ QString humanReadableByteCount(long long bytes, bool si = true);
 
 void copyProperty(QObject *source, QObject *target);
 
-qreal calcAverage(qreal oldAverage, qint64 iteration, qint64 value);
+qreal calcAverage(qreal oldAverage, uint iteration, uint value);
 
 QString getSystemInfo();
 

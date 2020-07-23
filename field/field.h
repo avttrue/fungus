@@ -30,7 +30,7 @@ public:
     FieldInformation *getInformation() const;
     void AbortCalculating();
     void setRuleOn(bool value);
-    qint64 getCellsCount() const;
+    uint getCellsCount() const;
 
 protected:
     Cell* getTopCell(Cell* cell);
@@ -45,12 +45,11 @@ protected:
     QVector<Cell*> getCellsAroundByStatus(Cell* cell, Kernel::CellState status);
     void applyCalculating();                        // применение результатов calculate
     void applyRules(Cell* cell);                    // применение правил
-    void testRules(Cell* c);
 
 private:
     int m_Width;
     int m_Height;
-    qint64 m_CellsCount;
+    uint m_CellsCount;
     QVector<QVector<Cell*>> m_Cells;
     FieldRule* m_Rule;
     FieldInformation* m_FieldInformation;

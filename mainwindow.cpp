@@ -414,7 +414,7 @@ void MainWindow::redrawScene()
     m_Field->calculate();
 }
 
-void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *secondcell)
+void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *secondcell, bool except_dead)
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
     auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
@@ -431,16 +431,14 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     QJsonArray cells;
     for(int x = xmin; x <= xmax; x++)
     {
-        dx = x - xmin;
         for(int y = ymin; y <= ymax; y++)
         {
-            dy = y - ymin;
-            auto ci = m_Field->getCell({x, y})->getCurInfo();
-            auto ci_mo = ci->metaObject();
+            auto c = m_Field->getCell({x, y});
+            auto ci = c->getCurInfo();
 
-            QJsonObject obj_index;
-            obj_index.insert("X", dx);
-            obj_index.insert("Y", dy);
+            if(except_dead && ci->getState() == Kernel::CellState::Dead) continue;
+
+            auto ci_mo = ci->metaObject();
 
             QJsonObject obj_prop;
             for(int i = ci_mo->propertyOffset(); i < ci_mo->propertyCount(); ++i)
@@ -456,33 +454,28 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
 
                 obj_prop.insert(p.name(), jvalue);
             }
-
-            QJsonObject obj_cell;
-            obj_cell.insert("Index", obj_index);
-            obj_cell.insert("Properties", obj_prop);
-            cells.append(obj_cell);
+            cells.append(QJsonObject({{"Index", QJsonObject({{"X", x - xmin}, {"Y", y - ymin}})},
+                                      {"Properties", obj_prop}}));
 
             m_ProgressBar->setValue(cells.count());
             QApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
         }
     }
-    jobject->insert("Cells", cells);
-    QJsonObject obj_size;
-    obj_size.insert("Height", dy + 1);
-    obj_size.insert("Width", dx + 1);
+
+    QJsonObject obj_size{{"Height", dy + 1}, {"Width", dx + 1}};
     jobject->insert("Size", obj_size);
+    jobject->insert("Cells", cells);
+
     qDebug() << "Copied to JsonObject" << cells.count() << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
     m_ProgressBar->hide();
 }
 
-QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell)
+QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exceptdead)
 {
     QJsonDocument document;
-    QJsonObject obj_root;
-    obj_root.insert("application", APP_NAME);
-    obj_root.insert("version", APP_VERS);
-
-    CellsToJsonObject(&obj_root, firstcell, secondcell);
+    QJsonObject obj_root {{"application", APP_NAME}, {"version", APP_VERS}};
+    
+    CellsToJsonObject(&obj_root, firstcell, secondcell, exceptdead);
     document.setObject(obj_root);
 
     auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
@@ -565,18 +558,17 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
         auto obj_y = obj_index.value("Y");
         if(obj_y.isUndefined()) {qDebug() << __func__ << "JsonValue 'Index.Y' is undefined"; return false; }
 
-        auto x = obj_index.value("X").toInt();
-        auto y = obj_index.value("Y").toInt();
-
         auto obj_prop = o.toObject().value("Properties").toObject();
         if(obj_prop.isEmpty()) {qDebug() << __func__ << "JsonObject 'Properties' is empty"; return false; }
 
+        auto x = obj_index.value("X").toInt();
+        auto y = obj_index.value("Y").toInt();
+        auto c = m_Field->getCell({cx + x, cy + y});
+        auto ci = c->getNewInfo();
+
         for(auto key : obj_prop.keys())
-        {
-            auto ci = m_Field->getCell({cx + x, cy + y})->getNewInfo();
-            ci->setProperty(key.toLatin1(), obj_prop.value(key).toVariant().toInt());
-        }
-        m_Field->getCell({cx + x, cy + y})->applyInfo();
+            ci->setProperty(key.toLatin1(), obj_prop.value(key).toVariant().toUInt());
+        c->applyInfo();
 
         m_ProgressBar->setValue(++counter);
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
@@ -604,7 +596,10 @@ void MainWindow::slotSetup()
                                    tr("12#_Scene zoom factor"),
                                    tr("13#_Indicate age value"),
                                    tr("14#_Minimum pause at calculating (ms)"),
-                                   tr("15#_Field thread priority"),
+                                   tr("15#_Additional options"),
+                                   tr("16#_Copy to clipboard except dead cells"),
+                                   tr("17#_Save to preset except dead cells"),
+                                   tr("18#_Field thread priority"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -622,7 +617,10 @@ void MainWindow::slotSetup()
      {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
      {keys.at(13), {QVariant::Bool, config->SceneCellAgeIndicate(), 0, 0}},
      {keys.at(14), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
-     {keys.at(15), {QVariant::StringList, config->SceneFieldThreadPriority(), 1, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
+     {keys.at(15), {}},
+     {keys.at(16), {QVariant::Bool, config->CopyToClipboardExceptDead(), 0, 0}},
+     {keys.at(17), {QVariant::Bool, config->SaveToPresetExceptDead(), 0, 0}},
+     {keys.at(18), {QVariant::StringList, config->SceneFieldThreadPriority(), 1, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -657,7 +655,9 @@ void MainWindow::slotSetup()
     config->setSceneCellAgeIndicate(map.value(keys.at(13)).value.toBool());
     config->setSceneCalculatingMinPause(map.value(keys.at(14)).value.toInt());
     m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
-    config->setSceneFieldThreadPriority(map.value(keys.at(15)).value.toString());
+    config->setCopyToClipboardExceptDead(map.value(keys.at(16)).value.toBool());
+    config->setSaveToPresetExceptDead(map.value(keys.at(17)).value.toBool());
+    config->setSceneFieldThreadPriority(map.value(keys.at(18)).value.toString());
     setSceneFieldThreadPriority();
 }
 
@@ -806,7 +806,7 @@ void MainWindow::slotSaveCellsToClipbord()
 
     auto clipboard = QGuiApplication::clipboard();
 
-    clipboard->setText(CellsToJsonText(firstcell, secondcell));
+    clipboard->setText(CellsToJsonText(firstcell, secondcell, config->CopyToClipboardExceptDead()));
 }
 
 void MainWindow::slotLoadCellsFromClipbord()
@@ -820,9 +820,7 @@ void MainWindow::slotLoadCellsFromClipbord()
     auto clipboard = QGuiApplication::clipboard();
     auto text = clipboard->text();
 
-    CellsFromJsonText(cell, text);
-
-    redrawScene();
+    if(CellsFromJsonText(cell, text)) redrawScene();
 }
 
 void MainWindow::slotSaveCellsToFile()
@@ -834,7 +832,7 @@ void MainWindow::slotSaveCellsToFile()
     auto secondcell = scene->getSecondSelectedCell();
     if(!firstcell || !secondcell || firstcell == secondcell)  {m_ActionSaveCellsToFile->setDisabled(true); return; }
 
-    auto text = CellsToJsonText(firstcell, secondcell);
+    auto text = CellsToJsonText(firstcell, secondcell, config->SaveToPresetExceptDead());
 
     auto fileext = config->PresetFileExtension().toLower();
     auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->LastDir(),
@@ -873,9 +871,7 @@ void MainWindow::slotLoadCellsFromFile()
         return;
     }
 
-    CellsFromJsonText(cell, text);
-
-    redrawScene();
+    if(CellsFromJsonText(cell, text)) redrawScene();
 }
 
 void MainWindow::slotInfoCell()
@@ -981,5 +977,5 @@ void MainWindow::slotAverageDrawDown(qreal value)
     m_LabelSceneAvDraw->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
-void MainWindow::slotFieldAge(qint64 value) { m_LabelFieldAge->setText(QString::number(value)); }
+void MainWindow::slotFieldAge(uint value) { m_LabelFieldAge->setText(QString::number(value)); }
 QProgressBar *MainWindow::ProgressBar() const { return m_ProgressBar; }

@@ -104,7 +104,7 @@ QString getSystemInfo()
     return "unknown";
 }
 
-qreal calcAverage(qreal oldAverage, qint64 iteration, qint64 value)
+qreal calcAverage(qreal oldAverage, uint iteration, uint value)
 {
     auto iteration_1 = static_cast<qreal>(iteration - 1);
     return iteration < 2
