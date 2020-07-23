@@ -438,7 +438,6 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     m_ProgressBar->setValue(0);
     m_ProgressBar->show();
 
-    int dx = 0, dy = 0;
     QJsonArray cells;
     for(int x = xmin; x <= xmax; x++)
     {
@@ -473,7 +472,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
         }
     }
 
-    QJsonObject obj_size{{"Height", dy + 1}, {"Width", dx + 1}};
+    QJsonObject obj_size{{"Height", ymax - ymin + 1}, {"Width", xmax - xmin + 1}};
     jobject->insert("Size", obj_size);
     jobject->insert("Cells", cells);
 
