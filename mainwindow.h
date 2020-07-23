@@ -72,6 +72,7 @@ private:
     QAction* m_ActionLoadCellsFromClipbord;
     QAction* m_ActionSaveCellsToFile;
     QAction* m_ActionLoadCellsFromFile;
+    QAction* m_ActionClearCells;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -100,6 +101,7 @@ private Q_SLOTS:
     void slotLoadCellsFromClipbord();
     void slotSaveCellsToFile();
     void slotLoadCellsFromFile();
+    void slotClearCells();
     void slotInfoCell();
     void slotInfoField();
     void slotEditCell();

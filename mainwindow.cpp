@@ -128,6 +128,11 @@ void MainWindow::loadGui()
     m_ActionInfoField->setEnabled(false);
     m_ActionInfoField->setShortcut(Qt::CTRL + Qt::Key_F);
 
+    m_ActionClearCells = new QAction(QIcon(":/resources/img/delete.svg"), tr("Clear selected cells"), this);
+    QObject::connect(m_ActionClearCells, &QAction::triggered, this, &MainWindow::slotClearCells);
+    m_ActionClearCells->setEnabled(false);
+    m_ActionClearCells->setShortcut(Qt::CTRL + Qt::Key_D);
+
     m_ActionSaveImageToFile = new QAction(QIcon(":/resources/img/camera.svg"), tr("Save image to file"), this);
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
     m_ActionSaveImageToFile->setEnabled(false);
@@ -177,6 +182,10 @@ void MainWindow::loadGui()
 
     tbActions->addAction(m_ActionSaveCellsToFile);
     tbActions->addAction(m_ActionLoadCellsFromFile);
+
+    tbActions->addSeparator();
+
+    tbActions->addAction(m_ActionClearCells);
 
     addToolBar(Qt::LeftToolBarArea, tbActions);
 
@@ -248,6 +257,7 @@ void MainWindow::slotStepStop()
 {    
     m_ActionSaveCellsToClipbord->setDisabled(true);
     m_ActionSaveCellsToFile->setDisabled(true);
+    m_ActionClearCells->setDisabled(true);
     if(m_SceneView->getScene()->getSelectedCell())
     {
         m_ActionLoadCellsFromClipbord->setEnabled(true);
@@ -272,6 +282,7 @@ void MainWindow::slotRun()
     {
         m_ActionSaveCellsToClipbord->setDisabled(true);
         m_ActionSaveCellsToFile->setDisabled(true);
+        m_ActionClearCells->setDisabled(true);
         m_ActionLoadCellsFromClipbord->setDisabled(true);
         m_ActionLoadCellsFromFile->setDisabled(true);
         m_SceneView->getScene()->clearMultiSelection();
@@ -762,6 +773,7 @@ void MainWindow::slotNewProject()
     m_ActionInfoCell->setDisabled(true);
     m_ActionSaveCellsToClipbord->setDisabled(true);
     m_ActionSaveCellsToFile->setDisabled(true);
+    m_ActionClearCells->setDisabled(true);
     setActionsEnable(true);
 
     if(random) redrawScene();
@@ -874,6 +886,33 @@ void MainWindow::slotLoadCellsFromFile()
     if(CellsFromJsonText(cell, text)) redrawScene();
 }
 
+void MainWindow::slotClearCells()
+{
+    auto scene = m_SceneView->getScene();
+    if(!scene) {m_ActionClearCells->setDisabled(true); return; }
+
+    auto firstcell = scene->getSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
+    if(!firstcell || !secondcell || firstcell == secondcell)  {m_ActionClearCells->setDisabled(true); return; }
+
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+
+    for(int x = xmin; x <= xmax; x++)
+    {
+        for(int y = ymin; y <= ymax; y++)
+        {
+            auto c = m_Field->getCell({x, y});
+            c->clear();
+        }
+    }
+     qDebug() << "Cleared" << (xmax -xmin) * (ymax -ymin) << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    redrawScene();
+}
+
 void MainWindow::slotInfoCell()
 {
     auto cell = m_SceneView->getScene()->getSelectedCell();
@@ -936,13 +975,14 @@ void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
     {
         m_ActionSaveCellsToClipbord->setDisabled(true);
         m_ActionSaveCellsToFile->setDisabled(true);
+        m_ActionClearCells->setDisabled(true);
         return;
     }
 
     Q_EMIT signalStopField();
     m_ActionSaveCellsToClipbord->setEnabled(true);
     m_ActionSaveCellsToFile->setEnabled(true);
-
+    m_ActionClearCells->setEnabled(true);
 }
 
 void MainWindow::slotFieldAvCalcUp(qreal value)
