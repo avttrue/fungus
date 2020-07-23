@@ -289,6 +289,24 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
             if(key == m_FocusedKey) spinbox->setFocus();
             continue;
         }
+//        if(t == QVariant::UInt)
+//        {
+//            auto spinbox = new QSpinBox();
+//            spinbox->setPrefix(QString("%1: ").arg(text));
+//            spinbox->setRange(minv.toUInt(),
+//                              maxv.toUInt() == minv.toUInt()
+//                                  ? std::numeric_limits<uint>::max()
+//                                  : maxv.toUInt());
+//            spinbox->setSingleStep(1);
+//            spinbox->setValue(v.toUInt());
+//            spinbox->installEventFilter(this);
+//            spinbox->setProperty("ValueName", key);
+//            QObject::connect(spinbox, QOverload<int>::of(&QSpinBox::valueChanged),
+//                             this, &DialogValuesList::slotIntValueChanged);
+//            addWidgetContent(spinbox);
+//            if(key == m_FocusedKey) spinbox->setFocus();
+//            continue;
+//        }
         if(t == QVariant::Double)
         {
             auto spinbox = new QDoubleSpinBox();

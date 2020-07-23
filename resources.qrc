@@ -34,5 +34,10 @@
         <file>resources/img/preset_load.svg</file>
         <file>resources/img/preset_save.svg</file>
         <file>resources/img/camera.svg</file>
+        <file>resources/presets/Conway's_Game_Of_Life/cross-3.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/pentadecathlon-15.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/octagon-5.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/Kok's_galaxy-8.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/glider-4.fpr</file>
     </qresource>
 </RCC>

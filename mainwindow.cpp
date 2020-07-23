@@ -686,24 +686,28 @@ void MainWindow::slotEditCell()
 
     const QVector<QString> keys =
     { tr("00#_Cell properties"),
-      tr("01#_Cell state"),
-      tr("02#_Cell age"),
-      tr("03#_Cell generation") };
+      tr("01#_State"),
+      tr("02#_Age"),
+      tr("03#_Generation"),
+      tr("04#_Cursed age")};
     QMap<QString, DialogValue> map =
     { {keys.at(0), {}},
       {keys.at(1), {QVariant::StringList,
                     getNameKernelEnum("CellState", static_cast<int>(cni->getState())), 0,
                     statelist, DialogValueMode::OneFromList}},
       {keys.at(2), {QVariant::Int, cni->getAge(), 0, 0}},
-      {keys.at(3), {QVariant::Int, cni->getGeneration(), 0, 0}} };
+      {keys.at(3), {QVariant::Int, cni->getGeneration(), 0, 0}},
+      {keys.at(4), {QVariant::Int, cni->getCursedAge(), 0, 0}}
+    };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
                                     tr("Edit cell %1").arg(cell->objectName()), &map);
     if(!dvl->exec()) return;
 
     cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
-    cni->setAge(map.value(keys.at(2)).value.toInt());
-    cni->setGeneration(map.value(keys.at(3)).value.toInt());
+    cni->setAge(map.value(keys.at(2)).value.toUInt());
+    cni->setGeneration(map.value(keys.at(3)).value.toUInt());
+    cni->setCursedAge(map.value(keys.at(4)).value.toUInt());
 
     cell->applyInfo(); // для ускорения обновления; в m_Field->calculate() applyCalculating выключен
     redrawScene();
