@@ -909,7 +909,7 @@ void MainWindow::slotClearCells()
             c->clear();
         }
     }
-     qDebug() << "Cleared" << (xmax -xmin) * (ymax -ymin) << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    qDebug() << "Cleared" << (xmax -xmin) * (ymax -ymin) << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
     redrawScene();
 }
 
