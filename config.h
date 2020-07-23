@@ -18,6 +18,7 @@ public:
 
     QString PathApp() const;
     QString PathAppConfig() const;
+    QString PathPresetDirectory() const;
     int ButtonSize() const;
     void setButtonSize(int value);
     QString DateTimeFormat() const;
@@ -66,8 +67,8 @@ public:
     void setFieldInfoWindowHeight(int value);
     int FieldInfoWindowWidth() const;
     void setFieldInfoWindowWidth(int value);
-    QString SceneImageFileFormat() const;
-    void setSceneImageFileFormat(const QString &value);
+    QString ImageFileFormat() const;
+    void setImageFileFormat(const QString &value);
     bool WindowShowFieldInfo() const;
     void setWindowShowFieldInfo(bool value);
     Qt::KeyboardModifiers SceneMultiselModifier() const;
@@ -82,8 +83,8 @@ public:
     void setCopyToClipboardExceptDead(bool value);
     bool SaveToPresetExceptDead() const;
     void setSaveToPresetExceptDead(bool value);
-    bool IgnoreJsonDataVersion() const;
-    void setIgnoreJsonDataVersion(bool value);
+    bool JsonIgnoreDataVersion() const;
+    void setJsonIgnoreDataVersion(bool value);
 
 protected:
     void load();
@@ -92,6 +93,7 @@ private:
     QSettings* m_Settings;
     QString m_DateTimeFormat;                       // формат отображения даты и времени
     QString m_PathAppConfig;                        // путь до конфига приложения
+    QString m_PathPresetDirectory;                  // путь до каталога с пресетами
     QString m_PathAppDir;                           // путь до приложения
     QString m_LastDir;                              // путь до последнего каталога
     QString m_SceneSelectColor;                     // цвет выбранного объекта сцены
@@ -100,7 +102,7 @@ private:
     QString m_SceneCellCurseColor;                  // цвет отравленной ячейки
     QString m_SceneViewUpdateMode;                  // метод отрисовки SceneView
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
-    QString m_SceneImageFileFormat;                 // формат файлов для сохранения картинки сцены
+    QString m_ImageFileFormat;                      // формат файлов для сохранения картинки сцены
     QString m_PresetFileExtension;                  // формат файлов для сохранения пресетов
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
     int m_SceneMultiselAlfa;                        // прозрачность рамки выделения 0-254
@@ -114,15 +116,15 @@ private:
     int m_CellInfoWindowWidth;                      // размеры окна информации о Cell
     int m_FieldInfoWindowHeight;                    // размеры окна информации о Field
     int m_FieldInfoWindowWidth;                     // размеры окна информации о Field
-    Qt::KeyboardModifiers m_SceneZoomModifier;      // модификатор управления зумом
-    Qt::KeyboardModifiers m_SceneToolTipModifier;   // модификатор отображения координат Field
-    Qt::KeyboardModifiers m_SceneMultiselModifier;  // модификатор выбора группы Cell
+    Qt::KeyboardModifiers m_SceneZoomKeyModifier;   // модификатор управления зумом
+    Qt::KeyboardModifiers m_SceneTooltipKeyModifier;// модификатор отображения координат Field
+    Qt::KeyboardModifiers m_SceneMultiselKeyModifier;// модификатор выбора группы Cell
     bool m_SceneCellAgeIndicate;                    // отображать возраст живых ячеек
     bool m_SI_metric;                               // использовать систему СИ в отображении размеров файлов
     bool m_SceneViewAntialiasing;                   // SceneView: Antialiasing
     bool m_WindowShowFieldInfo;                     // отображать окно информации о Field при создании Field
     bool m_JsonCompactMode;                         // формат записи json
-    bool m_IgnoreJsonDataVersion;                   // игнорировать версию в данных json
+    bool m_JsonIgnoreDataVersion;                   // игнорировать версию в данных json
     bool m_CopyToClipboardExceptDead;               // при копировании в буфер обмена исключать мёртвые
     bool m_SaveToPresetExceptDead;                  // при сохранении в пресет исключать мёртвые
 };

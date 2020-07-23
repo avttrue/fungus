@@ -10,8 +10,10 @@ Config::Config(const QString& in_AppDirectory):
 {
     m_PathAppDir = in_AppDirectory;
     m_PathAppConfig = m_PathAppDir + QDir::separator() + APP_CFG;
-
     qInfo() << "AppConfig:" << m_PathAppConfig;
+
+    m_PathPresetDirectory = m_PathAppDir + QDir::separator() + PRESET_DIRECTORY;
+    qInfo() << "PathPresetDirectory:" << m_PathPresetDirectory;
 
     m_Settings = new QSettings(m_PathAppConfig, QSettings::IniFormat);
     m_Settings->setIniCodec(QTextCodec::codecForName(TEXT_CODEC.toLatin1()));
@@ -43,9 +45,9 @@ void Config::load()
         m_Settings->setValue("SaveToPresetExceptDead", SAVE_TO_PRESET_EXCEPT_DEAD);
     m_SaveToPresetExceptDead = m_Settings->value("SaveToPresetExceptDead").toBool();
 
-    if(!m_Settings->contains("IgnoreJsonDataVersion"))
-        m_Settings->setValue("IgnoreJsonDataVersion", IGNORE_JSON_DATA_VERSION);
-    m_IgnoreJsonDataVersion = m_Settings->value("IgnoreJsonDataVersion").toBool();
+    if(!m_Settings->contains("JsonIgnoreDataVersion"))
+        m_Settings->setValue("JsonIgnoreDataVersion", JSON_IGNORE_DATA_VERSION);
+    m_JsonIgnoreDataVersion = m_Settings->value("JsonIgnoreDataVersion").toBool();
 
     if(!m_Settings->contains("DateTimeFormat"))
         m_Settings->setValue("DateTimeFormat", DT_FORMAT);
@@ -110,16 +112,16 @@ void Config::load()
     m_SceneViewAntialiasing = m_Settings->value("Scene/ViewAntialiasing").toBool();
 
     if(!m_Settings->contains("Scene/ZoomKeyModifier"))
-        m_Settings->setValue("Scene/ZoomKeyModifier", SCENE_ZOOM_MODIFIER);
-    m_SceneZoomModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ZoomKeyModifier").toInt());
+        m_Settings->setValue("Scene/ZoomKeyModifier", SCENE_ZOOM_KEY_MODIFIER);
+    m_SceneZoomKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ZoomKeyModifier").toInt());
 
-    if(!m_Settings->contains("Scene/ToolTipModifier"))
-        m_Settings->setValue("Scene/ToolTipModifier", SCENE_TOOLTIP_MODIFIER);
-    m_SceneToolTipModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ToolTipModifier").toInt());
+    if(!m_Settings->contains("Scene/TooltipKeyModifier"))
+        m_Settings->setValue("Scene/TooltipKeyModifier", SCENE_TOOLTIP_KEY_MODIFIER);
+    m_SceneTooltipKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/TooltipKeyModifier").toInt());
 
-    if(!m_Settings->contains("Scene/MultiselectModifier"))
-        m_Settings->setValue("Scene/MultiselectModifier", SCENE_MULTISELECT_MODIFIER);
-    m_SceneMultiselModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/MultiselectModifier").toInt());
+    if(!m_Settings->contains("Scene/MultiselectKeyModifier"))
+        m_Settings->setValue("Scene/MultiselectKeyModifier", SCENE_MULTISELECT_KEY_MODIFIER);
+    m_SceneMultiselKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/MultiselectKeyModifier").toInt());
 
     if(!m_Settings->contains("Scene/CellAgeIndicate"))
         m_Settings->setValue("Scene/CellAgeIndicate", SCENE_CELL_AGE_INDICATE);
@@ -141,9 +143,9 @@ void Config::load()
         m_Settings->setValue("Scene/FieldThreadPriority", SCENE_FIELD_THREAD_PRIORITY);
     m_SceneFieldThreadPriority = m_Settings->value("Scene/FieldThreadPriority").toString();
 
-    if(!m_Settings->contains("Scene/ImageFileFormat"))
-        m_Settings->setValue("Scene/ImageFileFormat", SCENE_IMAGE_FILE_FORMAT);
-    m_SceneImageFileFormat = m_Settings->value("Scene/ImageFileFormat").toString();
+    if(!m_Settings->contains("ImageFileFormat"))
+        m_Settings->setValue("ImageFileFormat", IMAGE_FILE_FORMAT);
+    m_ImageFileFormat = m_Settings->value("ImageFileFormat").toString();
 
     if(!m_Settings->contains("Scene/CellCurseColor"))
         m_Settings->setValue("Scene/CellCurseColor", SCENE_CELL_CURSE_COLOR);
@@ -162,12 +164,12 @@ void Config::load()
     m_SceneMultiselAlfa = m_Settings->value("Scene/MultiselectAlfa").toInt();
 }
 
-void Config::setIgnoreJsonDataVersion(bool value)
+void Config::setJsonIgnoreDataVersion(bool value)
 {
-    if(m_IgnoreJsonDataVersion == value) return;
+    if(m_JsonIgnoreDataVersion == value) return;
 
-    m_IgnoreJsonDataVersion = value;
-    m_Settings->setValue("IgnoreJsonDataVersion", m_IgnoreJsonDataVersion);
+    m_JsonIgnoreDataVersion = value;
+    m_Settings->setValue("JsonIgnoreDataVersion", m_JsonIgnoreDataVersion);
 }
 
 void Config::setSaveToPresetExceptDead(bool value)
@@ -212,10 +214,10 @@ void Config::setSceneMultiselAlfa(int value)
 
 void Config::setSceneMultiselModifier(const Qt::KeyboardModifiers &value)
 {
-    if(m_SceneMultiselModifier == value) return;
+    if(m_SceneMultiselKeyModifier == value) return;
 
-    m_SceneMultiselModifier = value;
-    m_Settings->setValue("Scene/MultiselectModifier", static_cast<int>(m_SceneMultiselModifier));
+    m_SceneMultiselKeyModifier = value;
+    m_Settings->setValue("Scene/MultiselectKeyModifier", static_cast<int>(m_SceneMultiselKeyModifier));
 }
 
 void Config::setWindowShowFieldInfo(bool value)
@@ -226,12 +228,12 @@ void Config::setWindowShowFieldInfo(bool value)
     m_Settings->setValue("MainWindow/ShowFieldInformation", m_WindowShowFieldInfo);
 }
 
-void Config::setSceneImageFileFormat(const QString &value)
+void Config::setImageFileFormat(const QString &value)
 {
-    if(m_SceneImageFileFormat == value) return;
+    if(m_ImageFileFormat == value) return;
 
-    m_SceneImageFileFormat = value;
-    m_Settings->setValue("Scene/ImageFileFormat", m_SceneImageFileFormat);
+    m_ImageFileFormat = value;
+    m_Settings->setValue("ImageFileFormat", m_ImageFileFormat);
 }
 
 
@@ -253,10 +255,10 @@ void Config::setFieldInfoWindowHeight(int value)
 
 void Config::setSceneToolTipModifier(const Qt::KeyboardModifiers &value)
 {
-    if(m_SceneToolTipModifier == value) return;
+    if(m_SceneTooltipKeyModifier == value) return;
 
-    m_SceneToolTipModifier = value;
-    m_Settings->setValue("Scene/ToolTipModifier", static_cast<int>(m_SceneToolTipModifier));
+    m_SceneTooltipKeyModifier = value;
+    m_Settings->setValue("Scene/TooltipKeyModifier", static_cast<int>(m_SceneTooltipKeyModifier));
 }
 
 void Config::setSceneItemZValue(int value)
@@ -349,10 +351,10 @@ void Config::setSceneFieldSize(int value)
 
 void Config::setSceneZoomModifier(const Qt::KeyboardModifiers &value)
 {
-    if(m_SceneZoomModifier == value) return;
+    if(m_SceneZoomKeyModifier == value) return;
 
-    m_SceneZoomModifier = value;
-    m_Settings->setValue("Scene/ZoomKeyModifier", static_cast<int>(m_SceneZoomModifier));
+    m_SceneZoomKeyModifier = value;
+    m_Settings->setValue("Scene/ZoomKeyModifier", static_cast<int>(m_SceneZoomKeyModifier));
 }
 
 void Config::setSceneViewAntialiasing(bool value)
@@ -426,7 +428,7 @@ void Config::setButtonSize(int value)
     m_Settings->setValue("MainWindow/ButtonSize", m_ButtonSize);
 }
 
-Qt::KeyboardModifiers Config::SceneMultiselModifier() const { return m_SceneMultiselModifier; }
+Qt::KeyboardModifiers Config::SceneMultiselModifier() const { return m_SceneMultiselKeyModifier; }
 QString Config::SceneViewUpdateMode() const { return m_SceneViewUpdateMode; }
 int Config::CellInfoWindowWidth() const { return m_CellInfoWindowWidth; }
 int Config::CellInfoWindowHeight() const { return m_CellInfoWindowHeight; }
@@ -435,8 +437,8 @@ QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
 bool Config::SceneCellAgeIndicate() const { return m_SceneCellAgeIndicate; }
 QString Config::SceneCellDeadColor() const { return m_SceneCellDeadColor; }
 int Config::SceneFieldSize() const { return m_SceneFieldSize; }
-Qt::KeyboardModifiers Config::SceneZoomModifier() const { return m_SceneZoomModifier; }
-Qt::KeyboardModifiers Config::SceneToolTipModifier() const { return m_SceneToolTipModifier; }
+Qt::KeyboardModifiers Config::SceneZoomModifier() const { return m_SceneZoomKeyModifier; }
+Qt::KeyboardModifiers Config::SceneToolTipModifier() const { return m_SceneTooltipKeyModifier; }
 bool Config::SceneViewAntialiasing() const { return m_SceneViewAntialiasing; }
 int Config::SceneCellSize() const { return m_SceneCellSize; }
 qreal Config::SceneScaleStep() const { return m_SceneScaleStep; }
@@ -453,11 +455,12 @@ QString Config::SceneFieldThreadPriority() const { return m_SceneFieldThreadPrio
 int Config::SceneItemZValue() const { return m_SceneItemZValue; }
 int Config::FieldInfoWindowWidth() const { return m_FieldInfoWindowWidth; }
 int Config::FieldInfoWindowHeight() const { return m_FieldInfoWindowHeight; }
-QString Config::SceneImageFileFormat() const { return m_SceneImageFileFormat; }
+QString Config::ImageFileFormat() const { return m_ImageFileFormat; }
 bool Config::WindowShowFieldInfo() const { return m_WindowShowFieldInfo; }
 int Config::SceneMultiselAlfa() const { return m_SceneMultiselAlfa; }
 bool Config::JsonCompactMode() const { return m_JsonCompactMode; }
 QString Config::PresetFileExtension() const { return m_PresetFileExtension; }
 bool Config::SaveToPresetExceptDead() const { return m_SaveToPresetExceptDead; }
 bool Config::CopyToClipboardExceptDead() const { return m_CopyToClipboardExceptDead; }
-bool Config::IgnoreJsonDataVersion() const { return m_IgnoreJsonDataVersion; }
+bool Config::JsonIgnoreDataVersion() const { return m_JsonIgnoreDataVersion; }
+QString Config::PathPresetDirectory() const { return m_PathPresetDirectory; }

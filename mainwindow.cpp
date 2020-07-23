@@ -510,7 +510,7 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
     { qDebug() << __func__  << "Incorrect Json data: 'application' =" << root_object.value("application").toString();
         return false; }
 
-    if(!config->IgnoreJsonDataVersion() && root_object.value("version").toString() != APP_VERS)
+    if(!config->JsonIgnoreDataVersion() && root_object.value("version").toString() != APP_VERS)
     { qDebug() << __func__  << "Incorrect Json: 'version' =" << root_object.value("version").toString();
         return false; }
 
@@ -956,7 +956,7 @@ void MainWindow::slotSaveImageToFile()
 {
     if(!m_Field) { m_ActionSaveImageToFile->setDisabled(true); return; }
 
-    auto fileformat = config->SceneImageFileFormat().toLower();
+    auto fileformat = config->ImageFileFormat().toLower();
     auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), config->LastDir(),
                                                  tr("%1 files (*.%2)").arg(fileformat.toUpper(), fileformat));
 
