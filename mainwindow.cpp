@@ -454,11 +454,10 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
             for(int i = ci_mo->propertyOffset(); i < ci_mo->propertyCount(); ++i)
             {
                 auto p = ci_mo->property(i);
-                auto value = ci->property(p.name());
-                QJsonValue jvalue;
-
                 if(std::strcmp(p.name(), tag_active) == 0) continue;
 
+                auto value = ci->property(p.name());
+                QJsonValue jvalue;
                 if(value.userType() == qMetaTypeId<Kernel::CellState>()) jvalue = value.toInt();
                 else jvalue = value.toJsonValue();
 
