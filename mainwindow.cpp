@@ -698,7 +698,7 @@ void MainWindow::slotEditCell()
     if(multyselection) keys.append(
     { tr("05#_Group operations"),
       tr("06#_Apply to all"),
-      tr("07#_Without 'State' property")});
+      tr("07#_Exclude 'State' property")});
 
     QMap<QString, DialogValue> map =
     { {keys.at(0), {}},
@@ -725,7 +725,7 @@ void MainWindow::slotEditCell()
 
     if(multyselection && map.value(keys.at(6)).value.toBool())
     {
-        auto without_state = map.value(keys.at(7)).value.toBool();
+        auto exclude_state = map.value(keys.at(7)).value.toBool();
         auto time = QDateTime::currentMSecsSinceEpoch();
         auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
         auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
@@ -738,7 +738,7 @@ void MainWindow::slotEditCell()
             {
                 auto c = m_Field->getCell({x, y});
                 cni = c->getNewInfo();
-                if(!without_state)
+                if(!exclude_state)
                     cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
                 cni->setAge(map.value(keys.at(2)).value.toUInt());
                 cni->setGeneration(map.value(keys.at(3)).value.toUInt());
