@@ -54,5 +54,8 @@
         <file>resources/presets/Conway's_Game_Of_Life/rabbits.fpr</file>
         <file>resources/presets/Conway's_Game_Of_Life/Switch_engine.fpr</file>
         <file>resources/presets/Conway's_Game_Of_Life/thunderbird.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/middle_weight_spaceship.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/light_weight_spaceship.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/heavy_weight_spaceship.fpr</file>
     </qresource>
 </RCC>
