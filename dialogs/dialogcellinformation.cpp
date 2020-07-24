@@ -96,7 +96,6 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
 
         return true;
     }
-
     default: { return false; }
     }
 }
@@ -122,8 +121,6 @@ void DialogCellInformation::loadInformation()
             QObject::connect(ci, &CellInformation::signalStateChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "Generation")
             QObject::connect(ci, &CellInformation::signalGenerationChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
-        else if(QString(p.name()) == "Active")
-            QObject::connect(ci, &CellInformation::signalActivityChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "CursedAge")
             QObject::connect(ci, &CellInformation::signalCursedAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
     }

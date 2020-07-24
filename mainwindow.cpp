@@ -432,7 +432,6 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
     auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
-    const auto tag_active = QString("Active").toStdString().c_str(); // поле "Active" исключается
 
     m_ProgressBar->setRange(0, (xmax - xmin) * (ymax - ymin));
     m_ProgressBar->setValue(0);
@@ -454,7 +453,6 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
             for(int i = ci_mo->propertyOffset(); i < ci_mo->propertyCount(); ++i)
             {
                 auto p = ci_mo->property(i);
-                if(std::strcmp(p.name(), tag_active) == 0) continue;
 
                 auto value = ci->property(p.name());
                 QJsonValue jvalue;

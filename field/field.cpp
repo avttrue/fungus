@@ -109,14 +109,10 @@ void Field::calculate()
 
                     // cell Generation
                     if(ci->getAge() == 0 && ni->getAge() > 0) ni->upGeneration();
-
-                    // cell Activity
-                    if(ci->getGeneration() < ni->getGeneration())
-                    {
-                        ni->setActive(true);
-                        active++;
-                    } else ni->setActive(false);
                 }
+
+                // cell Activity
+                if(ci->getGeneration() < ni->getGeneration()) active++;
 
                 // Field Information
                 auto nis = ni->getState();

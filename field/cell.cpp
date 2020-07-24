@@ -21,7 +21,6 @@ void Cell::clear()
     m_NewInformation->setAge(0);
     m_NewInformation->setState(Kernel::CellState::Dead);
     m_NewInformation->setGeneration(0);
-    m_NewInformation->setActive(false);
     m_NewInformation->setCursedAge(0);
     applyInfo();
 }
@@ -31,7 +30,6 @@ void Cell::applyInfo()
     m_CurrentInformation->setAge(m_NewInformation->getAge());
     m_CurrentInformation->setState(m_NewInformation->getState());
     m_CurrentInformation->setGeneration(m_NewInformation->getGeneration());
-    m_CurrentInformation->setActive(m_NewInformation->isActive());
     m_CurrentInformation->setCursedAge(m_NewInformation->getCursedAge());
 }
 
