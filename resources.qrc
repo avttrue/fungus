@@ -39,5 +39,20 @@
         <file>resources/presets/Conway's_Game_Of_Life/octagon-5.fpr</file>
         <file>resources/presets/Conway's_Game_Of_Life/Kok's_galaxy-8.fpr</file>
         <file>resources/presets/Conway's_Game_Of_Life/glider-4.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/diagonal-2.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/acorn.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/blom.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/bunnies.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/bunnies11.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/e-heptomino.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/jaydot.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/Multum_in_parvo.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/preset1.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/preset2.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/queen_bee.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/r-pentamino.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/rabbits.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/Switch_engine.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/thunderbird.fpr</file>
     </qresource>
 </RCC>

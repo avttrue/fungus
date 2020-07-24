@@ -511,7 +511,7 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
         return false; }
 
     if(!config->JsonIgnoreDataVersion() && root_object.value("version").toString() != APP_VERS)
-    { qDebug() << __func__  << "Incorrect Json: 'version' =" << root_object.value("version").toString();
+    { qDebug() << __func__  << "Incorrect Json data: 'version' =" << root_object.value("version").toString();
         return false; }
 
     auto obj_size = root_object.value("Size").toObject();
@@ -778,6 +778,8 @@ void MainWindow::slotNewProject()
     m_ActionSaveCellsToClipbord->setDisabled(true);
     m_ActionSaveCellsToFile->setDisabled(true);
     m_ActionClearCells->setDisabled(true);
+    m_ActionLoadCellsFromClipbord->setDisabled(true);
+    m_ActionLoadCellsFromFile->setDisabled(true);
     setActionsEnable(true);
 
     if(random) redrawScene();
@@ -851,15 +853,13 @@ void MainWindow::slotSaveCellsToFile()
     auto text = CellsToJsonText(firstcell, secondcell, config->SaveToPresetExceptDead());
 
     auto fileext = config->PresetFileExtension().toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->LastDir(),
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->PathPresetDirectory(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
 
     auto dot_fileext = QString(".%1").arg(fileext);
     if(!filename.endsWith(dot_fileext, Qt::CaseInsensitive)) filename.append(dot_fileext);
-
-    config->setLastDir(QFileInfo(filename).dir().path());
 
     textToFile(text, filename);
 }
@@ -873,7 +873,7 @@ void MainWindow::slotLoadCellsFromFile()
     if(!cell) {m_ActionLoadCellsFromFile->setDisabled(true); return; }
 
     auto fileext = config->PresetFileExtension().toLower();
-    auto filename = QFileDialog::getOpenFileName(this, tr("Load preset"), config->LastDir(),
+    auto filename = QFileDialog::getOpenFileName(this, tr("Load preset"), config->PathPresetDirectory(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;

@@ -12,11 +12,26 @@ Config::Config(const QString& in_AppDirectory):
     m_PathAppConfig = m_PathAppDir + QDir::separator() + APP_CFG;
     qInfo() << "AppConfig:" << m_PathAppConfig;
 
-    m_PathPresetDirectory = m_PathAppDir + QDir::separator() + PRESET_DIRECTORY;
-    qInfo() << "PathPresetDirectory:" << m_PathPresetDirectory;
-
     m_Settings = new QSettings(m_PathAppConfig, QSettings::IniFormat);
     m_Settings->setIniCodec(QTextCodec::codecForName(TEXT_CODEC.toLatin1()));
+
+    // каталог пресетов
+    m_PathPresetDirectory = m_PathAppDir + QDir::separator() + PRESET_DIRECTORY;
+    if(!QDir().exists(m_PathPresetDirectory) && !QDir().mkpath(m_PathPresetDirectory))
+    {
+        qCritical() << "Directory not exist and cannot be created:" << m_PathPresetDirectory;
+        m_PathPresetDirectory = m_PathAppDir;
+    }
+    else
+    {
+        auto p = QFile(m_PathPresetDirectory).permissions();
+        if(!QFile::setPermissions(m_PathPresetDirectory, p |
+                                  QFileDevice::ReadOwner |
+                                  QFileDevice::WriteOwner))
+            qCritical() << "Cannot set permissions to directory:" << m_PathPresetDirectory;
+        else qInfo() << "Directory" << m_PathPresetDirectory << "ready";
+    }
+    qInfo() << "PathPresetDirectory:" << m_PathPresetDirectory;
 
     load();
 
@@ -71,6 +86,14 @@ void Config::load()
         m_Settings->setValue("MainWindow/ButtonSize", BUTTON_SIZE);
     m_ButtonSize = m_Settings->value("MainWindow/ButtonSize").toInt();
 
+    if(!m_Settings->contains("RewriteResource"))
+        m_Settings->setValue("RewriteResource", REWITE_RESOURCES);
+    m_RewriteResource = m_Settings->value("RewriteResource").toBool();
+
+    if(!m_Settings->contains("ImageFileFormat"))
+        m_Settings->setValue("ImageFileFormat", IMAGE_FILE_FORMAT);
+    m_ImageFileFormat = m_Settings->value("ImageFileFormat").toString();
+
     if(!m_Settings->contains("MainWindow/CellInfoWindowHeight"))
         m_Settings->setValue("MainWindow/CellInfoWindowHeight", CELL_INFO_WINDOW_HEIGHT);
     m_CellInfoWindowHeight = m_Settings->value("MainWindow/CellInfoWindowHeight").toInt();
@@ -90,6 +113,18 @@ void Config::load()
     if(!m_Settings->contains("MainWindow/ShowFieldInformation"))
         m_Settings->setValue("MainWindow/ShowFieldInformation", WINDOW_SHOW_FIELD_INFO);
     m_WindowShowFieldInfo = m_Settings->value("MainWindow/ShowFieldInformation").toBool();
+
+    if(!m_Settings->contains("Scene/ZoomKeyModifier"))
+        m_Settings->setValue("Scene/ZoomKeyModifier", SCENE_ZOOM_KEY_MODIFIER);
+    m_SceneZoomKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ZoomKeyModifier").toInt());
+
+    if(!m_Settings->contains("Scene/TooltipKeyModifier"))
+        m_Settings->setValue("Scene/TooltipKeyModifier", SCENE_TOOLTIP_KEY_MODIFIER);
+    m_SceneTooltipKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/TooltipKeyModifier").toInt());
+
+    if(!m_Settings->contains("Scene/MultiselectKeyModifier"))
+        m_Settings->setValue("Scene/MultiselectKeyModifier", SCENE_MULTISELECT_KEY_MODIFIER);
+    m_SceneMultiselKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/MultiselectKeyModifier").toInt());
 
     if(!m_Settings->contains("Scene/BackgroundColor"))
         m_Settings->setValue("Scene/BackgroundColor", SCENE_BG_COLOR);
@@ -111,18 +146,6 @@ void Config::load()
         m_Settings->setValue("Scene/ViewAntialiasing", SCENE_VIEW_ANTIALIASING);
     m_SceneViewAntialiasing = m_Settings->value("Scene/ViewAntialiasing").toBool();
 
-    if(!m_Settings->contains("Scene/ZoomKeyModifier"))
-        m_Settings->setValue("Scene/ZoomKeyModifier", SCENE_ZOOM_KEY_MODIFIER);
-    m_SceneZoomKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ZoomKeyModifier").toInt());
-
-    if(!m_Settings->contains("Scene/TooltipKeyModifier"))
-        m_Settings->setValue("Scene/TooltipKeyModifier", SCENE_TOOLTIP_KEY_MODIFIER);
-    m_SceneTooltipKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/TooltipKeyModifier").toInt());
-
-    if(!m_Settings->contains("Scene/MultiselectKeyModifier"))
-        m_Settings->setValue("Scene/MultiselectKeyModifier", SCENE_MULTISELECT_KEY_MODIFIER);
-    m_SceneMultiselKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/MultiselectKeyModifier").toInt());
-
     if(!m_Settings->contains("Scene/CellAgeIndicate"))
         m_Settings->setValue("Scene/CellAgeIndicate", SCENE_CELL_AGE_INDICATE);
     m_SceneCellAgeIndicate = m_Settings->value("Scene/CellAgeIndicate").toBool();
@@ -143,10 +166,6 @@ void Config::load()
         m_Settings->setValue("Scene/FieldThreadPriority", SCENE_FIELD_THREAD_PRIORITY);
     m_SceneFieldThreadPriority = m_Settings->value("Scene/FieldThreadPriority").toString();
 
-    if(!m_Settings->contains("ImageFileFormat"))
-        m_Settings->setValue("ImageFileFormat", IMAGE_FILE_FORMAT);
-    m_ImageFileFormat = m_Settings->value("ImageFileFormat").toString();
-
     if(!m_Settings->contains("Scene/CellCurseColor"))
         m_Settings->setValue("Scene/CellCurseColor", SCENE_CELL_CURSE_COLOR);
     m_SceneCellCurseColor = m_Settings->value("Scene/CellCurseColor").toString();
@@ -162,6 +181,14 @@ void Config::load()
     if(!m_Settings->contains("Scene/MultiselectAlfa"))
         m_Settings->setValue("Scene/MultiselectAlfa", SCENE_MULTISELECT_ALFA);
     m_SceneMultiselAlfa = m_Settings->value("Scene/MultiselectAlfa").toInt();
+}
+
+void Config::setRewriteResource(bool value)
+{
+    if(m_RewriteResource == value) return;
+
+    m_RewriteResource = value;
+    m_Settings->setValue("RewriteResource", m_RewriteResource);
 }
 
 void Config::setJsonIgnoreDataVersion(bool value)
@@ -464,3 +491,4 @@ bool Config::SaveToPresetExceptDead() const { return m_SaveToPresetExceptDead; }
 bool Config::CopyToClipboardExceptDead() const { return m_CopyToClipboardExceptDead; }
 bool Config::JsonIgnoreDataVersion() const { return m_JsonIgnoreDataVersion; }
 QString Config::PathPresetDirectory() const { return m_PathPresetDirectory; }
+bool Config::RewriteResource() const { return m_RewriteResource; }

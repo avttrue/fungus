@@ -85,6 +85,8 @@ public:
     void setSaveToPresetExceptDead(bool value);
     bool JsonIgnoreDataVersion() const;
     void setJsonIgnoreDataVersion(bool value);
+    bool RewriteResource() const;
+    void setRewriteResource(bool value);
 
 protected:
     void load();
@@ -127,6 +129,7 @@ private:
     bool m_JsonIgnoreDataVersion;                   // игнорировать версию в данных json
     bool m_CopyToClipboardExceptDead;               // при копировании в буфер обмена исключать мёртвые
     bool m_SaveToPresetExceptDead;                  // при сохранении в пресет исключать мёртвые
+    bool m_RewriteResource;                         // переписывать ресурсы при старте
 };
 
 #endif // CONFIG_H

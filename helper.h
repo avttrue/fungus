@@ -38,4 +38,6 @@ qreal calcAverage(qreal oldAverage, uint iteration, uint value);
 
 QString getSystemInfo();
 
+void copyResources(const QString& outPath, const QString& inPath, bool rewrite, bool* ok);
+
 #endif // HELPER_H

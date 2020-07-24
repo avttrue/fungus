@@ -51,5 +51,6 @@ const auto JSON_COMPACT_MODE =                      true;
 const auto JSON_IGNORE_DATA_VERSION =               false;
 const auto COPY_TO_CLIPBOARD_EXCEPT_DEAD =          true;
 const auto SAVE_TO_PRESET_EXCEPT_DEAD =             true;
+const auto REWITE_RESOURCES =                       false;
 
 #endif // PROPERTIES_H

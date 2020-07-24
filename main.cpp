@@ -4,6 +4,8 @@
 
 #include <QApplication>
 #include <QTextCodec>
+#include <QDebug>
+#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
@@ -12,6 +14,16 @@ int main(int argc, char *argv[])
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName(TEXT_CODEC.toLatin1()));
     config = new Config(application.applicationDirPath());
+
+    // копируются пресеты
+    bool ok = true;
+    copyResources(":/resources/presets", config->PathPresetDirectory(), config->RewriteResource(), &ok);
+    if(!ok)
+    {
+        qCritical() << "Error at presets coping to" << config->PathPresetDirectory();
+        QMessageBox::critical(nullptr, QObject::tr("Error"),
+                              QObject::tr("Error at presets coping to '%1'").arg(config->PathPresetDirectory()));
+    }
 
     MainWindow window;
     window.show();

@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QtMath>
 #include <QMetaProperty>
+#include <QDir>
 
 QString getTextFromRes(const QString& path)
 {
@@ -119,5 +120,68 @@ void copyProperty(QObject *source, QObject *target)
     {
         auto sp  = source->metaObject()->property(i);
         sp.write(target, source->property(sp.name()));
+    }
+}
+
+void copyResources(const QString& outPath, const QString& inPath, bool rewrite, bool* ok)
+{
+    if(!QDir().exists(inPath) && !QDir().mkpath(inPath))
+    {
+        qCritical() << "Directory not exist and cannot be created:" << inPath;
+        *ok = false; return;
+    }
+
+    QDir outdir(outPath);
+    if(!outdir.exists())
+    {
+        qCritical() << "Path not exist:" << outPath;
+        *ok = false; return;
+    }
+
+    for(auto filename: outdir.entryList())
+    {
+        auto newfilename = inPath + QDir::separator() + filename;
+        QFile file(outdir.path() + "/" + filename);
+        QFileInfo fi(file);
+
+        if(fi.isFile())
+        {
+            if(rewrite && QFile::exists(newfilename) && !QFile::remove(newfilename))
+            {
+                qCritical() << "Unable to remove file" << newfilename;
+                *ok = false; return;
+            }
+
+            if(!QFile::exists(newfilename) && !file.copy(newfilename))
+            {
+                qCritical() << "Unable to write file" << newfilename << "from" << file.fileName();
+                *ok = false; return;
+            }
+
+            auto p = QFile(newfilename).permissions();
+            if(!QFile::setPermissions(newfilename, p |
+                                      QFileDevice::ReadOwner |
+                                      QFileDevice::WriteOwner))
+                qCritical() << "Cannot set permissions to file:" << newfilename;
+            else qInfo() << "Resource" << newfilename << "ready";
+        }
+        else if(fi.isDir())
+        {
+            if(!QDir().exists(newfilename) && !QDir().mkpath(newfilename))
+            {
+                qCritical() << "Directory not exist and cannot be created:" << newfilename;
+                *ok = false; return;
+            }
+            auto p = QFile(newfilename).permissions();
+            if(!QFile::setPermissions(newfilename, p |
+                                      QFileDevice::ReadOwner |
+                                      QFileDevice::WriteOwner))
+                qCritical() << "Cannot set permissions to directory:" << newfilename;
+            else qInfo() << "Directory" << newfilename << "ready";
+
+            auto newOutPath = fi.filePath();
+            copyResources(newOutPath, newfilename, rewrite, ok);
+            if(!(*ok)) return;
+        }
     }
 }
