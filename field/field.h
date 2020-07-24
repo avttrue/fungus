@@ -6,6 +6,7 @@
 #include <kernel/kernel.h>
 
 class Cell;
+class CellInformation;
 class FieldRule;
 class FieldInformation;
 
@@ -45,6 +46,9 @@ protected:
     QVector<Cell*> getCellsAroundByStatus(Cell* cell, Kernel::CellState status);
     void applyCalculating();                        // применение результатов calculate
     void applyRules(Cell* cell);                    // применение правил
+    uint getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list); // получить значение в операнде
+    void setRulesActivityReaction(CellInformation *ci, Kernel::ActivityType at, QVector<Cell*> list);
+
 
 private:
     int m_Width;

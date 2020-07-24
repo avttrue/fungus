@@ -192,31 +192,6 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
     auto ci = cell->getCurInfo();
     auto ni = cell->getNewInfo();
 
-    // значение в операнде
-    auto operand_value = [](Kernel::ActivityOperand ao, QVector<Cell*> list)
-    {
-        uint count = 0;
-        if(ao == Kernel::ActivityOperand::Count)
-        { count = list.count(); }
-
-        else if(ao == Kernel::ActivityOperand::Age)
-        { for(auto c: list) count += c->getCurInfo()->getAge(); }
-
-        return count;
-    };
-    // учёт ActivityType
-    auto activity_reaction = [ni](Kernel::ActivityType at, QVector<Cell*> list)
-    {
-        if(at == Kernel::ActivityType::Birth)
-        { ni->setState(Kernel::CellState::Alive);}
-
-        else if(at == Kernel::ActivityType::Death)
-        { ni->setState(Kernel::CellState::Dead); }
-
-        else if(at == Kernel::ActivityType::Bomb)
-        { for(auto c: list) c->getCurInfo()->setState(Kernel::CellState::Cursed); }
-    };
-
     // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение]};
     for(auto a: m_Rule->getActivity())
     {
@@ -240,12 +215,12 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
             if(atarget == Kernel::ActivityTarget::Self)
             {
                 auto count = cell->getCurInfo()->getAge();
-                if(count == value) activity_reaction(atype, list);
+                if(count == value) setRulesActivityReaction(ni, atype, list);
             }
             else if(atarget == Kernel::ActivityTarget::Near)
             {
-                auto count = operand_value(aoperand, list);
-                if(count == value) activity_reaction(atype, list);
+                auto count = getRulesOperandValue(aoperand, list);
+                if(count == value) setRulesActivityReaction(ni, atype, list);
             }
             break;
         }
@@ -254,12 +229,12 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
             if(atarget == Kernel::ActivityTarget::Self)
             {
                 auto count = cell->getCurInfo()->getAge();
-                if(count < value) activity_reaction(atype, list);
+                if(count < value) setRulesActivityReaction(ni, atype, list);
             }
             else if(atarget == Kernel::ActivityTarget::Near)
             {
-                auto count = operand_value(aoperand, list);
-                if(count < value) activity_reaction(atype, list);
+                auto count = getRulesOperandValue(aoperand, list);
+                if(count < value) setRulesActivityReaction(ni, atype, list);
             }
             break;
         }
@@ -268,12 +243,12 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
             if(atarget == Kernel::ActivityTarget::Self)
             {
                 auto count = cell->getCurInfo()->getAge();
-                if(count > value) activity_reaction(atype, list);
+                if(count > value) setRulesActivityReaction(ni, atype, list);
             }
             else if(atarget == Kernel::ActivityTarget::Near)
             {
-                auto count = operand_value(aoperand, list);
-                if(count > value) activity_reaction(atype, list);
+                auto count = getRulesOperandValue(aoperand, list);
+                if(count > value) setRulesActivityReaction(ni, atype, list);
             }
             break;
         }
@@ -282,6 +257,30 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
 
         if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::Alive) return;
     }
+}
+
+uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list)
+{
+    uint count = 0;
+    if(ao == Kernel::ActivityOperand::Count)
+    { count = list.count(); }
+
+    else if(ao == Kernel::ActivityOperand::Age)
+    { for(auto c: list) count += c->getCurInfo()->getAge(); }
+
+    return count;
+}
+
+void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at, QVector<Cell *> list)
+{
+    if(at == Kernel::ActivityType::Birth)
+    { ci->setState(Kernel::CellState::Alive); }
+
+    else if(at == Kernel::ActivityType::Death)
+    { ci->setState(Kernel::CellState::Dead); }
+
+    else if(at == Kernel::ActivityType::Bomb)
+    { for(auto c: list) c->getCurInfo()->setState(Kernel::CellState::Cursed); }
 }
 
 Cell *Field::getTopCell(Cell *cell)
