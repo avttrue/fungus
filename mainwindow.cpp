@@ -615,22 +615,22 @@ void MainWindow::slotSetup()
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
      {keys.at(1), {QVariant::String, config->DateTimeFormat(), 0, 0}},
-     {keys.at(2), {QVariant::Bool, config->SIMetric(), 0, 0}},
-     {keys.at(3), {QVariant::Int, config->LogSize(), 0, 0}},
+     {keys.at(2), {QVariant::Bool, config->SIMetric()}},
+     {keys.at(3), {QVariant::Int, config->LogSize()}},
      {keys.at(4), {QVariant::Int, config->ButtonSize(), 16, 100}},
      {keys.at(5), {}},
-     {keys.at(6), {QVariant::Bool, config->SceneViewAntialiasing(), 0, 0}},
+     {keys.at(6), {QVariant::Bool, config->SceneViewAntialiasing()}},
      {keys.at(7), {QVariant::StringList, config->SceneViewUpdateMode(), 0, SCENE_VIEW_UPDATE_MODES, DialogValueMode::OneFromList}},
      {keys.at(8), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(9), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(10), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(11), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-     {keys.at(13), {QVariant::Bool, config->SceneCellAgeIndicate(), 0, 0}},
+     {keys.at(13), {QVariant::Bool, config->SceneCellAgeIndicate()}},
      {keys.at(14), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
      {keys.at(15), {}},
-     {keys.at(16), {QVariant::Bool, config->CopyToClipboardExceptDead(), 0, 0}},
-     {keys.at(17), {QVariant::Bool, config->SaveToPresetExceptDead(), 0, 0}},
+     {keys.at(16), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
+     {keys.at(17), {QVariant::Bool, config->SaveToPresetExceptDead()}},
      {keys.at(18), {QVariant::StringList, config->SceneFieldThreadPriority(), 1, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
     };
 
@@ -676,21 +676,30 @@ void MainWindow::slotEditCell()
 {
     Q_EMIT signalStopField();
 
-    auto cell = m_SceneView->getScene()->getSelectedCell();
-    if(!cell) { m_ActionEditCell->setDisabled(true); return; }
+    auto firstcell = m_SceneView->getScene()->getSelectedCell();
+    if(!firstcell) { m_ActionEditCell->setDisabled(true); return; }
+
+    auto secondcell = m_SceneView->getScene()->getSecondSelectedCell();
+    auto multyselection =  !secondcell ? false : true;
 
     m_SceneView->getScene()->selectCell(nullptr);
-    slotShowCell(cell);
+    slotShowCell(firstcell);
 
-    auto cni = cell->getNewInfo();
+    auto cni = firstcell->getNewInfo();
     auto statelist = listKernelEnum("CellState");
 
-    const QVector<QString> keys =
+    QVector<QString> keys =
     { tr("00#_Cell properties"),
       tr("01#_State"),
       tr("02#_Age"),
       tr("03#_Generation"),
       tr("04#_Cursed age")};
+
+    if(multyselection) keys.append(
+    { tr("05#_Group operations"),
+      tr("06#_Apply to all"),
+      tr("07#_Without 'State' property")});
+
     QMap<QString, DialogValue> map =
     { {keys.at(0), {}},
       {keys.at(1), {QVariant::StringList,
@@ -701,16 +710,53 @@ void MainWindow::slotEditCell()
       {keys.at(4), {QVariant::Int, cni->getCursedAge(), 0, 0}}
     };
 
+    if(multyselection)
+    {
+        QMap<QString, DialogValue> addmap =
+        { {keys.at(5), {}},
+          {keys.at(6), {QVariant::Bool, true}},
+          {keys.at(7), {QVariant::Bool, false}}};
+        map.insert(addmap);
+    }
+
     auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
-                                    tr("Edit cell %1").arg(cell->objectName()), &map);
+                                    tr("Edit cell %1").arg(firstcell->objectName()), &map);
     if(!dvl->exec()) return;
 
-    cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
-    cni->setAge(map.value(keys.at(2)).value.toUInt());
-    cni->setGeneration(map.value(keys.at(3)).value.toUInt());
-    cni->setCursedAge(map.value(keys.at(4)).value.toUInt());
+    if(multyselection && map.value(keys.at(6)).value.toBool())
+    {
+        auto without_state = map.value(keys.at(7)).value.toBool();
+        auto time = QDateTime::currentMSecsSinceEpoch();
+        auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
+        auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
+        auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
+        auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
 
-    cell->applyInfo(); // для ускорения обновления; в m_Field->calculate() applyCalculating выключен
+        for(int x = xmin; x <= xmax; x++)
+        {
+            for(int y = ymin; y <= ymax; y++)
+            {
+                auto c = m_Field->getCell({x, y});
+                cni = c->getNewInfo();
+                if(!without_state)
+                    cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
+                cni->setAge(map.value(keys.at(2)).value.toUInt());
+                cni->setGeneration(map.value(keys.at(3)).value.toUInt());
+                cni->setCursedAge(map.value(keys.at(4)).value.toUInt());
+                c->applyInfo();
+            }
+        }
+        qDebug() << "Group of" << (xmax - xmin + 1) * (ymax - ymin + 1) << "cells editing complete in"
+                 << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    }
+    else
+    {
+        cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
+        cni->setAge(map.value(keys.at(2)).value.toUInt());
+        cni->setGeneration(map.value(keys.at(3)).value.toUInt());
+        cni->setCursedAge(map.value(keys.at(4)).value.toUInt());
+        firstcell->applyInfo();
+    }
     redrawScene();
 }
 
@@ -913,7 +959,8 @@ void MainWindow::slotClearCells()
             c->clear();
         }
     }
-    qDebug() << "Cleared" << (xmax -xmin) * (ymax -ymin) << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    qDebug() << "Cleared" << (xmax - xmin + 1) * (ymax - ymin + 1)
+             << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
     redrawScene();
 }
 
