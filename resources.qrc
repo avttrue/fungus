@@ -57,5 +57,6 @@
         <file>resources/presets/Conway's_Game_Of_Life/middle_weight_spaceship.fpr</file>
         <file>resources/presets/Conway's_Game_Of_Life/light_weight_spaceship.fpr</file>
         <file>resources/presets/Conway's_Game_Of_Life/heavy_weight_spaceship.fpr</file>
+        <file>resources/img/cells.svg</file>
     </qresource>
 </RCC>
