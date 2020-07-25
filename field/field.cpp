@@ -142,6 +142,8 @@ void Field::calculate()
         m_WaitScene = true;
         Q_EMIT signalCalculated(cells_to_redraw);
 
+        if(!alive) m_CalculatingNonstop = false;
+
         if(!m_CalculatingNonstop) slotStopCalculating();
 
         // пауза

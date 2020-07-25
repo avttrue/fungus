@@ -3,8 +3,8 @@
 #include "field.h"
 #include "helper.h"
 #include "properties.h"
+
 #include <QDebug>
-#include <scene/sceneitem.h>
 
 Cell::Cell(Field *parent)
     : QObject(parent),
