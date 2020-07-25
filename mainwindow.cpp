@@ -32,6 +32,7 @@
 #include <QJsonDocument>
 #include <QClipboard>
 #include <QMetaProperty>
+#include <QRandomGenerator>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -133,6 +134,10 @@ void MainWindow::loadGui()
     m_ActionClearCells->setEnabled(false);
     m_ActionClearCells->setShortcut(Qt::CTRL + Qt::Key_D);
 
+    m_ActionRandomFill = new QAction(QIcon(":/resources/img/cells.svg"), tr("Random fill selected cells"), this);
+    QObject::connect(m_ActionRandomFill, &QAction::triggered, this, &MainWindow::slotRandomFill);
+    m_ActionRandomFill->setEnabled(false);
+
     m_ActionSaveImageToFile = new QAction(QIcon(":/resources/img/camera.svg"), tr("Save image to file"), this);
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
     m_ActionSaveImageToFile->setEnabled(false);
@@ -182,6 +187,10 @@ void MainWindow::loadGui()
 
     tbActions->addAction(m_ActionSaveCellsToFile);
     tbActions->addAction(m_ActionLoadCellsFromFile);
+
+    tbActions->addSeparator();
+
+    tbActions->addAction(m_ActionRandomFill);
 
     tbActions->addSeparator();
 
@@ -235,7 +244,6 @@ void MainWindow::loadGui()
 
     m_LabelSelectedCell = new QLabel("-", this);
     statusBar->addWidget(m_LabelSelectedCell);
-
     statusBar->addWidget(new SeparatorV(this));
 
     m_ProgressBar = new QProgressBar(this);
@@ -258,6 +266,7 @@ void MainWindow::slotStepStop()
     m_ActionSaveCellsToClipbord->setDisabled(true);
     m_ActionSaveCellsToFile->setDisabled(true);
     m_ActionClearCells->setDisabled(true);
+    m_ActionRandomFill->setDisabled(true);
     if(m_SceneView->getScene()->getSelectedCell())
     {
         m_ActionLoadCellsFromClipbord->setEnabled(true);
@@ -283,6 +292,7 @@ void MainWindow::slotRun()
         m_ActionSaveCellsToClipbord->setDisabled(true);
         m_ActionSaveCellsToFile->setDisabled(true);
         m_ActionClearCells->setDisabled(true);
+        m_ActionRandomFill->setDisabled(true);
         m_ActionLoadCellsFromClipbord->setDisabled(true);
         m_ActionLoadCellsFromFile->setDisabled(true);
         m_SceneView->getScene()->clearMultiSelection();
@@ -674,14 +684,14 @@ void MainWindow::slotEditCell()
 {
     Q_EMIT signalStopField();
 
-    auto firstcell = m_SceneView->getScene()->getSelectedCell();
+    auto scene = m_SceneView->getScene();
+    if(!scene) return;
+
+    auto firstcell = scene->getSelectedCell();
     if(!firstcell) { m_ActionEditCell->setDisabled(true); return; }
 
-    auto secondcell = m_SceneView->getScene()->getSecondSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
     auto multyselection =  !secondcell ? false : true;
-
-    m_SceneView->getScene()->selectCell(nullptr);
-    slotShowCell(firstcell);
 
     auto cni = firstcell->getNewInfo();
     auto statelist = listKernelEnum("CellState");
@@ -729,6 +739,7 @@ void MainWindow::slotEditCell()
         auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
         auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
         auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+        auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
 
         for(int x = xmin; x <= xmax; x++)
         {
@@ -744,8 +755,7 @@ void MainWindow::slotEditCell()
                 c->applyInfo();
             }
         }
-        qDebug() << "Group of" << (xmax - xmin + 1) * (ymax - ymin + 1) << "cells editing complete in"
-                 << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+        qDebug() << "Group of" << count << "cells editing complete in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
     }
     else
     {
@@ -755,6 +765,7 @@ void MainWindow::slotEditCell()
         cni->setCursedAge(map.value(keys.at(4)).value.toUInt());
         firstcell->applyInfo();
     }
+
     redrawScene();
 }
 
@@ -822,6 +833,7 @@ void MainWindow::slotNewProject()
     m_ActionSaveCellsToClipbord->setDisabled(true);
     m_ActionSaveCellsToFile->setDisabled(true);
     m_ActionClearCells->setDisabled(true);
+    m_ActionRandomFill->setDisabled(true);
     m_ActionLoadCellsFromClipbord->setDisabled(true);
     m_ActionLoadCellsFromFile->setDisabled(true);
     setActionsEnable(true);
@@ -845,16 +857,6 @@ void MainWindow::slotSceneZoomOut()
 void MainWindow::slotZoomUndoScene()
 {
     m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET);
-}
-
-void MainWindow::slotSelectedCellChanged(Cell *cell)
-{
-    m_ActionEditCell->setDisabled(cell == nullptr);
-    m_ActionInfoCell->setDisabled(cell == nullptr);
-    m_ActionLoadCellsFromClipbord->setDisabled(cell == nullptr || m_Field->isCalculating());
-    m_ActionLoadCellsFromFile->setDisabled(cell == nullptr || m_Field->isCalculating());
-    if(cell) m_LabelSelectedCell->setText(cell->objectName());
-    else m_LabelSelectedCell->setText("-");
 }
 
 void MainWindow::slotSaveCellsToClipbord()
@@ -948,6 +950,7 @@ void MainWindow::slotClearCells()
     auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
     auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
 
     for(int x = xmin; x <= xmax; x++)
     {
@@ -957,8 +960,8 @@ void MainWindow::slotClearCells()
             c->clear();
         }
     }
-    qDebug() << "Cleared" << (xmax - xmin + 1) * (ymax - ymin + 1)
-             << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    qDebug() << "Cleared" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+
     redrawScene();
 }
 
@@ -1018,6 +1021,53 @@ void MainWindow::slotSaveImageToFile()
                               tr("Error at file saving. Path: '%1'").arg(filename));
 }
 
+void MainWindow::slotRandomFill()
+{
+    auto scene = m_SceneView->getScene();
+    if(!scene) {m_ActionRandomFill->setDisabled(true); return; }
+
+    auto firstcell = scene->getSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
+    if(!firstcell || !secondcell || firstcell == secondcell)  {m_ActionRandomFill->setDisabled(true); return; }
+
+    auto rg = QRandomGenerator::securelySeeded();
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
+
+    for(int x = xmin; x <= xmax; x++)
+    {
+        for(int y = ymin; y <= ymax; y++)
+        {
+            auto c = m_Field->getCell({x, y});
+            auto ni = c->getNewInfo();
+            auto ci = c->getCurInfo();
+
+            c->clear();
+            if(rg.bounded(0, 2))
+            {
+                ni->setState(Kernel::CellState::Alive);
+                ci->setState(Kernel::CellState::Alive);
+            }
+        }
+    }
+    qDebug() << "Ramdom filled" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    redrawScene();
+}
+
+void MainWindow::slotSelectedCellChanged(Cell *cell)
+{
+    m_ActionEditCell->setDisabled(cell == nullptr);
+    m_ActionInfoCell->setDisabled(cell == nullptr);
+    m_ActionLoadCellsFromClipbord->setDisabled(cell == nullptr || m_Field->isCalculating());
+    m_ActionLoadCellsFromFile->setDisabled(cell == nullptr || m_Field->isCalculating());
+    if(cell) m_LabelSelectedCell->setText(cell->objectName());
+    else m_LabelSelectedCell->setText("-");
+}
+
 void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
 {
     if(!first || !second || first == second)
@@ -1025,13 +1075,30 @@ void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
         m_ActionSaveCellsToClipbord->setDisabled(true);
         m_ActionSaveCellsToFile->setDisabled(true);
         m_ActionClearCells->setDisabled(true);
+        m_ActionRandomFill->setDisabled(true);
+
+        if(first) m_LabelSelectedCell->setText(first->objectName());
+        else m_LabelSelectedCell->setText("-");
         return;
     }
 
     Q_EMIT signalStopField();
+
     m_ActionSaveCellsToClipbord->setEnabled(true);
     m_ActionSaveCellsToFile->setEnabled(true);
     m_ActionClearCells->setEnabled(true);
+    m_ActionRandomFill->setEnabled(true);
+
+    auto xmin = qMin(first->getIndex().x(), second->getIndex().x());
+    auto xmax = qMax(first->getIndex().x(), second->getIndex().x());
+    auto ymin = qMin(first->getIndex().y(), second->getIndex().y());
+    auto ymax = qMax(first->getIndex().y(), second->getIndex().y());
+    auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
+
+    m_LabelSelectedCell->setText(QString("%1 X %2 %3").
+                                 arg(first->objectName(),
+                                     second->objectName(),
+                                     QString::number(count)));
 }
 
 void MainWindow::slotFieldAvCalcUp(qreal value)

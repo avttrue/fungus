@@ -82,10 +82,11 @@ void Scene::setSelectionMarkColor(const QString &color)
     auto pen = QPen(QColor(color));
     pen.setCapStyle(Qt::RoundCap);
     pen.setJoinStyle(Qt::RoundJoin);
-    auto brush = QBrush(QColor(color));
+    auto brushColor = QColor(color);
+    brushColor.setAlpha(config->SceneSelAlfa());
 
     m_SelectionMark->setPen(pen);
-    m_SelectionMark->setBrush(brush);
+    m_SelectionMark->setBrush(brushColor);
 }
 
 void Scene::setMultiSelectionMarkColor(const QString &color)

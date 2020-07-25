@@ -47,8 +47,7 @@ void Field::fill(bool random)
             auto c = addCell(w, h);
             if(random)
             {
-                auto v = rg.bounded(0, 2);
-                if(v)
+                if(rg.bounded(0, 2))
                 {
                     c->getCurInfo()->setState(Kernel::CellState::Alive);
                     c->getNewInfo()->setState(Kernel::CellState::Alive);

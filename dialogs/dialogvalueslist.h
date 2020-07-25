@@ -9,7 +9,7 @@ const QString RE_NUM_MARK = "(^.*)(#_)"; // регексп удаления си
 const QString IMG_STYLE = "border: 1px solid darkgray; border-radius: 9px; padding: %1px;";
 const QString BTN_COLOR_STYLE = "border: 1px solid darkgray; border-radius: 9px; background-color: %1; font: bold monospace; color: %2";
 const QSize WINDOW_SIZE(400, 400);
-const int DOUBLE_SPINBOX_DECIMALS = 3;
+const int DOUBLE_SPINBOX_DECIMALS = 4;
 const qreal CAPTION_FONT_UP = 3.0;
 const qreal CAPTION_EFFECT_OFFSET = -1.5;
 

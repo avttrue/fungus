@@ -87,6 +87,8 @@ public:
     void setJsonIgnoreDataVersion(bool value);
     bool RewriteResource() const;
     void setRewriteResource(bool value);
+    int SceneSelAlfa() const;
+    void setSceneSelAlfa(int value);
 
 protected:
     void load();
@@ -108,6 +110,7 @@ private:
     QString m_PresetFileExtension;                  // формат файлов для сохранения пресетов
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
     int m_SceneMultiselAlfa;                        // прозрачность рамки выделения 0-254
+    int m_SceneSelAlfa;                             // прозрачность выделения 0-254
     int m_SceneItemZValue;                          // Z-координата SceneItem
     int m_SceneCalculatingMinPause;                 // минимальная допустимая пауза при обсчёте Field
     int m_LogSize;                                  // количество строк лога событий

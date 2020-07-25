@@ -73,6 +73,7 @@ private:
     QAction* m_ActionSaveCellsToFile;
     QAction* m_ActionLoadCellsFromFile;
     QAction* m_ActionClearCells;
+    QAction* m_ActionRandomFill;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -107,6 +108,7 @@ private Q_SLOTS:
     void slotEditCell();
     void slotShowCell(Cell* cell);
     void slotSaveImageToFile();
+    void slotRandomFill();
     void slotSelectedCellsChanged(Cell* first, Cell* second);
 
 Q_SIGNALS:

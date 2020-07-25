@@ -181,6 +181,18 @@ void Config::load()
     if(!m_Settings->contains("Scene/MultiselectAlfa"))
         m_Settings->setValue("Scene/MultiselectAlfa", SCENE_MULTISELECT_ALFA);
     m_SceneMultiselAlfa = m_Settings->value("Scene/MultiselectAlfa").toInt();
+
+    if(!m_Settings->contains("Scene/SelectAlfa"))
+        m_Settings->setValue("Scene/SelectAlfa", SCENE_SELECT_ALFA);
+    m_SceneSelAlfa = m_Settings->value("Scene/SelectAlfa").toInt();
+}
+
+void Config::setSceneSelAlfa(int value)
+{
+    if(m_SceneSelAlfa == value) return;
+
+    m_SceneSelAlfa = value;
+    m_Settings->setValue("Scene/SelectAlfa", m_SceneSelAlfa);
 }
 
 void Config::setRewriteResource(bool value)
@@ -492,3 +504,4 @@ bool Config::CopyToClipboardExceptDead() const { return m_CopyToClipboardExceptD
 bool Config::JsonIgnoreDataVersion() const { return m_JsonIgnoreDataVersion; }
 QString Config::PathPresetDirectory() const { return m_PathPresetDirectory; }
 bool Config::RewriteResource() const { return m_RewriteResource; }
+int Config::SceneSelAlfa() const { return m_SceneSelAlfa; }
