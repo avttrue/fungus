@@ -1093,11 +1093,15 @@ void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
     auto xmax = qMax(first->getIndex().x(), second->getIndex().x());
     auto ymin = qMin(first->getIndex().y(), second->getIndex().y());
     auto ymax = qMax(first->getIndex().y(), second->getIndex().y());
-    auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
+    auto h = ymax - ymin + 1;
+    auto w = xmax - xmin + 1;
+    auto count = h * w;
 
-    m_LabelSelectedCell->setText(QString("%1 X %2 %3").
+    m_LabelSelectedCell->setText(QString("%1%2 %3X%4 %5").
                                  arg(first->objectName(),
                                      second->objectName(),
+                                     QString::number(w),
+                                     QString::number(h),
                                      QString::number(count)));
 }
 
