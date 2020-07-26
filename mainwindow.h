@@ -28,6 +28,7 @@ class Field;
 class Cell;
 class SceneView;
 class QLabel;
+class ClickableLabel;
 class QProgressBar;
 class QThread;
 
@@ -82,7 +83,7 @@ private:
     QLabel* m_LabelFieldPause;
     QLabel* m_LabelFieldAvCalc;
     QLabel* m_LabelSceneAvDraw;
-    QLabel* m_LabelSelectedCell;
+    ClickableLabel* m_LabelSelectedCell;
     QLabel* m_LabelRunningStatus;
     QProgressBar* m_ProgressBar;
 
@@ -114,6 +115,7 @@ private Q_SLOTS:
     void slotRandomFill();
     void slotSelectAll();
     void slotSelectedCellsChanged(Cell* first, Cell* second);
+    void slotLabelSelectedCellClick();
 
 Q_SIGNALS:
     void signalStopField();

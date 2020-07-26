@@ -247,7 +247,11 @@ void MainWindow::loadGui()
 
     statusBar->addWidget(new SeparatorV(this));
 
-    m_LabelSelectedCell = new QLabel("-", this);
+    m_LabelSelectedCell = new ClickableLabel("-", this);
+    auto palette = m_LabelSelectedCell->palette();
+    palette.setColor(m_LabelSelectedCell->foregroundRole(), palette.color(QPalette::Link));
+    m_LabelSelectedCell->setPalette(palette);
+    QObject::connect(m_LabelSelectedCell, &ClickableLabel::signalClicked, this, &MainWindow::slotLabelSelectedCellClick);
     statusBar->addWidget(m_LabelSelectedCell);
     statusBar->addWidget(new SeparatorV(this));
 
@@ -999,13 +1003,11 @@ void MainWindow::slotInfoField()
 
 void MainWindow::slotShowCell(Cell *cell)
 {
-    if(!cell)
-    {
-        qWarning() << __func__ << "Cell is null";
-        return;
-    }
+    if(!cell) return;
+    auto scene = m_SceneView->getScene();
+    if(!scene) return;
 
-    m_SceneView->getScene()->selectCell(cell);
+    scene->selectCell(cell, false);
     m_SceneView->centerOn(cell->getIndex() * config->SceneCellSize());
 }
 
@@ -1115,6 +1117,15 @@ void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
                                      QString::number(w),
                                      QString::number(h),
                                      QString::number(count)));
+}
+
+void MainWindow::slotLabelSelectedCellClick()
+{
+    auto scene = m_SceneView->getScene();
+    if(!scene) return;
+
+    auto cell = scene->getSelectedCell();
+    slotShowCell(cell);
 }
 
 void MainWindow::slotFieldAvCalcUp(qreal value)

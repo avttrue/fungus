@@ -17,7 +17,7 @@ public:
     void addSceneItem();
     void addSelectionMark();
     void addMultiSelectionMark();
-    void selectCell(Cell* cell);
+    void selectCell(Cell* cell, bool showinfo = true);
     void MultiselectCell(Cell* cell);
     QColor getBackgroundColor() const;
     void setBackgroundColor(const QColor &value);

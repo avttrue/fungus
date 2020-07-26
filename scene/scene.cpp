@@ -104,15 +104,15 @@ void Scene::setMultiSelectionMarkColor(const QString &color)
     m_MultiSelectionMark->setBrush(brush);
 }
 
-void Scene::selectCell(Cell *cell)
+void Scene::selectCell(Cell *cell, bool showinfo)
 {
-    MultiselectCell(nullptr);
-
     if(cell && m_SelectedCell == cell)
     {
-        Q_EMIT signalShowCellInfo();
+        if (showinfo) Q_EMIT signalShowCellInfo();
         return;
     }
+
+    MultiselectCell(nullptr);
 
     if(!cell)
     {

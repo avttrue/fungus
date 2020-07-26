@@ -64,3 +64,9 @@ bool findPreviousWindowCopy(const QString& caption)
     }
     return false;
 }
+
+void ClickableLabel::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    Q_EMIT signalClicked(this);
+}

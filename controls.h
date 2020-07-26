@@ -2,6 +2,7 @@
 #define CONTROLS_H
 
 #include <QFrame>
+#include <QLabel>
 
 class WidgetSpacer: public QWidget
 {
@@ -20,6 +21,18 @@ class SeparatorV:  public QFrame
 {
 public:
     explicit SeparatorV(QWidget* parent = nullptr);
+};
+
+class ClickableLabel : public QLabel
+{
+    Q_OBJECT
+public:
+    ClickableLabel(const QString &text, QWidget *parent = nullptr): QLabel(text, parent){}
+protected:
+    void mouseReleaseEvent(QMouseEvent* event);
+
+Q_SIGNALS:
+    void signalClicked(ClickableLabel* label);
 };
 
 /*!
