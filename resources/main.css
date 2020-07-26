@@ -104,7 +104,7 @@ image: url(images/splitter_pressed.png);
 QProgressBar{
 height: 16;
 width: 16;
-border-radius: 8px;
+border-radius: 4px;
 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
 stop: 0 gray, stop: 0.5 white,
 stop: 0.5 white, stop: 1 gray);
@@ -115,7 +115,7 @@ font-family: monospace;
 font: bold;
 }
 QProgressBar::chunk {
-border-radius: 8px;
+border-radius: 4px;
 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
 stop: 0 black, stop: 0.5 gray,
 stop: 0.5 gray, stop: 1 black);

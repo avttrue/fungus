@@ -11,7 +11,8 @@ FieldInformation::FieldInformation(QObject *parent)
       m_DeadCells(-1),
       m_AliveCells(-1),
       m_CursedCells(-1),
-      m_ActiveCells(-1)
+      m_ActiveCells(-1),
+      m_Density(0)
 {
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldInformation destroyed"; });
 }
@@ -48,6 +49,7 @@ void FieldInformation::setDeadCells(uint value)
 
     m_DeadCells = value;
     Q_EMIT signalDeadCellsChanged(m_DeadCells);
+    applyDensity();
 }
 
 void FieldInformation::setAliveCells(uint value)
@@ -56,6 +58,7 @@ void FieldInformation::setAliveCells(uint value)
 
     m_AliveCells = value;
     Q_EMIT signalAliveCellsChanged(m_AliveCells);
+    applyDensity();
 }
 
 void FieldInformation::setCursedCells(uint value)
@@ -64,6 +67,7 @@ void FieldInformation::setCursedCells(uint value)
 
     m_CursedCells = value;
     Q_EMIT signalCursedCellsChanged(m_CursedCells);
+    applyDensity();
 }
 
 void FieldInformation::setActiveCells(uint value)
@@ -74,6 +78,7 @@ void FieldInformation::setActiveCells(uint value)
 
     m_ActiveCells = value;
     Q_EMIT signalActiveCellsChanged(m_ActiveCells);
+    applyDensity();
 }
 
 void FieldInformation::setLastActiveAge(uint value)
@@ -84,6 +89,17 @@ void FieldInformation::setLastActiveAge(uint value)
     Q_EMIT signalLastActiveAgeChanged(m_LastActiveAge);
 }
 
+void FieldInformation::applyDensity()
+{
+    qreal value = static_cast<qreal>(m_AliveCells) /
+            (m_DeadCells + m_CursedCells + m_AliveCells);
+    if (m_Density == value) return;
+
+    m_Density = value;
+    Q_EMIT signalDensityChanged(m_Density);
+}
+
+qreal FieldInformation::getDensity() const { return m_Density; }
 uint FieldInformation::getLastActiveAge() const { return m_LastActiveAge; }
 uint FieldInformation::getActiveCells() const { return m_ActiveCells; }
 qreal FieldInformation::getAverageCalc() const { return m_AverageCalc; }

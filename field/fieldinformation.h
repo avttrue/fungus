@@ -6,13 +6,14 @@
 class FieldInformation : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(uint Age READ getAge NOTIFY signalAgeChanged)
-    Q_PROPERTY(uint DeadCells READ getDeadCells WRITE setDeadCells)
-    Q_PROPERTY(uint AliveCells READ getAliveCells WRITE setAliveCells)
-    Q_PROPERTY(uint CursedCells READ getCursedCells WRITE setCursedCells)
-    Q_PROPERTY(qreal AverageCalc READ getAverageCalc WRITE applyAverageCalc)
-    Q_PROPERTY(uint ActiveCells READ getActiveCells WRITE setActiveCells)
-    Q_PROPERTY(uint LastActiveAge READ getLastActiveAge WRITE setLastActiveAge)
+    Q_PROPERTY(uint Age READ getAge NOTIFY signalAgeChanged NOTIFY signalAgeChanged)
+    Q_PROPERTY(uint DeadCells READ getDeadCells WRITE setDeadCells NOTIFY signalDeadCellsChanged)
+    Q_PROPERTY(uint AliveCells READ getAliveCells WRITE setAliveCells NOTIFY signalAliveCellsChanged)
+    Q_PROPERTY(uint CursedCells READ getCursedCells WRITE setCursedCells NOTIFY signalCursedCellsChanged)
+    Q_PROPERTY(qreal Density READ getDensity)
+    Q_PROPERTY(qreal AverageCalc READ getAverageCalc)
+    Q_PROPERTY(uint ActiveCells READ getActiveCells WRITE setActiveCells NOTIFY signalActiveCellsChanged)
+    Q_PROPERTY(uint LastActiveAge READ getLastActiveAge WRITE setLastActiveAge NOTIFY signalLastActiveAgeChanged)
 
 public:
     explicit FieldInformation(QObject *parent = nullptr);
@@ -31,6 +32,8 @@ public:
     void setActiveCells(uint value);   
     uint getLastActiveAge() const;
     void setLastActiveAge(uint value);
+    qreal getDensity() const;
+    void applyDensity();
 
 private:
     uint m_Age;
@@ -38,15 +41,15 @@ private:
     uint m_DeadCells;
     uint m_AliveCells;
     uint m_CursedCells;
-
     uint m_ActiveCells;
-
     uint m_LastActiveAge;
+    qreal m_Density;
 
 Q_SIGNALS:
     void signalAgeChanged(uint value);
     void signalAverageCalcChangedUp(qreal value);
     void signalAverageCalcChangedDown(qreal value);
+    void signalDensityChanged(qreal value);
     void signalDeadCellsChanged(uint value);
     void signalAliveCellsChanged(uint value);
     void signalCursedCellsChanged(uint value);

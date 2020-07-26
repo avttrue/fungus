@@ -48,7 +48,8 @@ void DialogInfoPanel::setValue(const QVariant &value)
 {
     if(value.type() == QVariant::Bool)
         value.toBool() ? m_LabelValue->setText("[+]") : m_LabelValue->setText("[ ]");
-
+    else if(value.type() == QVariant::Double)
+        m_LabelValue->setText(QString::number(value.toReal(), 'f', REAL_VALUE_PRECISION));
     else
         m_LabelValue->setText(value.toString());
 }
