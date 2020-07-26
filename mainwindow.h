@@ -59,6 +59,8 @@ private:
     QThread* m_ThreadField;
     Field* m_Field;
     SceneView* m_SceneView;
+    QToolBar* m_TbMain;
+    QToolBar* m_TbActions;
     QAction* m_ActionZoomInScene;
     QAction* m_ActionZoomOutScene;
     QAction* m_ActionZoomUndoScene;

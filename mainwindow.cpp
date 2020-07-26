@@ -147,61 +147,61 @@ void MainWindow::loadGui()
     m_ActionSelectAll->setEnabled(false);
 
     // тулбар основной
-    auto tbMain = new QToolBar(this);
-    tbMain->setMovable(false);
-    tbMain->setOrientation(Qt::Horizontal);
-    tbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    m_TbMain = new QToolBar(this);
+    m_TbMain->setMovable(false);
+    m_TbMain->setOrientation(Qt::Horizontal);
+    m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    tbMain->addAction(actionNew);
-    tbMain->addSeparator();
-    tbMain->addAction(m_ActionZoomUndoScene);
-    tbMain->addAction(m_ActionZoomInScene);
-    tbMain->addAction(m_ActionZoomOutScene);
-    tbMain->addSeparator();
-    tbMain->addAction(m_ActionEditCell);
-    tbMain->addAction(m_ActionInfoCell);
-    tbMain->addSeparator();
-    tbMain->addAction(m_ActionInfoField);
-    tbMain->addAction(m_ActionSelectAll);
-    tbMain->addSeparator();
-    tbMain->addAction(m_ActionStepStop);
-    tbMain->addAction(m_ActionRun);
+    m_TbMain->addAction(actionNew);
+    m_TbMain->addSeparator();
+    m_TbMain->addAction(m_ActionZoomUndoScene);
+    m_TbMain->addAction(m_ActionZoomInScene);
+    m_TbMain->addAction(m_ActionZoomOutScene);
+    m_TbMain->addSeparator();
+    m_TbMain->addAction(m_ActionEditCell);
+    m_TbMain->addAction(m_ActionInfoCell);
+    m_TbMain->addSeparator();
+    m_TbMain->addAction(m_ActionInfoField);
+    m_TbMain->addAction(m_ActionSelectAll);
+    m_TbMain->addSeparator();
+    m_TbMain->addAction(m_ActionStepStop);
+    m_TbMain->addAction(m_ActionRun);
 
-    tbMain->addWidget(new WidgetSpacer(this));
-    tbMain->addAction(actionSetup);
-    tbMain->addSeparator();
-    tbMain->addAction(actionQt);
-    tbMain->addAction(actionExit);
+    m_TbMain->addWidget(new WidgetSpacer(this));
+    m_TbMain->addAction(actionSetup);
+    m_TbMain->addSeparator();
+    m_TbMain->addAction(actionQt);
+    m_TbMain->addAction(actionExit);
 
-    addToolBar(Qt::TopToolBarArea, tbMain);
+    addToolBar(Qt::TopToolBarArea, m_TbMain);
 
     // тулбар действий
-    auto tbActions = new QToolBar(this);
-    tbActions->setMovable(false);
-    tbActions->setOrientation(Qt::Vertical);
-    tbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    m_TbActions = new QToolBar(this);
+    m_TbActions->setMovable(false);
+    m_TbActions->setOrientation(Qt::Vertical);
+    m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    tbActions->addAction(m_ActionSaveImageToFile);
+    m_TbActions->addAction(m_ActionSaveImageToFile);
 
-    tbActions->addSeparator();
+    m_TbActions->addSeparator();
 
-    tbActions->addAction(m_ActionSaveCellsToClipbord);
-    tbActions->addAction(m_ActionLoadCellsFromClipbord);
+    m_TbActions->addAction(m_ActionSaveCellsToClipbord);
+    m_TbActions->addAction(m_ActionLoadCellsFromClipbord);
 
-    tbActions->addSeparator();
+    m_TbActions->addSeparator();
 
-    tbActions->addAction(m_ActionSaveCellsToFile);
-    tbActions->addAction(m_ActionLoadCellsFromFile);
+    m_TbActions->addAction(m_ActionSaveCellsToFile);
+    m_TbActions->addAction(m_ActionLoadCellsFromFile);
 
-    tbActions->addSeparator();
+    m_TbActions->addSeparator();
 
-    tbActions->addAction(m_ActionRandomFill);
+    m_TbActions->addAction(m_ActionRandomFill);
 
-    tbActions->addSeparator();
+    m_TbActions->addSeparator();
 
-    tbActions->addAction(m_ActionClearCells);
+    m_TbActions->addAction(m_ActionClearCells);
 
-    addToolBar(Qt::LeftToolBarArea, tbActions);
+    addToolBar(Qt::LeftToolBarArea, m_TbActions);
 
     // SceneView
     m_SceneView = new SceneView(this);
@@ -657,6 +657,8 @@ void MainWindow::slotSetup()
     config->setSIMetric(map.value(keys.at(2)).value.toBool());
     config->setLogSize(map.value(keys.at(3)).value.toInt());
     config->setButtonSize(map.value(keys.at(4)).value.toInt());
+    m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     // scene
     config->setSceneViewAntialiasing(map.value(keys.at(6)).value.toBool());
     m_SceneView->setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
