@@ -59,5 +59,8 @@
         <file>resources/presets/Conway's_Game_Of_Life/heavy_weight_spaceship.fpr</file>
         <file>resources/img/cells.svg</file>
         <file>resources/presets/Conway's_Game_Of_Life/rectangle-3.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/matrix_2x2_25.fpr</file>
+        <file>resources/presets/Conway's_Game_Of_Life/preset_232.fpr</file>
+        <file>resources/img/select_all.svg</file>
     </qresource>
 </RCC>

@@ -45,7 +45,7 @@ protected:
     void createScene();
     void createField(int w, int h, bool random = false);
     void fillField(bool random = false);
-    void setActionsEnable(bool value);
+    void setMainActionsEnable(bool value);
     void deleteField();
     void stopThreadField();
     void setSceneFieldThreadPriority();
@@ -74,6 +74,7 @@ private:
     QAction* m_ActionLoadCellsFromFile;
     QAction* m_ActionClearCells;
     QAction* m_ActionRandomFill;
+    QAction* m_ActionSelectAll;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -109,6 +110,7 @@ private Q_SLOTS:
     void slotShowCell(Cell* cell);
     void slotSaveImageToFile();
     void slotRandomFill();
+    void slotSelectAll();
     void slotSelectedCellsChanged(Cell* first, Cell* second);
 
 Q_SIGNALS:

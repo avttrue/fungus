@@ -95,7 +95,6 @@ void MainWindow::loadGui()
     m_ActionRun = new QAction(QIcon(":/resources/img/run.svg"), tr("Run"), this);
     QObject::connect(m_ActionRun, &QAction::triggered, this, &MainWindow::slotRun);
     m_ActionRun->setEnabled(false);
-    m_ActionRun->setShortcut(Qt::CTRL + Qt::Key_R);
 
     m_ActionEditCell = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit cell"), this);
     QObject::connect(m_ActionEditCell, &QAction::triggered, this, &MainWindow::slotEditCell);
@@ -142,6 +141,11 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
     m_ActionSaveImageToFile->setEnabled(false);
 
+    m_ActionSelectAll = new QAction(QIcon(":/resources/img/select_all.svg"), tr("Select all cells"), this);
+    QObject::connect(m_ActionSelectAll, &QAction::triggered, this, &MainWindow::slotSelectAll);
+    m_ActionSelectAll->setShortcut(Qt::CTRL + Qt::Key_A);
+    m_ActionSelectAll->setEnabled(false);
+
     // тулбар основной
     auto tbMain = new QToolBar(this);
     tbMain->setMovable(false);
@@ -158,6 +162,7 @@ void MainWindow::loadGui()
     tbMain->addAction(m_ActionInfoCell);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionInfoField);
+    tbMain->addAction(m_ActionSelectAll);
     tbMain->addSeparator();
     tbMain->addAction(m_ActionStepStop);
     tbMain->addAction(m_ActionRun);
@@ -374,7 +379,7 @@ void MainWindow::fillField(bool random)
     m_Field->fill(random);
 }
 
-void MainWindow::setActionsEnable(bool value)
+void MainWindow::setMainActionsEnable(bool value)
 {
     m_ActionZoomInScene->setEnabled(value);
     m_ActionZoomOutScene->setEnabled(value);
@@ -383,6 +388,7 @@ void MainWindow::setActionsEnable(bool value)
     m_ActionInfoField->setEnabled(value);
     m_ActionSaveImageToFile->setEnabled(value);
     m_ActionRun->setEnabled(value);
+    m_ActionSelectAll->setEnabled(value);
 }
 
 void MainWindow::deleteField()
@@ -685,7 +691,7 @@ void MainWindow::slotEditCell()
     Q_EMIT signalStopField();
 
     auto scene = m_SceneView->getScene();
-    if(!scene) return;
+    if(!scene) { m_ActionEditCell->setDisabled(true); return; }
 
     auto firstcell = scene->getSelectedCell();
     if(!firstcell) { m_ActionEditCell->setDisabled(true); return; }
@@ -828,15 +834,16 @@ void MainWindow::slotNewProject()
 
     createScene();
 
-    m_ActionEditCell->setDisabled(true);
-    m_ActionInfoCell->setDisabled(true);
     m_ActionSaveCellsToClipbord->setDisabled(true);
     m_ActionSaveCellsToFile->setDisabled(true);
     m_ActionClearCells->setDisabled(true);
     m_ActionRandomFill->setDisabled(true);
     m_ActionLoadCellsFromClipbord->setDisabled(true);
     m_ActionLoadCellsFromFile->setDisabled(true);
-    setActionsEnable(true);
+    m_ActionEditCell->setDisabled(true);
+    m_ActionInfoCell->setDisabled(true);
+
+    setMainActionsEnable(true);
 
     if(random) redrawScene();
     if(config->WindowShowFieldInfo()) slotInfoField();
@@ -1058,8 +1065,19 @@ void MainWindow::slotRandomFill()
     redrawScene();
 }
 
+void MainWindow::slotSelectAll()
+{
+    auto scene = m_SceneView->getScene();
+    if(!scene) {m_ActionSelectAll->setDisabled(true); return; }
+
+    scene->selectCell(m_Field->getCell({0, 0}));
+    scene->MultiselectCell(m_Field->getCell({m_Field->width() - 1, m_Field->height() - 1}));
+}
+
 void MainWindow::slotSelectedCellChanged(Cell *cell)
 {
+    m_ActionLoadCellsFromClipbord->setDisabled(cell == nullptr);
+    m_ActionLoadCellsFromFile->setDisabled(cell == nullptr);
     m_ActionEditCell->setDisabled(cell == nullptr);
     m_ActionInfoCell->setDisabled(cell == nullptr);
     m_ActionLoadCellsFromClipbord->setDisabled(cell == nullptr || m_Field->isCalculating());
@@ -1070,24 +1088,16 @@ void MainWindow::slotSelectedCellChanged(Cell *cell)
 
 void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
 {
-    if(!first || !second || first == second)
-    {
-        m_ActionSaveCellsToClipbord->setDisabled(true);
-        m_ActionSaveCellsToFile->setDisabled(true);
-        m_ActionClearCells->setDisabled(true);
-        m_ActionRandomFill->setDisabled(true);
+    bool disabled = !first || !second || first == second;
 
-        if(first) m_LabelSelectedCell->setText(first->objectName());
-        else m_LabelSelectedCell->setText("-");
-        return;
-    }
+    m_ActionSaveCellsToClipbord->setDisabled(disabled);
+    m_ActionSaveCellsToFile->setDisabled(disabled);
+    m_ActionClearCells->setDisabled(disabled);
+    m_ActionRandomFill->setDisabled(disabled);
+
+    if(disabled) return;
 
     Q_EMIT signalStopField();
-
-    m_ActionSaveCellsToClipbord->setEnabled(true);
-    m_ActionSaveCellsToFile->setEnabled(true);
-    m_ActionClearCells->setEnabled(true);
-    m_ActionRandomFill->setEnabled(true);
 
     auto xmin = qMin(first->getIndex().x(), second->getIndex().x());
     auto xmax = qMax(first->getIndex().x(), second->getIndex().x());
