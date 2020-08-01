@@ -16,7 +16,7 @@ public:
     explicit Cell(Field *parent);
     QPoint getIndex();
     void setIndex(const QPoint &value);
-    CellInformation* getCurInfo();
+    CellInformation* getOldInfo();
     CellInformation *getNewInfo();
     void clear();
     Field *getField() const;
@@ -26,7 +26,7 @@ public:
 private:
     Field* m_Field;
     QPoint m_Index;
-    CellInformation* m_CurrentInformation;
+    CellInformation* m_OldInformation;
     CellInformation* m_NewInformation;
     QRect m_Rect;
 

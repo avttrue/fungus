@@ -463,7 +463,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
         for(int y = ymin; y <= ymax; y++)
         {
             auto c = m_Field->getCell({x, y});
-            auto ci = c->getCurInfo();
+            auto ci = c->getNewInfo();
 
             if(except_dead && ci->getState() == Kernel::CellState::Dead) continue;
 
@@ -1055,13 +1055,13 @@ void MainWindow::slotRandomFill()
         {
             auto c = m_Field->getCell({x, y});
             auto ni = c->getNewInfo();
-            auto ci = c->getCurInfo();
+            auto oi = c->getOldInfo();
 
             c->clear();
             if(rg.bounded(0, 2))
             {
                 ni->setState(Kernel::CellState::Alive);
-                ci->setState(Kernel::CellState::Alive);
+                oi->setState(Kernel::CellState::Alive);
             }
         }
     }

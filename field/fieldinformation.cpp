@@ -6,6 +6,7 @@
 
 FieldInformation::FieldInformation(QObject *parent)
     : QObject(parent),
+      m_CellsCount(0),
       m_Age(-1),
       m_AverageCalc(0),
       m_DeadCells(-1),
@@ -99,6 +100,7 @@ void FieldInformation::applyDensity()
     Q_EMIT signalDensityChanged(m_Density);
 }
 
+void FieldInformation::setCellsCount(const uint &value) { m_CellsCount = value; }
 qreal FieldInformation::getDensity() const { return m_Density; }
 uint FieldInformation::getLastActiveAge() const { return m_LastActiveAge; }
 uint FieldInformation::getActiveCells() const { return m_ActiveCells; }
@@ -107,3 +109,4 @@ uint FieldInformation::getAge() const { return m_Age; }
 uint FieldInformation::getDeadCells() const { return m_DeadCells; }
 uint FieldInformation::getAliveCells() const { return m_AliveCells; }
 uint FieldInformation::getCursedCells() const { return m_CursedCells; }
+uint FieldInformation::getCellsCount() const { return m_CellsCount; }

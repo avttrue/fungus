@@ -6,7 +6,8 @@
 class FieldInformation : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(uint Age READ getAge NOTIFY signalAgeChanged NOTIFY signalAgeChanged)
+    Q_PROPERTY(uint CellsCount READ getCellsCount WRITE setCellsCount)
+    Q_PROPERTY(uint Age READ getAge NOTIFY signalAgeChanged)
     Q_PROPERTY(uint DeadCells READ getDeadCells WRITE setDeadCells NOTIFY signalDeadCellsChanged)
     Q_PROPERTY(uint AliveCells READ getAliveCells WRITE setAliveCells NOTIFY signalAliveCellsChanged)
     Q_PROPERTY(uint CursedCells READ getCursedCells WRITE setCursedCells NOTIFY signalCursedCellsChanged)
@@ -34,8 +35,11 @@ public:
     void setLastActiveAge(uint value);
     qreal getDensity() const;
     void applyDensity();
+    uint getCellsCount() const;
+    void setCellsCount(const uint &value);
 
 private:
+    uint m_CellsCount;
     uint m_Age;
     qreal m_AverageCalc;
     uint m_DeadCells;

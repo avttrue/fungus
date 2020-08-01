@@ -104,7 +104,7 @@ void DialogCellInformation::loadInformation()
 {
     glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), QVariant()));
 
-    auto ci = m_Cell->getCurInfo();
+    auto ci = m_Cell->getNewInfo();
     auto ci_mo = ci->metaObject();
 
     for(int i = ci_mo->propertyOffset(); i < ci_mo->propertyCount(); ++i)

@@ -23,9 +23,9 @@ Field::Field(int width, int height, QObject *parent)
     setObjectName(QString("FIELD[%1X%2]").arg(QString::number(width), QString::number(height)));
 
     m_FieldInformation = new FieldInformation(this);
+    m_FieldInformation->setCellsCount(width * height);
 
     m_Cells = QVector(m_Width, QVector<Cell*>(m_Height, nullptr));
-    m_CellsCount = width * height;
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
@@ -49,7 +49,7 @@ void Field::fill(bool random)
             {
                 if(rg.bounded(0, 2))
                 {
-                    c->getCurInfo()->setState(Kernel::CellState::Alive);
+                    c->getOldInfo()->setState(Kernel::CellState::Alive);
                     c->getNewInfo()->setState(Kernel::CellState::Alive);
                     alive++;
                 }
@@ -59,7 +59,7 @@ void Field::fill(bool random)
     }
 
     m_FieldInformation->upAge();
-    m_FieldInformation->setDeadCells(m_CellsCount - alive - cursed);
+    m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive - cursed);
     m_FieldInformation->setAliveCells(alive);
     m_FieldInformation->setCursedCells(cursed);
     m_FieldInformation->setActiveCells(0);
@@ -94,7 +94,7 @@ void Field::calculate()
                 if(m_AbortCalculating) break;
 
                 auto c = m_Cells.at(w).at(h);
-                auto ci = c->getCurInfo();
+                auto oi = c->getOldInfo();
                 auto ni = c->getNewInfo();
 
                 if(m_RuleOn)
@@ -103,15 +103,15 @@ void Field::calculate()
 
                     // итог применения правила к ячейке
                     // cell Age
-                    if(ci->getState() == Kernel::CellState::Alive) ni->upAge();
+                    if(oi->getState() == Kernel::CellState::Alive) ni->upAge();
                     else ni->setAge(0);
 
                     // cell Generation
-                    if(ci->getAge() == 0 && ni->getAge() > 0) ni->upGeneration();
+                    if(oi->getAge() == 0 && ni->getAge() > 0) ni->upGeneration();
                 }
 
                 // cell Activity
-                if(ci->getGeneration() < ni->getGeneration()) active++;
+                if(oi->getGeneration() < ni->getGeneration()) active++;
 
                 // Field Information
                 auto nis = ni->getState();
@@ -133,7 +133,7 @@ void Field::calculate()
 
         if(m_RuleOn) applyCalculating();
 
-        m_FieldInformation->setDeadCells(m_CellsCount - alive - cursed);
+        m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive - cursed);
         m_FieldInformation->setAliveCells(alive);
         m_FieldInformation->setCursedCells(cursed);
         m_FieldInformation->setActiveCells(active);
@@ -186,15 +186,14 @@ Cell *Field::addCell(int x, int y)
 
 void Field::applyRules(Cell *cell) // TODO: выполнение правил
 {
-    auto ci = cell->getCurInfo();
+    auto oi = cell->getOldInfo();
     auto ni = cell->getNewInfo();
 
     // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение]};
     for(auto a: m_Rule->getActivity())
     {
-        //if(a.count() < 7) { qCritical() << "Incorrect activity:" << a; continue; }
         auto sstate = static_cast<Kernel::CellState>(a.value(1).toInt());   // self state
-        if(ci->getState() != sstate) continue;
+        if(oi->getState() != sstate) continue;
 
         auto atype = static_cast<Kernel::ActivityType>(a.value(0).toInt());
         auto atarget = static_cast<Kernel::ActivityTarget>(a.value(2).toInt());
@@ -211,7 +210,7 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
         {
             if(atarget == Kernel::ActivityTarget::Self)
             {
-                auto count = cell->getCurInfo()->getAge();
+                auto count = cell->getOldInfo()->getAge();
                 if(count == value) setRulesActivityReaction(ni, atype, list);
             }
             else if(atarget == Kernel::ActivityTarget::Near)
@@ -225,7 +224,7 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
         {
             if(atarget == Kernel::ActivityTarget::Self)
             {
-                auto count = cell->getCurInfo()->getAge();
+                auto count = cell->getOldInfo()->getAge();
                 if(count < value) setRulesActivityReaction(ni, atype, list);
             }
             else if(atarget == Kernel::ActivityTarget::Near)
@@ -239,7 +238,7 @@ void Field::applyRules(Cell *cell) // TODO: выполнение правил
         {
             if(atarget == Kernel::ActivityTarget::Self)
             {
-                auto count = cell->getCurInfo()->getAge();
+                auto count = cell->getOldInfo()->getAge();
                 if(count > value) setRulesActivityReaction(ni, atype, list);
             }
             else if(atarget == Kernel::ActivityTarget::Near)
@@ -263,7 +262,7 @@ uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list
     { count = list.count(); }
 
     else if(ao == Kernel::ActivityOperand::Age)
-    { for(auto c: list) count += c->getCurInfo()->getAge(); }
+    { for(auto c: list) count += c->getOldInfo()->getAge(); }
 
     return count;
 }
@@ -277,7 +276,7 @@ void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at
     { ci->setState(Kernel::CellState::Dead); }
 
     else if(at == Kernel::ActivityType::Bomb)
-    { for(auto c: list) c->getCurInfo()->setState(Kernel::CellState::Cursed); }
+    { for(auto c: list) c->getOldInfo()->setState(Kernel::CellState::Cursed); }
 }
 
 Cell *Field::getTopCell(Cell *cell)
@@ -417,28 +416,28 @@ QVector<Cell *> Field::getCellsAroundByStatus(Cell *cell, Kernel::CellState stat
     QVector<Cell*> result;
 
     auto nc = getTopCell(cell);
-    if(nc->getCurInfo()->getState() == status) result.append(nc);
+    if(nc->getOldInfo()->getState() == status) result.append(nc);
 
     nc = getTopRightCell(cell);
-    if(nc->getCurInfo()->getState() == status) result.append(nc);
+    if(nc->getOldInfo()->getState() == status) result.append(nc);
 
     nc = getRightCell(cell);
-    if(nc->getCurInfo()->getState() == status) result.append(nc);
+    if(nc->getOldInfo()->getState() == status) result.append(nc);
 
     nc = getBottomRightCell(cell);
-    if(nc->getCurInfo()->getState() == status) result.append(nc);
+    if(nc->getOldInfo()->getState() == status) result.append(nc);
 
     nc = getBottomCell(cell);
-    if(nc->getCurInfo()->getState() == status) result.append(nc);
+    if(nc->getOldInfo()->getState() == status) result.append(nc);
 
     nc = getBottomLeftCell(cell);
-    if(nc->getCurInfo()->getState() == status) result.append(nc);
+    if(nc->getOldInfo()->getState() == status) result.append(nc);
 
     nc = getLeftCell(cell);
-    if(nc->getCurInfo()->getState() == status) result.append(nc);
+    if(nc->getOldInfo()->getState() == status) result.append(nc);
 
     nc = getTopLeftCell(cell);
-    if(nc->getCurInfo()->getState() == status) result.append(nc);
+    if(nc->getOldInfo()->getState() == status) result.append(nc);
 
     return result;
 }
@@ -487,4 +486,3 @@ FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::slotSceneReady() { m_WaitScene = false; }
 void Field::AbortCalculating() { m_AbortCalculating = true; }
 void Field::setRuleOn(bool value) { m_RuleOn = value; }
-uint Field::getCellsCount() const { return m_CellsCount; }

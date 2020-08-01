@@ -31,7 +31,6 @@ public:
     FieldInformation *getInformation() const;
     void AbortCalculating();
     void setRuleOn(bool value);
-    uint getCellsCount() const;
 
 protected:
     Cell* getTopCell(Cell* cell);
@@ -53,7 +52,6 @@ protected:
 private:
     int m_Width;
     int m_Height;
-    uint m_CellsCount;
     QVector<QVector<Cell*>> m_Cells;
     FieldRule* m_Rule;
     FieldInformation* m_FieldInformation;

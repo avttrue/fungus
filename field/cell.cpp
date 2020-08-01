@@ -12,7 +12,7 @@ Cell::Cell(Field *parent)
       m_Index(-1, -1),
       m_Rect(-1, -1, -1, -1)
 {
-    m_CurrentInformation = new CellInformation(this);
+    m_OldInformation = new CellInformation(this);
     m_NewInformation = new CellInformation(this);
 }
 
@@ -27,10 +27,10 @@ void Cell::clear()
 
 void Cell::applyInfo()
 {
-    m_CurrentInformation->setAge(m_NewInformation->getAge());
-    m_CurrentInformation->setState(m_NewInformation->getState());
-    m_CurrentInformation->setGeneration(m_NewInformation->getGeneration());
-    m_CurrentInformation->setCursedAge(m_NewInformation->getCursedAge());
+    m_OldInformation->setAge(m_NewInformation->getAge());
+    m_OldInformation->setState(m_NewInformation->getState());
+    m_OldInformation->setGeneration(m_NewInformation->getGeneration());
+    m_OldInformation->setCursedAge(m_NewInformation->getCursedAge());
 }
 
 void Cell::setIndex(const QPoint &value)
@@ -44,6 +44,6 @@ void Cell::setIndex(const QPoint &value)
 
 QRect Cell::getRect() const { return m_Rect; }
 QPoint Cell::getIndex() { return m_Index; }
-CellInformation *Cell::getCurInfo() { return m_CurrentInformation; }
+CellInformation *Cell::getOldInfo() { return m_OldInformation; }
 CellInformation *Cell::getNewInfo() { return m_NewInformation; }
 Field *Cell::getField() const { return m_Field; }
