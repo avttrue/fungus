@@ -53,6 +53,7 @@ private:
     int m_Width;
     int m_Height;
     QVector<QVector<Cell*>> m_Cells;
+    QVector<Cell*> m_CellsChanged;
     FieldRule* m_Rule;
     FieldInformation* m_FieldInformation;
     bool m_RuleOn;                                  // включить расчёт правил (для отрисовки при редактировании)

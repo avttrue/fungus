@@ -26,6 +26,7 @@ Field::Field(int width, int height, QObject *parent)
     m_FieldInformation->setCellsCount(width * height);
 
     m_Cells = QVector(m_Width, QVector<Cell*>(m_Height, nullptr));
+    m_CellsChanged.reserve(m_Width * m_Height);
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
@@ -84,6 +85,7 @@ void Field::calculate()
         uint cursed = 0;
         uint active = 0;
         QVector<Cell*> cells_to_redraw;
+        m_CellsChanged.clear();
 
         if(m_RuleOn) m_FieldInformation->upAge();
         for(int h = 0; h < m_Height; h++)
@@ -110,11 +112,16 @@ void Field::calculate()
                     if(oi->getAge() == 0 && ni->getAge() > 0) ni->upGeneration();
                 }
 
-                // cell Activity
-                if(oi->getGeneration() < ni->getGeneration()) active++;
+                auto ois = oi->getState();
+                auto nis = ni->getState();
+
+                // если и старое и новое состояние - мёртвое, то ячейка не менялась
+                if(nis != Kernel::CellState::Dead || ois != Kernel::CellState::Dead)
+                    m_CellsChanged.append(c);
 
                 // Field Information
-                auto nis = ni->getState();
+
+                if(oi->getGeneration() < ni->getGeneration()) active++;
 
                 //Kernel::CellState::Dead не считаем
                 if(nis == Kernel::CellState::Alive)
@@ -138,6 +145,7 @@ void Field::calculate()
         m_FieldInformation->setCursedCells(cursed);
         m_FieldInformation->setActiveCells(active);
         m_FieldInformation->applyAverageCalc(time);
+        m_FieldInformation->setChangedCells(m_CellsChanged.count());
 
         m_WaitScene = true;
         Q_EMIT signalCalculated(cells_to_redraw);
@@ -161,16 +169,10 @@ void Field::calculate()
 
 void Field::applyCalculating()
 {
-    for(int h = 0; h < m_Height; h++)
+    for(auto c: m_CellsChanged)
     {
         if(m_AbortCalculating) break;
-        for(int w = 0; w < m_Width; w++)
-        {
-            if(m_AbortCalculating) break;
-
-            auto c = m_Cells.at(w).at(h);
-            c->applyInfo();
-        }
+        c->applyInfo();
     }
 }
 

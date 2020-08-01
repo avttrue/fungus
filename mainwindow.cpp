@@ -593,10 +593,14 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
         auto x = obj_index.value("X").toInt();
         auto y = obj_index.value("Y").toInt();
         auto c = m_Field->getCell({cx + x, cy + y});
-        auto ci = c->getNewInfo();
+        auto ni = c->getNewInfo();
 
         for(auto key : obj_prop.keys())
-            ci->setProperty(key.toLatin1(), obj_prop.value(key).toVariant().toUInt());
+        {
+            auto k = key.toLatin1();
+            auto v = obj_prop.value(key).toVariant().toUInt();
+            ni->setProperty(k, v);
+        }
         c->applyInfo();
 
         m_ProgressBar->setValue(++counter);

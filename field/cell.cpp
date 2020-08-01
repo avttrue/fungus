@@ -22,6 +22,7 @@ void Cell::clear()
     m_NewInformation->setState(Kernel::CellState::Dead);
     m_NewInformation->setGeneration(0);
     m_NewInformation->setCursedAge(0);
+
     applyInfo();
 }
 
