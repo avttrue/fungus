@@ -704,7 +704,6 @@ void MainWindow::slotEditCell()
 
     auto secondcell = scene->getSecondSelectedCell();
     auto multyselection =  !secondcell ? false : true;
-
     auto cni = firstcell->getNewInfo();
     auto statelist = listKernelEnum("CellState");
 
@@ -1074,7 +1073,8 @@ void MainWindow::slotSelectAll()
     auto scene = m_SceneView->getScene();
     if(!scene) {m_ActionSelectAll->setDisabled(true); return; }
 
-    scene->selectCell(m_Field->getCell({0, 0}));
+    auto firstcell = m_Field->getCell({0, 0});
+    if(scene->getSelectedCell() != firstcell) scene->selectCell(firstcell);
     scene->MultiselectCell(m_Field->getCell({m_Field->width() - 1, m_Field->height() - 1}));
 }
 
