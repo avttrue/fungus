@@ -54,7 +54,7 @@ QString ActivityElementToString(const QVector<QVariant> &activity)
 { // TODO: переделать
     if(activity.count() < 4)
     {
-        qCritical() << __func__ << "Wrong CellActivity format, count" << activity.count();
+        qCritical() << __FILE__ << __func__ << "Wrong CellActivity format, count" << activity.count();
         return "";
     }
 

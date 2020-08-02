@@ -26,6 +26,7 @@ SOURCES += \
     config.cpp \
     controls.cpp \
     helper.cpp \
+    jdocumentlist.cpp \
     kernel/kernel.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     config.h \
     controls.h \
     helper.h \
+    jdocumentlist.h \
     kernel/kernel.h \
     mainwindow.h \
     properties.h \
