@@ -23,7 +23,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
                    Qt::WindowTitleHint);
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowTitle(tr("Cell %1").arg(cell->objectName()));
-    setWindowIcon(QIcon(":/resources/img/check.svg"));
+    setWindowIcon(QIcon(":/resources/img/cell.svg"));
     setModal(false);
 
     auto vblForm = new QVBoxLayout();

@@ -62,5 +62,8 @@
         <file>resources/presets/Conway's_Game_Of_Life/matrix_2x2_25.fpr</file>
         <file>resources/presets/Conway's_Game_Of_Life/preset_232.fpr</file>
         <file>resources/img/select_all.svg</file>
+        <file>resources/img/cell.svg</file>
+        <file>resources/img/retry.svg</file>
+        <file>resources/img/stop.svg</file>
     </qresource>
 </RCC>

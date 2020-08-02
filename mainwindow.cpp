@@ -101,7 +101,7 @@ void MainWindow::loadGui()
     m_ActionEditCell->setEnabled(false);
     m_ActionEditCell->setShortcut(Qt::CTRL + Qt::Key_E);
 
-    m_ActionInfoCell = new QAction(QIcon(":/resources/img/check.svg"), tr("Cell information"), this);
+    m_ActionInfoCell = new QAction(QIcon(":/resources/img/cell.svg"), tr("Cell information"), this);
     QObject::connect(m_ActionInfoCell, &QAction::triggered, this, &MainWindow::slotInfoCell);
     m_ActionInfoCell->setEnabled(false);
 
@@ -211,7 +211,9 @@ void MainWindow::loadGui()
     auto statusBar = new QStatusBar(this);
 
     m_LabelRunningStatus = new QLabel(this);
-    slotFieldRunning(false);
+    m_LabelRunningStatus->setPixmap(QPixmap(":/resources/img/stop.svg").
+                                    scaled(QFontMetrics(font()).height(), QFontMetrics(font()).height(),
+                                           Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     statusBar->addWidget(m_LabelRunningStatus);
 
     statusBar->addWidget(new SeparatorV(this));
