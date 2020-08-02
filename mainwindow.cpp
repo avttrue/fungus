@@ -153,13 +153,9 @@ void MainWindow::loadGui()
     m_ActionCreateSnapshot->setShortcut(Qt::CTRL + Qt::Key_S);
     m_ActionCreateSnapshot->setEnabled(false);
 
-    m_ActionPrevSnapshot = new QAction(QIcon(":/resources/img/prev_snapshot.svg"), tr("Load previous snapshot"), this);
-    QObject::connect(m_ActionPrevSnapshot, &QAction::triggered, this, &MainWindow::slotPrevSnapshot);
-    m_ActionPrevSnapshot->setEnabled(false);
-
-    m_ActionNextSnapshot = new QAction(QIcon(":/resources/img/next_snapshot.svg"), tr("Load next snapshot"), this);
-    QObject::connect(m_ActionNextSnapshot, &QAction::triggered, this, &MainWindow::slotNextSnapshot);
-    m_ActionNextSnapshot->setEnabled(false);
+    m_ActionSelectSnapshot = new QAction(QIcon(":/resources/img/next_snapshot.svg"), tr("Load snapshot"), this);
+    QObject::connect(m_ActionSelectSnapshot, &QAction::triggered, this, &MainWindow::slotSelectSnapshot);
+    m_ActionSelectSnapshot->setEnabled(false);
 
     // тулбар основной
     m_TbMain = new QToolBar(this);
@@ -211,8 +207,7 @@ void MainWindow::loadGui()
     m_TbActions->addSeparator();
 
     m_TbActions->addAction(m_ActionCreateSnapshot);
-    m_TbActions->addAction(m_ActionPrevSnapshot);
-    m_TbActions->addAction(m_ActionNextSnapshot);
+    m_TbActions->addAction(m_ActionSelectSnapshot);
 
     m_TbActions->addSeparator();
 
@@ -1165,14 +1160,9 @@ void MainWindow::slotCreateSnapshot()
     // TODO: slotCreateSnapshot
 }
 
-void MainWindow::slotPrevSnapshot()
+void MainWindow::slotSelectSnapshot()
 {
-    // TODO: slotPrevSnapshot
-}
-
-void MainWindow::slotNextSnapshot()
-{
-    // TODO: slotNextSnapshot
+    // TODO: slotSelectSnapshot
 }
 
 void MainWindow::slotFieldAvCalcUp(qreal value)

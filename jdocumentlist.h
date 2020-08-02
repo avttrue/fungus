@@ -14,6 +14,7 @@ public:
     QJsonDocument getDocument(int position = -1);
     QJsonDocument getNextDocument();
     QJsonDocument getPrevDocument();
+    QList<QJsonDocument>* getDocumentList();
     int getPosition() const;
     int getCount() const;
 

@@ -65,6 +65,5 @@
         <file>resources/img/cell.svg</file>
         <file>resources/img/stop.svg</file>
         <file>resources/img/next_snapshot.svg</file>
-        <file>resources/img/prev_snapshot.svg</file>
     </qresource>
 </RCC>

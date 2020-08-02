@@ -82,5 +82,6 @@ QJsonDocument JDocumentList::getPrevDocument()
     return m_List.at(m_Position);
 }
 
+QList<QJsonDocument> *JDocumentList::getDocumentList() { return &m_List; }
 int JDocumentList::getPosition() const { return m_Position; }
 int JDocumentList::getCount() const { return m_List.count(); }

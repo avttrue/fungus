@@ -81,8 +81,7 @@ private:
     QAction* m_ActionRandomFill;
     QAction* m_ActionSelectAll;
     QAction* m_ActionCreateSnapshot;
-    QAction* m_ActionPrevSnapshot;
-    QAction* m_ActionNextSnapshot;
+    QAction* m_ActionSelectSnapshot;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -122,8 +121,7 @@ private Q_SLOTS:
     void slotSelectedCellsChanged(Cell* first, Cell* second);
     void slotLabelSelectedCellClick();
     void slotCreateSnapshot();
-    void slotPrevSnapshot();
-    void slotNextSnapshot();
+    void slotSelectSnapshot();
 
 Q_SIGNALS:
     void signalStopField();
