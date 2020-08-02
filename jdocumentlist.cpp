@@ -8,6 +8,7 @@ JDocumentList::JDocumentList(QObject *parent)
 {
     setObjectName("JsonDocumentList");
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
+    qDebug() << objectName() << "created";
 }
 
 void JDocumentList::clearList()
@@ -47,6 +48,38 @@ QJsonDocument JDocumentList::getDocument(int position)
     m_Position = position;
     Q_EMIT signalPositionChanged(m_Position);
     return m_List.at(position);
+}
+
+QJsonDocument JDocumentList::getNextDocument()
+{
+    if(m_List.isEmpty())
+    {
+        qDebug() << __FILE__  << __func__ << "List is empty";
+        Q_EMIT signalPositionChanged(-1);
+        return QJsonDocument();
+    }
+
+    m_Position++;
+    if(m_Position >= m_List.count() - 1) m_Position = m_List.count() - 1;
+
+    Q_EMIT signalPositionChanged(m_Position);
+    return m_List.at(m_Position);
+}
+
+QJsonDocument JDocumentList::getPrevDocument()
+{
+    if(m_List.isEmpty())
+    {
+        qDebug() << __FILE__  << __func__ << "List is empty";
+        Q_EMIT signalPositionChanged(-1);
+        return QJsonDocument();
+    }
+
+    m_Position--;
+    if(m_Position < 0) m_Position = 0;
+
+    Q_EMIT signalPositionChanged(m_Position);
+    return m_List.at(m_Position);
 }
 
 int JDocumentList::getPosition() const { return m_Position; }

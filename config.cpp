@@ -8,6 +8,8 @@
 Config::Config(const QString& in_AppDirectory):
     m_Settings(nullptr)
 {
+    setObjectName("Config");
+
     m_PathAppDir = in_AppDirectory;
     m_PathAppConfig = m_PathAppDir + QDir::separator() + APP_CFG;
     qInfo() << "AppConfig:" << m_PathAppConfig;
@@ -35,7 +37,8 @@ Config::Config(const QString& in_AppDirectory):
 
     load();
 
-    QObject::connect(this, &QObject::destroyed, [=](){ qInfo() << "Config destroyed"; });
+    QObject::connect(this, &QObject::destroyed, [=](){ qInfo() << objectName() << "destroyed"; });
+    qDebug() << objectName() << "created";
 }
 
 void Config::load()

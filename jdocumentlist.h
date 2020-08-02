@@ -12,6 +12,8 @@ public:
     void clearList();
     void addDocument(QJsonDocument document);
     QJsonDocument getDocument(int position = -1);
+    QJsonDocument getNextDocument();
+    QJsonDocument getPrevDocument();
     int getPosition() const;
     int getCount() const;
 
@@ -20,8 +22,7 @@ private:
     int m_Position;
 
 Q_SIGNALS:
-   void signalPositionChanged(int value);
-
+    void signalPositionChanged(int value);
 };
 
 #endif // JDOCUMENTLIST_H

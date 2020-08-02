@@ -16,6 +16,7 @@ SceneView::SceneView(QWidget *parent)
     :QGraphicsView(parent),
       m_Scene(nullptr)
 {
+    setObjectName("SceneView");
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing | DontSavePainterState);
     SetUpdateMode();
     setDragMode(QGraphicsView::NoDrag);
@@ -29,8 +30,8 @@ SceneView::SceneView(QWidget *parent)
     m_Zoomer->SetZoomFactorBase(config->SceneScaleStep());
     m_Zoomer->setModifiers(config->SceneZoomModifier());
 
-    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "SceneView destroyed"; });
-    qDebug() << "SceneView created";
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
+    qDebug() << objectName() << "created";
 }
 
 Scene *SceneView::addScene(Field *filed)
@@ -132,7 +133,7 @@ void SceneView::SetUpdateMode()
     else qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  mode;
 
     setViewportUpdateMode(viewport_update_mode);
-    qDebug() << "SceneView update mode:" << viewportUpdateMode();
+    qDebug() << objectName() << "update mode:" << viewportUpdateMode();
 }
 
 Scene *SceneView::getScene() const { return m_Scene; }

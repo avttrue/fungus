@@ -13,8 +13,13 @@ GraphicsViewZoomer::GraphicsViewZoomer(QGraphicsView* view)
       m_ZoomFactorBase(ZOOM_FACTOR_BASE),
       m_CurrentZoom(1.0)
 {
+    setObjectName("GraphicsViewZoomer");
+
     m_View->viewport()->installEventFilter(this);
     m_View->setMouseTracking(true);
+
+    QObject::connect(this, &QObject::destroyed, [=](){ qInfo() << objectName() << "destroyed"; });
+    qDebug() << objectName() << "created";
 }
 
 void GraphicsViewZoomer::Zoom(qreal factor, bool centered)

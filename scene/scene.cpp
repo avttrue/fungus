@@ -23,10 +23,10 @@ Scene::Scene(QObject* parent, Field *field)
       m_AverageDraw(0),
       m_StopAdvanse(false)
 {
-    m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneCellSize();
     setObjectName(QString("SCENE[%1X%2]").
                   arg(QString::number(m_Field->width()), QString::number(m_Field->height())));
 
+    m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneCellSize();
     setItemIndexMethod(QGraphicsScene::NoIndex);
     setBackgroundColor(QColor(config->SceneBgColor()));
 

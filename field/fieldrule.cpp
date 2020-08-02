@@ -4,13 +4,14 @@
 
 #include <QDebug>
 
+// TODO: Временное исполнение FieldRule
 FieldRule::FieldRule(Field *parent)
     : QObject(parent),
       m_ColorAlive(Qt::black),
       m_CurseTime(0),
       m_DeathEnd(true)
 {
-    setDefault();
+    setDefault(); // TODO: setDefault убрать
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "CellRule" << objectName() <<"destroyed"; });
     qDebug() << "CellRule" << objectName() << "created";

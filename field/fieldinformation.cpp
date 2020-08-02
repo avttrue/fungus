@@ -16,7 +16,8 @@ FieldInformation::FieldInformation(QObject *parent)
       m_Density(0),
       m_ChangedCells(0)
 {
-    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldInformation destroyed"; });
+    setObjectName("FieldInformation");
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
 }
 
 
