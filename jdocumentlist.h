@@ -13,6 +13,7 @@ public:
     void addDocument(QJsonDocument document);
     QJsonDocument getDocument(int position = -1);
     int getPosition() const;
+    int getCount() const;
 
 private:
     QList<QJsonDocument> m_List;

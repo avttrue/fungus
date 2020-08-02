@@ -5,13 +5,17 @@
 JDocumentList::JDocumentList(QObject *parent)
     : QObject(parent),
       m_Position(-1)
-{ }
+{
+    setObjectName("JsonDocumentList");
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
+}
 
 void JDocumentList::clearList()
 {
     m_List.clear();
     m_Position = -1;
     Q_EMIT signalPositionChanged(m_Position);
+    qDebug() << objectName() << "cleared";
 }
 
 void JDocumentList::addDocument(QJsonDocument document)
@@ -19,6 +23,7 @@ void JDocumentList::addDocument(QJsonDocument document)
     m_List.append(document);
     m_Position = m_List.count() - 1;
     Q_EMIT signalPositionChanged(m_Position);
+    qDebug() << objectName() << "count:" << m_List.count();
 }
 
 QJsonDocument JDocumentList::getDocument(int position)
@@ -45,3 +50,4 @@ QJsonDocument JDocumentList::getDocument(int position)
 }
 
 int JDocumentList::getPosition() const { return m_Position; }
+int JDocumentList::getCount() const { return m_List.count(); }
