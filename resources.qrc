@@ -63,7 +63,8 @@
         <file>resources/presets/Conway's_Game_Of_Life/preset_232.fpr</file>
         <file>resources/img/select_all.svg</file>
         <file>resources/img/cell.svg</file>
-        <file>resources/img/retry.svg</file>
         <file>resources/img/stop.svg</file>
+        <file>resources/img/next_snapshot.svg</file>
+        <file>resources/img/prev_snapshot.svg</file>
     </qresource>
 </RCC>

@@ -2,6 +2,7 @@
 #include "properties.h"
 #include "helper.h"
 #include "controls.h"
+#include "jdocumentlist.h"
 #include "scene/scene.h"
 #include "scene/sceneitem.h"
 #include "scene/sceneview.h"
@@ -41,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
 {    
     setWindowIcon(QIcon(":/resources/img/flora.svg"));
     setWindowTitle(QString("%1 %2").arg(APP_NAME, APP_VERS));
+    m_Snapshots = new JDocumentList(this);
     loadGui();
     setWidgetToScreenCenter(this);
 }
@@ -146,6 +148,19 @@ void MainWindow::loadGui()
     m_ActionSelectAll->setShortcut(Qt::CTRL + Qt::Key_A);
     m_ActionSelectAll->setEnabled(false);
 
+    m_ActionCreateSnapshot = new QAction(QIcon(":/resources/img/check.svg"), tr("Create snapshot"), this);
+    QObject::connect(m_ActionCreateSnapshot, &QAction::triggered, this, &MainWindow::slotCreateSnapshot);
+    m_ActionCreateSnapshot->setShortcut(Qt::CTRL + Qt::Key_S);
+    m_ActionCreateSnapshot->setEnabled(false);
+
+    m_ActionPrevSnapshot = new QAction(QIcon(":/resources/img/prev_snapshot.svg"), tr("Load previous snapshot"), this);
+    QObject::connect(m_ActionPrevSnapshot, &QAction::triggered, this, &MainWindow::slotPrevSnapshot);
+    m_ActionPrevSnapshot->setEnabled(false);
+
+    m_ActionNextSnapshot = new QAction(QIcon(":/resources/img/next_snapshot.svg"), tr("Load next snapshot"), this);
+    QObject::connect(m_ActionNextSnapshot, &QAction::triggered, this, &MainWindow::slotNextSnapshot);
+    m_ActionNextSnapshot->setEnabled(false);
+
     // тулбар основной
     m_TbMain = new QToolBar(this);
     m_TbMain->setMovable(false);
@@ -192,6 +207,12 @@ void MainWindow::loadGui()
 
     m_TbActions->addAction(m_ActionSaveCellsToFile);
     m_TbActions->addAction(m_ActionLoadCellsFromFile);
+
+    m_TbActions->addSeparator();
+
+    m_TbActions->addAction(m_ActionCreateSnapshot);
+    m_TbActions->addAction(m_ActionPrevSnapshot);
+    m_TbActions->addAction(m_ActionNextSnapshot);
 
     m_TbActions->addSeparator();
 
@@ -251,9 +272,9 @@ void MainWindow::loadGui()
 
     m_LabelSelectedCell = new ClickableLabel("-", this);
     m_LabelSelectedCell->setToolTip(tr("Click to show cell"));
-//    auto palette = m_LabelSelectedCell->palette();
-//    palette.setColor(m_LabelSelectedCell->foregroundRole(), palette.color(QPalette::Link));
-//    m_LabelSelectedCell->setPalette(palette);
+    //    auto palette = m_LabelSelectedCell->palette();
+    //    palette.setColor(m_LabelSelectedCell->foregroundRole(), palette.color(QPalette::Link));
+    //    m_LabelSelectedCell->setPalette(palette);
     QObject::connect(m_LabelSelectedCell, &ClickableLabel::signalClicked, this, &MainWindow::slotLabelSelectedCellClick);
     statusBar->addWidget(m_LabelSelectedCell);
     statusBar->addWidget(new SeparatorV(this));
@@ -1137,6 +1158,21 @@ void MainWindow::slotLabelSelectedCellClick()
 
     auto cell = scene->getSelectedCell();
     slotShowCell(cell);
+}
+
+void MainWindow::slotCreateSnapshot()
+{
+    // TODO: slotCreateSnapshot
+}
+
+void MainWindow::slotPrevSnapshot()
+{
+    // TODO: slotPrevSnapshot
+}
+
+void MainWindow::slotNextSnapshot()
+{
+    // TODO: slotNextSnapshot
 }
 
 void MainWindow::slotFieldAvCalcUp(qreal value)

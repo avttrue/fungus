@@ -31,6 +31,7 @@ class QLabel;
 class ClickableLabel;
 class QProgressBar;
 class QThread;
+class JDocumentList;
 
 class MainWindow : public QMainWindow
 {
@@ -60,6 +61,7 @@ private:
     QThread* m_ThreadField;
     Field* m_Field;
     SceneView* m_SceneView;
+    JDocumentList* m_Snapshots;
     QToolBar* m_TbMain;
     QToolBar* m_TbActions;
     QAction* m_ActionZoomInScene;
@@ -78,6 +80,9 @@ private:
     QAction* m_ActionClearCells;
     QAction* m_ActionRandomFill;
     QAction* m_ActionSelectAll;
+    QAction* m_ActionCreateSnapshot;
+    QAction* m_ActionPrevSnapshot;
+    QAction* m_ActionNextSnapshot;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -116,6 +121,9 @@ private Q_SLOTS:
     void slotSelectAll();
     void slotSelectedCellsChanged(Cell* first, Cell* second);
     void slotLabelSelectedCellClick();
+    void slotCreateSnapshot();
+    void slotPrevSnapshot();
+    void slotNextSnapshot();
 
 Q_SIGNALS:
     void signalStopField();
