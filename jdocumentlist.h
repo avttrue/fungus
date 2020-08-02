@@ -10,20 +10,15 @@ class JDocumentList : public QObject
 public:
     explicit JDocumentList(QObject *parent = nullptr);
     void clearList();
-    void addDocument(QJsonDocument document);
-    QJsonDocument getDocument(int position = -1);
-    QJsonDocument getNextDocument();
-    QJsonDocument getPrevDocument();
-    QList<QJsonDocument>* getDocumentList();
-    int getPosition() const;
-    int getCount() const;
+    void addDocument(const QString& key, QJsonDocument document);
+    QJsonDocument getDocument(const QString& key);
+    QMap<QString, QJsonDocument>* getList();
 
 private:
-    QList<QJsonDocument> m_List;
-    int m_Position;
+    QMap<QString, QJsonDocument> m_List;
 
 Q_SIGNALS:
-    void signalPositionChanged(int value);
+
 };
 
 #endif // JDOCUMENTLIST_H

@@ -37,7 +37,7 @@ Config::Config(const QString& in_AppDirectory):
 
     load();
 
-    QObject::connect(this, &QObject::destroyed, [=](){ qInfo() << objectName() << "destroyed"; });
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
 }
 

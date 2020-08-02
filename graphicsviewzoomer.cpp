@@ -18,7 +18,7 @@ GraphicsViewZoomer::GraphicsViewZoomer(QGraphicsView* view)
     m_View->viewport()->installEventFilter(this);
     m_View->setMouseTracking(true);
 
-    QObject::connect(this, &QObject::destroyed, [=](){ qInfo() << objectName() << "destroyed"; });
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
 }
 

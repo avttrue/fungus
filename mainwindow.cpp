@@ -453,7 +453,7 @@ void MainWindow::setSceneFieldThreadPriority()
     else qCritical() << "Wrong settins value 'Scene/FieldThreadPriority'" <<  mode;
 
     m_ThreadField->setPriority(thread_priority);
-    qInfo() << "Field thread priority:" << m_ThreadField->priority() << mode;
+    qDebug() << "Field thread priority:" << m_ThreadField->priority() << mode;
 }
 
 void MainWindow::redrawScene()
