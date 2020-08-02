@@ -37,15 +37,12 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
         QPointF center;
 
         if(centered)
-        {
-            center = QPointF(m_View->scene()->width() / 2.0, m_View->scene()->height() / 2.0);
-        }
+            center = QPointF(m_View->scene()->width(), m_View->scene()->height()) / 2.0;
         else
         {
             m_View->centerOn(m_TargetScenePos);
-            QPointF deltapos = m_TargetViewportPos - QPointF(m_View->viewport()->width() / 2.0,
-                                                             m_View->viewport()->height() / 2.0);
-            center = m_View->mapFromScene(m_TargetScenePos) - deltapos;
+            auto delta = QPointF(m_View->viewport()->width(), m_View->viewport()->height()) / 2.0;
+            center = m_View->mapFromScene(m_TargetScenePos) - m_TargetViewportPos + delta;
             center = m_View->mapToScene(center.toPoint());
         }
 
@@ -60,27 +57,27 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
 
 bool GraphicsViewZoomer::eventFilter(QObject *object, QEvent *event)
 {
-    Q_UNUSED(object)
+    Q_UNUSED(object);
 
     if(!m_View->scene()) return false;
 
-    if (event->type() == QEvent::MouseMove)
+    if(event->type() == QEvent::MouseMove)
     {
-        QMouseEvent* mouseevent = static_cast<QMouseEvent*>(event);
-        QPointF delta = m_TargetViewportPos - mouseevent->pos();
+        auto mouseevent = static_cast<QMouseEvent*>(event);
+        auto delta = m_TargetViewportPos - mouseevent->pos();
         if (qAbs(delta.x()) > 5 || qAbs(delta.y()) > 5)
         {
             m_TargetViewportPos = mouseevent->pos();
             m_TargetScenePos = m_View->mapToScene(mouseevent->pos());
         }
     }
-    else if (event->type() == QEvent::Wheel)
+    else if(event->type() == QEvent::Wheel)
     {
-        QWheelEvent* wheelevent = static_cast<QWheelEvent*>(event);
+        auto wheelevent = static_cast<QWheelEvent*>(event);
         if (QApplication::keyboardModifiers() == m_Modifiers)
         {
-            qreal angle = wheelevent->angleDelta().y();
-            qreal factor = qPow(m_ZoomFactorBase, angle);
+            auto angle = wheelevent->angleDelta().y();
+            auto factor = qPow(m_ZoomFactorBase, angle);
             Zoom(factor);
             return true;
         }

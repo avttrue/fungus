@@ -248,16 +248,17 @@ void MainWindow::loadGui()
     statusBar->addWidget(new SeparatorV(this));
 
     m_LabelSelectedCell = new ClickableLabel("-", this);
-    auto palette = m_LabelSelectedCell->palette();
-    palette.setColor(m_LabelSelectedCell->foregroundRole(), palette.color(QPalette::Link));
-    m_LabelSelectedCell->setPalette(palette);
+    m_LabelSelectedCell->setToolTip(tr("Click to show cell"));
+//    auto palette = m_LabelSelectedCell->palette();
+//    palette.setColor(m_LabelSelectedCell->foregroundRole(), palette.color(QPalette::Link));
+//    m_LabelSelectedCell->setPalette(palette);
     QObject::connect(m_LabelSelectedCell, &ClickableLabel::signalClicked, this, &MainWindow::slotLabelSelectedCellClick);
     statusBar->addWidget(m_LabelSelectedCell);
     statusBar->addWidget(new SeparatorV(this));
 
     m_ProgressBar = new QProgressBar(this);
     m_ProgressBar->setAlignment(Qt::AlignLeft);
-    m_ProgressBar->setFixedWidth(4 * config->ButtonSize());
+    m_ProgressBar->setFixedWidth(6 * config->ButtonSize());
     m_ProgressBar->setRange(0, 0);
     m_ProgressBar->setVisible(false);
     statusBar->addPermanentWidget(m_ProgressBar);
@@ -1103,7 +1104,11 @@ void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
     m_ActionClearCells->setDisabled(disabled);
     m_ActionRandomFill->setDisabled(disabled);
 
-    if(disabled) return;
+    if(disabled)
+    {
+        m_LabelSelectedCell->setText(!first ? "-" : first->objectName());
+        return;
+    }
 
     Q_EMIT signalStopField();
 
@@ -1115,7 +1120,7 @@ void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
     auto w = xmax - xmin + 1;
     auto count = h * w;
 
-    m_LabelSelectedCell->setText(QString("%1%2 %3X%4 %5").
+    m_LabelSelectedCell->setText(QString("%1%2 : %3X%4 : %5").
                                  arg(first->objectName(),
                                      second->objectName(),
                                      QString::number(w),

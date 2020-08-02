@@ -212,6 +212,7 @@ void Scene::clearMultiSelection()
 {
     m_SecondSelectedCell = nullptr;
     m_MultiSelectionMark->hide();
+    Q_EMIT signalSelectedCellsChanged(m_SelectedCell, m_SecondSelectedCell);
 }
 
 Cell *Scene::getSecondSelectedCell() const { return m_SecondSelectedCell; }
