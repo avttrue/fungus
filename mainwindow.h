@@ -57,7 +57,10 @@ protected:
     bool CellsFromJsonText(Cell *cell, const QString& text);
     bool CellsFromJsonObject(QJsonObject *jobject, Cell* cell);
     void stopFieldCalculating();
+    void FieldToJsonObject(QJsonObject *jobject);
     void createSnapshot();
+    void FieldFromJsonObject(QJsonObject *jobject);
+    void loadSnapshot();
 
 private:
     QThread* m_ThreadField;
@@ -66,6 +69,7 @@ private:
     JDocumentList* m_Snapshots;
     QToolBar* m_TbMain;
     QToolBar* m_TbActions;
+    QAction* m_ActionNewProject;
     QAction* m_ActionZoomInScene;
     QAction* m_ActionZoomOutScene;
     QAction* m_ActionZoomUndoScene;
@@ -77,8 +81,8 @@ private:
     QAction* m_ActionSaveImageToFile;
     QAction* m_ActionSaveCellsToClipbord;
     QAction* m_ActionLoadCellsFromClipbord;
-    QAction* m_ActionSaveCellsToFile;
-    QAction* m_ActionLoadCellsFromFile;
+    QAction* m_ActionSaveCellsToPreset;
+    QAction* m_ActionLoadCellsFromPreset;
     QAction* m_ActionClearCells;
     QAction* m_ActionRandomFill;
     QAction* m_ActionSelectAll;
@@ -110,8 +114,8 @@ private Q_SLOTS:
     void slotSelectedCellChanged(Cell* cell);
     void slotSaveCellsToClipbord();
     void slotLoadCellsFromClipbord();
-    void slotSaveCellsToFile();
-    void slotLoadCellsFromFile();
+    void slotSaveCellsToPreset();
+    void slotLoadCellsFromPreset();
     void slotClearCells();
     void slotInfoCell();
     void slotInfoField();
