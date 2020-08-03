@@ -56,6 +56,8 @@ protected:
     QString CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exceptdead);
     bool CellsFromJsonText(Cell *cell, const QString& text);
     bool CellsFromJsonObject(QJsonObject *jobject, Cell* cell);
+    void stopFieldCalculating();
+    void createSnapshot();
 
 private:
     QThread* m_ThreadField;

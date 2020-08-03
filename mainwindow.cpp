@@ -291,20 +291,16 @@ void MainWindow::loadGui()
 
 void MainWindow::slotStepStop()
 {    
-    m_ActionSaveCellsToClipbord->setDisabled(true);
-    m_ActionSaveCellsToFile->setDisabled(true);
-    m_ActionClearCells->setDisabled(true);
-    m_ActionRandomFill->setDisabled(true);
-    if(m_SceneView->getScene()->getSelectedCell())
-    {
-        m_ActionLoadCellsFromClipbord->setEnabled(true);
-        m_ActionLoadCellsFromFile->setEnabled(true);
-    }
-    m_SceneView->getScene()->clearMultiSelection();
+    if(m_Field->isCalculating()) stopFieldCalculating();
 
-    if(m_Field->isCalculating()) Q_EMIT signalStopField();
     else
     {
+        m_ActionSaveCellsToClipbord->setDisabled(true);
+        m_ActionSaveCellsToFile->setDisabled(true);
+        m_ActionClearCells->setDisabled(true);
+        m_ActionRandomFill->setDisabled(true);
+        m_SceneView->getScene()->clearMultiSelection();
+
         m_Field->setRuleOn(true);
         m_Field->setCalculatingNonstop(false);
         m_Field->slotStartCalculating();
@@ -416,7 +412,7 @@ void MainWindow::setMainActionsEnable(bool value)
 
 void MainWindow::deleteField()
 {
-    Q_EMIT signalStopField();
+    stopFieldCalculating();
     if(m_Field)
     {
         m_Field->AbortCalculating();
@@ -631,6 +627,22 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
     return true;
 }
 
+void MainWindow::stopFieldCalculating()
+{
+    if(!m_SceneView->getScene()) return;
+
+    auto enabled = static_cast<bool>(m_SceneView->getScene()->getSelectedCell());
+    m_ActionLoadCellsFromClipbord->setEnabled(enabled);
+    m_ActionLoadCellsFromFile->setEnabled(enabled);
+
+    Q_EMIT signalStopField();
+}
+
+void MainWindow::createSnapshot()
+{
+    // TODO: createSnapshot
+}
+
 void MainWindow::slotSetup()
 {
     const QVector<QString> keys = {tr("00#_Common options"),
@@ -717,7 +729,7 @@ void MainWindow::slotSetup()
 
 void MainWindow::slotEditCell()
 {
-    Q_EMIT signalStopField();
+    stopFieldCalculating();
 
     auto scene = m_SceneView->getScene();
     if(!scene) { m_ActionEditCell->setDisabled(true); return; }
@@ -1115,14 +1127,18 @@ void MainWindow::slotSelectedCellChanged(Cell *cell)
 
 void MainWindow::slotSelectedCellsChanged(Cell *first, Cell *second)
 {
-    bool disabled = !first || !second || first == second;
+    bool group_disabled = !first || !second || first == second;
+    bool single_disabled = !first;
 
-    m_ActionSaveCellsToClipbord->setDisabled(disabled);
-    m_ActionSaveCellsToFile->setDisabled(disabled);
-    m_ActionClearCells->setDisabled(disabled);
-    m_ActionRandomFill->setDisabled(disabled);
+    m_ActionLoadCellsFromFile->setDisabled(single_disabled);
+    m_ActionLoadCellsFromClipbord->setDisabled(single_disabled);
 
-    if(disabled)
+    m_ActionSaveCellsToClipbord->setDisabled(group_disabled);
+    m_ActionSaveCellsToFile->setDisabled(group_disabled);
+    m_ActionClearCells->setDisabled(group_disabled);
+    m_ActionRandomFill->setDisabled(group_disabled);
+
+    if(group_disabled)
     {
         m_LabelSelectedCell->setText(!first ? "-" : first->objectName());
         return;
