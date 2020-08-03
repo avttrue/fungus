@@ -31,6 +31,7 @@ public:
     FieldInformation *getInformation() const;
     void AbortCalculating();
     void setRuleOn(bool value);
+    bool isWaitScene() const;
 
 protected:
     Cell* getTopCell(Cell* cell);

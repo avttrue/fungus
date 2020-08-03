@@ -56,13 +56,14 @@ protected:
     QString CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exceptdead);
     bool CellsFromJsonText(Cell *cell, const QString& text);
     bool CellsFromJsonObject(QJsonObject *jobject, Cell* cell);
-    void stopFieldCalculating();
+    void stopFieldCalculating(); // корректная приостановка поля
     void FieldToJsonObject(QJsonObject *jobject);
     void createSnapshot();
     void FieldFromJsonObject(QJsonObject *jobject);
     void loadSnapshot();
 
 private:
+    bool m_FieldRunning;   // состояние поля
     QThread* m_ThreadField;
     Field* m_Field;
     SceneView* m_SceneView;

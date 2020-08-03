@@ -37,6 +37,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
+      m_FieldRunning(false),
       m_ThreadField(nullptr),
       m_Field(nullptr)
 {    
@@ -305,6 +306,7 @@ void MainWindow::slotRun()
 
 void MainWindow::slotFieldRunning(bool value)
 {
+    m_FieldRunning = value;
     if(value)
         m_LabelRunningStatus->setPixmap(QPixmap(":/resources/img/running.svg").
                                         scaled(QFontMetrics(font()).height(), QFontMetrics(font()).height(),
@@ -389,12 +391,16 @@ void MainWindow::setMainActionsEnable(bool value)
 
 void MainWindow::deleteField()
 {
-    stopFieldCalculating();
+    Q_EMIT signalStopField(); // здесь сразу выключаем поле
+
     if(m_Field)
     {
         m_Field->AbortCalculating();
-        while(m_ThreadField->isRunning()) qDebug() << "Waiting ThreadField";
-
+        while(m_ThreadField->isRunning())
+        {
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            qDebug() << "MainWindow waits for field stopping...";
+        }
         delete m_Field;
         m_Field = nullptr;
     }
@@ -607,10 +613,23 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
 void MainWindow::stopFieldCalculating()
 {
     if(!m_SceneView->getScene()) return;
+    if(!m_Field) return;
 
     if(m_Field->isCalculating())
     {
         Q_EMIT signalStopField();
+        // TODO: выводить сообщения об ожидании поля и сцены
+        while(m_FieldRunning)
+        {
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
+            qDebug() << "MainWindow waits for field stopping...";
+        }
+
+        while(m_Field->isWaitScene())
+        {
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
+            qDebug() << "MainWindow waits for scene ready...";
+        }
     }
 }
 
@@ -854,7 +873,7 @@ void MainWindow::slotEditCell()
 
 void MainWindow::slotNewProject()
 {
-    Q_EMIT signalStopField();
+    stopFieldCalculating();
 
     QMap<QString, FieldRule*> ruleslist;
     auto rule = new FieldRule; // default rule

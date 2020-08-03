@@ -76,14 +76,15 @@ void Field::calculate()
     {
         if(m_WaitScene)
         {
-            qDebug() << "Wait scene";
+            qDebug() << "Field waits for scene ready...";
             continue;
         }
+        m_WaitScene = true;
 
         auto time = QDateTime::currentMSecsSinceEpoch();
-        uint alive = 0;
-        uint cursed = 0;
-        uint active = 0;
+        uint alive_count = 0;
+        uint cursed_count = 0;
+        uint active_count = 0;
         QVector<Cell*> cells_to_redraw;
         m_CellsChanged.clear();
 
@@ -121,18 +122,18 @@ void Field::calculate()
 
                 // Field Information
 
-                if(oi->getGeneration() < ni->getGeneration()) active++;
+                if(oi->getGeneration() < ni->getGeneration()) active_count++;
 
                 //Kernel::CellState::Dead не считаем
                 if(nis == Kernel::CellState::Alive)
                 {
                     cells_to_redraw.append(c);
-                    alive++;
+                    alive_count++;
                 }
                 else if(nis == Kernel::CellState::Cursed)
                 {
                     cells_to_redraw.append(c);
-                    cursed++;
+                    cursed_count++;
                 }
             }
         }
@@ -140,17 +141,16 @@ void Field::calculate()
 
         if(m_RuleOn) applyCalculating();
 
-        m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive - cursed);
-        m_FieldInformation->setAliveCells(alive);
-        m_FieldInformation->setCursedCells(cursed);
-        m_FieldInformation->setActiveCells(active);
+        m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive_count - cursed_count);
+        m_FieldInformation->setAliveCells(alive_count);
+        m_FieldInformation->setCursedCells(cursed_count);
+        m_FieldInformation->setActiveCells(active_count);
         m_FieldInformation->applyAverageCalc(time);
         m_FieldInformation->setChangedCells(m_CellsChanged.count());
 
-        m_WaitScene = true;
         Q_EMIT signalCalculated(cells_to_redraw);
 
-        if(!alive) m_CalculatingNonstop = false;
+        if(!alive_count) m_CalculatingNonstop = false;
 
         if(!m_CalculatingNonstop) slotStopCalculating();
 
@@ -486,5 +486,6 @@ int Field::width() { return m_Width; }
 bool Field::isCalculating() { return m_Calculating; }
 FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::slotSceneReady() { m_WaitScene = false; }
+bool Field::isWaitScene() const { return m_WaitScene; }
 void Field::AbortCalculating() { m_AbortCalculating = true; }
 void Field::setRuleOn(bool value) { m_RuleOn = value; }
