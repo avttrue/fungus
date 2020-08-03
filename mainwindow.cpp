@@ -655,8 +655,8 @@ void MainWindow::createSnapshot()
     m_Snapshots->addDocument(name, document);
 
     // test
-    auto clipboard = QGuiApplication::clipboard();
-    clipboard->setText(document.toJson(QJsonDocument::Indented));
+    //    auto clipboard = QGuiApplication::clipboard();
+    //    clipboard->setText(document.toJson(QJsonDocument::Indented));
 }
 
 void MainWindow::FieldFromJsonObject(QJsonObject *jobject)
