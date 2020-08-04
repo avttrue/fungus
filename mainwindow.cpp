@@ -396,11 +396,11 @@ void MainWindow::deleteField()
     if(m_Field)
     {
         m_Field->AbortCalculating();
+
+        qDebug() << "MainWindow waits for field stopping...";
         while(m_ThreadField->isRunning())
-        {
             QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-            qDebug() << "MainWindow waits for field stopping...";
-        }
+
         delete m_Field;
         m_Field = nullptr;
     }
@@ -617,19 +617,20 @@ void MainWindow::stopFieldCalculating()
 
     if(m_Field->isCalculating())
     {
+        m_ProgressBar->setRange(0, 0);
+        m_ProgressBar->setValue(0);
+        m_ProgressBar->show();
         Q_EMIT signalStopField();
-        // TODO: выводить сообщения об ожидании поля и сцены
-        while(m_FieldRunning)
-        {
-            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
-            qDebug() << "MainWindow waits for field stopping...";
-        }
 
+        qDebug() << "MainWindow waits for field stopping...";
+        while(m_FieldRunning)
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+
+        qDebug() << "MainWindow waits for scene ready...";
         while(m_Field->isWaitScene())
-        {
-            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
-            qDebug() << "MainWindow waits for scene ready...";
-        }
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+
+        m_ProgressBar->hide();
     }
 }
 

@@ -26,7 +26,6 @@ Field::Field(int width, int height, QObject *parent)
     m_FieldInformation->setCellsCount(width * height);
 
     m_Cells = QVector(m_Width, QVector<Cell*>(m_Height, nullptr));
-    m_CellsChanged.reserve(m_Width * m_Height);
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
     qDebug() << objectName() << "created";
@@ -86,7 +85,7 @@ void Field::calculate()
         uint cursed_count = 0;
         uint active_count = 0;
         QVector<Cell*> cells_to_redraw;
-        m_CellsChanged.clear();
+        QVector<Cell*> cells_changed;
 
         if(m_RuleOn) m_FieldInformation->upAge();
         for(int h = 0; h < m_Height; h++)
@@ -118,7 +117,7 @@ void Field::calculate()
 
                 // если и старое и новое состояние - мёртвое, то ячейка не менялась
                 if(nis != Kernel::CellState::Dead || ois != Kernel::CellState::Dead)
-                    m_CellsChanged.append(c);
+                    cells_changed.append(c);
 
                 // Field Information
 
@@ -137,16 +136,22 @@ void Field::calculate()
                 }
             }
         }
-        if(m_AbortCalculating) break;
 
-        if(m_RuleOn) applyCalculating();
+        if(m_RuleOn) // apply changes
+        {
+            for(auto c: cells_changed)
+            {
+                if(m_AbortCalculating) break;
+                c->applyInfo();
+            }
+        }
 
         m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive_count - cursed_count);
         m_FieldInformation->setAliveCells(alive_count);
         m_FieldInformation->setCursedCells(cursed_count);
         m_FieldInformation->setActiveCells(active_count);
         m_FieldInformation->applyAverageCalc(time);
-        m_FieldInformation->setChangedCells(m_CellsChanged.count());
+        m_FieldInformation->setChangedCells(cells_changed.count());
 
         Q_EMIT signalCalculated(cells_to_redraw);
 
@@ -165,15 +170,6 @@ void Field::calculate()
 
     qDebug() << "Field calculating stopped";
     Q_EMIT signalCalculatingDone();
-}
-
-void Field::applyCalculating()
-{
-    for(auto c: m_CellsChanged)
-    {
-        if(m_AbortCalculating) break;
-        c->applyInfo();
-    }
 }
 
 Cell *Field::addCell(int x, int y)

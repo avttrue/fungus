@@ -22,7 +22,7 @@ public:
     Cell* addCell(int x, int y);
     Cell* addCell(QPoint index);
     Cell* getCell(QPoint index);
-    QVector<QVector<Cell *>>* cells() const; 
+    QVector<QVector<Cell *>>* cells() const;
     FieldRule *getRule() const;
     void setRule(FieldRule *value);    
     bool isCalculating();
@@ -44,7 +44,6 @@ protected:
     Cell* getBottomRightCell(Cell* cell);
     QVector<Cell*> getCellsAround(Cell* cell);
     QVector<Cell*> getCellsAroundByStatus(Cell* cell, Kernel::CellState status);
-    void applyCalculating();                        // применение результатов calculate
     void applyRules(Cell* cell);                    // применение правил
     uint getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list); // получить значение в операнде
     void setRulesActivityReaction(CellInformation *ci, Kernel::ActivityType at, QVector<Cell*> list);
@@ -54,7 +53,6 @@ private:
     int m_Width;
     int m_Height;
     QVector<QVector<Cell*>> m_Cells;
-    QVector<Cell*> m_CellsChanged;
     FieldRule* m_Rule;
     FieldInformation* m_FieldInformation;
     bool m_RuleOn;                                  // включить расчёт правил (для отрисовки при редактировании)
