@@ -19,7 +19,7 @@ void JDocumentList::clearList()
 void JDocumentList::addDocument(const QString& key, QJsonDocument document)
 {
     if(m_List.contains(key))
-        qDebug() << __FILE__  << __func__ << "Document already in list";
+        qDebug() << __FILE__  << __func__ << "Document already in list, rewriting";
 
     m_List.insert(key, document);
     qDebug() << objectName() << "count:" << m_List.count();

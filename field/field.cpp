@@ -182,7 +182,7 @@ Cell *Field::addCell(int x, int y)
     return c;
 }
 
-void Field::applyRules(Cell *cell) // TODO: выполнение правил
+void Field::applyRules(Cell *cell)
 {
     auto oi = cell->getOldInfo();
     auto ni = cell->getNewInfo();

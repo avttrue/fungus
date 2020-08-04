@@ -908,6 +908,8 @@ void MainWindow::slotNewProject()
         return;
     }
 
+    m_Snapshots->clearList();
+
     config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
     config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
     auto random = map.value(keys.at(5)).value.toBool();
