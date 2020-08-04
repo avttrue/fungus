@@ -48,6 +48,7 @@ protected:
     void createField(int w, int h, bool random = false);
     void fillField(bool random = false);
     void setMainActionsEnable(bool value);
+    void setCellsActionsEnable(bool value);
     void deleteField();
     void stopThreadField();
     void setSceneFieldThreadPriority();
