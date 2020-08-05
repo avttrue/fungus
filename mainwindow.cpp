@@ -1422,11 +1422,9 @@ void MainWindow::slotCreateSnapshot()
 
 void MainWindow::slotSelectSnapshot()
 {
-
     if(m_Snapshots->getList()->isEmpty())
     {
-        QMessageBox::warning(this, tr("Warning"),
-                             tr("Snapshot list is empty."));
+        QMessageBox::warning(this, tr("Warning"), tr("Snapshot list is empty."));
         return;
     }
 
