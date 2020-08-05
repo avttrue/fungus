@@ -543,8 +543,11 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
 
 QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exceptdead)
 {
+    auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
     QJsonDocument document;
-    QJsonObject obj_root {{"application", APP_NAME}, {"version", APP_VERS}};
+    QJsonObject obj_root {{"DateTime", datetime},
+                          {"Application", APP_NAME},
+                          {"Version", APP_VERS}};
     
     CellsToJsonObject(&obj_root, firstcell, secondcell, exceptdead);
     document.setObject(obj_root);
@@ -568,12 +571,12 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
     auto root_object = document.object();
     if(root_object.isEmpty()) { qDebug() << __func__  << "Root JsonObject is empty"; return false; }
 
-    if(root_object.value("application").toString() != APP_NAME)
-    { qDebug() << __func__  << "Incorrect Json data: 'application' =" << root_object.value("application").toString();
+    if(root_object.value("Application").toString() != APP_NAME)
+    { qDebug() << __func__  << "Incorrect Json data: 'Application' =" << root_object.value("Application").toString();
         return false; }
 
-    if(!config->JsonIgnoreDataVersion() && root_object.value("version").toString() != APP_VERS)
-    { qDebug() << __func__  << "Incorrect Json data: 'version' =" << root_object.value("version").toString();
+    if(!config->JsonIgnoreDataVersion() && root_object.value("Version").toString() != APP_VERS)
+    { qDebug() << __func__  << "Incorrect Json data: 'Version' =" << root_object.value("Version").toString();
         return false; }
 
     auto obj_size = root_object.value("Size").toObject();
@@ -708,7 +711,9 @@ void MainWindow::createSnapshot()
     auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
 
     QJsonDocument document;
-    QJsonObject obj_root {{"DateTime", datetime}, {"Name", name}};
+    QJsonObject obj_root {{"DateTime", datetime},
+                          {"Application", APP_NAME},
+                          {"Version", APP_VERS}};
 
     FieldToJsonObject(&obj_root);
 
