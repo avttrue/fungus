@@ -1432,7 +1432,7 @@ void MainWindow::slotSelectSnapshot()
 
     auto count = m_Snapshots->getList()->count();
     QVector<QString> keys =
-    { tr("00#_Available snapshots [%1]").arg(QString::number(count)),
+    { tr("00#_Available snapshots: %1").arg(QString::number(count)),
       "01#_" };
 
     QMap<QString, DialogValue> map =
