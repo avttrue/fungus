@@ -723,10 +723,6 @@ void MainWindow::createSnapshot()
 
     document.setObject(obj_root);
     m_Snapshots->addDocument(name, document);
-
-    // test
-    //    auto clipboard = QGuiApplication::clipboard();
-    //    clipboard->setText(document.toJson(QJsonDocument::Indented));
 }
 
 bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
