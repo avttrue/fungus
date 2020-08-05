@@ -60,8 +60,8 @@ protected:
     void stopFieldCalculating(); // корректная приостановка поля
     void FieldToJsonObject(QJsonObject *jobject);
     void createSnapshot();
-    void FieldFromJsonObject(QJsonObject *jobject);
-    void loadSnapshot();
+    bool FieldFromJsonObject(QJsonObject *jobject);
+    void loadSnapshot(QJsonDocument* document);
 
 private:
     bool m_FieldRunning;   // состояние поля
@@ -109,6 +109,7 @@ private Q_SLOTS:
     void slotRun();
     void slotFieldRunning(bool value);
     void slotFieldAge(uint value);
+    void slotFieldAvCalc(qreal value);
     void slotFieldAvCalcUp(qreal value);
     void slotFieldAvCalcDown(qreal value);
     void slotAverageDrawUp(qreal value);

@@ -89,6 +89,8 @@ public:
     void setRewriteResource(bool value);
     int SceneSelAlfa() const;
     void setSceneSelAlfa(int value);
+    bool SceneFirstSnapshot() const;
+    void setSceneFirstSnapshot(bool value);
 
 protected:
     void load();
@@ -133,6 +135,7 @@ private:
     bool m_CopyToClipboardExceptDead;               // при копировании в буфер обмена исключать мёртвые
     bool m_SaveToPresetExceptDead;                  // при сохранении в пресет исключать мёртвые
     bool m_RewriteResource;                         // переписывать ресурсы при старте
+    bool m_SceneFirstSnapshot;                      // создавать снапшот при первом запуске поля
 };
 
 #endif // CONFIG_H

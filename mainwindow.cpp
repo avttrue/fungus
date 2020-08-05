@@ -277,8 +277,16 @@ void MainWindow::loadGui()
 
 void MainWindow::slotStepStop()
 {    
+    if(!m_SceneView->getScene())
+    {
+        qCritical() << __func__ << "Scene not created";
+        return;
+    }
+
     if(!m_Field->isCalculating())
     {
+        if(config->SceneFirstSnapshot() && !m_Snapshots->getList()->count())
+            createSnapshot();
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
         m_Field->setCalculatingNonstop(false);
@@ -293,8 +301,21 @@ void MainWindow::slotStepStop()
 
 void MainWindow::slotRun()
 {
+    if(!m_SceneView->getScene())
+    {
+        qCritical() << __func__ << "Scene not created";
+        return;
+    }
+    if(!m_Field)
+    {
+        qCritical() << __func__ << "Field not created";
+        return;
+    }
+
     if(!m_Field->isCalculating())
     {
+        if(config->SceneFirstSnapshot() && !m_Snapshots->getList()->count())
+            createSnapshot();
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
         m_Field->setCalculatingNonstop(true);
@@ -343,6 +364,7 @@ void MainWindow::createField(int w, int h, bool random)
 
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAgeChanged, this, &MainWindow::slotFieldAge);
     QObject::connect(m_Field, &Field::signalCalculating, this, &MainWindow::slotFieldRunning);
+    QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChanged, this, &MainWindow::slotFieldAvCalc);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedUp, this, &MainWindow::slotFieldAvCalcUp);
     QObject::connect(m_Field->getInformation(), &FieldInformation::signalAverageCalcChangedDown, this, &MainWindow::slotFieldAvCalcDown);
     QObject::connect(this, &MainWindow::signalStopField, m_Field, &Field::slotStopCalculating, Qt::DirectConnection);
@@ -389,6 +411,7 @@ void MainWindow::setMainActionsEnable(bool value)
     m_ActionRun->setEnabled(enable);
     m_ActionSelectAll->setEnabled(enable);
     m_ActionCreateSnapshot->setEnabled(enable);
+    m_ActionSelectSnapshot->setEnabled(enable);
 }
 
 void MainWindow::setCellsActionsEnable(bool value)
@@ -403,6 +426,8 @@ void MainWindow::setCellsActionsEnable(bool value)
 
     m_ActionLoadCellsFromPreset->setEnabled(single_enable);
     m_ActionLoadCellsFromClipbord->setEnabled(single_enable);
+    m_ActionEditCell->setEnabled(single_enable);
+    m_ActionInfoCell->setEnabled(single_enable);
 
     m_ActionSaveCellsToClipbord->setEnabled(group_enable);
     m_ActionSaveCellsToPreset->setEnabled(group_enable);
@@ -616,9 +641,8 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
 
         for(auto key : obj_prop.keys())
         {
-            auto k = key.toLatin1();
-            auto v = obj_prop.value(key).toVariant().toUInt();
-            ni->setProperty(k, v);
+            auto v = obj_prop.value(key).toVariant();
+            ni->setProperty(key.toLatin1(), v.toUInt());
         }
         c->applyInfo();
 
@@ -674,9 +698,9 @@ void MainWindow::FieldToJsonObject(QJsonObject *jobject)
 
 void MainWindow::createSnapshot()
 {
-    if(!m_Field)
+    if(!m_SceneView->getScene())
     {
-        qCritical() << "Field not created";
+        qCritical() << __func__ << "Scene not created";
         return;
     }
 
@@ -700,15 +724,46 @@ void MainWindow::createSnapshot()
     //    clipboard->setText(document.toJson(QJsonDocument::Indented));
 }
 
-void MainWindow::FieldFromJsonObject(QJsonObject *jobject)
+bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
 {
-    Q_UNUSED(jobject);
-    // TODO: FieldFromJsonObject
+    auto obj_field = jobject->value("Field").toObject();
+    if(obj_field.isEmpty()) { qDebug() << __func__ << "JsonObject 'Field' is empty"; return false; }
+
+    auto obj_prop = obj_field.value("Properties").toObject();
+    if(obj_prop.isEmpty()) { qDebug() << __func__ << "JsonObject 'Properties' is empty"; return false; }
+
+    auto cell = m_Field->getCell({0, 0});
+    if(!CellsFromJsonObject(jobject, cell)) return false;
+
+    auto fi = m_Field->getInformation();
+    for(auto key : obj_prop.keys())
+    {
+        auto v = obj_prop.value(key).toVariant();
+        if(v.type() == QVariant::Double)
+            fi->setProperty(key.toLatin1(), v.toDouble());
+        else
+            fi->setProperty(key.toLatin1(), v.toUInt());
+    }
+    return true;
 }
 
-void MainWindow::loadSnapshot()
+void MainWindow::loadSnapshot(QJsonDocument* document)
 {
-    // TODO: loadSnapshot
+    if(!m_SceneView->getScene())
+    {
+        qCritical() << __func__ << "Scene not created";
+        return;
+    }
+
+    stopFieldCalculating();
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+
+    auto root_object = document->object();
+    if(FieldFromJsonObject(&root_object)) redrawScene();
+
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
 }
 
 void MainWindow::slotSetup()
@@ -726,12 +781,13 @@ void MainWindow::slotSetup()
                                    tr("10#_Dead cell color"),
                                    tr("11#_Cursed cell color"),
                                    tr("12#_Scene zoom factor"),
-                                   tr("13#_Indicate age value"),
-                                   tr("14#_Minimum pause at calculating (ms)"),
-                                   tr("15#_Additional options"),
-                                   tr("16#_Copy to clipboard except dead cells"),
-                                   tr("17#_Save to preset except dead cells"),
-                                   tr("18#_Field thread priority"),
+                                   tr("13#_Create first snapshot"),
+                                   tr("14#_Indicate age value"),
+                                   tr("15#_Minimum pause at calculating (ms)"),
+                                   tr("16#_Additional options"),
+                                   tr("17#_Copy to clipboard except dead cells"),
+                                   tr("18#_Save to preset except dead cells"),
+                                   tr("19#_Field thread priority"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -747,12 +803,13 @@ void MainWindow::slotSetup()
      {keys.at(10), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(11), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-     {keys.at(13), {QVariant::Bool, config->SceneCellAgeIndicate()}},
-     {keys.at(14), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
-     {keys.at(15), {}},
-     {keys.at(16), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
-     {keys.at(17), {QVariant::Bool, config->SaveToPresetExceptDead()}},
-     {keys.at(18), {QVariant::StringList, config->SceneFieldThreadPriority(), 1, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
+     {keys.at(13), {QVariant::Bool, config->SceneFirstSnapshot()}},
+     {keys.at(14), {QVariant::Bool, config->SceneCellAgeIndicate()}},
+     {keys.at(15), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
+     {keys.at(16), {}},
+     {keys.at(17), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
+     {keys.at(18), {QVariant::Bool, config->SaveToPresetExceptDead()}},
+     {keys.at(19), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -786,12 +843,13 @@ void MainWindow::slotSetup()
     config->setSceneCellDeadColor(map.value(keys.at(10)).value.toString());
     config->setSceneCellCurseColor(map.value(keys.at(11)).value.toString());
     config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
-    config->setSceneCellAgeIndicate(map.value(keys.at(13)).value.toBool());
-    config->setSceneCalculatingMinPause(map.value(keys.at(14)).value.toInt());
+    config->setSceneFirstSnapshot(map.value(keys.at(13)).value.toBool());
+    config->setSceneCellAgeIndicate(map.value(keys.at(14)).value.toBool());
+    config->setSceneCalculatingMinPause(map.value(keys.at(15)).value.toInt());
     m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
-    config->setCopyToClipboardExceptDead(map.value(keys.at(16)).value.toBool());
-    config->setSaveToPresetExceptDead(map.value(keys.at(17)).value.toBool());
-    config->setSceneFieldThreadPriority(map.value(keys.at(18)).value.toString());
+    config->setCopyToClipboardExceptDead(map.value(keys.at(17)).value.toBool());
+    config->setSaveToPresetExceptDead(map.value(keys.at(18)).value.toBool());
+    config->setSceneFieldThreadPriority(map.value(keys.at(19)).value.toString());
     setSceneFieldThreadPriority();
 }
 
@@ -1209,10 +1267,9 @@ void MainWindow::slotShowCell(Cell *cell)
 
 void MainWindow::slotSaveImageToFile()
 {
-    if(!m_Field)
+    if(!m_SceneView->getScene())
     {
-        m_ActionSaveImageToFile->setDisabled(true);
-        qCritical() << __func__ << "Field not created";
+        qCritical() << __func__ << "Scene not created";
         return;
     }
 
@@ -1365,7 +1422,40 @@ void MainWindow::slotCreateSnapshot()
 
 void MainWindow::slotSelectSnapshot()
 {
-    // TODO: slotSelectSnapshot
+
+    if(m_Snapshots->getList()->isEmpty())
+    {
+        QMessageBox::warning(this, tr("Warning"),
+                             tr("Snapshot list is empty."));
+        return;
+    }
+
+    auto count = m_Snapshots->getList()->count();
+    QVector<QString> keys =
+    { tr("00#_Available snapshots [%1]").arg(QString::number(count)),
+      "01#_" };
+
+    QMap<QString, DialogValue> map =
+    { {keys.at(0), {}},
+      {keys.at(1), {QVariant::StringList, m_Snapshots->getList()->keys().at(0), 0,
+                    QStringList(m_Snapshots->getList()->keys()),
+                    DialogValueMode::OneFromList}} };
+
+    auto dvl = new DialogValuesList(this, ":/resources/img/next_snapshot.svg",
+                                    tr("Select snapshot"), &map);
+    if(!dvl->exec()) return;
+
+    auto key = map.value(keys.at(1)).value.toString();
+    auto jdoc = m_Snapshots->getDocument(key);
+    loadSnapshot(&jdoc);
+}
+
+void MainWindow::slotFieldAvCalc(qreal value)
+{
+    if(m_LabelFieldAvCalc->styleSheet() != MW_LABEL_STYLE)
+        m_LabelFieldAvCalc->setStyleSheet(MW_LABEL_STYLE);
+
+    m_LabelFieldAvCalc->setText(tr("%1 ms").arg(QString::number(value, 'f', 1)));
 }
 
 void MainWindow::slotFieldAvCalcUp(qreal value)

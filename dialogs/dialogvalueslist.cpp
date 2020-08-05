@@ -357,7 +357,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
                 auto list = maxv.toStringList();
                 if(!list.isEmpty())
                 {
-                    list.sort(Qt::CaseInsensitive);
+                    //list.sort(Qt::CaseInsensitive);
                     cb->addItems(list);
                     cb->setProperty("ValueName", key);
                     auto index = list.indexOf(v.toString());

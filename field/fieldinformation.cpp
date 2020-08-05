@@ -109,7 +109,31 @@ void FieldInformation::setChangedCells(uint value)
     if (m_ChangedCells == value) return;
 
     m_ChangedCells = value;
-    emit signalChangedCellsChanged(m_ChangedCells);
+    Q_EMIT signalChangedCellsChanged(m_ChangedCells);
+}
+
+void FieldInformation::setAge(uint value)
+{
+    if (m_Age == value) return;
+
+    m_Age = value;
+    Q_EMIT signalAgeChanged(value);
+}
+
+void FieldInformation::setDensity(qreal value)
+{
+    if (m_Density == value) return;
+
+    m_Density = value;
+    Q_EMIT signalDensityChanged(m_Density);
+}
+
+void FieldInformation::setAverageCalc(qreal value)
+{
+   if (m_AverageCalc == value) return;
+
+    m_AverageCalc = value;
+    Q_EMIT signalAverageCalcChanged(m_AverageCalc);
 }
 qreal FieldInformation::getDensity() const { return m_Density; }
 uint FieldInformation::getLastActiveAge() const { return m_LastActiveAge; }

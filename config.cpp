@@ -153,6 +153,10 @@ void Config::load()
         m_Settings->setValue("Scene/CellAgeIndicate", SCENE_CELL_AGE_INDICATE);
     m_SceneCellAgeIndicate = m_Settings->value("Scene/CellAgeIndicate").toBool();
 
+    if(!m_Settings->contains("Scene/FirstSnapshot"))
+        m_Settings->setValue("Scene/FirstSnapshot", SCENE_FIRST_SNAPSHOT);
+    m_SceneFirstSnapshot = m_Settings->value("Scene/FirstSnapshot").toBool();
+
     if(!m_Settings->contains("Scene/CellDeadColor"))
         m_Settings->setValue("Scene/CellDeadColor", SCENE_CELL_DEAD_COLOR);
     m_SceneCellDeadColor = m_Settings->value("Scene/CellDeadColor").toString();
@@ -188,6 +192,14 @@ void Config::load()
     if(!m_Settings->contains("Scene/SelectAlfa"))
         m_Settings->setValue("Scene/SelectAlfa", SCENE_SELECT_ALFA);
     m_SceneSelAlfa = m_Settings->value("Scene/SelectAlfa").toInt();
+}
+
+void Config::setSceneFirstSnapshot(bool value)
+{
+    if(m_SceneFirstSnapshot == value) return;
+
+    m_SceneFirstSnapshot = value;
+    m_Settings->setValue("Scene/FirstSnapshot", m_SceneFirstSnapshot);
 }
 
 void Config::setSceneSelAlfa(int value)
@@ -508,3 +520,4 @@ bool Config::JsonIgnoreDataVersion() const { return m_JsonIgnoreDataVersion; }
 QString Config::PathPresetDirectory() const { return m_PathPresetDirectory; }
 bool Config::RewriteResource() const { return m_RewriteResource; }
 int Config::SceneSelAlfa() const { return m_SceneSelAlfa; }
+bool Config::SceneFirstSnapshot() const { return m_SceneFirstSnapshot; }
