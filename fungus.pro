@@ -59,8 +59,7 @@ HEADERS += \
     scene/scene.h \
     scene/sceneitem.h \
     scene/sceneview.h \
-    splashscreen.h \
-    wait.h
+    splashscreen.h
 
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
