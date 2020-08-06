@@ -19,7 +19,7 @@ void JDocumentList::clearList()
 void JDocumentList::addDocument(const QString& key, QJsonDocument document)
 {
     if(m_List.contains(key))
-        qDebug() << __FILE__  << __func__ << "Document already in list, rewriting";
+        qDebug() << __func__ << "Document already in list, rewriting";
 
     m_List.insert(key, document);
     qDebug() << objectName() << "count:" << m_List.count();
@@ -29,13 +29,13 @@ QJsonDocument JDocumentList::getDocument(const QString &key)
 {
     if(m_List.isEmpty())
     {
-        qDebug() << __FILE__  << __func__ << "List is empty";
+        qDebug() << __func__ << "List is empty";
         return QJsonDocument();
     }
 
     if(!m_List.contains(key))
     {
-        qCritical() << __FILE__ << __func__ << "Key not found:" << key;
+        qCritical()<< __func__ << "Key not found:" << key;
         return QJsonDocument();
     }
 

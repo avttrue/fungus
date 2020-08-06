@@ -771,46 +771,44 @@ void MainWindow::slotSetup()
 {
     const QVector<QString> keys = {tr("00#_Common options"),
                                    tr("01#_Date and time format"),
-                                   tr("02#_Use SI metric"),
-                                   tr("03#_Event log size (0 = maximum)"),
-                                   tr("04#_Buttons size"),
-                                   tr("05#_Scene options"),
-                                   tr("06#_Scene antialiasing"),
-                                   tr("07#_Scene update mode"),
-                                   tr("08#_Scene background color"),
-                                   tr("09#_Scene selection color"),//
-                                   tr("10#_Dead cell color"),
-                                   tr("11#_Cursed cell color"),
-                                   tr("12#_Scene zoom factor"),
-                                   tr("13#_Create first snapshot"),
-                                   tr("14#_Indicate age value"),
-                                   tr("15#_Minimum pause at calculating (ms)"),
-                                   tr("16#_Additional options"),
-                                   tr("17#_Copy to clipboard except dead cells"),
-                                   tr("18#_Save to preset except dead cells"),
-                                   tr("19#_Field thread priority"),
+                                   tr("02#_Write logs to file (restart required)"),
+                                   tr("03#_Buttons size"),
+                                   tr("04#_Scene options"),
+                                   tr("05#_Scene antialiasing"),
+                                   tr("06#_Scene update mode"),
+                                   tr("07#_Scene background color"),
+                                   tr("08#_Scene selection color"),//
+                                   tr("09#_Dead cell color"),
+                                   tr("10#_Cursed cell color"),
+                                   tr("11#_Scene zoom factor"),
+                                   tr("12#_Create first snapshot"),
+                                   tr("13#_Indicate age value"),
+                                   tr("14#_Minimum pause at calculating (ms)"),
+                                   tr("15#_Additional options"),
+                                   tr("16#_Copy to clipboard except dead cells"),
+                                   tr("17#_Save to preset except dead cells"),
+                                   tr("18#_Field thread priority"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
      {keys.at(1), {QVariant::String, config->DateTimeFormat(), 0, 0}},
-     {keys.at(2), {QVariant::Bool, config->SIMetric()}},
-     {keys.at(3), {QVariant::Int, config->LogSize()}},
-     {keys.at(4), {QVariant::Int, config->ButtonSize(), 16, 100}},
-     {keys.at(5), {}},
-     {keys.at(6), {QVariant::Bool, config->SceneViewAntialiasing()}},
-     {keys.at(7), {QVariant::StringList, config->SceneViewUpdateMode(), 0, SCENE_VIEW_UPDATE_MODES, DialogValueMode::OneFromList}},
-     {keys.at(8), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(9), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(10), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(11), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-     {keys.at(13), {QVariant::Bool, config->SceneFirstSnapshot()}},
-     {keys.at(14), {QVariant::Bool, config->SceneCellAgeIndicate()}},
-     {keys.at(15), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
-     {keys.at(16), {}},
-     {keys.at(17), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
-     {keys.at(18), {QVariant::Bool, config->SaveToPresetExceptDead()}},
-     {keys.at(19), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
+     {keys.at(2), {QVariant::Bool, config->WriteLogsToFile()}},
+     {keys.at(3), {QVariant::Int, config->ButtonSize(), 16, 100}},
+     {keys.at(4), {}},
+     {keys.at(5), {QVariant::Bool, config->SceneViewAntialiasing()}},
+     {keys.at(6), {QVariant::StringList, config->SceneViewUpdateMode(), 0, SCENE_VIEW_UPDATE_MODES, DialogValueMode::OneFromList}},
+     {keys.at(7), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(8), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(9), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(10), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(11), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
+     {keys.at(12), {QVariant::Bool, config->SceneFirstSnapshot()}},
+     {keys.at(13), {QVariant::Bool, config->SceneCellAgeIndicate()}},
+     {keys.at(14), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
+     {keys.at(15), {}},
+     {keys.at(16), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
+     {keys.at(17), {QVariant::Bool, config->SaveToPresetExceptDead()}},
+     {keys.at(18), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -819,38 +817,37 @@ void MainWindow::slotSetup()
 
     // common
     config->setDateTimeFormat(map.value(keys.at(1)).value.toString());
-    config->setSIMetric(map.value(keys.at(2)).value.toBool());
-    config->setLogSize(map.value(keys.at(3)).value.toInt());
-    config->setButtonSize(map.value(keys.at(4)).value.toInt());
+    config->setWriteLogsToFile(map.value(keys.at(2)).value.toBool());
+    config->setButtonSize(map.value(keys.at(3)).value.toInt());
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     // scene
-    config->setSceneViewAntialiasing(map.value(keys.at(6)).value.toBool());
+    config->setSceneViewAntialiasing(map.value(keys.at(5)).value.toBool());
     m_SceneView->setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
-    config->setSceneViewUpdateMode(map.value(keys.at(7)).value.toString());
+    config->setSceneViewUpdateMode(map.value(keys.at(6)).value.toString());
     m_SceneView->SetUpdateMode();
-    config->setSceneBgColor(map.value(keys.at(8)).value.toString());
+    config->setSceneBgColor(map.value(keys.at(7)).value.toString());
     if(m_SceneView->getScene())
     {
         m_SceneView->getScene()->setBackgroundColor(config->SceneBgColor());
         m_SceneView->update();
     }
-    config->setSceneSelectColor(map.value(keys.at(9)).value.toString());
+    config->setSceneSelectColor(map.value(keys.at(8)).value.toString());
     if(m_SceneView->getScene())
     {
         m_SceneView->getScene()->setSelectionMarkColor(config->SceneSelectColor());
         m_SceneView->update();
     }
-    config->setSceneCellDeadColor(map.value(keys.at(10)).value.toString());
-    config->setSceneCellCurseColor(map.value(keys.at(11)).value.toString());
-    config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
-    config->setSceneFirstSnapshot(map.value(keys.at(13)).value.toBool());
-    config->setSceneCellAgeIndicate(map.value(keys.at(14)).value.toBool());
-    config->setSceneCalculatingMinPause(map.value(keys.at(15)).value.toInt());
+    config->setSceneCellDeadColor(map.value(keys.at(9)).value.toString());
+    config->setSceneCellCurseColor(map.value(keys.at(10)).value.toString());
+    config->setSceneScaleStep(map.value(keys.at(11)).value.toDouble());
+    config->setSceneFirstSnapshot(map.value(keys.at(12)).value.toBool());
+    config->setSceneCellAgeIndicate(map.value(keys.at(13)).value.toBool());
+    config->setSceneCalculatingMinPause(map.value(keys.at(14)).value.toInt());
     m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
-    config->setCopyToClipboardExceptDead(map.value(keys.at(17)).value.toBool());
-    config->setSaveToPresetExceptDead(map.value(keys.at(18)).value.toBool());
-    config->setSceneFieldThreadPriority(map.value(keys.at(19)).value.toString());
+    config->setCopyToClipboardExceptDead(map.value(keys.at(16)).value.toBool());
+    config->setSaveToPresetExceptDead(map.value(keys.at(17)).value.toBool());
+    config->setSceneFieldThreadPriority(map.value(keys.at(18)).value.toString());
     setSceneFieldThreadPriority();
 }
 
@@ -1118,7 +1115,7 @@ void MainWindow::slotSaveCellsToPreset()
         return;
     }
 
-    auto fileext = config->PresetFileExtension().toLower();
+    auto fileext = PRESET_FILE_EXTENSION.toLower();
     auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->PathPresetDirectory(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
@@ -1157,7 +1154,7 @@ void MainWindow::slotLoadCellsFromPreset()
 
     stopFieldCalculating();
 
-    auto fileext = config->PresetFileExtension().toLower();
+    auto fileext = PRESET_FILE_EXTENSION.toLower();
     auto filename = QFileDialog::getOpenFileName(this, tr("Load preset"), config->PathPresetDirectory(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 

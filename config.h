@@ -25,10 +25,8 @@ public:
     void setDateTimeFormat(const QString &value);
     QString LastDir() const;
     void setLastDir(const QString &value);
-    int LogSize() const;
-    void setLogSize(int value);
-    bool SIMetric() const;
-    void setSIMetric(bool value);
+    bool WriteLogsToFile() const;
+    void setWriteLogsToFile(bool value);
     QString SceneBgColor() const;
     void setSceneBgColor(const QString &value);
     qreal SceneScaleStep() const;
@@ -77,8 +75,6 @@ public:
     void setSceneMultiselAlfa(int value);
     bool JsonCompactMode() const;
     void setJsonCompactMode(bool value);
-    QString PresetFileExtension() const;
-    void setPresetFileExtension(const QString &value);
     bool CopyToClipboardExceptDead() const;
     void setCopyToClipboardExceptDead(bool value);
     bool SaveToPresetExceptDead() const;
@@ -91,6 +87,7 @@ public:
     void setSceneSelAlfa(int value);
     bool SceneFirstSnapshot() const;
     void setSceneFirstSnapshot(bool value);
+    QString PathLogsDirectory() const;
 
 protected:
     void load();
@@ -100,6 +97,7 @@ private:
     QString m_DateTimeFormat;                       // формат отображения даты и времени
     QString m_PathAppConfig;                        // путь до конфига приложения
     QString m_PathPresetDirectory;                  // путь до каталога с пресетами
+    QString m_PathLogsDirectory;                    // путь до каталога с логами
     QString m_PathAppDir;                           // путь до приложения
     QString m_LastDir;                              // путь до последнего каталога
     QString m_SceneSelectColor;                     // цвет выбранного объекта сцены
@@ -109,13 +107,11 @@ private:
     QString m_SceneViewUpdateMode;                  // метод отрисовки SceneView
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
     QString m_ImageFileFormat;                      // формат файлов для сохранения картинки сцены
-    QString m_PresetFileExtension;                  // формат файлов для сохранения пресетов
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
     int m_SceneMultiselAlfa;                        // прозрачность рамки выделения 0-254
     int m_SceneSelAlfa;                             // прозрачность выделения 0-254
     int m_SceneItemZValue;                          // Z-координата SceneItem
     int m_SceneCalculatingMinPause;                 // минимальная допустимая пауза при обсчёте Field
-    int m_LogSize;                                  // количество строк лога событий
     int m_ButtonSize;                               // размеры кнопок интерфейса
     int m_SceneCellSize;                            // размер объекта сцены
     int m_SceneFieldSize;                           // размер сцены при создании
@@ -127,7 +123,7 @@ private:
     Qt::KeyboardModifiers m_SceneTooltipKeyModifier;// модификатор отображения координат Field
     Qt::KeyboardModifiers m_SceneMultiselKeyModifier;// модификатор выбора группы Cell
     bool m_SceneCellAgeIndicate;                    // отображать возраст живых ячеек
-    bool m_SI_metric;                               // использовать систему СИ в отображении размеров файлов
+    bool m_WriteLogsToFile;                         // писать логи в файл
     bool m_SceneViewAntialiasing;                   // SceneView: Antialiasing
     bool m_WindowShowFieldInfo;                     // отображать окно информации о Field при создании Field
     bool m_JsonCompactMode;                         // формат записи json

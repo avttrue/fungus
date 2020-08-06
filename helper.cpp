@@ -16,7 +16,7 @@ QString getTextFromRes(const QString& path)
         QString text(file.readAll());
         return text;
     }
-    qCritical() << __FILE__ << __func__ << ": Resurce not found:" << path;
+    qCritical()<< __func__ << ": Resurce not found:" << path;
     return "";
 }
 
@@ -25,7 +25,7 @@ bool textToFile(const QString& text, const QString& path)
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        qCritical() << __FILE__ << __func__ << ": File not open for writing:" << path;
+        qCritical()<< __func__ << ": File not open for writing:" << path;
         return false;
     }
 
@@ -35,7 +35,7 @@ bool textToFile(const QString& text, const QString& path)
 
     if (stream.status() != QTextStream::Ok)
     {
-        qCritical() << __FILE__ << __func__ << ": Error at file saving:" << path;
+        qCritical()<< __func__ << ": Error at file saving:" << path;
         return false;
     }
     return true;
@@ -70,14 +70,14 @@ QString fileToText(const QString& path, bool* ok)
 
     if (!file.exists())
     {
-        qCritical() << __FILE__ << __func__ << ": File not found:" << path;
+        qCritical()<< __func__ << ": File not found:" << path;
         if(ok) *ok = false;
         return "";
     }
 
     if (!file.open(QIODevice::ReadOnly | QFile::Text))
     {
-        qCritical() << __FILE__ << __func__ << ": File not open for reading:" << path;
+        qCritical()<< __func__ << ": File not open for reading:" << path;
         if(ok) *ok = false;
         return "";
     }

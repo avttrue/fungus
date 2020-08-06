@@ -35,6 +35,24 @@ Config::Config(const QString& in_AppDirectory):
     }
     qInfo() << "PathPresetDirectory:" << m_PathPresetDirectory;
 
+    // каталог логов
+    m_PathLogsDirectory = m_PathAppDir + QDir::separator() + LOG_DIRECTORY;
+    if(!QDir().exists(m_PathLogsDirectory) && !QDir().mkpath(m_PathLogsDirectory))
+    {
+        qCritical() << "Directory not exist and cannot be created:" << m_PathLogsDirectory;
+        m_PathLogsDirectory = m_PathAppDir;
+    }
+    else
+    {
+        auto p = QFile(m_PathLogsDirectory).permissions();
+        if(!QFile::setPermissions(m_PathLogsDirectory, p |
+                                  QFileDevice::ReadOwner |
+                                  QFileDevice::WriteOwner))
+            qCritical() << "Cannot set permissions to directory:" << m_PathLogsDirectory;
+        else qInfo() << "Directory" << m_PathLogsDirectory << "ready";
+    }
+    qInfo() << "PathLogsDirectory:" << m_PathLogsDirectory;
+
     load();
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
@@ -47,9 +65,9 @@ void Config::load()
         m_Settings->setValue("LastCatalog", m_PathAppDir);
     m_LastDir = m_Settings->value("LastCatalog").toString();
 
-    if(!m_Settings->contains("SIMetric"))
-        m_Settings->setValue("SIMetric", SI_METRIC);
-    m_SI_metric = m_Settings->value("SIMetric").toBool();
+    if(!m_Settings->contains("WriteLogsToFile"))
+        m_Settings->setValue("WriteLogsToFile", WRITE_LOGS_TO_FILE);
+    m_WriteLogsToFile = m_Settings->value("WriteLogsToFile").toBool();
 
     if(!m_Settings->contains("JsonCompactMode"))
         m_Settings->setValue("JsonCompactMode", JSON_COMPACT_MODE);
@@ -71,19 +89,11 @@ void Config::load()
         m_Settings->setValue("DateTimeFormat", DT_FORMAT);
     m_DateTimeFormat = m_Settings->value("DateTimeFormat").toString();
 
-    if(!m_Settings->contains("PresetFileExtension"))
-        m_Settings->setValue("PresetFileExtension", PRESET_FILE_EXTENSION);
-    m_PresetFileExtension = m_Settings->value("PresetFileExtension").toString();
-
     if(!m_Settings->contains("MainWindow/Height"))
         m_Settings->setValue("MainWindow/Height", WINDOW_HEIGHT);
 
     if(!m_Settings->contains("MainWindow/Width"))
         m_Settings->setValue("MainWindow/Width", WINDOW_WIDTH);
-
-    if(!m_Settings->contains("MainWindow/LogSize"))
-        m_Settings->setValue("MainWindow/LogSize", LOG_SIZE);
-    m_LogSize = m_Settings->value("MainWindow/LogSize").toInt();
 
     if(!m_Settings->contains("MainWindow/ButtonSize"))
         m_Settings->setValue("MainWindow/ButtonSize", BUTTON_SIZE);
@@ -240,14 +250,6 @@ void Config::setCopyToClipboardExceptDead(bool value)
 
     m_CopyToClipboardExceptDead = value;
     m_Settings->setValue("CopyToClipboardExceptDead", m_CopyToClipboardExceptDead);
-}
-
-void Config::setPresetFileExtension(const QString &value)
-{
-    if(m_PresetFileExtension == value) return;
-
-    m_PresetFileExtension = value;
-    m_Settings->setValue("PresetFileExtension", m_PresetFileExtension);
 }
 
 void Config::setJsonCompactMode(bool value)
@@ -442,20 +444,12 @@ void Config::setSceneBgColor(const QString &value)
     m_Settings->setValue("Scene/BackgroundColor", m_SceneBgColor);
 }
 
-void Config::setSIMetric(bool value)
+void Config::setWriteLogsToFile(bool value)
 {
-    if(m_SI_metric == value) return;
+    if(m_WriteLogsToFile == value) return;
     
-    m_SI_metric = value;
-    m_Settings->setValue("SIMetric", m_SI_metric);
-}
-
-void Config::setLogSize(int value)
-{
-    if(m_LogSize == value) return;
-    
-    m_LogSize = value >= 0 ? value : 0;
-    m_Settings->setValue("MainWindow/LogSize", m_LogSize);
+    m_WriteLogsToFile = value;
+    m_Settings->setValue("WriteLogsToFile", m_WriteLogsToFile);
 }
 
 void Config::setLastDir(const QString &value)
@@ -497,8 +491,7 @@ bool Config::SceneViewAntialiasing() const { return m_SceneViewAntialiasing; }
 int Config::SceneCellSize() const { return m_SceneCellSize; }
 qreal Config::SceneScaleStep() const { return m_SceneScaleStep; }
 QString Config::SceneBgColor() const { return m_SceneBgColor; }
-bool Config::SIMetric() const { return m_SI_metric; }
-int Config::LogSize() const { return m_LogSize; }
+bool Config::WriteLogsToFile() const { return m_WriteLogsToFile; }
 QString Config::LastDir() const { return m_LastDir; }
 QString Config::DateTimeFormat() const { return m_DateTimeFormat; }
 int Config::ButtonSize() const { return m_ButtonSize; }
@@ -513,11 +506,11 @@ QString Config::ImageFileFormat() const { return m_ImageFileFormat; }
 bool Config::WindowShowFieldInfo() const { return m_WindowShowFieldInfo; }
 int Config::SceneMultiselAlfa() const { return m_SceneMultiselAlfa; }
 bool Config::JsonCompactMode() const { return m_JsonCompactMode; }
-QString Config::PresetFileExtension() const { return m_PresetFileExtension; }
 bool Config::SaveToPresetExceptDead() const { return m_SaveToPresetExceptDead; }
 bool Config::CopyToClipboardExceptDead() const { return m_CopyToClipboardExceptDead; }
 bool Config::JsonIgnoreDataVersion() const { return m_JsonIgnoreDataVersion; }
 QString Config::PathPresetDirectory() const { return m_PathPresetDirectory; }
+QString Config::PathLogsDirectory() const { return m_PathLogsDirectory; }
 bool Config::RewriteResource() const { return m_RewriteResource; }
 int Config::SceneSelAlfa() const { return m_SceneSelAlfa; }
 bool Config::SceneFirstSnapshot() const { return m_SceneFirstSnapshot; }

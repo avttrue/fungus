@@ -26,7 +26,7 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
 {
     if(!m_View->scene())
     {
-        qCritical() << __FILE__ << __func__ << ": Scene not created";
+        qCritical()<< __func__ << ": Scene not created";
         return;
     }
 
