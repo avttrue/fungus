@@ -88,6 +88,10 @@ public:
     bool SceneFirstSnapshot() const;
     void setSceneFirstSnapshot(bool value);
     QString PathLogsDirectory() const;
+    int SplashTime() const;
+    void setSplashTime(int value);
+    int SplashSize() const;
+    void setSplashSize(int value);
 
 protected:
     void load();
@@ -119,6 +123,8 @@ private:
     int m_CellInfoWindowWidth;                      // размеры окна информации о Cell
     int m_FieldInfoWindowHeight;                    // размеры окна информации о Field
     int m_FieldInfoWindowWidth;                     // размеры окна информации о Field
+    int m_SplashTime;                               // время отображения сплеш-заставки
+    int m_SplashSize;                               // размеры сплеш-заставки
     Qt::KeyboardModifiers m_SceneZoomKeyModifier;   // модификатор управления зумом
     Qt::KeyboardModifiers m_SceneTooltipKeyModifier;// модификатор отображения координат Field
     Qt::KeyboardModifiers m_SceneMultiselKeyModifier;// модификатор выбора группы Cell

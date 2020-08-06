@@ -12,10 +12,11 @@ public:
     void clearList();
     void addDocument(const QString& key, QJsonDocument document);
     QJsonDocument getDocument(const QString& key);
-    QMap<QString, QJsonDocument>* getList();
+    QStringList keys();
+    int count();
 
 private:
-    QMap<QString, QJsonDocument> m_List;
+    QVector<QPair<QString, QJsonDocument>> m_List;
 
 Q_SIGNALS:
 

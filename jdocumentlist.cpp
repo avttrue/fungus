@@ -18,10 +18,18 @@ void JDocumentList::clearList()
 
 void JDocumentList::addDocument(const QString& key, QJsonDocument document)
 {
-    if(m_List.contains(key))
-        qDebug() << __func__ << "Document already in list, rewriting";
-
-    m_List.insert(key, document);
+    int pos = -1;
+    for(int i = 0; i < m_List.count(); i++)
+    {
+        if(m_List.at(i).first == key)
+        {
+            pos = i;
+            qDebug() << __func__ << "Document already in list, rewriting";
+            break;
+        }
+    }
+    if(pos >= 0) m_List.replace(pos, {key, document});
+    else m_List.append({key, document});
     qDebug() << objectName() << "count:" << m_List.count();
 }
 
@@ -33,13 +41,21 @@ QJsonDocument JDocumentList::getDocument(const QString &key)
         return QJsonDocument();
     }
 
-    if(!m_List.contains(key))
-    {
-        qCritical()<< __func__ << "Key not found:" << key;
-        return QJsonDocument();
-    }
+    for(auto value: m_List)
+        if(value.first == key) return value.second;
 
-    return m_List.value(key);
+    qCritical()<< __func__ << "Key not found:" << key;
+    return QJsonDocument();
 }
 
-QMap<QString, QJsonDocument> *JDocumentList::getList() { return &m_List; }
+QStringList JDocumentList::keys()
+{
+    QStringList list;
+    for(auto value: m_List) list.append(value.first);
+    return list;
+}
+
+int JDocumentList::count() { return m_List.count(); }
+
+
+

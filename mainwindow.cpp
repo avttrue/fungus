@@ -285,7 +285,7 @@ void MainWindow::slotStepStop()
 
     if(!m_Field->isCalculating())
     {
-        if(config->SceneFirstSnapshot() && !m_Snapshots->getList()->count())
+        if(config->SceneFirstSnapshot() && !m_Snapshots->count())
             createSnapshot();
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
@@ -314,7 +314,7 @@ void MainWindow::slotRun()
 
     if(!m_Field->isCalculating())
     {
-        if(config->SceneFirstSnapshot() && !m_Snapshots->getList()->count())
+        if(config->SceneFirstSnapshot() && !m_Snapshots->count())
             createSnapshot();
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
@@ -1420,21 +1420,20 @@ void MainWindow::slotCreateSnapshot()
 
 void MainWindow::slotSelectSnapshot()
 {
-    if(m_Snapshots->getList()->isEmpty())
+    if(!m_Snapshots->count())
     {
         QMessageBox::warning(this, tr("Warning"), tr("Snapshot list is empty."));
         return;
     }
 
-    auto count = m_Snapshots->getList()->count();
     QVector<QString> keys =
-    { tr("00#_Available snapshots: %1").arg(QString::number(count)),
+    { tr("00#_Available snapshots: %1").arg(QString::number(m_Snapshots->count())),
       "01#_" };
 
     QMap<QString, DialogValue> map =
     { {keys.at(0), {}},
-      {keys.at(1), {QVariant::StringList, m_Snapshots->getList()->keys().at(0), 0,
-                    QStringList(m_Snapshots->getList()->keys()),
+      {keys.at(1), {QVariant::StringList, m_Snapshots->keys().at(0), 0,
+                    m_Snapshots->keys(),
                     DialogValueMode::OneFromList}} };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/next_snapshot.svg",

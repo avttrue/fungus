@@ -34,7 +34,8 @@ SOURCES += \
     field/cell.cpp \
     scene/scene.cpp \
     scene/sceneitem.cpp \
-    scene/sceneview.cpp
+    scene/sceneview.cpp \
+    splashscreen.cpp
 
 HEADERS += \
     dialogs/dialogcellinformation.h \
@@ -58,6 +59,7 @@ HEADERS += \
     scene/scene.h \
     scene/sceneitem.h \
     scene/sceneview.h \
+    splashscreen.h \
     wait.h
 
 qnx: target.path = /tmp/$${TARGET}/bin

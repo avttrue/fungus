@@ -1,13 +1,14 @@
 #include "mainwindow.h"
 #include "properties.h"
 #include "helper.h"
+#include "splashscreen.h"
 
 #include <QApplication>
 #include <QTextCodec>
 #include <QDebug>
-#include <QMessageBox>
 #include <QDir>
 #include <QDateTime>
+#include <QTimer>
 
 // подготовка обработчика консоли
 static QScopedPointer<QFile> m_logFile;
@@ -34,14 +35,22 @@ int main(int argc, char *argv[])
     bool ok = true;
     copyResources(":/resources/presets", config->PathPresetDirectory(), config->RewriteResource(), &ok);
     if(!ok)
-    {
         qCritical() << "Error at presets coping to" << config->PathPresetDirectory();
-        QMessageBox::critical(nullptr, QObject::tr("Error"),
-                              QObject::tr("Error at presets coping to '%1'").arg(config->PathPresetDirectory()));
-    }
+
+    SplashScreen splash;
+    splash.show();
 
     MainWindow window;
-    window.show();
+
+    QEventLoop loop;
+    QTimer::singleShot(config->SplashTime(), [&application, &window, &splash, &loop]()
+    {
+        splash.finish(&window);
+        window.show();
+        application.setActiveWindow(&window);
+        loop.quit();
+    });
+    loop.exec(QEventLoop::ExcludeUserInputEvents);
 
     return application.exec();
 }

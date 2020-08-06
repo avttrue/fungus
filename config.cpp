@@ -127,6 +127,14 @@ void Config::load()
         m_Settings->setValue("MainWindow/ShowFieldInformation", WINDOW_SHOW_FIELD_INFO);
     m_WindowShowFieldInfo = m_Settings->value("MainWindow/ShowFieldInformation").toBool();
 
+    if(!m_Settings->contains("MainWindow/SplashSize"))
+        m_Settings->setValue("MainWindow/SplashSize", SPLASH_SIZE);
+    m_SplashSize = m_Settings->value("MainWindow/SplashSize").toInt();
+
+    if(!m_Settings->contains("MainWindow/SplashTime"))
+        m_Settings->setValue("MainWindow/SplashTime", SPLASH_TIME);
+    m_SplashTime = m_Settings->value("MainWindow/SplashTime").toInt();
+
     if(!m_Settings->contains("Scene/ZoomKeyModifier"))
         m_Settings->setValue("Scene/ZoomKeyModifier", SCENE_ZOOM_KEY_MODIFIER);
     m_SceneZoomKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ZoomKeyModifier").toInt());
@@ -202,6 +210,22 @@ void Config::load()
     if(!m_Settings->contains("Scene/SelectAlfa"))
         m_Settings->setValue("Scene/SelectAlfa", SCENE_SELECT_ALFA);
     m_SceneSelAlfa = m_Settings->value("Scene/SelectAlfa").toInt();
+}
+
+void Config::setSplashSize(int value)
+{
+    if(m_SplashSize == value) return;
+
+    m_SplashSize = value;
+    m_Settings->setValue("MainWindow/SplashSize", m_SplashSize);
+}
+
+void Config::setSplashTime(int value)
+{
+    if(m_SplashTime == value) return;
+
+    m_SplashTime = value;
+    m_Settings->setValue("MainWindow/SplashTime", m_SplashTime);
 }
 
 void Config::setSceneFirstSnapshot(bool value)
@@ -514,3 +538,5 @@ QString Config::PathLogsDirectory() const { return m_PathLogsDirectory; }
 bool Config::RewriteResource() const { return m_RewriteResource; }
 int Config::SceneSelAlfa() const { return m_SceneSelAlfa; }
 bool Config::SceneFirstSnapshot() const { return m_SceneFirstSnapshot; }
+int Config::SplashSize() const { return m_SplashSize; }
+int Config::SplashTime() const { return m_SplashTime; }
