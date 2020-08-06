@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_ThreadField(nullptr),
       m_Field(nullptr)
 {    
-    setWindowIcon(QIcon(":/resources/img/flora.svg"));
+    setWindowIcon(QIcon(":/resources/img/mushroom.svg"));
     setWindowTitle(QString("%1 %2").arg(APP_NAME, APP_VERS));
     m_Snapshots = new JDocumentList(this);
     loadGui();

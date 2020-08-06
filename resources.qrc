@@ -23,7 +23,6 @@
         <file>resources/img/run.svg</file>
         <file>resources/img/step_stop.svg</file>
         <file>resources/img/check.svg</file>
-        <file>resources/img/flora.svg</file>
         <file>resources/img/edit.svg</file>
         <file>resources/img/field.svg</file>
         <file>resources/img/running.svg</file>
@@ -65,5 +64,7 @@
         <file>resources/img/cell.svg</file>
         <file>resources/img/stop.svg</file>
         <file>resources/img/next_snapshot.svg</file>
+        <file>resources/img/mushrooms.svg</file>
+        <file>resources/img/mushroom.svg</file>
     </qresource>
 </RCC>
