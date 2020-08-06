@@ -16,9 +16,10 @@ class Config : public QObject
 public:
     explicit Config(const QString& in_AppDirectory);
 
-    QString PathApp() const;
+    QString PathAppDir() const;
     QString PathAppConfig() const;
-    QString PathPresetDirectory() const;
+    QString PathPresetDir() const;
+    void setPathPresetDir(const QString &value);
     int ButtonSize() const;
     void setButtonSize(int value);
     QString DateTimeFormat() const;
@@ -87,7 +88,8 @@ public:
     void setSceneSelAlfa(int value);
     bool SceneFirstSnapshot() const;
     void setSceneFirstSnapshot(bool value);
-    QString PathLogsDirectory() const;
+    QString PathLogsDir() const;
+    void setPathLogsDir(const QString &value);
     int SplashTime() const;
     void setSplashTime(int value);
     int SplashSize() const;
@@ -100,9 +102,9 @@ private:
     QSettings* m_Settings;
     QString m_DateTimeFormat;                       // формат отображения даты и времени
     QString m_PathAppConfig;                        // путь до конфига приложения
-    QString m_PathPresetDirectory;                  // путь до каталога с пресетами
-    QString m_PathLogsDirectory;                    // путь до каталога с логами
-    QString m_PathAppDir;                           // путь до приложения
+    QString m_PathPresetDir;                        // путь до каталога с пресетами
+    QString m_PathLogsDir;                          // путь до каталога с логами
+    QString m_PathAppDir;                           // путь до каталога приложения
     QString m_LastDir;                              // путь до последнего каталога
     QString m_SceneSelectColor;                     // цвет выбранного объекта сцены
     QString m_SceneBgColor;                         // цвет задника сцены

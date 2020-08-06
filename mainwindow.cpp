@@ -1116,7 +1116,7 @@ void MainWindow::slotSaveCellsToPreset()
     }
 
     auto fileext = PRESET_FILE_EXTENSION.toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->PathPresetDirectory(),
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->PathPresetDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
@@ -1155,7 +1155,7 @@ void MainWindow::slotLoadCellsFromPreset()
     stopFieldCalculating();
 
     auto fileext = PRESET_FILE_EXTENSION.toLower();
-    auto filename = QFileDialog::getOpenFileName(this, tr("Load preset"), config->PathPresetDirectory(),
+    auto filename = QFileDialog::getOpenFileName(this, tr("Load preset"), config->PathPresetDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;

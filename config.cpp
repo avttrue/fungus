@@ -12,46 +12,9 @@ Config::Config(const QString& in_AppDirectory):
 
     m_PathAppDir = in_AppDirectory;
     m_PathAppConfig = m_PathAppDir + QDir::separator() + APP_CFG;
-    qInfo() << "AppConfig:" << m_PathAppConfig;
 
     m_Settings = new QSettings(m_PathAppConfig, QSettings::IniFormat);
     m_Settings->setIniCodec(QTextCodec::codecForName(TEXT_CODEC.toLatin1()));
-
-    // каталог пресетов
-    m_PathPresetDirectory = m_PathAppDir + QDir::separator() + PRESET_DIRECTORY;
-    if(!QDir().exists(m_PathPresetDirectory) && !QDir().mkpath(m_PathPresetDirectory))
-    {
-        qCritical() << "Directory not exist and cannot be created:" << m_PathPresetDirectory;
-        m_PathPresetDirectory = m_PathAppDir;
-    }
-    else
-    {
-        auto p = QFile(m_PathPresetDirectory).permissions();
-        if(!QFile::setPermissions(m_PathPresetDirectory, p |
-                                  QFileDevice::ReadOwner |
-                                  QFileDevice::WriteOwner))
-            qCritical() << "Cannot set permissions to directory:" << m_PathPresetDirectory;
-        else qInfo() << "Directory" << m_PathPresetDirectory << "ready";
-    }
-    qInfo() << "PathPresetDirectory:" << m_PathPresetDirectory;
-
-    // каталог логов
-    m_PathLogsDirectory = m_PathAppDir + QDir::separator() + LOG_DIRECTORY;
-    if(!QDir().exists(m_PathLogsDirectory) && !QDir().mkpath(m_PathLogsDirectory))
-    {
-        qCritical() << "Directory not exist and cannot be created:" << m_PathLogsDirectory;
-        m_PathLogsDirectory = m_PathAppDir;
-    }
-    else
-    {
-        auto p = QFile(m_PathLogsDirectory).permissions();
-        if(!QFile::setPermissions(m_PathLogsDirectory, p |
-                                  QFileDevice::ReadOwner |
-                                  QFileDevice::WriteOwner))
-            qCritical() << "Cannot set permissions to directory:" << m_PathLogsDirectory;
-        else qInfo() << "Directory" << m_PathLogsDirectory << "ready";
-    }
-    qInfo() << "PathLogsDirectory:" << m_PathLogsDirectory;
 
     load();
 
@@ -210,6 +173,16 @@ void Config::load()
     if(!m_Settings->contains("Scene/SelectAlfa"))
         m_Settings->setValue("Scene/SelectAlfa", SCENE_SELECT_ALFA);
     m_SceneSelAlfa = m_Settings->value("Scene/SelectAlfa").toInt();
+}
+
+void Config::setPathLogsDir(const QString &value)
+{
+    m_PathLogsDir = value;
+}
+
+void Config::setPathPresetDir(const QString &value)
+{
+    m_PathPresetDir = value;
 }
 
 void Config::setSplashSize(int value)
@@ -519,7 +492,7 @@ bool Config::WriteLogsToFile() const { return m_WriteLogsToFile; }
 QString Config::LastDir() const { return m_LastDir; }
 QString Config::DateTimeFormat() const { return m_DateTimeFormat; }
 int Config::ButtonSize() const { return m_ButtonSize; }
-QString Config::PathApp() const { return m_PathAppDir; }
+QString Config::PathAppDir() const { return m_PathAppDir; }
 QString Config::PathAppConfig() const { return m_PathAppConfig; }
 int Config::SceneCalculatingMinPause() const { return m_SceneCalculatingMinPause; }
 QString Config::SceneFieldThreadPriority() const { return m_SceneFieldThreadPriority; }
@@ -533,8 +506,8 @@ bool Config::JsonCompactMode() const { return m_JsonCompactMode; }
 bool Config::SaveToPresetExceptDead() const { return m_SaveToPresetExceptDead; }
 bool Config::CopyToClipboardExceptDead() const { return m_CopyToClipboardExceptDead; }
 bool Config::JsonIgnoreDataVersion() const { return m_JsonIgnoreDataVersion; }
-QString Config::PathPresetDirectory() const { return m_PathPresetDirectory; }
-QString Config::PathLogsDirectory() const { return m_PathLogsDirectory; }
+QString Config::PathPresetDir() const { return m_PathPresetDir; }
+QString Config::PathLogsDir() const { return m_PathLogsDir; }
 bool Config::RewriteResource() const { return m_RewriteResource; }
 int Config::SceneSelAlfa() const { return m_SceneSelAlfa; }
 bool Config::SceneFirstSnapshot() const { return m_SceneFirstSnapshot; }
