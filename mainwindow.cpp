@@ -777,17 +777,22 @@ void MainWindow::slotSetup()
                                    tr("05#_Scene antialiasing"),
                                    tr("06#_Scene update mode"),
                                    tr("07#_Scene background color"),
-                                   tr("08#_Scene selection color"),//
-                                   tr("09#_Dead cell color"),
-                                   tr("10#_Cursed cell color"),
-                                   tr("11#_Scene zoom factor"),
-                                   tr("12#_Create first snapshot"),
-                                   tr("13#_Indicate age value"),
-                                   tr("14#_Minimum pause at calculating (ms)"),
-                                   tr("15#_Additional options"),
-                                   tr("16#_Copy to clipboard except dead cells"),
-                                   tr("17#_Save to preset except dead cells"),
-                                   tr("18#_Field thread priority"),
+                                   tr("08#_Scene selection color"),
+                                   tr("09#_Alive cell color"),
+                                   tr("10#_Dead cell color"),
+                                   tr("11#_Cursed cell color"),
+                                   tr("12#_Scene zoom factor"),
+                                   tr("13#_Cells options"),
+                                   tr("14#_Indicate value alive cell age"),
+                                   tr("15#__Brightness"),
+                                   tr("16#__Maximal factor"),
+                                   tr("17#__Age diapason"),
+                                   tr("18#_Field options"),
+                                   tr("19#_Create first snapshot"),
+                                   tr("20#_Minimum pause at calculating (ms)"),
+                                   tr("21#_Copy to clipboard except dead cells"),
+                                   tr("22#_Save to preset except dead cells"),
+                                   tr("23#_Field thread priority"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -799,16 +804,21 @@ void MainWindow::slotSetup()
      {keys.at(6), {QVariant::StringList, config->SceneViewUpdateMode(), 0, SCENE_VIEW_UPDATE_MODES, DialogValueMode::OneFromList}},
      {keys.at(7), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
      {keys.at(8), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(9), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(10), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(11), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-     {keys.at(12), {QVariant::Bool, config->SceneFirstSnapshot()}},
-     {keys.at(13), {QVariant::Bool, config->SceneCellAgeIndicate()}},
-     {keys.at(14), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
-     {keys.at(15), {}},
-     {keys.at(16), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
-     {keys.at(17), {QVariant::Bool, config->SaveToPresetExceptDead()}},
-     {keys.at(18), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
+     {keys.at(9), {QVariant::String, config->SceneCellAliveColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(10), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(11), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(12), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
+     {keys.at(13), {}},
+     {keys.at(14), {QVariant::Bool, config->SceneCellAgeIndicate()}},
+     {keys.at(15), {QVariant::StringList, config->CellAliveAgeIndicBright(), 0, SCENE_CELL_BRIGHTNESS_VALUES, DialogValueMode::OneFromList}},
+     {keys.at(16), {QVariant::Int, config->CellAliveAgeIndicFactor(), 150, 1000}},
+     {keys.at(17), {QVariant::Int, config->CellAliveAgeIndicDiapason(), 2, 50}},
+     {keys.at(18), {}},
+     {keys.at(19), {QVariant::Bool, config->SceneFirstSnapshot()}},
+     {keys.at(20), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
+     {keys.at(21), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
+     {keys.at(22), {QVariant::Bool, config->SaveToPresetExceptDead()}},
+     {keys.at(23), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -838,16 +848,29 @@ void MainWindow::slotSetup()
         m_SceneView->getScene()->setSelectionMarkColor(config->SceneSelectColor());
         m_SceneView->update();
     }
-    config->setSceneCellDeadColor(map.value(keys.at(9)).value.toString());
-    config->setSceneCellCurseColor(map.value(keys.at(10)).value.toString());
-    config->setSceneScaleStep(map.value(keys.at(11)).value.toDouble());
-    config->setSceneFirstSnapshot(map.value(keys.at(12)).value.toBool());
-    config->setSceneCellAgeIndicate(map.value(keys.at(13)).value.toBool());
-    config->setSceneCalculatingMinPause(map.value(keys.at(14)).value.toInt());
+    // убирает абсолютную черноту (для индикации возраста)
+    auto alive_color = map.value(keys.at(9)).value.toString();
+    alive_color = alive_color == "#000000" ? "#111111" : alive_color;
+    config->setSceneCellAliveColor(alive_color);
+    config->setSceneCellDeadColor(map.value(keys.at(10)).value.toString());
+    // убирает абсолютную черноту (для индикации возраста)
+    auto curse_color = map.value(keys.at(11)).value.toString();
+    curse_color = curse_color == "#000000" ? "#111111" : curse_color;
+    config->setSceneCellCurseColor(curse_color);
+    config->setSceneScaleStep(map.value(keys.at(12)).value.toDouble());
+    // cell
+    config->setSceneCellAgeIndicate(map.value(keys.at(14)).value.toBool());
+    config->setCellAliveAgeIndicBright(map.value(keys.at(15)).value.toString());
+    config->setCellAliveAgeIndicFactor(map.value(keys.at(16)).value.toInt());
+    config->setCellAliveAgeIndicDiapason(map.value(keys.at(17)).value.toInt());
+    if(m_SceneView->getScene()) m_SceneView->getScene()->setCellAliveIndication();
+    // field
+    config->setSceneFirstSnapshot(map.value(keys.at(19)).value.toBool());
+    config->setSceneCalculatingMinPause(map.value(keys.at(20)).value.toInt());
     m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
-    config->setCopyToClipboardExceptDead(map.value(keys.at(16)).value.toBool());
-    config->setSaveToPresetExceptDead(map.value(keys.at(17)).value.toBool());
-    config->setSceneFieldThreadPriority(map.value(keys.at(18)).value.toString());
+    config->setCopyToClipboardExceptDead(map.value(keys.at(21)).value.toBool());
+    config->setSaveToPresetExceptDead(map.value(keys.at(22)).value.toBool());
+    config->setSceneFieldThreadPriority(map.value(keys.at(23)).value.toString());
     setSceneFieldThreadPriority();
 }
 

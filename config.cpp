@@ -142,6 +142,10 @@ void Config::load()
         m_Settings->setValue("Scene/CellDeadColor", SCENE_CELL_DEAD_COLOR);
     m_SceneCellDeadColor = m_Settings->value("Scene/CellDeadColor").toString();
 
+    if(!m_Settings->contains("Scene/CellAliveColor"))
+        m_Settings->setValue("Scene/CellAliveColor", SCENE_CELL_ALIVE_COLOR);
+    m_SceneCellAliveColor = m_Settings->value("Scene/CellAliveColor").toString();
+
     if(!m_Settings->contains("Scene/SelectColor"))
         m_Settings->setValue("Scene/SelectColor", SCENE_SELECT_COLOR);
     m_SceneSelectColor = m_Settings->value("Scene/SelectColor").toString();
@@ -158,6 +162,10 @@ void Config::load()
         m_Settings->setValue("Scene/CellCurseColor", SCENE_CELL_CURSE_COLOR);
     m_SceneCellCurseColor = m_Settings->value("Scene/CellCurseColor").toString();
 
+    if(!m_Settings->contains("Scene/CellAliveAgeIndicationBrightness"))
+        m_Settings->setValue("Scene/CellAliveAgeIndicationBrightness", CELL_ALIVE_AGE_INDIC_BRIGHTNESS);
+    m_CellAliveAgeIndicBright = m_Settings->value("Scene/CellAliveAgeIndicationBrightness").toString();
+
     if(!m_Settings->contains("Scene/CalculatingMinPause"))
         m_Settings->setValue("Scene/CalculatingMinPause", SCENE_CALCULATING_MIN_PAUSE);
     m_SceneCalculatingMinPause = m_Settings->value("Scene/CalculatingMinPause").toInt();
@@ -173,6 +181,46 @@ void Config::load()
     if(!m_Settings->contains("Scene/SelectAlfa"))
         m_Settings->setValue("Scene/SelectAlfa", SCENE_SELECT_ALFA);
     m_SceneSelAlfa = m_Settings->value("Scene/SelectAlfa").toInt();
+
+    if(!m_Settings->contains("Scene/CellAliveAgeIndicationFactor"))
+        m_Settings->setValue("Scene/CellAliveAgeIndicationFactor", CELL_ALIVE_AGE_INDIC_FACTOR);
+    m_CellAliveAgeIndicFactor = m_Settings->value("Scene/CellAliveAgeIndicationFactor").toInt();
+
+    if(!m_Settings->contains("Scene/CellAliveAgeIndicationDiapason"))
+        m_Settings->setValue("Scene/CellAliveAgeIndicationDiapason", CELL_ALIVE_AGE_INDIC_DIAPASON);
+    m_CellAliveAgeIndicDiapason = m_Settings->value("Scene/CellAliveAgeIndicationDiapason").toInt();
+}
+
+void Config::setCellAliveAgeIndicDiapason(int value)
+{
+    if(m_CellAliveAgeIndicDiapason == value) return;
+
+    m_CellAliveAgeIndicDiapason = value;
+    m_Settings->setValue("Scene/CellAliveAgeIndicationDiapason", m_CellAliveAgeIndicDiapason);
+}
+
+void Config::setCellAliveAgeIndicFactor(int value)
+{
+    if(m_CellAliveAgeIndicFactor == value) return;
+
+    m_CellAliveAgeIndicFactor = value;
+    m_Settings->setValue("Scene/CellAliveAgeIndicationFactor", m_CellAliveAgeIndicFactor);
+}
+
+void Config::setCellAliveAgeIndicBright(const QString &value)
+{
+    if(m_CellAliveAgeIndicBright == value) return;
+
+    m_CellAliveAgeIndicBright = value;
+    m_Settings->setValue("Scene/CellAliveAgeIndicationBrightness", m_CellAliveAgeIndicBright);
+}
+
+void Config::setSceneCellAliveColor(const QString &value)
+{
+    if(m_SceneCellAliveColor == value) return;
+
+    m_SceneCellAliveColor = value;
+    m_Settings->setValue("Scene/CellAliveColor", m_SceneCellAliveColor);
 }
 
 void Config::setPathLogsDir(const QString &value)
@@ -513,3 +561,7 @@ int Config::SceneSelAlfa() const { return m_SceneSelAlfa; }
 bool Config::SceneFirstSnapshot() const { return m_SceneFirstSnapshot; }
 int Config::SplashSize() const { return m_SplashSize; }
 int Config::SplashTime() const { return m_SplashTime; }
+QString Config::SceneCellAliveColor() const { return m_SceneCellAliveColor; }
+QString Config::CellAliveAgeIndicBright() const { return m_CellAliveAgeIndicBright; }
+int Config::CellAliveAgeIndicFactor() const { return m_CellAliveAgeIndicFactor; }
+int Config::CellAliveAgeIndicDiapason() const { return m_CellAliveAgeIndicDiapason; }

@@ -7,7 +7,6 @@
 // TODO: Временное исполнение FieldRule
 FieldRule::FieldRule(Field *parent)
     : QObject(parent),
-      m_ColorAlive(Qt::black),
       m_CurseTime(0),
       m_DeathEnd(true)
 {
@@ -15,12 +14,6 @@ FieldRule::FieldRule(Field *parent)
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "CellRule" << objectName() <<"destroyed"; });
     qDebug() << "CellRule" << objectName() << "created";
-}
-
-void FieldRule::setColorAlive(QColor value)
-{
-    if (m_ColorAlive == value) return;
-    m_ColorAlive = value;
 }
 
 void FieldRule::setActivity(Activity value)
@@ -70,7 +63,6 @@ void FieldRule::setDefault()
                         3});
 }
 
-QColor FieldRule::getColorAlive() const { return m_ColorAlive; }
 Activity FieldRule::getActivity() const { return m_Activity; }
 int FieldRule::getCurseTime() const { return m_CurseTime; }
 bool FieldRule::isDeathEnd() const { return m_DeathEnd; }

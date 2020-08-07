@@ -94,6 +94,14 @@ public:
     void setSplashTime(int value);
     int SplashSize() const;
     void setSplashSize(int value);
+    QString SceneCellAliveColor() const;
+    void setSceneCellAliveColor(const QString &value);
+    QString CellAliveAgeIndicBright() const;
+    void setCellAliveAgeIndicBright(const QString &value);
+    int CellAliveAgeIndicFactor() const;
+    void setCellAliveAgeIndicFactor(int value);
+    int CellAliveAgeIndicDiapason() const;
+    void setCellAliveAgeIndicDiapason(int value);
 
 protected:
     void load();
@@ -109,11 +117,15 @@ private:
     QString m_SceneSelectColor;                     // цвет выбранного объекта сцены
     QString m_SceneBgColor;                         // цвет задника сцены
     QString m_SceneCellDeadColor;                   // цвет мёртвой ячейки
+    QString m_SceneCellAliveColor;                  // цвет живой ячейки
     QString m_SceneCellCurseColor;                  // цвет отравленной ячейки
     QString m_SceneViewUpdateMode;                  // метод отрисовки SceneView
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
     QString m_ImageFileFormat;                      // формат файлов для сохранения картинки сцены
+    QString m_CellAliveAgeIndicBright;              // индикация возраста живой ячейки: ярче/темнее
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
+    int m_CellAliveAgeIndicFactor;                  // индикация возраста живой ячейки: максимальный фактор яркости/тёмности
+    int m_CellAliveAgeIndicDiapason;                // индикация возраста живой ячейки: диапазон по возрасту
     int m_SceneMultiselAlfa;                        // прозрачность рамки выделения 0-254
     int m_SceneSelAlfa;                             // прозрачность выделения 0-254
     int m_SceneItemZValue;                          // Z-координата SceneItem

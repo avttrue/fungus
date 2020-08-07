@@ -34,6 +34,8 @@ Scene::Scene(QObject* parent, Field *field)
     addSelectionMark();
     addMultiSelectionMark();
 
+    setCellAliveIndication();
+
     QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
     QObject::connect(this, &Scene::signalReady, m_Field, &Field::slotSceneReady, Qt::DirectConnection);
 
@@ -104,6 +106,15 @@ void Scene::setMultiSelectionMarkColor(const QString &color)
     m_MultiSelectionMark->setBrush(brush);
 }
 
+void Scene::setCellAliveIndication()
+{
+    c_alive_ind.on = config->SceneCellAgeIndicate();
+    c_alive_ind.lighter = config->CellAliveAgeIndicBright() == SCENE_CELL_BRIGHTNESS_VALUES.at(0);
+    c_alive_ind.diapason = config->CellAliveAgeIndicDiapason();
+    c_alive_ind.factor = config->CellAliveAgeIndicFactor();
+    c_alive_ind.factor_step = (c_alive_ind.factor - 100) / c_alive_ind.diapason;
+}
+
 void Scene::selectCell(Cell *cell, bool showinfo)
 {
     if(cell && m_SelectedCell == cell)
@@ -170,14 +181,28 @@ void Scene::slotAdvance(QVector<Cell *> cells)
     {
         if(m_StopAdvanse) break;
 
-        QColor color = QColor(config->SceneCellDeadColor());
-        auto state = c->getNewInfo()->getState();
+        QColor color(config->SceneCellDeadColor());
+        auto ci = c->getNewInfo();
+        switch (ci->getState())
+        {
+        case Kernel::CellState::Alive:
+            color = config->SceneCellAliveColor();
+            if(c_alive_ind.on) // индикация возраста живой ячейки
+            {
+                auto factor = c_alive_ind.factor;
+                if(ci->getAge() < c_alive_ind.diapason)
+                factor = 100 + ci->getAge() * c_alive_ind.factor_step;
 
-        if(state == Kernel::CellState::Alive)
-            color = m_Field->getRule()->getColorAlive();
+                if(c_alive_ind.lighter) color = color.lighter(factor);
+                else color = color.darker(factor);
+            }
+            break;
 
-        else if(state == Kernel::CellState::Cursed)
+        case  Kernel::CellState::Cursed:
             color = QColor(config->SceneCellCurseColor());
+            break;
+        default: break; // мёртвый цвет уже указан
+        }
 
         painter.fillRect(c->getRect(), color);
     }

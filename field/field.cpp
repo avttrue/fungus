@@ -205,7 +205,6 @@ void Field::applyRules(Cell *cell)
         switch(aoperator)
         {
         case Kernel::ActivityOperator::Equal:
-        {
             if(atarget == Kernel::ActivityTarget::Self)
             {
                 auto count = cell->getOldInfo()->getAge();
@@ -217,9 +216,7 @@ void Field::applyRules(Cell *cell)
                 if(count == value) setRulesActivityReaction(ni, atype, list);
             }
             break;
-        }
         case Kernel::ActivityOperator::Less:
-        {
             if(atarget == Kernel::ActivityTarget::Self)
             {
                 auto count = cell->getOldInfo()->getAge();
@@ -231,9 +228,7 @@ void Field::applyRules(Cell *cell)
                 if(count < value) setRulesActivityReaction(ni, atype, list);
             }
             break;
-        }
         case Kernel::ActivityOperator::More:
-        {
             if(atarget == Kernel::ActivityTarget::Self)
             {
                 auto count = cell->getOldInfo()->getAge();
@@ -246,9 +241,6 @@ void Field::applyRules(Cell *cell)
             }
             break;
         }
-        default: break;
-        }
-
         if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::Alive) return;
     }
 }

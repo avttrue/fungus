@@ -7,6 +7,14 @@ class SceneItem;
 class Field;
 class Cell;
 
+struct CellIndication {
+    bool on = true;
+    bool lighter = true;
+    uint diapason = 1;
+    int factor = 1;
+    int factor_step = 1;
+};
+
 class Scene : public QGraphicsScene
 {
     Q_OBJECT
@@ -32,6 +40,8 @@ public:
     void clearMultiSelection();
     void setSelectionMarkColor(const QString& color);
     void setMultiSelectionMarkColor(const QString& color);
+    CellIndication c_alive_ind;  // индикация возраста живой ячейки
+    void setCellAliveIndication();
 
 private:
     Field* m_Field;

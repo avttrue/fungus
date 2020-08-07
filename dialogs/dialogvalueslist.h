@@ -6,6 +6,8 @@
 
 const QString RE_FIRST_LAST_SPACES = "^\\s+|\\s+$"; // регексп на наличие стартовых и финальных пробелов
 const QString RE_NUM_MARK = "(^.*)(#_)"; // регексп удаления символов до строки '#_' включительно
+const QString SUBITEM_MARK = "_"; // метка в начале текста о том, что вставлять виджет с отступом
+const int SUBITEM_SIZE = 30; //  отступ виджета в пикселях
 const QString IMG_STYLE = "border: 1px solid darkgray; border-radius: 9px; padding: %1px;";
 const QString BTN_COLOR_STYLE = "border: 1px solid darkgray; border-radius: 9px; background-color: %1; font: bold monospace; color: %2";
 const QSize WINDOW_SIZE(400, 400);
@@ -71,7 +73,7 @@ public:
     void addToolbarButton(QAction* action);
 
 protected:
-    void addWidgetContent(QWidget* widget);
+    void addWidgetContent(QWidget* widget, bool sub_item = false);
     bool eventFilter(QObject *object, QEvent *event);
     void saveImage(QPixmap pixmap);
 
