@@ -7,8 +7,7 @@ CellInformation::CellInformation(Cell *parent)
     : QObject(parent),
       m_Age(0),
       m_Generation(0),
-      m_State(Kernel::CellState::Dead),
-      m_CursedAge(0)
+      m_State(Kernel::CellState::Dead)
 { }
 
 void CellInformation::setState(Kernel::CellState value)
@@ -47,15 +46,6 @@ void CellInformation::upGeneration()
     Q_EMIT signalGenerationChanged(m_Generation);
 }
 
-void CellInformation::setCursedAge(uint CursedAge)
-{
-    if (m_CursedAge == CursedAge) return;
-
-    m_CursedAge = CursedAge;
-    Q_EMIT signalCursedAgeChanged(m_CursedAge);
-}
-
-uint CellInformation::getCursedAge() const { return m_CursedAge; }
 Kernel::CellState CellInformation::getState() const { return m_State; }
 uint CellInformation::getAge() const { return m_Age; }
 uint CellInformation::getGeneration() const { return m_Generation; }

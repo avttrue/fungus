@@ -903,8 +903,7 @@ void MainWindow::slotEditCell()
     { tr("00#_Cell properties"),
       tr("01#_State"),
       tr("02#_Age"),
-      tr("03#_Generation"),
-      tr("04#_Cursed age")};
+      tr("03#_Generation")};
 
     if(multyselection) keys.append(
     { tr("05#_Group operations"),
@@ -917,8 +916,7 @@ void MainWindow::slotEditCell()
                     getNameKernelEnum("CellState", static_cast<int>(cni->getState())), 0,
                     statelist, DialogValueMode::OneFromList}},
       {keys.at(2), {QVariant::Int, cni->getAge(), 0, 0}},
-      {keys.at(3), {QVariant::Int, cni->getGeneration(), 0, 0}},
-      {keys.at(4), {QVariant::Int, cni->getCursedAge(), 0, 0}}
+      {keys.at(3), {QVariant::Int, cni->getGeneration(), 0, 0}}
     };
 
     if(multyselection)
@@ -954,7 +952,6 @@ void MainWindow::slotEditCell()
                     cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
                 cni->setAge(map.value(keys.at(2)).value.toUInt());
                 cni->setGeneration(map.value(keys.at(3)).value.toUInt());
-                cni->setCursedAge(map.value(keys.at(4)).value.toUInt());
                 c->applyInfo();
             }
         }
@@ -965,7 +962,6 @@ void MainWindow::slotEditCell()
         cni->setState(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(1)).value.toString())));
         cni->setAge(map.value(keys.at(2)).value.toUInt());
         cni->setGeneration(map.value(keys.at(3)).value.toUInt());
-        cni->setCursedAge(map.value(keys.at(4)).value.toUInt());
         firstcell->applyInfo();
     }
 

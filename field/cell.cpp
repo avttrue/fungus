@@ -21,7 +21,6 @@ void Cell::clear()
     m_NewInformation->setAge(0);
     m_NewInformation->setState(Kernel::CellState::Dead);
     m_NewInformation->setGeneration(0);
-    m_NewInformation->setCursedAge(0);
 
     applyInfo();
 }
@@ -31,7 +30,6 @@ void Cell::applyInfo()
     m_OldInformation->setAge(m_NewInformation->getAge());
     m_OldInformation->setState(m_NewInformation->getState());
     m_OldInformation->setGeneration(m_NewInformation->getGeneration());
-    m_OldInformation->setCursedAge(m_NewInformation->getCursedAge());
 }
 
 void Cell::setIndex(const QPoint &value)
