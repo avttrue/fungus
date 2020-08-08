@@ -41,7 +41,9 @@ public:
     void setSelectionMarkColor(const QString& color);
     void setMultiSelectionMarkColor(const QString& color);
     CellIndication c_alive_ind;  // индикация возраста живой ячейки
+    CellIndication c_curse_ind;  // индикация отравленной живой ячейки
     void setCellAliveIndication();
+    void setCellCurseIndication();
 
 private:
     Field* m_Field;

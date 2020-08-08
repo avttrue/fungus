@@ -42,8 +42,8 @@ public:
     void setSceneFieldSize(int value);
     QString SceneCellDeadColor() const;
     void setSceneCellDeadColor(const QString &value);
-    bool SceneCellAgeIndicate() const;
-    void setSceneCellAgeIndicate(bool value);
+    bool CellAliveAgeIndicate() const;
+    void setCellAliveAgeIndicate(bool value);
     QString SceneSelectColor() const;
     void setSceneSelectColor(const QString &value);
     QString SceneCellCurseColor() const;
@@ -102,6 +102,14 @@ public:
     void setCellAliveAgeIndicFactor(int value);
     int CellAliveAgeIndicDiapason() const;
     void setCellAliveAgeIndicDiapason(int value);
+    bool CellCurseAgeIndicate() const;
+    void setCellCurseAgeIndicate(bool value);
+    QString CellCurseAgeIndicBright() const;
+    void setCellCurseAgeIndicBright(const QString &value);
+    int CellCurseAgeIndicFactor() const;
+    void setCellCurseAgeIndicFactor(int value);
+    int CellCurseAgeIndicDiapason() const;
+    void setCellCurseAgeIndicDiapason(int value);
 
 protected:
     void load();
@@ -123,9 +131,12 @@ private:
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
     QString m_ImageFileFormat;                      // формат файлов для сохранения картинки сцены
     QString m_CellAliveAgeIndicBright;              // индикация возраста живой ячейки: ярче/темнее
+    QString m_CellCurseAgeIndicBright;              // индикация возраста отравленной ячейки: ярче/темнее
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
     int m_CellAliveAgeIndicFactor;                  // индикация возраста живой ячейки: максимальный фактор яркости/тёмности
     int m_CellAliveAgeIndicDiapason;                // индикация возраста живой ячейки: диапазон по возрасту
+    int m_CellCurseAgeIndicFactor;                  // индикация возраста отравленной ячейки: максимальный фактор яркости/тёмности
+    int m_CellCurseAgeIndicDiapason;                // индикация возраста живой отравленной: диапазон по возрасту
     int m_SceneMultiselAlfa;                        // прозрачность рамки выделения 0-254
     int m_SceneSelAlfa;                             // прозрачность выделения 0-254
     int m_SceneItemZValue;                          // Z-координата SceneItem
@@ -142,7 +153,8 @@ private:
     Qt::KeyboardModifiers m_SceneZoomKeyModifier;   // модификатор управления зумом
     Qt::KeyboardModifiers m_SceneTooltipKeyModifier;// модификатор отображения координат Field
     Qt::KeyboardModifiers m_SceneMultiselKeyModifier;// модификатор выбора группы Cell
-    bool m_SceneCellAgeIndicate;                    // отображать возраст живых ячеек
+    bool m_CellAliveAgeIndicate;                    // индикация возраста живой ячейки
+    bool m_CellCurseAgeIndicate;                    // индикация возраста отравленной ячейки
     bool m_WriteLogsToFile;                         // писать логи в файл
     bool m_SceneViewAntialiasing;                   // SceneView: Antialiasing
     bool m_WindowShowFieldInfo;                     // отображать окно информации о Field при создании Field

@@ -35,6 +35,7 @@ Scene::Scene(QObject* parent, Field *field)
     addMultiSelectionMark();
 
     setCellAliveIndication();
+    setCellCurseIndication();
 
     QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
     QObject::connect(this, &Scene::signalReady, m_Field, &Field::slotSceneReady, Qt::DirectConnection);
@@ -108,11 +109,20 @@ void Scene::setMultiSelectionMarkColor(const QString &color)
 
 void Scene::setCellAliveIndication()
 {
-    c_alive_ind.on = config->SceneCellAgeIndicate();
+    c_alive_ind.on = config->CellAliveAgeIndicate();
     c_alive_ind.lighter = config->CellAliveAgeIndicBright() == SCENE_CELL_BRIGHTNESS_VALUES.at(0);
     c_alive_ind.diapason = config->CellAliveAgeIndicDiapason();
     c_alive_ind.factor = config->CellAliveAgeIndicFactor();
     c_alive_ind.factor_step = (c_alive_ind.factor - 100) / c_alive_ind.diapason;
+}
+
+void Scene::setCellCurseIndication()
+{
+    c_curse_ind.on = config->CellCurseAgeIndicate();
+    c_curse_ind.lighter = config->CellCurseAgeIndicBright() == SCENE_CELL_BRIGHTNESS_VALUES.at(0);
+    c_curse_ind.diapason = config->CellCurseAgeIndicDiapason();
+    c_curse_ind.factor = config->CellCurseAgeIndicFactor();
+    c_curse_ind.factor_step = (c_curse_ind.factor - 100) / c_curse_ind.diapason;
 }
 
 void Scene::selectCell(Cell *cell, bool showinfo)
