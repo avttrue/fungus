@@ -863,7 +863,11 @@ void MainWindow::slotSetup()
     config->setSceneFieldThreadPriority(map.value(keys.at(27)).value.toString());
 
     // применение настроек
+    m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    setSceneFieldThreadPriority();
     m_SceneView->setUpdateMode();
+    m_SceneView->setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
     if(m_SceneView->getScene())
     {
         m_SceneView->getScene()->setCellIndication();
@@ -872,10 +876,6 @@ void MainWindow::slotSetup()
         m_SceneView->getScene()->setSelectionMarkColor(config->SceneSelectColor());
         m_SceneView->update();
     }
-    setSceneFieldThreadPriority();
-    m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-    m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-    m_SceneView->setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
 }
 
 void MainWindow::slotEditCell()
