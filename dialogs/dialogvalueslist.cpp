@@ -420,17 +420,13 @@ bool DialogValuesList::eventFilter(QObject* object, QEvent *event)
         // если всё же свернули
         setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
         return true;
-
     }
     case QEvent::Close:
     {
         if(object != this || isMinimized() || isMaximized()) return false;
-
         // сохранение размеров окна
-
         return true;
     }
-
     default: { return false; }
     }
 }

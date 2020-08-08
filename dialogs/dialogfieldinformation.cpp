@@ -96,7 +96,6 @@ bool DialogFieldInformation::eventFilter(QObject *object, QEvent *event)
         // если всё же свернули
         setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
         return true;
-
     }
     case QEvent::Close:
     {
@@ -106,7 +105,6 @@ bool DialogFieldInformation::eventFilter(QObject *object, QEvent *event)
         config->setFieldInfoWindowHeight(height());
         return true;
     }
-
     default: { return false; }
     }
 }

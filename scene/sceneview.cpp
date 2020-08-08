@@ -18,7 +18,7 @@ SceneView::SceneView(QWidget *parent)
 {
     setObjectName("SceneView");
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing | DontSavePainterState);
-    SetUpdateMode();
+    setUpdateMode();
     setDragMode(QGraphicsView::NoDrag);
     setFocusPolicy(Qt::NoFocus);
     setCacheMode(QGraphicsView::CacheBackground);
@@ -122,7 +122,7 @@ Cell *SceneView::getCell(qreal x, qreal y)
     return field->cells()->at(cx).at(cy);
 }
 
-void SceneView::SetUpdateMode()
+void SceneView::setUpdateMode()
 {
     auto mode = config->SceneViewUpdateMode().toUpper();
     QGraphicsView::ViewportUpdateMode viewport_update_mode = QGraphicsView::FullViewportUpdate;

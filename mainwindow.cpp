@@ -837,54 +837,45 @@ void MainWindow::slotSetup()
     config->setDateTimeFormat(map.value(keys.at(1)).value.toString());
     config->setWriteLogsToFile(map.value(keys.at(2)).value.toBool());
     config->setButtonSize(map.value(keys.at(3)).value.toInt());
-    m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-    m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     // scene
     config->setSceneViewAntialiasing(map.value(keys.at(5)).value.toBool());
-    m_SceneView->setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
     config->setSceneViewUpdateMode(map.value(keys.at(6)).value.toString());
-    m_SceneView->SetUpdateMode();
     config->setSceneBgColor(map.value(keys.at(7)).value.toString());
-    if(m_SceneView->getScene())
-    {
-        m_SceneView->getScene()->setBackgroundColor(config->SceneBgColor());
-        m_SceneView->update();
-    }
     config->setSceneSelectColor(map.value(keys.at(8)).value.toString());
-    if(m_SceneView->getScene())
-    {
-        m_SceneView->getScene()->setSelectionMarkColor(config->SceneSelectColor());
-        m_SceneView->update();
-    }
     config->setSceneScaleStep(map.value(keys.at(9)).value.toDouble());
     // cell
-    // убирает абсолютную черноту (для индикации возраста)
-    auto alive_color = map.value(keys.at(11)).value.toString();
-    alive_color = alive_color == "#000000" ? "#111111" : alive_color;
-    config->setSceneCellAliveColor(alive_color);
+    config->setSceneCellAliveColor(map.value(keys.at(11)).value.toString());
     config->setSceneCellDeadColor(map.value(keys.at(12)).value.toString());
-    // убирает абсолютную черноту (для индикации возраста)
-    auto curse_color = map.value(keys.at(13)).value.toString();
-    curse_color = curse_color == "#000000" ? "#111111" : curse_color;
-    config->setSceneCellCurseColor(curse_color);
+    config->setSceneCellCurseColor(map.value(keys.at(13)).value.toString());
     config->setCellAliveAgeIndicate(map.value(keys.at(14)).value.toBool());
     config->setCellAliveAgeIndicBright(map.value(keys.at(15)).value.toString());
     config->setCellAliveAgeIndicFactor(map.value(keys.at(16)).value.toInt());
     config->setCellAliveAgeIndicDiapason(map.value(keys.at(17)).value.toInt());
-    if(m_SceneView->getScene()) m_SceneView->getScene()->setCellAliveIndication();
     config->setCellCurseAgeIndicate(map.value(keys.at(18)).value.toBool());
     config->setCellCurseAgeIndicBright(map.value(keys.at(19)).value.toString());
     config->setCellCurseAgeIndicFactor(map.value(keys.at(20)).value.toInt());
-    config->setCellCurseAgeIndicDiapason(map.value(keys.at(21)).value.toInt());
-    if(m_SceneView->getScene()) m_SceneView->getScene()->setCellCurseIndication();
+    config->setCellCurseAgeIndicDiapason(map.value(keys.at(21)).value.toInt());    
     // field
     config->setSceneFirstSnapshot(map.value(keys.at(23)).value.toBool());
-    config->setSceneCalculatingMinPause(map.value(keys.at(24)).value.toInt());
-    m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
+    config->setSceneCalculatingMinPause(map.value(keys.at(24)).value.toInt());    
     config->setCopyToClipboardExceptDead(map.value(keys.at(25)).value.toBool());
     config->setSaveToPresetExceptDead(map.value(keys.at(26)).value.toBool());
     config->setSceneFieldThreadPriority(map.value(keys.at(27)).value.toString());
+
+    // применение настроек
+    m_SceneView->setUpdateMode();
+    if(m_SceneView->getScene())
+    {
+        m_SceneView->getScene()->setCellIndication();
+        m_SceneView->getScene()->setCellsColors();
+        m_SceneView->getScene()->setBackgroundColor(config->SceneBgColor());
+        m_SceneView->getScene()->setSelectionMarkColor(config->SceneSelectColor());
+        m_SceneView->update();
+    }
     setSceneFieldThreadPriority();
+    m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    m_SceneView->setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
 }
 
 void MainWindow::slotEditCell()

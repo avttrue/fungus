@@ -34,8 +34,8 @@ Scene::Scene(QObject* parent, Field *field)
     addSelectionMark();
     addMultiSelectionMark();
 
-    setCellAliveIndication();
-    setCellCurseIndication();
+    setCellIndication();
+    setCellsColors();
 
     QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
     QObject::connect(this, &Scene::signalReady, m_Field, &Field::slotSceneReady, Qt::DirectConnection);
@@ -107,22 +107,34 @@ void Scene::setMultiSelectionMarkColor(const QString &color)
     m_MultiSelectionMark->setBrush(brush);
 }
 
-void Scene::setCellAliveIndication()
+void Scene::setCellIndication()
 {
     c_alive_ind.on = config->CellAliveAgeIndicate();
     c_alive_ind.lighter = config->CellAliveAgeIndicBright() == SCENE_CELL_BRIGHTNESS_VALUES.at(0);
     c_alive_ind.diapason = config->CellAliveAgeIndicDiapason();
     c_alive_ind.factor = config->CellAliveAgeIndicFactor();
     c_alive_ind.factor_step = (c_alive_ind.factor - 100) / c_alive_ind.diapason;
-}
 
-void Scene::setCellCurseIndication()
-{
     c_curse_ind.on = config->CellCurseAgeIndicate();
     c_curse_ind.lighter = config->CellCurseAgeIndicBright() == SCENE_CELL_BRIGHTNESS_VALUES.at(0);
     c_curse_ind.diapason = config->CellCurseAgeIndicDiapason();
     c_curse_ind.factor = config->CellCurseAgeIndicFactor();
     c_curse_ind.factor_step = (c_curse_ind.factor - 100) / c_curse_ind.diapason;
+}
+
+void Scene::setCellsColors()
+{
+    auto alive_color = config->SceneCellAliveColor();
+    if(config->CellAliveAgeIndicate() && alive_color == "#000000")
+        alive_color = "#111111"; // для цвета #000000 не работает QColor::lighter()
+    m_AliveCellColor = QColor(alive_color);
+
+    auto curse_color = config->SceneCellCurseColor();
+    if(config->CellCurseAgeIndicate() && curse_color == "#000000")
+        curse_color = "#111111"; // для цвета #000000 не работает QColor::lighter()
+    m_CurseCellColor = QColor(curse_color);
+
+    m_DeadCellColor =  QColor(config->SceneCellDeadColor());
 }
 
 void Scene::selectCell(Cell *cell, bool showinfo)
@@ -185,36 +197,47 @@ void Scene::slotAdvance(QVector<Cell *> cells)
 
     QPainter painter;
     painter.begin(pixmap);
-    pixmap->fill(config->SceneCellDeadColor());
+    pixmap->fill(m_DeadCellColor);
 
     for(auto c: cells)
     {
         if(m_StopAdvanse) break;
 
-        QColor color(config->SceneCellDeadColor());
         auto ci = c->getNewInfo();
         switch (ci->getState())
         {
         case Kernel::CellState::Alive:
-            color = config->SceneCellAliveColor();
+        {
+            auto color = m_AliveCellColor;
             if(c_alive_ind.on) // индикация возраста живой ячейки
             {
                 auto factor = c_alive_ind.factor;
                 if(ci->getAge() < c_alive_ind.diapason)
-                factor = 100 + ci->getAge() * c_alive_ind.factor_step;
+                    factor = 100 + ci->getAge() * c_alive_ind.factor_step;
 
                 if(c_alive_ind.lighter) color = color.lighter(factor);
                 else color = color.darker(factor);
             }
+            painter.fillRect(c->getRect(), color);
             break;
-
-        case  Kernel::CellState::Cursed:
-            color = QColor(config->SceneCellCurseColor());
-            break;
-        default: break; // мёртвый цвет уже указан
         }
+        case  Kernel::CellState::Cursed:
+        {
+            auto color = m_CurseCellColor;
+            if(c_curse_ind.on) // индикация возраста отравленной ячейки
+            {
+                auto factor = c_curse_ind.factor;
+                if(ci->getAge() < c_curse_ind.diapason)
+                    factor = 100 + ci->getAge() * c_curse_ind.factor_step;
 
-        painter.fillRect(c->getRect(), color);
+                if(c_curse_ind.lighter) color = color.lighter(factor);
+                else color = color.darker(factor);
+            }
+            painter.fillRect(c->getRect(), color);
+            break;
+        }
+        default: break; // мёртвый цвет уже нарисован
+        }
     }
     painter.end();
 

@@ -16,7 +16,7 @@ public:
     Scene* addScene(Field* filed);
     Scene* getScene() const;
     GraphicsViewZoomer *zoomer() const;
-    void SetUpdateMode();
+    void setUpdateMode();
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);
