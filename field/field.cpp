@@ -70,7 +70,7 @@ void Field::fill(bool random)
 
 void Field::calculate()
 {
-    qDebug() << "Field calculating started";
+    qDebug() << "Field calculating begin";
     while(m_Calculating)
     {
         if(m_WaitScene)
@@ -168,7 +168,7 @@ void Field::calculate()
         }
     }
 
-    qDebug() << "Field calculating stopped";
+    qDebug() << "Field calculating end";
     Q_EMIT signalCalculatingDone();
 }
 
@@ -441,8 +441,8 @@ QVector<Cell *> Field::getCellsAroundByStatus(Cell *cell, Kernel::CellState stat
 void Field::setCalculatingNonstop(bool value)
 {
     if(m_CalculatingNonstop == value) return;
-
     m_CalculatingNonstop = value;
+    qDebug() << "Field calculating nonstop:" << m_CalculatingNonstop;
 }
 
 void Field::setRule(FieldRule *value)
@@ -464,12 +464,14 @@ void Field::slotStartCalculating()
 {
     m_Calculating = true;
     Q_EMIT signalCalculating(m_Calculating);
+    qDebug() << "Field calculating started";
 }
 
 void Field::slotStopCalculating()
 {
     m_Calculating = false;
     Q_EMIT signalCalculating(m_Calculating);
+    qDebug() << "Field calculating stopped";
 }
 
 void Field::setRuleOn(bool value)
