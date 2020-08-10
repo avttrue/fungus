@@ -18,20 +18,54 @@ void consoleOut(QtMsgType type, const QMessageLogContext &context, const QString
 void createDirectories()
 {
     // каталог пресетов
-    config->setPathPresetDir(config->PathAppDir() + QDir::separator() + PRESET_DIRECTORY);
-    if(!QDir().exists(config->PathPresetDir()) && !QDir().mkpath(config->PathPresetDir()))
+    config->setPathPresetsDir(config->PathAppDir() + QDir::separator() + PRESET_DIRECTORY);
+    if(!QDir().exists(config->PathPresetsDir()) && !QDir().mkpath(config->PathPresetsDir()))
     {
-        qCritical() << "Directory not exist and cannot be created:" << config->PathPresetDir();
-        config->setPathPresetDir(config->PathAppDir());
+        qCritical() << "Directory not exist and cannot be created:" << config->PathPresetsDir();
+        config->setPathPresetsDir(config->PathAppDir());
     }
     else
     {
-        auto p = QFile(config->PathPresetDir()).permissions();
-        if(!QFile::setPermissions(config->PathPresetDir(), p |
+        auto p = QFile(config->PathPresetsDir()).permissions();
+        if(!QFile::setPermissions(config->PathPresetsDir(), p |
                                   QFileDevice::ReadOwner |
                                   QFileDevice::WriteOwner))
-            qCritical() << "Cannot set permissions to directory:" << config->PathPresetDir();
-        else qInfo() << "Directory" << config->PathPresetDir() << "ready";
+            qCritical() << "Cannot set permissions to directory:" << config->PathPresetsDir();
+        else qInfo() << "Directory" << config->PathPresetsDir() << "ready";
+    }
+
+    // каталог проектов
+    config->setPathPojectsDir(config->PathAppDir() + QDir::separator() + PROJECTS_DIRECTORY);
+    if(!QDir().exists(config->PathPojectsDir()) && !QDir().mkpath(config->PathPojectsDir()))
+    {
+        qCritical() << "Directory not exist and cannot be created:" << config->PathPojectsDir();
+        config->setPathPojectsDir(config->PathAppDir());
+    }
+    else
+    {
+        auto p = QFile(config->PathPojectsDir()).permissions();
+        if(!QFile::setPermissions(config->PathPojectsDir(), p |
+                                  QFileDevice::ReadOwner |
+                                  QFileDevice::WriteOwner))
+            qCritical() << "Cannot set permissions to directory:" << config->PathPojectsDir();
+        else qInfo() << "Directory" << config->PathPojectsDir() << "ready";
+    }
+
+    // каталог правил
+    config->setPathRulesDir(config->PathAppDir() + QDir::separator() + RULES_DIRECTORY);
+    if(!QDir().exists(config->PathRulesDir()) && !QDir().mkpath(config->PathRulesDir()))
+    {
+        qCritical() << "Directory not exist and cannot be created:" << config->PathRulesDir();
+        config->setPathRulesDir(config->PathAppDir());
+    }
+    else
+    {
+        auto p = QFile(config->PathRulesDir()).permissions();
+        if(!QFile::setPermissions(config->PathRulesDir(), p |
+                                  QFileDevice::ReadOwner |
+                                  QFileDevice::WriteOwner))
+            qCritical() << "Cannot set permissions to directory:" << config->PathRulesDir();
+        else qInfo() << "Directory" << config->PathRulesDir() << "ready";
     }
 
     // каталог логов
@@ -71,14 +105,14 @@ int main(int argc, char *argv[])
     }
     qInfo() << "PathAppDirectory:" << config->PathAppDir();
     qInfo() << "PathAppConfig:" << config->PathAppConfig();
-    qInfo() << "PathPresetDirectory:" << config->PathPresetDir();
+    qInfo() << "PathPresetDirectory:" << config->PathPresetsDir();
     qInfo() << "PathLogsDirectory:" << config->PathLogsDir();
 
     // копируются пресеты
     bool ok = true;
-    copyResources(":/resources/presets", config->PathPresetDir(), config->RewriteResource(), &ok);
+    copyResources(":/resources/presets", config->PathPresetsDir(), config->RewriteResource(), &ok);
     if(!ok)
-        qCritical() << "Error at presets coping to" << config->PathPresetDir();
+        qCritical() << "Error at presets coping to" << config->PathPresetsDir();
 
     SplashScreen splash;
     splash.show();

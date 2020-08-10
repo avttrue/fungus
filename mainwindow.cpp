@@ -75,6 +75,18 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionNewProject, &QAction::triggered, this, &MainWindow::slotNewProject);
     m_ActionNewProject->setShortcut(Qt::CTRL + Qt::Key_N);
 
+    m_ActionLoadProject = new QAction(QIcon(":/resources/img/open_folder.svg"), tr("Load project"), this);
+    QObject::connect(m_ActionLoadProject, &QAction::triggered, this, &MainWindow::slotLoadProject);
+    m_ActionLoadProject->setShortcut(Qt::CTRL + Qt::Key_O);
+
+    m_ActionSaveProject = new QAction(QIcon(":/resources/img/save.svg"), tr("Save project"), this);
+    QObject::connect(m_ActionSaveProject, &QAction::triggered, this, &MainWindow::slotSaveProject);
+    m_ActionSaveProject->setShortcut(Qt::CTRL + Qt::Key_S);
+    m_ActionSaveProject->setEnabled(false);
+
+    m_ActionEditRules = new QAction(QIcon(":/resources/img/rule.svg"), tr("Edit rules"), this);
+    QObject::connect(m_ActionEditRules, &QAction::triggered, this, &MainWindow::slotEditRules);
+
     m_ActionZoomInScene = new QAction(QIcon(":/resources/img/zoom_in.svg"), tr("Zoom IN"), this);
     QObject::connect(m_ActionZoomInScene, &QAction::triggered, this, &MainWindow::slotSceneZoomIn);
     m_ActionZoomInScene->setEnabled(false);
@@ -151,7 +163,7 @@ void MainWindow::loadGui()
 
     m_ActionCreateSnapshot = new QAction(QIcon(":/resources/img/check.svg"), tr("Create snapshot"), this);
     QObject::connect(m_ActionCreateSnapshot, &QAction::triggered, this, &MainWindow::slotCreateSnapshot);
-    m_ActionCreateSnapshot->setShortcut(Qt::CTRL + Qt::Key_S);
+    m_ActionCreateSnapshot->setShortcut(Qt::CTRL + Qt::Key_W);
     m_ActionCreateSnapshot->setEnabled(false);
 
     m_ActionSelectSnapshot = new QAction(QIcon(":/resources/img/next_snapshot.svg"), tr("Load snapshot"), this);
@@ -165,9 +177,14 @@ void MainWindow::loadGui()
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     m_TbMain->addAction(m_ActionNewProject);
     m_TbMain->addSeparator();
+    m_TbMain->addAction(m_ActionLoadProject);
+    m_TbMain->addAction(m_ActionSaveProject);
+    m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionZoomUndoScene);
     m_TbMain->addAction(m_ActionZoomInScene);
     m_TbMain->addAction(m_ActionZoomOutScene);
+    m_TbMain->addSeparator();
+    m_TbMain->addAction(m_ActionSaveImageToFile);
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionEditCell);
     m_TbMain->addAction(m_ActionInfoCell);
@@ -189,7 +206,8 @@ void MainWindow::loadGui()
     m_TbActions->setMovable(false);
     m_TbActions->setOrientation(Qt::Vertical);
     m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-    m_TbActions->addAction(m_ActionSaveImageToFile);
+
+    m_TbActions->addAction(m_ActionEditRules);
     m_TbActions->addSeparator();
     m_TbActions->addAction(m_ActionSaveCellsToClipbord);
     m_TbActions->addAction(m_ActionLoadCellsFromClipbord);
@@ -401,7 +419,11 @@ void MainWindow::setMainActionsEnable(bool value)
 {
     auto enable = m_SceneView->getScene() ? value : false;
 
-    m_ActionNewProject->setEnabled(enable);
+    m_ActionNewProject->setEnabled(value);
+    m_ActionLoadProject->setEnabled(value);
+    m_ActionEditRules->setEnabled(value);
+
+    m_ActionSaveProject->setEnabled(enable);
     m_ActionZoomInScene->setEnabled(enable);
     m_ActionZoomOutScene->setEnabled(enable);
     m_ActionZoomUndoScene->setEnabled(enable);
@@ -769,6 +791,7 @@ void MainWindow::loadSnapshot(QJsonDocument* document)
 
 void MainWindow::slotSetup()
 {
+    stopFieldCalculating();
     const QVector<QString> keys = {tr("00#_Common options"),
                                    tr("01#_Date and time format"),
                                    tr("02#_Write logs to file (restart required)"),
@@ -1139,7 +1162,7 @@ void MainWindow::slotSaveCellsToPreset()
     }
 
     auto fileext = PRESET_FILE_EXTENSION.toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->PathPresetDir(),
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->PathPresetsDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
@@ -1178,7 +1201,7 @@ void MainWindow::slotLoadCellsFromPreset()
     stopFieldCalculating();
 
     auto fileext = PRESET_FILE_EXTENSION.toLower();
-    auto filename = QFileDialog::getOpenFileName(this, tr("Load preset"), config->PathPresetDir(),
+    auto filename = QFileDialog::getOpenFileName(this, tr("Load preset"), config->PathPresetsDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
@@ -1466,6 +1489,24 @@ void MainWindow::slotSelectSnapshot()
     auto key = map.value(keys.at(1)).value.toString();
     auto jdoc = m_Snapshots->getDocument(key);
     loadSnapshot(&jdoc);
+}
+
+void MainWindow::slotLoadProject()
+{
+    // TODO: slotLoadProject
+    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+}
+
+void MainWindow::slotSaveProject()
+{
+    // TODO: slotSaveProject
+    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+}
+
+void MainWindow::slotEditRules()
+{
+    // TODO: slotEditRules
+    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
 }
 
 void MainWindow::slotFieldAvCalc(qreal value)

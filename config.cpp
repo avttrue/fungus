@@ -207,6 +207,26 @@ void Config::load()
     m_CellCurseAgeIndicDiapason = m_Settings->value("Scene/CellCurseAgeIndicationDiapason").toInt();
 }
 
+void Config::setPathLogsDir(const QString &value)
+{
+    m_PathLogsDir = value;
+}
+
+void Config::setPathPresetsDir(const QString &value)
+{
+    m_PathPresetsDir = value;
+}
+
+void Config::setPathRulesDir(const QString &value)
+{
+    m_PathRulesDir = value;
+}
+
+void Config::setPathPojectsDir(const QString &value)
+{
+    m_PathPojectsDir = value;
+}
+
 void Config::setCellCurseAgeIndicDiapason(int value)
 {
     if(m_CellCurseAgeIndicDiapason == value) return;
@@ -269,16 +289,6 @@ void Config::setSceneCellAliveColor(const QString &value)
 
     m_SceneCellAliveColor = value;
     m_Settings->setValue("Scene/CellAliveColor", m_SceneCellAliveColor);
-}
-
-void Config::setPathLogsDir(const QString &value)
-{
-    m_PathLogsDir = value;
-}
-
-void Config::setPathPresetDir(const QString &value)
-{
-    m_PathPresetDir = value;
 }
 
 void Config::setSplashSize(int value)
@@ -602,7 +612,7 @@ bool Config::JsonCompactMode() const { return m_JsonCompactMode; }
 bool Config::SaveToPresetExceptDead() const { return m_SaveToPresetExceptDead; }
 bool Config::CopyToClipboardExceptDead() const { return m_CopyToClipboardExceptDead; }
 bool Config::JsonIgnoreDataVersion() const { return m_JsonIgnoreDataVersion; }
-QString Config::PathPresetDir() const { return m_PathPresetDir; }
+QString Config::PathPresetsDir() const { return m_PathPresetsDir; }
 QString Config::PathLogsDir() const { return m_PathLogsDir; }
 bool Config::RewriteResource() const { return m_RewriteResource; }
 int Config::SceneSelAlfa() const { return m_SceneSelAlfa; }
@@ -617,3 +627,5 @@ bool Config::CellCurseAgeIndicate() const { return m_CellCurseAgeIndicate; }
 QString Config::CellCurseAgeIndicBright() const { return m_CellCurseAgeIndicBright; }
 int Config::CellCurseAgeIndicFactor() const { return m_CellCurseAgeIndicFactor; }
 int Config::CellCurseAgeIndicDiapason() const { return m_CellCurseAgeIndicDiapason; }
+QString Config::PathRulesDir() const { return m_PathRulesDir; }
+QString Config::PathPojectsDir() const { return m_PathPojectsDir; }

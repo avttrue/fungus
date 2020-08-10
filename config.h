@@ -18,8 +18,12 @@ public:
 
     QString PathAppDir() const;
     QString PathAppConfig() const;
-    QString PathPresetDir() const;
-    void setPathPresetDir(const QString &value);
+    QString PathPresetsDir() const;
+    void setPathPresetsDir(const QString &value);
+    QString PathPojectsDir() const;
+    void setPathPojectsDir(const QString &value);
+    QString PathRulesDir() const;
+    void setPathRulesDir(const QString &value);
     int ButtonSize() const;
     void setButtonSize(int value);
     QString DateTimeFormat() const;
@@ -118,7 +122,9 @@ private:
     QSettings* m_Settings;
     QString m_DateTimeFormat;                       // формат отображения даты и времени
     QString m_PathAppConfig;                        // путь до конфига приложения
-    QString m_PathPresetDir;                        // путь до каталога с пресетами
+    QString m_PathPresetsDir;                       // путь до каталога с пресетами
+    QString m_PathPojectsDir;                       // путь до каталога с проектами
+    QString m_PathRulesDir;                         // путь до каталога с правилами
     QString m_PathLogsDir;                          // путь до каталога с логами
     QString m_PathAppDir;                           // путь до каталога приложения
     QString m_LastDir;                              // путь до последнего каталога

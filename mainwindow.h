@@ -76,6 +76,9 @@ private:
     QAction* m_ActionZoomOutScene;
     QAction* m_ActionZoomUndoScene;
     QAction* m_ActionStepStop;
+    QAction* m_ActionEditRules;
+    QAction* m_ActionSaveProject;
+    QAction* m_ActionLoadProject;
     QAction* m_ActionRun;
     QAction* m_ActionEditCell;
     QAction* m_ActionInfoCell;
@@ -131,6 +134,9 @@ private Q_SLOTS:
     void slotLabelSelectedCellClick();
     void slotCreateSnapshot();
     void slotSelectSnapshot();
+    void slotLoadProject();
+    void slotSaveProject();
+    void slotEditRules();
 
 Q_SIGNALS:
     void signalStopField();
