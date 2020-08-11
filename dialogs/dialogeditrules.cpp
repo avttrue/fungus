@@ -3,6 +3,7 @@
 #include "controls.h"
 #include "field/fieldrule.h"
 
+#include <QDebug>
 #include <QApplication>
 #include <QIcon>
 #include <QScrollArea>
@@ -100,13 +101,13 @@ bool DialogEditRules::eventFilter(QObject *object, QEvent *event)
         }
         return false;
     }
+    case QEvent::Hide:
     case QEvent::Close:
     {
         if(object != this || isMinimized() || isMaximized()) return false;
 
         config->setEditRulesWindowWidth(width());
         config->setEditRulesWindowHeight(height());
-
         return true;
     }
     default: { return false; }
