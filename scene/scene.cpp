@@ -34,8 +34,8 @@ Scene::Scene(QObject* parent, Field *field)
     addSelectionMark();
     addMultiSelectionMark();
 
-    setCellIndication();
-    setCellsColors();
+    applyCellIndication();
+    applyCellsColors();
 
     QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
     QObject::connect(this, &Scene::signalReady, m_Field, &Field::slotSceneReady, Qt::DirectConnection);
@@ -107,7 +107,7 @@ void Scene::setMultiSelectionMarkColor(const QString &color)
     m_MultiSelectionMark->setBrush(brush);
 }
 
-void Scene::setCellIndication()
+void Scene::applyCellIndication()
 {
     c_alive_ind.on = config->CellAliveAgeIndicate();
     c_alive_ind.lighter = config->CellAliveAgeIndicBright() == SCENE_CELL_BRIGHTNESS_VALUES.at(0);
@@ -122,7 +122,7 @@ void Scene::setCellIndication()
     c_curse_ind.factor_step = (c_curse_ind.factor - 100) / c_curse_ind.diapason;
 }
 
-void Scene::setCellsColors()
+void Scene::applyCellsColors()
 {
     auto alive_color = config->SceneCellAliveColor();
     if(config->CellAliveAgeIndicate() && alive_color == "#000000")

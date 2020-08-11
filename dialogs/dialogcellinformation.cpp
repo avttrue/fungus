@@ -80,12 +80,13 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
     {
     case QEvent::WindowStateChange:
     {
-        if(!isMinimized()) return false;
-
-        // если всё же свернули
-        setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
-        return true;
-
+        if(windowState() == Qt::WindowMinimized ||
+                windowState() == Qt::WindowMaximized)
+        {
+            setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
+            return true;
+        }
+        return false;
     }
     case QEvent::Close:
     {

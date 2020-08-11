@@ -114,6 +114,10 @@ public:
     void setCellCurseAgeIndicFactor(int value);
     int CellCurseAgeIndicDiapason() const;
     void setCellCurseAgeIndicDiapason(int value);
+    int EditRulesWindowHeight() const;
+    void setEditRulesWindowHeight(int value);
+    int EditRulesWindowWidth() const;
+    void setEditRulesWindowWidth(int value);
 
 protected:
     void load();
@@ -154,6 +158,8 @@ private:
     int m_CellInfoWindowWidth;                      // размеры окна информации о Cell
     int m_FieldInfoWindowHeight;                    // размеры окна информации о Field
     int m_FieldInfoWindowWidth;                     // размеры окна информации о Field
+    int m_EditRulesWindowHeight;                    // размеры окна редактирования правил
+    int m_EditRulesWindowWidth;                     // размеры окна редактирования правил
     int m_SplashTime;                               // время отображения сплеш-заставки
     int m_SplashSize;                               // размеры сплеш-заставки
     Qt::KeyboardModifiers m_SceneZoomKeyModifier;   // модификатор управления зумом

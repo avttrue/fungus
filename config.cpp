@@ -86,6 +86,14 @@ void Config::load()
         m_Settings->setValue("MainWindow/FieldInfoWindowHeight", FIELD_INFO_WINDOW_HEIGHT);
     m_FieldInfoWindowHeight = m_Settings->value("MainWindow/FieldInfoWindowHeight").toInt();
 
+    if(!m_Settings->contains("MainWindow/EditRulesWindowWidth"))
+        m_Settings->setValue("MainWindow/EditRulesWindowWidth", EDIT_RULES_WINDOW_WIDTH);
+    m_EditRulesWindowWidth = m_Settings->value("MainWindow/EditRulesWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/EditRulesWindowHeight"))
+        m_Settings->setValue("MainWindow/EditRulesWindowHeight", EDIT_RULES_WINDOW_HEIGHT);
+    m_EditRulesWindowHeight = m_Settings->value("MainWindow/EditRulesWindowHeight").toInt();
+
     if(!m_Settings->contains("MainWindow/ShowFieldInformation"))
         m_Settings->setValue("MainWindow/ShowFieldInformation", WINDOW_SHOW_FIELD_INFO);
     m_WindowShowFieldInfo = m_Settings->value("MainWindow/ShowFieldInformation").toBool();
@@ -205,6 +213,22 @@ void Config::load()
     if(!m_Settings->contains("Scene/CellCurseAgeIndicationDiapason"))
         m_Settings->setValue("Scene/CellCurseAgeIndicationDiapason", CELL_CURSE_AGE_INDIC_DIAPASON);
     m_CellCurseAgeIndicDiapason = m_Settings->value("Scene/CellCurseAgeIndicationDiapason").toInt();
+}
+
+void Config::setEditRulesWindowWidth(int value)
+{
+    if(m_EditRulesWindowWidth == value) return;
+
+    m_EditRulesWindowWidth = value;
+    m_Settings->setValue("MainWindow/EditRulesWindowWidth", m_EditRulesWindowWidth);
+}
+
+void Config::setEditRulesWindowHeight(int value)
+{
+    if(m_EditRulesWindowHeight == value) return;
+
+    m_EditRulesWindowHeight = value;
+    m_Settings->setValue("MainWindow/EditRulesWindowHeight", m_EditRulesWindowHeight);
 }
 
 void Config::setPathLogsDir(const QString &value)
@@ -629,3 +653,5 @@ int Config::CellCurseAgeIndicFactor() const { return m_CellCurseAgeIndicFactor; 
 int Config::CellCurseAgeIndicDiapason() const { return m_CellCurseAgeIndicDiapason; }
 QString Config::PathRulesDir() const { return m_PathRulesDir; }
 QString Config::PathPojectsDir() const { return m_PathPojectsDir; }
+int Config::EditRulesWindowWidth() const { return m_EditRulesWindowWidth; }
+int Config::EditRulesWindowHeight() const { return m_EditRulesWindowHeight; }

@@ -40,8 +40,8 @@ public:
     void clearMultiSelection();
     void setSelectionMarkColor(const QString& color);
     void setMultiSelectionMarkColor(const QString& color);
-    void setCellIndication();
-    void setCellsColors();
+    void applyCellIndication();
+    void applyCellsColors();
 
 private:
     Field* m_Field;

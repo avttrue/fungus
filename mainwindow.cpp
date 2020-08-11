@@ -10,6 +10,7 @@
 #include "dialogs/dialogvalueslist.h"
 #include "dialogs/dialogcellinformation.h"
 #include "dialogs/dialogfieldinformation.h"
+#include "dialogs/dialogeditrules.h"
 #include "field/field.h"
 #include "field/cell.h"
 #include "field/cellinformation.h"
@@ -896,8 +897,8 @@ void MainWindow::slotSetup()
     m_SceneView->setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
     if(m_SceneView->getScene())
     {
-        m_SceneView->getScene()->setCellIndication();
-        m_SceneView->getScene()->setCellsColors();
+        m_SceneView->getScene()->applyCellIndication();
+        m_SceneView->getScene()->applyCellsColors();
         m_SceneView->getScene()->setBackgroundColor(config->SceneBgColor());
         m_SceneView->getScene()->setSelectionMarkColor(config->SceneSelectColor());
         m_SceneView->update();
@@ -1510,6 +1511,11 @@ void MainWindow::slotEditRules()
 {
     // TODO: slotEditRules
     QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+
+    if(DialogEditRules::FindPreviousCopy()) return;
+
+    auto der = new DialogEditRules(this, nullptr);
+    der->show();
 }
 
 void MainWindow::slotFieldAvCalc(qreal value)
