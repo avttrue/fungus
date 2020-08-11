@@ -65,13 +65,13 @@ DialogValuesList::DialogValuesList(QWidget* parent,
 
     if(m_DialogMode)
     {
-        auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), "Accept");
+        auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
         actionAccept->setAutoRepeat(false);
         actionAccept->setShortcut(Qt::CTRL + Qt::Key_Q);
         QObject::connect(actionAccept, &QAction::triggered, [=](){ accept(); });
         toolBar->addAction(actionAccept);
     }
-    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), "Cancel");
+    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Cancel"));
     actionCancel->setAutoRepeat(false);
     QObject::connect(actionCancel, &QAction::triggered, [=](){ reject(); });
     toolBar->addAction(actionCancel);

@@ -68,68 +68,84 @@ void MainWindow::loadGui()
     // действия
     auto actionQt = new QAction(QIcon(":/resources/img/qt_logo.svg"), tr("About Qt"), this);
     QObject::connect(actionQt, &QAction::triggered, qApp, QApplication::aboutQt);
+    actionQt->setAutoRepeat(false);
 
     auto actionExit = new QAction(QIcon(":/resources/img/exit.svg"), tr("Exit"), this);
     QObject::connect(actionExit, &QAction::triggered, this, &MainWindow::close);
+    actionExit->setAutoRepeat(false);
 
     m_ActionNewProject = new QAction(QIcon(":/resources/img/asterisk.svg"), tr("New project"), this);
     QObject::connect(m_ActionNewProject, &QAction::triggered, this, &MainWindow::slotNewProject);
     m_ActionNewProject->setShortcut(Qt::CTRL + Qt::Key_N);
+    m_ActionNewProject->setAutoRepeat(false);
 
     m_ActionLoadProject = new QAction(QIcon(":/resources/img/open_folder.svg"), tr("Load project"), this);
     QObject::connect(m_ActionLoadProject, &QAction::triggered, this, &MainWindow::slotLoadProject);
     m_ActionLoadProject->setShortcut(Qt::CTRL + Qt::Key_O);
+    m_ActionLoadProject->setAutoRepeat(false);
 
     m_ActionSaveProject = new QAction(QIcon(":/resources/img/save.svg"), tr("Save project"), this);
     QObject::connect(m_ActionSaveProject, &QAction::triggered, this, &MainWindow::slotSaveProject);
     m_ActionSaveProject->setShortcut(Qt::CTRL + Qt::Key_S);
+    m_ActionSaveProject->setAutoRepeat(false);
     m_ActionSaveProject->setEnabled(false);
 
     m_ActionEditRules = new QAction(QIcon(":/resources/img/rule.svg"), tr("Edit rules"), this);
     QObject::connect(m_ActionEditRules, &QAction::triggered, this, &MainWindow::slotEditRules);
+    m_ActionEditRules->setAutoRepeat(false);
 
     m_ActionZoomInScene = new QAction(QIcon(":/resources/img/zoom_in.svg"), tr("Zoom IN"), this);
     QObject::connect(m_ActionZoomInScene, &QAction::triggered, this, &MainWindow::slotSceneZoomIn);
+    m_ActionZoomInScene->setAutoRepeat(false);
     m_ActionZoomInScene->setEnabled(false);
 
     m_ActionZoomOutScene = new QAction(QIcon(":/resources/img/zoom_out.svg"), tr("Zoom OUT"), this);
     QObject::connect(m_ActionZoomOutScene, &QAction::triggered, this, &MainWindow::slotSceneZoomOut);
+    m_ActionZoomOutScene->setAutoRepeat(false);
     m_ActionZoomOutScene->setEnabled(false);
 
     m_ActionZoomUndoScene = new QAction(QIcon(":/resources/img/zoom_undo.svg"), tr("Zoom UNDO"), this);
     QObject::connect(m_ActionZoomUndoScene, &QAction::triggered, this, &MainWindow::slotZoomUndoScene);
+    m_ActionZoomUndoScene->setAutoRepeat(false);
     m_ActionZoomUndoScene->setEnabled(false);
 
     auto actionSetup = new QAction(QIcon(":/resources/img/setup.svg"), tr("Settings"), this);
     QObject::connect(actionSetup, &QAction::triggered, this, &MainWindow::slotSetup);
+    actionSetup->setAutoRepeat(false);
 
     m_ActionStepStop = new QAction(QIcon(":/resources/img/step_stop.svg"), tr("Step / Stop"), this);
     QObject::connect(m_ActionStepStop, &QAction::triggered, this, &MainWindow::slotStepStop);
-    m_ActionStepStop->setEnabled(false);
     m_ActionStepStop->setShortcut(Qt::CTRL + Qt::Key_Space);
+    m_ActionStepStop->setAutoRepeat(false);
+    m_ActionStepStop->setEnabled(false);
 
     m_ActionRun = new QAction(QIcon(":/resources/img/run.svg"), tr("Run"), this);
     QObject::connect(m_ActionRun, &QAction::triggered, this, &MainWindow::slotRun);
+    m_ActionRun->setAutoRepeat(false);
     m_ActionRun->setEnabled(false);
 
     m_ActionEditCell = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit cell"), this);
     QObject::connect(m_ActionEditCell, &QAction::triggered, this, &MainWindow::slotEditCell);
-    m_ActionEditCell->setEnabled(false);
     m_ActionEditCell->setShortcut(Qt::CTRL + Qt::Key_E);
+    m_ActionEditCell->setAutoRepeat(false);
+    m_ActionEditCell->setEnabled(false);
 
     m_ActionInfoCell = new QAction(QIcon(":/resources/img/cell.svg"), tr("Cell information"), this);
     QObject::connect(m_ActionInfoCell, &QAction::triggered, this, &MainWindow::slotInfoCell);
+    m_ActionInfoCell->setAutoRepeat(false);
     m_ActionInfoCell->setEnabled(false);
 
     m_ActionSaveCellsToClipbord = new QAction(QIcon(":/resources/img/copy.svg"), tr("Copy selected cells to clipboard"), this);
     QObject::connect(m_ActionSaveCellsToClipbord, &QAction::triggered, this, &MainWindow::slotSaveCellsToClipbord);
-    m_ActionSaveCellsToClipbord->setEnabled(false);
     m_ActionSaveCellsToClipbord->setShortcut(Qt::CTRL + Qt::Key_C);
+    m_ActionSaveCellsToClipbord->setAutoRepeat(false);
+    m_ActionSaveCellsToClipbord->setEnabled(false);
 
     m_ActionLoadCellsFromClipbord = new QAction(QIcon(":/resources/img/paste.svg"), tr("Paste cells from clipboard"), this);
     QObject::connect(m_ActionLoadCellsFromClipbord, &QAction::triggered, this, &MainWindow::slotLoadCellsFromClipbord);
-    m_ActionLoadCellsFromClipbord->setEnabled(false);
     m_ActionLoadCellsFromClipbord->setShortcut(Qt::CTRL + Qt::Key_V);
+    m_ActionLoadCellsFromClipbord->setAutoRepeat(false);
+    m_ActionLoadCellsFromClipbord->setEnabled(false);
 
     m_ActionSaveCellsToPreset = new QAction(QIcon(":/resources/img/preset_save.svg"), tr("Save selected cells as preset to file"), this);
     QObject::connect(m_ActionSaveCellsToPreset, &QAction::triggered, this, &MainWindow::slotSaveCellsToPreset);
@@ -137,38 +153,46 @@ void MainWindow::loadGui()
 
     m_ActionLoadCellsFromPreset = new QAction(QIcon(":/resources/img/preset_load.svg"), tr("Load preset from file"), this);
     QObject::connect(m_ActionLoadCellsFromPreset, &QAction::triggered, this, &MainWindow::slotLoadCellsFromPreset);
+    m_ActionLoadCellsFromPreset->setAutoRepeat(false);
     m_ActionLoadCellsFromPreset->setEnabled(false);
 
     m_ActionInfoField = new QAction(QIcon(":/resources/img/field.svg"), tr("Field information"), this);
     QObject::connect(m_ActionInfoField, &QAction::triggered, this, &MainWindow::slotInfoField);
-    m_ActionInfoField->setEnabled(false);
     m_ActionInfoField->setShortcut(Qt::CTRL + Qt::Key_F);
+    m_ActionInfoField->setAutoRepeat(false);
+    m_ActionInfoField->setEnabled(false);
 
     m_ActionClearCells = new QAction(QIcon(":/resources/img/delete.svg"), tr("Clear selected cells"), this);
     QObject::connect(m_ActionClearCells, &QAction::triggered, this, &MainWindow::slotClearCells);
-    m_ActionClearCells->setEnabled(false);
     m_ActionClearCells->setShortcut(Qt::CTRL + Qt::Key_D);
+    m_ActionClearCells->setAutoRepeat(false);
+    m_ActionClearCells->setEnabled(false);
 
     m_ActionRandomFill = new QAction(QIcon(":/resources/img/cells.svg"), tr("Random fill selected cells"), this);
     QObject::connect(m_ActionRandomFill, &QAction::triggered, this, &MainWindow::slotRandomFill);
+    m_ActionRandomFill->setAutoRepeat(false);
     m_ActionRandomFill->setEnabled(false);
 
     m_ActionSaveImageToFile = new QAction(QIcon(":/resources/img/camera.svg"), tr("Save image to file"), this);
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
+    m_ActionSaveImageToFile->setAutoRepeat(false);
     m_ActionSaveImageToFile->setEnabled(false);
 
     m_ActionSelectAll = new QAction(QIcon(":/resources/img/select_all.svg"), tr("Select all cells"), this);
     QObject::connect(m_ActionSelectAll, &QAction::triggered, this, &MainWindow::slotSelectAll);
+    m_ActionSelectAll->setAutoRepeat(false);
     m_ActionSelectAll->setShortcut(Qt::CTRL + Qt::Key_A);
     m_ActionSelectAll->setEnabled(false);
 
     m_ActionCreateSnapshot = new QAction(QIcon(":/resources/img/check.svg"), tr("Create snapshot"), this);
     QObject::connect(m_ActionCreateSnapshot, &QAction::triggered, this, &MainWindow::slotCreateSnapshot);
+    m_ActionCreateSnapshot->setAutoRepeat(false);
     m_ActionCreateSnapshot->setShortcut(Qt::CTRL + Qt::Key_W);
     m_ActionCreateSnapshot->setEnabled(false);
 
     m_ActionSelectSnapshot = new QAction(QIcon(":/resources/img/next_snapshot.svg"), tr("Load snapshot"), this);
     QObject::connect(m_ActionSelectSnapshot, &QAction::triggered, this, &MainWindow::slotSelectSnapshot);
+    m_ActionSelectSnapshot->setAutoRepeat(false);
     m_ActionSelectSnapshot->setEnabled(false);
 
     // тулбар основной

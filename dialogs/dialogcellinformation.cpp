@@ -49,16 +49,16 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     toolBar->setMovable(false);
     toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    auto actionShowPoint = new QAction(QIcon(":/resources/img/point.svg"), "Show point");
-    actionShowPoint->setAutoRepeat(false);
-    QObject::connect(actionShowPoint, &QAction::triggered, this, &DialogCellInformation::slotShowPoint);
-    toolBar->addAction(actionShowPoint);
+    auto actionShowCell = new QAction(QIcon(":/resources/img/point.svg"), tr("Show cell"));
+    actionShowCell->setAutoRepeat(false);
+    QObject::connect(actionShowCell, &QAction::triggered, this, &DialogCellInformation::slotShowCell);
+    toolBar->addAction(actionShowCell);
 
     toolBar->addSeparator();
 
     toolBar->addWidget(new WidgetSpacer(this));
 
-    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), "Cancel");
+    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Close"));
     actionCancel->setAutoRepeat(false);
     QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
     toolBar->addAction(actionCancel);
@@ -143,5 +143,5 @@ bool DialogCellInformation::FindPreviousCopy(Cell *cell)
     return false;
 }
 
-void DialogCellInformation::slotShowPoint() { Q_EMIT signalShowCell(m_Cell); }
+void DialogCellInformation::slotShowCell() { Q_EMIT signalShowCell(m_Cell); }
 Cell *DialogCellInformation::getCell() const { return m_Cell; }

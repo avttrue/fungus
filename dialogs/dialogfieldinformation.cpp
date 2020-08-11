@@ -51,7 +51,7 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, Field* field)
 
     toolBar->addWidget(new WidgetSpacer(this));
 
-    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), "Cancel");
+    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Close"));
     actionCancel->setAutoRepeat(false);
     QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
     toolBar->addAction(actionCancel);

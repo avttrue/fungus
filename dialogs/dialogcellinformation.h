@@ -24,7 +24,7 @@ private:
     QGridLayout* glContent;
 
 private Q_SLOTS:
-    void slotShowPoint();
+    void slotShowCell();
 
 Q_SIGNALS:
     void signalShowCell(Cell* cell);
