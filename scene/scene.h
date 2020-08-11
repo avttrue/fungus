@@ -40,8 +40,6 @@ public:
     void clearMultiSelection();
     void setSelectionMarkColor(const QString& color);
     void setMultiSelectionMarkColor(const QString& color);
-    CellIndication c_alive_ind;  // индикация возраста живой ячейки
-    CellIndication c_curse_ind;  // индикация отравленной живой ячейки
     void setCellIndication();
     void setCellsColors();
 
@@ -59,6 +57,9 @@ private:
     QSize m_Size;
     qreal m_AverageDraw;                                   // среднее время отрисовки сцены
     bool m_StopAdvanse;                                    // остановка отрисовки перед выходом и .т.д
+    CellIndication c_alive_ind;                            // индикация возраста живой ячейки
+    CellIndication c_curse_ind;                            // индикация отравленной живой ячейки
+
 
 public Q_SLOTS:
     void slotAdvance(QVector<Cell*> cells);                // перерисовать сцену
