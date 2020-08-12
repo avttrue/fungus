@@ -56,7 +56,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     toolBar->addSeparator();
 
-    toolBar->addWidget(new WidgetSpacer(this));
+    toolBar->addWidget(new WidgetSpacer());
 
     auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Close"));
     actionCancel->setAutoRepeat(false);
@@ -72,6 +72,9 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     installEventFilter(this);
     resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());
+
+    qDebug() << "DialogCellInformation" << windowTitle() << "created";
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogCellInformation" << windowTitle() << "destroyed"; });
 }
 
 bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)

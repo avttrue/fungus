@@ -880,7 +880,6 @@ void MainWindow::slotSetup()
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
-
     if(!dvl->exec()) return;
 
     // common
@@ -916,6 +915,7 @@ void MainWindow::slotSetup()
     // применение настроек
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    m_LabelFieldPause->setText(tr("%1 ms").arg(QString::number(config->SceneCalculatingMinPause())));
     setSceneFieldThreadPriority();
     m_SceneView->setUpdateMode();
     m_SceneView->setRenderHint(QPainter::Antialiasing, config->SceneViewAntialiasing());
@@ -959,7 +959,6 @@ void MainWindow::slotEditCell()
       tr("01#_State"),
       tr("02#_Age"),
       tr("03#_Generation")};
-
     if(multyselection) keys.append(
     { tr("04#_Group operations"),
       tr("05#_Apply to all"),
@@ -973,7 +972,6 @@ void MainWindow::slotEditCell()
       {keys.at(2), {QVariant::Int, cni->getAge(), 0, 0}},
       {keys.at(3), {QVariant::Int, cni->getGeneration(), 0, 0}}
     };
-
     if(multyselection)
     {
         QMap<QString, DialogValue> addmap =
@@ -1019,7 +1017,6 @@ void MainWindow::slotEditCell()
         cni->setGeneration(map.value(keys.at(3)).value.toUInt());
         firstcell->applyInfo();
     }
-
     redrawScene();
 }
 
@@ -1533,13 +1530,15 @@ void MainWindow::slotSaveProject()
 
 void MainWindow::slotEditRules()
 {
-    // TODO: slotEditRules
+    auto rule = new FieldRule();
     QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
 
     if(DialogEditRules::FindPreviousCopy()) return;
+    auto der = new DialogEditRules(this, rule);
+    if(!der->exec()) { rule->deleteLater(); return; }
+    // TODO: slotEditRules
 
-    auto der = new DialogEditRules(this, nullptr);
-    der->show();
+    rule->deleteLater();
 }
 
 void MainWindow::slotFieldAvCalc(qreal value)

@@ -6,10 +6,10 @@
 #include <QDebug>
 #include <QApplication>
 #include <QIcon>
-#include <QScrollArea>
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QWindowStateChangeEvent>
+#include <QListWidget>
 
 DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     : QDialog(parent),
@@ -21,7 +21,7 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowTitle(tr("Edit rules"));
     setWindowIcon(QIcon(":/resources/img/rule.svg"));
-    setModal(false);
+    setModal(true);
 
     auto vblForm = new QVBoxLayout();
     vblForm->setAlignment(Qt::AlignAbsolute);
@@ -34,18 +34,7 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     toolBarControl->setMovable(false);
     toolBarControl->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    auto saContent = new QScrollArea();
-    saContent->setAlignment(Qt::AlignTop);
-    saContent->setWidgetResizable(true);
-
-    auto wContent = new QWidget();
-    saContent->setWidget(wContent);
-
-    glContent = new QGridLayout();
-    wContent->setLayout(glContent);
-    glContent->setAlignment(Qt::AlignTop);
-    glContent->setMargin(1);
-    glContent->setSpacing(1);
+    auto saContent = new QListWidget();
 
     auto toolBarMain = new QToolBar();
     toolBarMain->setOrientation(Qt::Horizontal);
@@ -53,7 +42,7 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     toolBarMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
     toolBarMain->addSeparator();
-    toolBarMain->addWidget(new WidgetSpacer(this));
+    toolBarMain->addWidget(new WidgetSpacer());
 
     auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
     actionAccept->setAutoRepeat(false);
@@ -65,25 +54,47 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
     toolBarMain->addAction(actionCancel);
 
-    auto actionAdd = new QAction(QIcon(":/resources/img/plus.svg"), tr("Add rule"));
+    auto actionAdd = new QAction(QIcon(":/resources/img/plus.svg"), tr("Add activity"));
     actionAdd->setAutoRepeat(false);
     //QObject::connect(actionAdd, &QAction::triggered, );
-    toolBarControl->addAction(actionAdd);
 
-    auto actionDelete = new QAction(QIcon(":/resources/img/minus.svg"), tr("Delete rule"));
+    actionDelete = new QAction(QIcon(":/resources/img/minus.svg"), tr("Delete activity"));
     actionDelete->setAutoRepeat(false);
     //QObject::connect(actionDelete, &QAction::triggered, );
-    toolBarControl->addAction(actionDelete);
+    actionDelete->setEnabled(false);
 
-    toolBarControl->addWidget(new WidgetSpacer(this));
+    actionEdit = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit activity"));
+    actionEdit->setAutoRepeat(false);
+    //QObject::connect(actionEdit, &QAction::triggered, );
+    actionEdit->setEnabled(false);
+
+    actionUp = new QAction(QIcon(":/resources/img/up_arrow.svg"), tr("Up activity"));
+    actionUp->setAutoRepeat(false);
+    //QObject::connect(actionUp, &QAction::triggered, );
+    actionUp->setEnabled(false);
+
+    actionDown = new QAction(QIcon(":/resources/img/down_arrow.svg"), tr("Down activity"));
+    actionDown->setAutoRepeat(false);
+    //QObject::connect(actionDown, &QAction::triggered, );
+    actionDown->setEnabled(false);
+
+    toolBarControl->addAction(actionAdd);
+    toolBarControl->addAction(actionDelete);
+    toolBarControl->addSeparator();
+    toolBarControl->addAction(actionEdit);
+    toolBarControl->addAction(actionUp);
+    toolBarControl->addAction(actionDown);
+    toolBarControl->addWidget(new WidgetSpacer());
 
     vblForm->addWidget(toolBarControl);
     vblForm->addWidget(saContent);
     vblForm->addWidget(toolBarMain);
 
-
     installEventFilter(this);
     resize(config->EditRulesWindowWidth(), config->EditRulesWindowHeight());
+
+    qDebug() << "DialogEditRules" << windowTitle() << "created";
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogEditRules" << windowTitle() << "destroyed"; });
 }
 
 bool DialogEditRules::FindPreviousCopy()

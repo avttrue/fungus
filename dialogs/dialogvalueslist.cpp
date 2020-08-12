@@ -25,20 +25,18 @@ DialogValuesList::DialogValuesList(QWidget* parent,
                                    const QString& icon,
                                    const QString& caption,
                                    QMap<QString, DialogValue> *values,
-                                   const QString &focusedKey,
-                                   bool dialogMode) :
-    QDialog(parent)
+                                   const QString &focusedKey) :
+    QDialog(parent),
+    m_Values(values),
+    m_FocusedKey(focusedKey)
 {
-    m_Values = values;
-    m_DialogMode = dialogMode;
-    m_FocusedKey = focusedKey;
     setWindowFlags(Qt::Dialog |
                    Qt::CustomizeWindowHint |
                    Qt::WindowTitleHint);
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowTitle(caption);
     setWindowIcon(QIcon(icon));
-    setModal(m_DialogMode);
+    setModal(true);
 
     auto vblForm = new QVBoxLayout();
     vblForm->setAlignment(Qt::AlignAbsolute);
@@ -63,14 +61,11 @@ DialogValuesList::DialogValuesList(QWidget* parent,
 
     toolBar->addWidget(new WidgetSpacer());
 
-    if(m_DialogMode)
-    {
-        auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
-        actionAccept->setAutoRepeat(false);
-        actionAccept->setShortcut(Qt::CTRL + Qt::Key_Q);
-        QObject::connect(actionAccept, &QAction::triggered, [=](){ accept(); });
-        toolBar->addAction(actionAccept);
-    }
+    auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
+    actionAccept->setAutoRepeat(false);
+    QObject::connect(actionAccept, &QAction::triggered, [=](){ accept(); });
+    toolBar->addAction(actionAccept);
+
     auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Cancel"));
     actionCancel->setAutoRepeat(false);
     QObject::connect(actionCancel, &QAction::triggered, [=](){ reject(); });
@@ -82,13 +77,16 @@ DialogValuesList::DialogValuesList(QWidget* parent,
     slotLoadContent(values);
 
     resize(WINDOW_SIZE);
+
+    qDebug() << "DialogValuesList" << windowTitle() << "created";
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogValuesList" << windowTitle() << "destroyed"; });
 }
 
 void DialogValuesList::addWidgetContent(QWidget *widget, bool sub_item)
 {
     if(sub_item)
     {
-        auto w = new QWidget(this);
+        auto w = new QWidget();
         auto hb = new QHBoxLayout();
         hb->setContentsMargins(SUBITEM_SIZE, 0, 0, 0);
         w->setLayout(hb);

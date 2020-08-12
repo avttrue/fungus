@@ -55,6 +55,7 @@ struct DialogValue
  */
 class DialogValuesList : public QDialog
 {
+    Q_OBJECT
 public:
     /*!
      * \brief DialogValuesList
@@ -62,14 +63,12 @@ public:
      * \param caption - заголовок окна;
      * \param values - значения для отображения, для сортировки использовать нумерацию вида '00#_' (RE_NUM_MARK);
      * \param focusedKey - контрол для фокуса по ключу values
-     * \param dialogMode - вариант диалога: true - ДА/ОК, false - OK
      */
     DialogValuesList(QWidget* parent,
                      const QString &icon,
                      const QString &caption,
                      QMap<QString, DialogValue>* values,
-                     const QString &focusedKey = "",
-                     bool dialogMode = true);
+                     const QString &focusedKey = "");
     void addToolbarButton(QAction* action);
 
 protected:

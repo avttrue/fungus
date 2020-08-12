@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QMetaProperty>
+#include <QObject>
 
 QString getNameKernelEnum(const QString &enumname, int index)
 {
@@ -51,17 +52,28 @@ int countKernelEnum(const QString &enumname)
 }
 
 QString ActivityElementToString(const QVector<QVariant> &activity)
-{ // TODO: переделать
-    if(activity.count() < 4)
-    {
-        qCritical()<< __func__ << "Wrong CellActivity format, count" << activity.count();
-        return "";
-    }
+{
+    /* {ActivityType,
+     * SelfState,
+     * ActivityTarget,
+     * TargetState,
+     * ActivityOperand,
+     * ActivityOperator,
+     * [значение]}*/
+    auto activitytype = getNameKernelEnum("ActivityType", activity.at(0).toInt());
+    auto activitysstate = getNameKernelEnum("CellState", activity.at(1).toInt());
+    auto activitytarget = getNameKernelEnum("ActivityTarget", activity.at(2).toInt());
+    auto activitytstate = getNameKernelEnum("CellState", activity.at(3).toInt());
+    auto activityoperand = getNameKernelEnum("ActivityOperand", activity.at(4).toInt());
+    auto activityoperator = getNameKernelEnum("ActivityOperator", activity.at(5).toInt());
+    auto activityvalue = activity.at(6).toString();
 
-    auto activitytype = getNameKernelEnum("CellActivityType", activity.at(0).toInt());
-    auto activitytarget = getNameKernelEnum("CellActivityTarget", activity.at(1).toInt());
-    auto activityoperator = getNameKernelEnum("CellActivityOperator", activity.at(2).toInt());;
-    auto activityvalue = activity.at(3).toString();
-
-    return QString("%1 %2 %3 %4").arg(activitytype, activitytarget, activityoperator, activityvalue);
+    return QObject::tr("%1 IF CELL IS %2 AND %3 IS %4 AND %5 %6 %7").
+            arg(activitytype,
+                activitysstate,
+                activitytarget,
+                activitytstate,
+                activityoperand,
+                activityoperator,
+                activityvalue);
 }

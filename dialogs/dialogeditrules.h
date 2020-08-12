@@ -19,7 +19,10 @@ protected:
 
 private:
     FieldRule* m_Rules;
-    QGridLayout* glContent;
+    QAction* actionDelete;
+    QAction* actionUp;
+    QAction* actionDown;
+    QAction* actionEdit;
 };
 
 #endif // DIALOGEDITRULES_H

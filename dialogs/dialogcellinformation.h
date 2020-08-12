@@ -9,7 +9,6 @@ class QGridLayout;
 class DialogCellInformation : public QDialog
 {
     Q_OBJECT
-
 public:
     DialogCellInformation(QWidget *parent, Cell* cell);
     Cell *getCell() const;

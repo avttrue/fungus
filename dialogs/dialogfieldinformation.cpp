@@ -49,7 +49,7 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, Field* field)
     toolBar->setMovable(false);
     toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    toolBar->addWidget(new WidgetSpacer(this));
+    toolBar->addWidget(new WidgetSpacer());
 
     auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Close"));
     actionCancel->setAutoRepeat(false);
@@ -65,6 +65,8 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, Field* field)
 
     installEventFilter(this);
     resize(config->FieldInfoWindowWidth(), config->FieldInfoWindowHeight());
+    qDebug() << "DialogFieldInformation" << windowTitle() << "created";
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogFieldInformation" << windowTitle() << "destroyed"; });
 }
 
 bool DialogFieldInformation::FindPreviousCopy(Field *field)

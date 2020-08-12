@@ -14,7 +14,7 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
     hbox->setSpacing(1);
     setLayout(hbox);
 
-    auto labelCaption = new QLabel(caption, this);
+    auto labelCaption = new QLabel(caption);
     labelCaption->setStyleSheet(DCI_LABEL_STYLE);
 
     if(value.isValid())
@@ -25,7 +25,7 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
         hbox->setAlignment(Qt::AlignLeft);
         hbox->addWidget(labelCaption, 1);
 
-        m_LabelValue = new QLabel(this);
+        m_LabelValue = new QLabel();
         m_LabelValue->setFrameStyle(QFrame::Panel | QFrame::Sunken);
         m_LabelValue->setLineWidth(1);
         m_LabelValue->setStyleSheet(DCI_LABEL_STYLE);
