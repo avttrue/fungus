@@ -49,8 +49,8 @@ void Field::fill(bool random)
             {
                 if(rg.bounded(0, 2))
                 {
-                    c->getOldInfo()->setState(Kernel::CellState::Alive);
-                    c->getNewInfo()->setState(Kernel::CellState::Alive);
+                    c->getOldInfo()->setState(Kernel::CellState::ALIVE);
+                    c->getNewInfo()->setState(Kernel::CellState::ALIVE);
                     alive++;
                 }
             }
@@ -105,7 +105,7 @@ void Field::calculate()
 
                     // итог применения правила к ячейке
                     // cell Age
-                    if(oi->getState() == Kernel::CellState::Alive) ni->upAge();
+                    if(oi->getState() == Kernel::CellState::ALIVE) ni->upAge();
                     else ni->setAge(0);
 
                     // cell Generation
@@ -116,7 +116,7 @@ void Field::calculate()
                 auto nis = ni->getState();
 
                 // если и старое и новое состояние - мёртвое, то ячейка не менялась
-                if(nis != Kernel::CellState::Dead || ois != Kernel::CellState::Dead)
+                if(nis != Kernel::CellState::DEAD || ois != Kernel::CellState::DEAD)
                     cells_changed.append(c);
 
                 // Field Information
@@ -124,12 +124,12 @@ void Field::calculate()
                 if(oi->getGeneration() < ni->getGeneration()) active_count++;
 
                 //Kernel::CellState::Dead не считаем
-                if(nis == Kernel::CellState::Alive)
+                if(nis == Kernel::CellState::ALIVE)
                 {
                     cells_to_redraw.append(c);
                     alive_count++;
                 }
-                else if(nis == Kernel::CellState::Cursed)
+                else if(nis == Kernel::CellState::CURSED)
                 {
                     cells_to_redraw.append(c);
                     cursed_count++;
@@ -204,42 +204,42 @@ void Field::applyRules(Cell *cell)
         // применение оператора к операнду
         switch(aoperator)
         {
-        case Kernel::ActivityOperator::Equal:
+        case Kernel::ActivityOperator::EQUAL:
         {
-            if(atarget == Kernel::ActivityTarget::Self)
+            if(atarget == Kernel::ActivityTarget::SELF)
             {
                 auto count = cell->getOldInfo()->getAge();
                 if(count == value) setRulesActivityReaction(ni, atype, list);
             }
-            else if(atarget == Kernel::ActivityTarget::Near)
+            else if(atarget == Kernel::ActivityTarget::NEAR)
             {
                 auto count = getRulesOperandValue(aoperand, list);
                 if(count == value) setRulesActivityReaction(ni, atype, list);
             }
             break;
         }
-        case Kernel::ActivityOperator::Less:
+        case Kernel::ActivityOperator::LESS:
         {
-            if(atarget == Kernel::ActivityTarget::Self)
+            if(atarget == Kernel::ActivityTarget::SELF)
             {
                 auto count = cell->getOldInfo()->getAge();
                 if(count < value) setRulesActivityReaction(ni, atype, list);
             }
-            else if(atarget == Kernel::ActivityTarget::Near)
+            else if(atarget == Kernel::ActivityTarget::NEAR)
             {
                 auto count = getRulesOperandValue(aoperand, list);
                 if(count < value) setRulesActivityReaction(ni, atype, list);
             }
             break;
         }
-        case Kernel::ActivityOperator::More:
+        case Kernel::ActivityOperator::MORE:
         {
-            if(atarget == Kernel::ActivityTarget::Self)
+            if(atarget == Kernel::ActivityTarget::SELF)
             {
                 auto count = cell->getOldInfo()->getAge();
                 if(count > value) setRulesActivityReaction(ni, atype, list);
             }
-            else if(atarget == Kernel::ActivityTarget::Near)
+            else if(atarget == Kernel::ActivityTarget::NEAR)
             {
                 auto count = getRulesOperandValue(aoperand, list);
                 if(count > value) setRulesActivityReaction(ni, atype, list);
@@ -247,17 +247,17 @@ void Field::applyRules(Cell *cell)
             break;
         }
         }
-        if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::Alive) return;
+        if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::ALIVE) return;
     }
 }
 
 uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list)
 {
     uint count = 0;
-    if(ao == Kernel::ActivityOperand::Count)
+    if(ao == Kernel::ActivityOperand::COUNT)
     { count = list.count(); }
 
-    else if(ao == Kernel::ActivityOperand::Age)
+    else if(ao == Kernel::ActivityOperand::AGE)
     { for(auto c: list) count += c->getOldInfo()->getAge(); }
 
     return count;
@@ -265,14 +265,14 @@ uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list
 
 void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at, QVector<Cell *> list)
 {
-    if(at == Kernel::ActivityType::Birth)
-    { ci->setState(Kernel::CellState::Alive); }
+    if(at == Kernel::ActivityType::BIRTH)
+    { ci->setState(Kernel::CellState::ALIVE); }
 
-    else if(at == Kernel::ActivityType::Death)
-    { ci->setState(Kernel::CellState::Dead); }
+    else if(at == Kernel::ActivityType::DEATH)
+    { ci->setState(Kernel::CellState::DEAD); }
 
-    else if(at == Kernel::ActivityType::Bomb)
-    { for(auto c: list) c->getOldInfo()->setState(Kernel::CellState::Cursed); }
+    else if(at == Kernel::ActivityType::BOMB)
+    { for(auto c: list) c->getOldInfo()->setState(Kernel::CellState::CURSED); }
 }
 
 Cell *Field::getTopCell(Cell *cell)

@@ -424,6 +424,7 @@ bool DialogValuesList::eventFilter(QObject* object, QEvent *event)
             }
             return false;
         }
+        case QEvent::Hide:
         case QEvent::Close:
         {
             if(object != this || isMinimized() || isMaximized()) return false;

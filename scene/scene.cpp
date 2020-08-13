@@ -206,7 +206,7 @@ void Scene::slotAdvance(QVector<Cell *> cells)
         auto ci = c->getNewInfo();
         switch (ci->getState())
         {
-        case Kernel::CellState::Alive:
+        case Kernel::CellState::ALIVE:
         {
             auto color = m_AliveCellColor;
             if(c_alive_ind.on) // индикация возраста живой ячейки
@@ -221,7 +221,7 @@ void Scene::slotAdvance(QVector<Cell *> cells)
             painter.fillRect(c->getRect(), color);
             break;
         }
-        case  Kernel::CellState::Cursed:
+        case  Kernel::CellState::CURSED:
         {
             auto color = m_CurseCellColor;
             if(c_curse_ind.on) // индикация возраста отравленной ячейки

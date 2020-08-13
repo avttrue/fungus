@@ -15,9 +15,9 @@ public:
      */
     enum class CellState: int
     {
-        Dead = 0,           // мертва (пустая)
-        Alive,              // жива
-        Cursed              // отравлена (может принять такое значение при смерти или взрыве)
+        DEAD = 0,           // мертва (пустая)
+        ALIVE,              // жива
+        CURSED              // отравлена (может принять такое значение при смерти или взрыве)
     };
     Q_ENUM(CellState)
 
@@ -26,9 +26,9 @@ public:
      */
     enum class ActivityType: int
     {
-        Birth = 0,          // рождение
-        Death,              // смерть
-        Bomb                // взрыв
+        BIRTH = 0,          // рождение
+        DEATH,              // смерть
+        BOMB                // взрыв
     };
     Q_ENUM(ActivityType)
 
@@ -37,8 +37,8 @@ public:
      */
     enum class ActivityTarget: int
     {
-        Self = 0,           // сама ячейка
-        Near                // соседние ячейки любые
+        SELF = 0,           // сама ячейка
+        NEAR                // соседние ячейки любые
     };
     Q_ENUM(ActivityTarget)
 
@@ -47,9 +47,9 @@ public:
      */
     enum class ActivityOperator: int
     {
-        Equal = 0,          // равен
-        More,               // больше
-        Less                // меньше
+        EQUAL = 0,          // равен
+        MORE,               // больше
+        LESS                // меньше
     };
     Q_ENUM(ActivityOperator)
 
@@ -58,8 +58,8 @@ public:
      */
     enum class ActivityOperand: int
     {
-        Count = 0,          // количество
-        Age                 // возраст
+        COUNT = 0,          // количество
+        AGE                 // возраст
     };
     Q_ENUM(ActivityOperand)
 };

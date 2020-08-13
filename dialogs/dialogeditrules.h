@@ -5,6 +5,7 @@
 
 class FieldRule;
 class QGridLayout;
+class QListWidget;
 
 class DialogEditRules : public QDialog
 {
@@ -15,6 +16,7 @@ public:
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);
+    void loadContent();
 
 private:
     FieldRule* m_Rules;
@@ -22,6 +24,7 @@ private:
     QAction* actionUp;
     QAction* actionDown;
     QAction* actionEdit;
+    QListWidget* m_lwContent;
 };
 
 #endif // DIALOGEDITRULES_H

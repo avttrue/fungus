@@ -34,7 +34,8 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     toolBarControl->setMovable(false);
     toolBarControl->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    auto saContent = new QListWidget();
+    m_lwContent = new QListWidget();
+    m_lwContent->setIconSize({config->ButtonSize(), config->ButtonSize()});
 
     auto toolBarMain = new QToolBar();
     toolBarMain->setOrientation(Qt::Horizontal);
@@ -87,11 +88,14 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     toolBarControl->addWidget(new WidgetSpacer());
 
     vblForm->addWidget(toolBarControl);
-    vblForm->addWidget(saContent);
+    vblForm->addWidget(m_lwContent);
     vblForm->addWidget(toolBarMain);
 
-    installEventFilter(this);
+    loadContent();
+
     resize(config->EditRulesWindowWidth(), config->EditRulesWindowHeight());
+
+    installEventFilter(this);
 
     qDebug() << "DialogEditRules" << windowTitle() << "created";
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogEditRules" << windowTitle() << "destroyed"; });
@@ -117,29 +121,57 @@ bool DialogEditRules::FindPreviousCopy()
 
 bool DialogEditRules::eventFilter(QObject *object, QEvent *event)
 {
-    switch (event->type())
+    auto o = qobject_cast<DialogEditRules*>(object);
+    if(o)
     {
-    case QEvent::Wheel:
-    { return true; }
-    case QEvent::WindowStateChange:
-    {
-        if(windowState() == Qt::WindowMinimized ||
-                windowState() == Qt::WindowMaximized)
+        switch (event->type())
         {
-            setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
+        case QEvent::WindowStateChange:
+        {
+            if(windowState() == Qt::WindowMinimized ||
+                    windowState() == Qt::WindowMaximized)
+            {
+                setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
+                return true;
+            }
+            return false;
+        }
+        case QEvent::Hide:
+        case QEvent::Close:
+        {
+            if(object != this || isMinimized() || isMaximized()) return false;
+
+            config->setEditRulesWindowWidth(width());
+            config->setEditRulesWindowHeight(height());
             return true;
         }
-        return false;
+        default: { return false; }
+        }
     }
-    case QEvent::Hide:
-    case QEvent::Close:
+    else
     {
-        if(object != this || isMinimized() || isMaximized()) return false;
-
-        config->setEditRulesWindowWidth(width());
-        config->setEditRulesWindowHeight(height());
-        return true;
+        switch (event->type())
+        {
+        case QEvent::Wheel:
+        { return true; }
+        default: { return false; }
+        }
     }
-    default: { return false; }
+}
+
+void DialogEditRules::loadContent()
+{
+    if(!m_Rules)
+    {
+       qCritical() << "Rules is null";
+       return;
+    }
+
+    m_lwContent->clear();
+    for(auto a: m_Rules->getActivity())
+    {
+       auto item = new QListWidgetItem(QIcon(":/resources/img/running.svg"), ActivityElementToString(a), m_lwContent);
+       item->setData(Qt::FontRole, QFont("monospace", -1, QFont::Bold));
+       m_lwContent->addItem(item);
     }
 }

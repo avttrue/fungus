@@ -7,7 +7,7 @@ CellInformation::CellInformation(Cell *parent)
     : QObject(parent),
       m_Age(0),
       m_Generation(0),
-      m_State(Kernel::CellState::Dead)
+      m_State(Kernel::CellState::DEAD)
 { }
 
 void CellInformation::setState(Kernel::CellState value)

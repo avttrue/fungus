@@ -19,7 +19,7 @@ Cell::Cell(Field *parent)
 void Cell::clear()
 {
     m_NewInformation->setAge(0);
-    m_NewInformation->setState(Kernel::CellState::Dead);
+    m_NewInformation->setState(Kernel::CellState::DEAD);
     m_NewInformation->setGeneration(0);
 
     applyInfo();

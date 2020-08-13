@@ -38,28 +38,28 @@ void FieldRule::setDefault()
 {
     setObjectName(tr("Conway's LIFE game"));
 
-    m_Activity.append({ QVariant::fromValue(Kernel::ActivityType::Birth),
-                        QVariant::fromValue(Kernel::CellState::Dead),
-                        QVariant::fromValue(Kernel::ActivityTarget::Near),
-                        QVariant::fromValue(Kernel::CellState::Alive),
-                        QVariant::fromValue(Kernel::ActivityOperand::Count),
-                        QVariant::fromValue(Kernel::ActivityOperator::Equal),
+    m_Activity.append({ QVariant::fromValue(Kernel::ActivityType::BIRTH),
+                        QVariant::fromValue(Kernel::CellState::DEAD),
+                        QVariant::fromValue(Kernel::ActivityTarget::NEAR),
+                        QVariant::fromValue(Kernel::CellState::ALIVE),
+                        QVariant::fromValue(Kernel::ActivityOperand::COUNT),
+                        QVariant::fromValue(Kernel::ActivityOperator::EQUAL),
                         3});
 
-    m_Activity.append({ QVariant::fromValue(Kernel::ActivityType::Death),
-                        QVariant::fromValue(Kernel::CellState::Alive),
-                        QVariant::fromValue(Kernel::ActivityTarget::Near),
-                        QVariant::fromValue(Kernel::CellState::Alive),
-                        QVariant::fromValue(Kernel::ActivityOperand::Count),
-                        QVariant::fromValue(Kernel::ActivityOperator::Less),
+    m_Activity.append({ QVariant::fromValue(Kernel::ActivityType::DEATH),
+                        QVariant::fromValue(Kernel::CellState::ALIVE),
+                        QVariant::fromValue(Kernel::ActivityTarget::NEAR),
+                        QVariant::fromValue(Kernel::CellState::ALIVE),
+                        QVariant::fromValue(Kernel::ActivityOperand::COUNT),
+                        QVariant::fromValue(Kernel::ActivityOperator::LESS),
                         2});
 
-    m_Activity.append({ QVariant::fromValue(Kernel::ActivityType::Death),
-                        QVariant::fromValue(Kernel::CellState::Alive),
-                        QVariant::fromValue(Kernel::ActivityTarget::Near),
-                        QVariant::fromValue(Kernel::CellState::Alive),
-                        QVariant::fromValue(Kernel::ActivityOperand::Count),
-                        QVariant::fromValue(Kernel::ActivityOperator::More),
+    m_Activity.append({ QVariant::fromValue(Kernel::ActivityType::DEATH),
+                        QVariant::fromValue(Kernel::CellState::ALIVE),
+                        QVariant::fromValue(Kernel::ActivityTarget::NEAR),
+                        QVariant::fromValue(Kernel::CellState::ALIVE),
+                        QVariant::fromValue(Kernel::ActivityOperand::COUNT),
+                        QVariant::fromValue(Kernel::ActivityOperator::MORE),
                         3});
 }
 
