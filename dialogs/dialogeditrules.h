@@ -1,4 +1,4 @@
-#ifndef DIALOGEDITRULES_H
+﻿#ifndef DIALOGEDITRULES_H
 #define DIALOGEDITRULES_H
 
 #include <QDialog>
@@ -6,6 +6,7 @@
 class FieldRule;
 class QGridLayout;
 class QListWidget;
+class ClickableLabel;
 
 class DialogEditRules : public QDialog
 {
@@ -17,14 +18,24 @@ public:
 protected:
     bool eventFilter(QObject *object, QEvent *event);
     void loadContent();
+    void slotRowChanged(int value);
 
 private:
     FieldRule* m_Rules;
-    QAction* actionDelete;
-    QAction* actionUp;
-    QAction* actionDown;
-    QAction* actionEdit;
+    QAction* m_ActionDelete;
+    QAction* m_ActionUp;
+    QAction* m_ActionDown;
+    QAction* m_ActionEdit;
     QListWidget* m_lwContent;
+    ClickableLabel* m_RulesProperties;
+
+private Q_SLOTS:
+    void slotActionAdd();
+    void slotActionDelete();
+    void slotActionUp();
+    void slotActionDown();
+    void slotActionEdit();
+    void slotEditRules();
 };
 
 #endif // DIALOGEDITRULES_H

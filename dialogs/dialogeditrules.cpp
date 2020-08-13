@@ -34,8 +34,13 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     toolBarControl->setMovable(false);
     toolBarControl->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
+    m_RulesProperties = new ClickableLabel("");
+    m_RulesProperties->setFont(QFont("monospace", -1, QFont::Bold));
+    QObject::connect(m_RulesProperties, &ClickableLabel::signalClicked, this, &DialogEditRules::slotEditRules);
+
     m_lwContent = new QListWidget();
     m_lwContent->setIconSize({config->ButtonSize(), config->ButtonSize()});
+    QObject::connect(m_lwContent, &QListWidget::currentRowChanged, this, &DialogEditRules::slotRowChanged);
 
     auto toolBarMain = new QToolBar();
     toolBarMain->setOrientation(Qt::Horizontal);
@@ -57,36 +62,37 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
 
     auto actionAdd = new QAction(QIcon(":/resources/img/plus.svg"), tr("Add activity"));
     actionAdd->setAutoRepeat(false);
-    //QObject::connect(actionAdd, &QAction::triggered, );
+    QObject::connect(actionAdd, &QAction::triggered, this, &DialogEditRules::slotActionAdd);
 
-    actionDelete = new QAction(QIcon(":/resources/img/minus.svg"), tr("Delete activity"));
-    actionDelete->setAutoRepeat(false);
-    //QObject::connect(actionDelete, &QAction::triggered, );
-    actionDelete->setEnabled(false);
+    m_ActionDelete = new QAction(QIcon(":/resources/img/minus.svg"), tr("Delete activity"));
+    m_ActionDelete->setAutoRepeat(false);
+    QObject::connect(actionAdd, &QAction::triggered, this, &DialogEditRules::slotActionDelete);
+    m_ActionDelete->setEnabled(false);
 
-    actionEdit = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit activity"));
-    actionEdit->setAutoRepeat(false);
-    //QObject::connect(actionEdit, &QAction::triggered, );
-    actionEdit->setEnabled(false);
+    m_ActionEdit = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit activity"));
+    m_ActionEdit->setAutoRepeat(false);
+    QObject::connect(actionAdd, &QAction::triggered, this, &DialogEditRules::slotActionEdit);
+    m_ActionEdit->setEnabled(false);
 
-    actionUp = new QAction(QIcon(":/resources/img/up_arrow.svg"), tr("Up activity"));
-    actionUp->setAutoRepeat(false);
-    //QObject::connect(actionUp, &QAction::triggered, );
-    actionUp->setEnabled(false);
+    m_ActionUp = new QAction(QIcon(":/resources/img/up_arrow.svg"), tr("Up activity"));
+    m_ActionUp->setAutoRepeat(false);
+    QObject::connect(actionAdd, &QAction::triggered, this, &DialogEditRules::slotActionUp);
+    m_ActionUp->setEnabled(false);
 
-    actionDown = new QAction(QIcon(":/resources/img/down_arrow.svg"), tr("Down activity"));
-    actionDown->setAutoRepeat(false);
-    //QObject::connect(actionDown, &QAction::triggered, );
-    actionDown->setEnabled(false);
+    m_ActionDown = new QAction(QIcon(":/resources/img/down_arrow.svg"), tr("Down activity"));
+    m_ActionDown->setAutoRepeat(false);
+    QObject::connect(actionAdd, &QAction::triggered, this, &DialogEditRules::slotActionDown);
+    m_ActionDown->setEnabled(false);
 
     toolBarControl->addAction(actionAdd);
-    toolBarControl->addAction(actionDelete);
+    toolBarControl->addAction(m_ActionDelete);
     toolBarControl->addSeparator();
-    toolBarControl->addAction(actionEdit);
-    toolBarControl->addAction(actionUp);
-    toolBarControl->addAction(actionDown);
+    toolBarControl->addAction(m_ActionEdit);
+    toolBarControl->addAction(m_ActionUp);
+    toolBarControl->addAction(m_ActionDown);
     toolBarControl->addWidget(new WidgetSpacer());
 
+    vblForm->addWidget(m_RulesProperties);
     vblForm->addWidget(toolBarControl);
     vblForm->addWidget(m_lwContent);
     vblForm->addWidget(toolBarMain);
@@ -167,6 +173,13 @@ void DialogEditRules::loadContent()
        return;
     }
 
+    m_ActionUp->setDisabled(true);
+    m_ActionDown->setDisabled(true);
+    m_ActionDelete->setDisabled(true);
+    m_ActionEdit->setDisabled(true);
+
+    m_RulesProperties->setText(m_Rules->PropertiesToString());
+
     m_lwContent->clear();
     for(auto a: m_Rules->getActivity())
     {
@@ -174,4 +187,70 @@ void DialogEditRules::loadContent()
        item->setData(Qt::FontRole, QFont("monospace", -1, QFont::Bold));
        m_lwContent->addItem(item);
     }
+}
+
+void DialogEditRules::slotRowChanged(int value)
+{
+    if(value < 0)
+    {
+        m_ActionUp->setDisabled(true);
+        m_ActionDown->setDisabled(true);
+        m_ActionDelete->setDisabled(true);
+        m_ActionEdit->setDisabled(true);
+        return;
+    }
+    if(value == 0)
+    {
+        m_ActionUp->setDisabled(true);
+        m_ActionDown->setDisabled(m_lwContent->count() == 1);
+        m_ActionDelete->setDisabled(false);
+        m_ActionEdit->setDisabled(false);
+        return;
+    }
+    if(value == m_lwContent->count() - 1)
+    {
+        m_ActionUp->setDisabled(false);
+        m_ActionDown->setDisabled(true);
+        m_ActionDelete->setDisabled(false);
+        m_ActionEdit->setDisabled(false);
+        return;
+    }
+    if(value > 0 && value < m_lwContent->count() - 1)
+    {
+        m_ActionUp->setDisabled(false);
+        m_ActionDown->setDisabled(false);
+        m_ActionDelete->setDisabled(false);
+        m_ActionEdit->setDisabled(false);
+        return;
+    }
+}
+
+void DialogEditRules::slotActionAdd()
+{
+    // TODO: slotActionAdd
+}
+
+void DialogEditRules::slotActionDelete()
+{
+    // TODO: slotActionDelete
+}
+
+void DialogEditRules::slotActionUp()
+{
+    // TODO: slotActionUp
+}
+
+void DialogEditRules::slotActionDown()
+{
+    // TODO: slotActionDown
+}
+
+void DialogEditRules::slotActionEdit()
+{
+    // TODO: slotActionEdit
+}
+
+void DialogEditRules::slotEditRules()
+{
+    // TODO: slotEditRules
 }

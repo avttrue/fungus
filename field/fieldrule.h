@@ -23,6 +23,8 @@ public:
     void setCurseTime(int value); 
     bool isDeathEnd() const;
     void setDeathEnd(bool value);
+    QString PropertiesToString();
+    QString toString();
 
 protected:
     void setDefault();                      // Conway's LIFE game

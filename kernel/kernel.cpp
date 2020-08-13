@@ -60,12 +60,12 @@ QString ActivityElementToString(const QVector<QVariant> &activity)
      * ActivityOperand,
      * ActivityOperator,
      * [значение]}*/
-    auto activitytype = getNameKernelEnum("ActivityType", activity.at(0).toInt());
-    auto activitysstate = getNameKernelEnum("CellState", activity.at(1).toInt());
-    auto activitytarget = getNameKernelEnum("ActivityTarget", activity.at(2).toInt());
-    auto activitytstate = getNameKernelEnum("CellState", activity.at(3).toInt());
-    auto activityoperand = getNameKernelEnum("ActivityOperand", activity.at(4).toInt());
-    auto activityoperator = getNameKernelEnum("ActivityOperator", activity.at(5).toInt());
+    auto activitytype = QVariant::fromValue(activity.at(0)).toString();
+    auto activitysstate = QVariant::fromValue(activity.at(1)).toString();
+    auto activitytarget = QVariant::fromValue(activity.at(2)).toString();
+    auto activitytstate = QVariant::fromValue(activity.at(3)).toString();
+    auto activityoperand = QVariant::fromValue(activity.at(4)).toString();
+    auto activityoperator = QVariant::fromValue(activity.at(5)).toString();
     auto activityvalue = activity.at(6).toString();
 
     return QObject::tr("set %1 if cell is %2 and %3 is { %4 and %5 %6 %7 }").

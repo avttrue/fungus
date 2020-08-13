@@ -3,6 +3,7 @@
 #include "helper.h"
 
 #include <QDebug>
+#include <QMetaProperty>
 
 // TODO: Временное исполнение FieldRule
 FieldRule::FieldRule(Field *parent)
@@ -32,6 +33,28 @@ void FieldRule::setDeathEnd(bool value)
 {
     if (m_DeathEnd == value) return;
     m_DeathEnd = value;
+}
+
+QString FieldRule::PropertiesToString()
+{
+    QString result = tr("Name : %1").arg(objectName());
+    for(int i = metaObject()->propertyOffset(); i < metaObject()->propertyCount(); ++i)
+    {
+        auto p = metaObject()->property(i);
+        auto value = property(p.name());
+        if(QString(p.name()) != "Activity")
+          result.append(QString("\n%1 : %2").arg(p.name(), value.toString()));
+    }
+    return result;
+}
+
+QString FieldRule::toString()
+{
+   QString result = PropertiesToString();
+   result.append(tr("\nActivities:"));
+   for(auto a: m_Activity)
+      result.append(QString("\n%1").arg(ActivityElementToString(a)));
+   return result;
 }
 
 void FieldRule::setDefault()

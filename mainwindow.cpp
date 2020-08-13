@@ -79,6 +79,11 @@ void MainWindow::loadGui()
     m_ActionNewProject->setShortcut(Qt::CTRL + Qt::Key_N);
     m_ActionNewProject->setAutoRepeat(false);
 
+    m_ActionInfoRules = new QAction(QIcon(":/resources/img/info.svg"), tr("Information about rules"), this);
+    QObject::connect(m_ActionInfoRules, &QAction::triggered, this, &MainWindow::slotInfoRules);
+    m_ActionInfoRules->setAutoRepeat(false);
+    m_ActionInfoRules->setEnabled(false);
+
     m_ActionLoadProject = new QAction(QIcon(":/resources/img/open_folder.svg"), tr("Load project"), this);
     QObject::connect(m_ActionLoadProject, &QAction::triggered, this, &MainWindow::slotLoadProject);
     m_ActionLoadProject->setShortcut(Qt::CTRL + Qt::Key_O);
@@ -201,6 +206,7 @@ void MainWindow::loadGui()
     m_TbMain->setOrientation(Qt::Horizontal);
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     m_TbMain->addAction(m_ActionNewProject);
+    m_TbMain->addAction(m_ActionInfoRules);
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionLoadProject);
     m_TbMain->addAction(m_ActionSaveProject);
@@ -448,6 +454,7 @@ void MainWindow::setMainActionsEnable(bool value)
     m_ActionLoadProject->setEnabled(value);
     m_ActionEditRules->setEnabled(value);
 
+    m_ActionInfoRules->setEnabled(enable);
     m_ActionSaveProject->setEnabled(enable);
     m_ActionZoomInScene->setEnabled(enable);
     m_ActionZoomOutScene->setEnabled(enable);
@@ -1539,6 +1546,20 @@ void MainWindow::slotEditRules()
     // TODO: slotEditRules
 
     rule->deleteLater();
+}
+
+void MainWindow::slotInfoRules()
+{
+    auto scene = m_SceneView->getScene();
+    if(!scene)
+    {
+        m_ActionInfoRules->setDisabled(true);
+        qCritical() << __func__ << "Scene not created";
+        return;
+    }
+
+    // TODO: переделать диалог slotInfoRules
+    QMessageBox::information(this, tr("Information about rules"), m_Field->getRule()->toString());
 }
 
 void MainWindow::slotFieldAvCalc(qreal value)

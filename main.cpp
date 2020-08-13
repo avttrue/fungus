@@ -153,5 +153,5 @@ void consoleOut(QtMsgType msgtype, const QMessageLogContext &context, const QStr
     { type = "FTL:\t"; break; }
     }
     log_out << time << type << context.file << "\t" << context.line << "\t" << msg << Qt::endl;
-    log_out.flush();
+    //log_out.flush();
 }

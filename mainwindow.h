@@ -93,6 +93,7 @@ private:
     QAction* m_ActionSelectAll;
     QAction* m_ActionCreateSnapshot;
     QAction* m_ActionSelectSnapshot;
+    QAction* m_ActionInfoRules;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -137,6 +138,7 @@ private Q_SLOTS:
     void slotLoadProject();
     void slotSaveProject();
     void slotEditRules();
+    void slotInfoRules();
 
 Q_SIGNALS:
     void signalStopField();
