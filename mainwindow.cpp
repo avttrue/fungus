@@ -35,6 +35,7 @@
 #include <QClipboard>
 #include <QMetaProperty>
 #include <QRandomGenerator>
+#include <QToolTip>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -232,7 +233,7 @@ void MainWindow::loadGui()
     m_TbMain->addAction(actionExit);
     addToolBar(Qt::TopToolBarArea, m_TbMain);
 
-    // тулбар действий
+    // тулбар дополнительный
     m_TbActions = new QToolBar(this);
     m_TbActions->setMovable(false);
     m_TbActions->setOrientation(Qt::Vertical);
@@ -1494,6 +1495,10 @@ void MainWindow::slotCreateSnapshot()
     createSnapshot();
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
+
+    QMessageBox::information(this, tr("Snapshot"),
+                             tr("Snapshot of the field was created for %1 age.").
+                             arg(QString::number(m_Field->getInformation()->getAge())));
 }
 
 void MainWindow::slotSelectSnapshot()

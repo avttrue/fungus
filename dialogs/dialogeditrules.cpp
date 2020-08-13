@@ -187,6 +187,7 @@ void DialogEditRules::loadContent()
        item->setData(Qt::FontRole, QFont("monospace", -1, QFont::Bold));
        m_lwContent->addItem(item);
     }
+    if(m_lwContent->count()) m_lwContent->setCurrentRow(0);
 }
 
 void DialogEditRules::slotRowChanged(int value)
