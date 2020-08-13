@@ -78,6 +78,8 @@ DialogValuesList::DialogValuesList(QWidget* parent,
 
     resize(WINDOW_SIZE);
 
+    installEventFilter(this);
+
     qDebug() << "DialogValuesList" << windowTitle() << "created";
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogValuesList" << windowTitle() << "destroyed"; });
 }
@@ -407,27 +409,38 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
 
 bool DialogValuesList::eventFilter(QObject* object, QEvent *event)
 {
-    switch (event->type())
+    auto o = qobject_cast<DialogValuesList*>(object);
+    if(o)
     {
-    case QEvent::Wheel:
-    { return true; }
-    case QEvent::WindowStateChange:
-    {
-        if(windowState() == Qt::WindowMinimized ||
-                windowState() == Qt::WindowMaximized)
+        switch (event->type())
         {
-            setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
+        case QEvent::WindowStateChange:
+        {
+            if(windowState() == Qt::WindowMinimized ||
+                    windowState() == Qt::WindowMaximized)
+            {
+                setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
+                return true;
+            }
+            return false;
+        }
+        case QEvent::Close:
+        {
+            if(object != this || isMinimized() || isMaximized()) return false;
+            // сохранение размеров окна
             return true;
         }
-        return false;
+        default: { return false; }
+        }
     }
-    case QEvent::Close:
+    else
     {
-        if(object != this || isMinimized() || isMaximized()) return false;
-        // сохранение размеров окна
-        return true;
-    }
-    default: { return false; }
+        switch (event->type())
+        {
+        case QEvent::Wheel:
+        { return true; }
+        default: { return false; }
+        }
     }
 }
 
