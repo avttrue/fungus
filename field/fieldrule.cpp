@@ -13,26 +13,29 @@ FieldRule::FieldRule(Field *parent)
 {
     setDefault(); // TODO: setDefault убрать
 
-    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "CellRule" << objectName() <<"destroyed"; });
-    qDebug() << "CellRule" << objectName() << "created";
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldRule" << objectName() <<"destroyed"; });
+    qDebug() << "FieldRule" << objectName() << "created";
 }
 
 void FieldRule::setActivity(Activity value)
 {
     if (m_Activity == value) return;
     m_Activity = value;
+    qDebug() << "FieldRule" << objectName() << "changed";
 }
 
 void FieldRule::setCurseTime(int value)
 {
     if (m_CurseTime == value) return;
     m_CurseTime = value;
+    qDebug() << "FieldRule" << objectName() << "CurseTime changed:" << value;
 }
 
 void FieldRule::setDeathEnd(bool value)
 {
     if (m_DeathEnd == value) return;
     m_DeathEnd = value;
+    qDebug() << "FieldRule" << objectName() << "DeathEnd changed:" << value;
 }
 
 QString FieldRule::PropertiesToString()

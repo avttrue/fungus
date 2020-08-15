@@ -7,6 +7,7 @@ class FieldRule;
 class QGridLayout;
 class QListWidget;
 class ClickableLabel;
+class QListWidgetItem;
 
 class DialogEditRules : public QDialog
 {
@@ -19,9 +20,10 @@ protected:
     bool eventFilter(QObject *object, QEvent *event);
     void loadContent();
     void slotRowChanged(int value);
+    void editActivity(int index);
 
 private:
-    FieldRule* m_Rules;
+    FieldRule* m_Rule;
     QAction* m_ActionDelete;
     QAction* m_ActionUp;
     QAction* m_ActionDown;
@@ -36,6 +38,7 @@ private Q_SLOTS:
     void slotActionDown();
     void slotActionEdit();
     void slotEditRules();
+    void slotItemDoubleClicked(QListWidgetItem *item);
 };
 
 #endif // DIALOGEDITRULES_H

@@ -68,7 +68,7 @@ QString ActivityElementToString(const QVector<QVariant> &activity)
     auto activityoperator = QVariant::fromValue(activity.at(5)).toString();
     auto activityvalue = activity.at(6).toString();
 
-    return QObject::tr("set %1 if cell is %2 and %3 is { %4 and %5 %6 %7 }").
+    return QObject::tr("set %1 if cell is %2 and %3 is { %4 %5 %6 %7 }").
             arg(activitytype,
                 activitysstate,
                 activitytarget,

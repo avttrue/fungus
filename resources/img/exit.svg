@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Creator: CorelDRAW X6 -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -9,64 +7,103 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xml:space="preserve"
-   width="64"
-   height="64"
+   inkscape:version="1.0 (1.0+r73+1)"
+   sodipodi:docname="cross-hd.svg"
+   id="svg29"
+   style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
    version="1.1"
-   style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
-   id="svg12"
-   sodipodi:docname="exit.svg"
-   inkscape:version="0.92.4 (unknown)"><metadata
-   id="metadata16"><rdf:RDF><cc:Work
-       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><metadata
-   id="metadata823"><rdf:RDF><cc:Work
-       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><sodipodi:namedview
-   pagecolor="#ffffff"
-   bordercolor="#666666"
-   borderopacity="1"
-   objecttolerance="10"
-   gridtolerance="10"
-   guidetolerance="10"
-   inkscape:pageopacity="0"
-   inkscape:pageshadow="2"
-   inkscape:window-width="1920"
-   inkscape:window-height="1010"
-   id="namedview14"
-   showgrid="false"
-   inkscape:zoom="7.552"
-   inkscape:cx="17.190481"
-   inkscape:cy="45.227987"
-   inkscape:window-x="0"
-   inkscape:window-y="0"
-   inkscape:window-maximized="1"
-   inkscape:current-layer="svg12" />
- <defs
-   id="defs4">
-  <style
-   type="text/css"
-   id="style2">
+   height="64"
+   width="64"
+   xml:space="preserve"><metadata
+     id="metadata33"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><sodipodi:namedview
+     inkscape:current-layer="svg29"
+     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:cy="37.204582"
+     inkscape:cx="47.999674"
+     inkscape:zoom="9.4469466"
+     showgrid="false"
+     id="namedview31"
+     inkscape:window-height="1007"
+     inkscape:window-width="1920"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" /><defs
+     id="defs19"><style
+       id="style2"
+       type="text/css">
    <![CDATA[
-    .fil0 {fill:#DB2C00}
-    .fil1 {fill:#FF3300}
+    .str0 {stroke:#801A00;stroke-width:5}
+    .fil2 {fill:url(#id0)}
+    .fil0 {fill:url(#id1)}
+    .fil1 {fill:url(#id2)}
    ]]>
-  </style>
- </defs>
- <g
-   id="Layer_x0020_1"
-   transform="matrix(0.13043478,0,0,0.13043478,-0.60869565,-0.60869565)">
-  <metadata
-   id="CorelCorpID_0Corel-Layer" />
-  <polygon
-   class="fil0"
-   points="480,383 383,480 250,347 250,153 383,20 480,117 347,250 "
-   id="polygon7"
-   style="fill:#db2c00" />
-  <polygon
-   class="fil1"
-   points="20,383 117,480 250,347 250,153 117,20 20,117 153,250 "
-   id="polygon9"
-   style="fill:#ff3300" />
- </g>
-</svg>
+  </style><linearGradient
+       y2="190.46"
+       x2="250"
+       y1="452.63"
+       x1="250"
+       gradientUnits="userSpaceOnUse"
+       id="id0">
+   <stop
+   id="stop4"
+   style="stop-color:#C82800"
+   offset="0" />
+   <stop
+   id="stop6"
+   style="stop-color:#FF3300"
+   offset="1" />
+  </linearGradient><linearGradient
+       y2="62.301"
+       x2="249.999"
+       y1="447.697"
+       x1="249.999"
+       gradientUnits="userSpaceOnUse"
+       id="id1">
+   <stop
+   id="stop9"
+   style="stop-color:#921D00"
+   offset="0" />
+   <stop
+   id="stop11"
+   style="stop-color:#FF3300"
+   offset="1" />
+  </linearGradient><linearGradient
+       y2="211.3"
+       x2="249.998"
+       y1="73.702"
+       x1="249.998"
+       gradientUnits="userSpaceOnUse"
+       id="id2">
+   <stop
+   id="stop14"
+   style="stop-color:#DB2C00"
+   offset="0" />
+   <stop
+   id="stop16"
+   style="stop-color:#FF6B46"
+   offset="1" />
+  </linearGradient></defs><g
+     transform="matrix(0.12846019,0,0,0.12845982,-0.11502844,-0.11502235)"
+     id="Layer_x0020_1"><metadata
+       id="CorelCorpID_0Corel-Layer" /><polygon
+       style="fill:url(#id1)"
+       id="polygon22"
+       points="480,370 370,480 250,360 130,480 20,370 140,250 20,130 130,20 250,140 370,20 480,130 360,250 "
+       class="fil0 str0" /><polygon
+       style="fill:url(#id2)"
+       id="polygon24"
+       points="130,42 250,162 370,42 458,130 338,250 162,250 42,130 "
+       class="fil1" /><path
+       style="fill:url(#id0)"
+       id="path26"
+       d="M 375,212 338,250 458,370 370,458 250,338 130,458 42,370 162,250 125,212 c 38,-17 80,-27 125,-27 45,0 87,10 125,27 z"
+       class="fil2" /></g></svg>
