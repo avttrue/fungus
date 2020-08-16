@@ -180,6 +180,7 @@ void DialogEditRules::loadContent()
         return;
     }
 
+    auto row = m_lwContent->currentRow();
     m_ActionUp->setDisabled(true);
     m_ActionDown->setDisabled(true);
     m_ActionDelete->setDisabled(true);
@@ -188,13 +189,17 @@ void DialogEditRules::loadContent()
     m_RulesProperties->setText(m_Rule->PropertiesToString());
 
     m_lwContent->clear();
+    auto icon = QIcon(":/resources/img/running.svg");
     for(auto a: m_Rule->getActivity())
     {
-        auto item = new QListWidgetItem(QIcon(":/resources/img/running.svg"), ActivityElementToString(a), m_lwContent);
+        auto item = new QListWidgetItem(icon, ActivityElementToString(a), m_lwContent);
         item->setData(Qt::FontRole, QFont("monospace", -1, QFont::Bold));
         m_lwContent->addItem(item);
     }
-    if(m_lwContent->count()) m_lwContent->setCurrentRow(0);
+
+    auto count = m_lwContent->count();
+    if(row > -1 && row < count) m_lwContent->setCurrentRow(row);
+    else if(count) m_lwContent->setCurrentRow(0);
 }
 
 void DialogEditRules::slotRowChanged(int value)
@@ -314,22 +319,43 @@ void DialogEditRules::slotActionDelete()
 
 void DialogEditRules::slotActionUp()
 {
-    // TODO: slotActionUp
+    auto row = m_lwContent->currentRow();
+    if(row <= 0) return;
+
+    auto act = m_Rule->getActivity();
+    act.swapItemsAt(row, row - 1);
+    m_Rule->setActivity(act);
+
+    auto lwi = m_lwContent->takeItem(row);
+    m_lwContent->insertItem(row - 1, lwi);
+    m_lwContent->setCurrentRow(row - 1);
 }
 
 void DialogEditRules::slotActionDown()
 {
-    // TODO: slotActionDown
+    auto row = m_lwContent->currentRow();
+    if(row >= m_lwContent->count()) return;
+
+    auto act = m_Rule->getActivity();
+    act.swapItemsAt(row, row + 1);
+    m_Rule->setActivity(act);
+
+    auto lwi = m_lwContent->takeItem(row);
+    m_lwContent->insertItem(row + 1, lwi);
+    m_lwContent->setCurrentRow(row + 1);
 }
 
-void DialogEditRules::slotActionEdit() { editActivity(m_lwContent->currentRow()); }
+void DialogEditRules::slotActionEdit()
+{
+    editActivity(m_lwContent->currentRow());
+}
 
 void DialogEditRules::slotEditRules()
 {
     const QVector<QString> keys = {
         tr("00#_Rule name"), "01#_",
         tr("02#_The time during which the cell will remain cursed (always: -1)"), tr("03#_value"),
-        tr("04#_Death completes the rule calculation"), tr("05#_switch on"),
+        tr("04#_Death state completes the rule calculation"), tr("05#_switch on"),
     };
 
     QMap<QString, DialogValue> map =
