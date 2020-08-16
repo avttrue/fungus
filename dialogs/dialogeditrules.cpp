@@ -62,26 +62,26 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     actionUpdate->setAutoRepeat(false);
     QObject::connect(actionUpdate, &QAction::triggered, this, &DialogEditRules::loadContent);
 
-    auto actionAdd = new QAction(QIcon(":/resources/img/plus.svg"), tr("Add activity"));
+    auto actionAdd = new QAction(QIcon(":/resources/img/plus.svg"), tr("Add activity element"));
     actionAdd->setAutoRepeat(false);
     QObject::connect(actionAdd, &QAction::triggered, this, &DialogEditRules::slotActionAdd);
 
-    m_ActionDelete = new QAction(QIcon(":/resources/img/minus.svg"), tr("Delete activity"));
+    m_ActionDelete = new QAction(QIcon(":/resources/img/minus.svg"), tr("Delete activity element"));
     m_ActionDelete->setAutoRepeat(false);
     QObject::connect(m_ActionDelete, &QAction::triggered, this, &DialogEditRules::slotActionDelete);
     m_ActionDelete->setEnabled(false);
 
-    m_ActionEdit = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit activity"));
+    m_ActionEdit = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit activity element"));
     m_ActionEdit->setAutoRepeat(false);
     QObject::connect(m_ActionEdit, &QAction::triggered, this, &DialogEditRules::slotActionEdit);
     m_ActionEdit->setEnabled(false);
 
-    m_ActionUp = new QAction(QIcon(":/resources/img/up_arrow.svg"), tr("Up activity"));
+    m_ActionUp = new QAction(QIcon(":/resources/img/up_arrow.svg"), tr("Up activity element"));
     m_ActionUp->setAutoRepeat(false);
     QObject::connect(m_ActionUp, &QAction::triggered, this, &DialogEditRules::slotActionUp);
     m_ActionUp->setEnabled(false);
 
-    m_ActionDown = new QAction(QIcon(":/resources/img/down_arrow.svg"), tr("Down activity"));
+    m_ActionDown = new QAction(QIcon(":/resources/img/down_arrow.svg"), tr("Down activity element"));
     m_ActionDown->setAutoRepeat(false);
     QObject::connect(m_ActionDown, &QAction::triggered, this, &DialogEditRules::slotActionDown);
     m_ActionDown->setEnabled(false);
@@ -172,6 +172,14 @@ bool DialogEditRules::eventFilter(QObject *object, QEvent *event)
     }
 }
 
+void DialogEditRules::addContentItem(const QString &text)
+{
+    auto icon = QIcon(":/resources/img/running.svg");
+    auto item = new QListWidgetItem(icon, text, m_lwContent);
+    item->setData(Qt::FontRole, QFont("monospace", -1, QFont::Bold));
+    m_lwContent->addItem(item);
+}
+
 void DialogEditRules::loadContent()
 {
     if(!m_Rule)
@@ -189,13 +197,8 @@ void DialogEditRules::loadContent()
     m_RulesProperties->setText(m_Rule->PropertiesToString());
 
     m_lwContent->clear();
-    auto icon = QIcon(":/resources/img/running.svg");
     for(auto a: m_Rule->getActivity())
-    {
-        auto item = new QListWidgetItem(icon, ActivityElementToString(a), m_lwContent);
-        item->setData(Qt::FontRole, QFont("monospace", -1, QFont::Bold));
-        m_lwContent->addItem(item);
-    }
+        addContentItem(ActivityElementToString(a));
 
     auto count = m_lwContent->count();
     if(row > -1 && row < count) m_lwContent->setCurrentRow(row);
@@ -238,22 +241,17 @@ void DialogEditRules::slotRowChanged(int value)
     }
 }
 
-void DialogEditRules::editActivity(int index)
+bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
 {
-    /* {ActivityType,
+    /*
+     * {ActivityType,
      * SelfState,
      * ActivityTarget,
      * TargetState,
      * ActivityOperand,
      * ActivityOperator,
-     * [значение]}*/
-
-    auto element = m_Rule->getActivity().at(index);
-    if(element.count() != 7)
-    {
-        qCritical() << "Rule activity element #" << index << "length is incorrect:" << element.count();
-        return;
-    }
+     * [значение]}
+     */
 
     auto atypelist = listKernelEnum("ActivityType");
     auto statelist = listKernelEnum("CellState");
@@ -270,30 +268,43 @@ void DialogEditRules::editActivity(int index)
     };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
-     {keys.at(1), {QVariant::StringList,  QVariant::fromValue(element.at(0)), 0, atypelist, DialogValueMode::OneFromList}},
+     {keys.at(1), {QVariant::StringList, QVariant::fromValue(element->at(0)), 0, atypelist, DialogValueMode::OneFromList}},
      {keys.at(2), {}},
-     {keys.at(3), {QVariant::StringList,  QVariant::fromValue(element.at(1)), 0, statelist, DialogValueMode::OneFromList}},
+     {keys.at(3), {QVariant::StringList, QVariant::fromValue(element->at(1)), 0, statelist, DialogValueMode::OneFromList}},
      {keys.at(4), {}},
-     {keys.at(5), {QVariant::StringList,  QVariant::fromValue(element.at(2)), 0, atargetlist, DialogValueMode::OneFromList}},
+     {keys.at(5), {QVariant::StringList, QVariant::fromValue(element->at(2)), 0, atargetlist, DialogValueMode::OneFromList}},
      {keys.at(6), {}},
-     {keys.at(7), {QVariant::StringList,  QVariant::fromValue(element.at(3)), 0, statelist, DialogValueMode::OneFromList}},
-     {keys.at(8), {QVariant::StringList,  QVariant::fromValue(element.at(4)), 0, aoperand, DialogValueMode::OneFromList}},
-     {keys.at(9), {QVariant::StringList,  QVariant::fromValue(element.at(5)), 0, aoperator, DialogValueMode::OneFromList}},
-     {keys.at(10), {QVariant::Int, element.at(6).toInt(), 0, 0}},
+     {keys.at(7), {QVariant::StringList, QVariant::fromValue(element->at(3)), 0, statelist, DialogValueMode::OneFromList}},
+     {keys.at(8), {QVariant::StringList, QVariant::fromValue(element->at(4)), 0, aoperand, DialogValueMode::OneFromList}},
+     {keys.at(9), {QVariant::StringList, QVariant::fromValue(element->at(5)), 0, aoperator, DialogValueMode::OneFromList}},
+     {keys.at(10), {QVariant::Int, element->at(6).toInt(), 0, 0}},
      {keys.at(11), {}},
     };
 
-    auto dvl = new DialogValuesList(this, ":/resources/img/edit.svg",
-                                    tr("Rule activity element #%1").arg(QString::number(index + 1)), &map);
-    if(!dvl->exec()) return;
+    auto dvl = new DialogValuesList(this, ":/resources/img/edit.svg", tr("Activity element"), &map);
+    if(!dvl->exec()) return false;
 
-    element[0].setValue(static_cast<Kernel::ActivityType>(atypelist.indexOf(map.value(keys.at(1)).value.toString())));
-    element[1].setValue(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(3)).value.toString())));
-    element[2].setValue(static_cast<Kernel::ActivityTarget>(atargetlist.indexOf(map.value(keys.at(5)).value.toString())));
-    element[3].setValue(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(7)).value.toString())));
-    element[4].setValue(static_cast<Kernel::ActivityOperand>(aoperand.indexOf(map.value(keys.at(8)).value.toString())));
-    element[5].setValue(static_cast<Kernel::ActivityOperator>(aoperator.indexOf(map.value(keys.at(9)).value.toString())));
-    element[6].setValue(map.value(keys.at(10)).value.toInt());
+    element->data()[0].setValue(static_cast<Kernel::ActivityType>(atypelist.indexOf(map.value(keys.at(1)).value.toString())));
+    element->data()[1].setValue(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(3)).value.toString())));
+    element->data()[2].setValue(static_cast<Kernel::ActivityTarget>(atargetlist.indexOf(map.value(keys.at(5)).value.toString())));
+    element->data()[3].setValue(static_cast<Kernel::CellState>(statelist.indexOf(map.value(keys.at(7)).value.toString())));
+    element->data()[4].setValue(static_cast<Kernel::ActivityOperand>(aoperand.indexOf(map.value(keys.at(8)).value.toString())));
+    element->data()[5].setValue(static_cast<Kernel::ActivityOperator>(aoperator.indexOf(map.value(keys.at(9)).value.toString())));
+    element->data()[6].setValue(map.value(keys.at(10)).value.toInt());
+    return true;
+}
+
+void DialogEditRules::editActivity(int index)
+{
+    auto element = m_Rule->getActivity().at(index);
+    if(element.count() != 7)
+    {
+        qCritical() << "Rule activity element #" << index << "length is incorrect:" << element.count();
+        return;
+    }
+
+    if(!editActivityElement(&element)) return;
+
     auto act = m_Rule->getActivity();
     act[index] = element;
     m_Rule->setActivity(act);
@@ -302,7 +313,24 @@ void DialogEditRules::editActivity(int index)
 
 void DialogEditRules::slotActionAdd()
 {
-    // TODO: slotActionAdd
+    // глупый дефолт, ну да ладно
+    // TODO: slotActionAdd - придумать адекватный дефолт
+    QVector<QVariant> element = { QVariant::fromValue(Kernel::ActivityType::BIRTH),
+                                  QVariant::fromValue(Kernel::CellState::DEAD),
+                                  QVariant::fromValue(Kernel::ActivityTarget::NEAR),
+                                  QVariant::fromValue(Kernel::CellState::DEAD),
+                                  QVariant::fromValue(Kernel::ActivityOperand::COUNT),
+                                  QVariant::fromValue(Kernel::ActivityOperator::LESS),
+                                  0};
+
+    if(!editActivityElement(&element)) return;
+
+    auto act = m_Rule->getActivity();
+    act.append(element);
+    m_Rule->setActivity(act);
+
+    addContentItem(ActivityElementToString(element));
+    m_lwContent->setCurrentRow(m_lwContent->count() -1);
 }
 
 void DialogEditRules::slotActionDelete()

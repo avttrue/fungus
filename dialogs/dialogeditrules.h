@@ -18,8 +18,10 @@ public:
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);
+    void addContentItem(const QString& text);
     void loadContent();
     void slotRowChanged(int value);
+    bool editActivityElement(QVector<QVariant>* element);
     void editActivity(int index);
 
 private:

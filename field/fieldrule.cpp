@@ -89,6 +89,6 @@ void FieldRule::setDefault()
                         3});
 }
 
-Activity FieldRule::getActivity() const { return m_Activity; }
+Activity FieldRule::getActivity() const { return m_Activity; } // TODO: FieldRule::getActivity() - возвращать указатель
 int FieldRule::getCurseTime() const { return m_CurseTime; }
 bool FieldRule::isDeathEnd() const { return m_DeathEnd; }
