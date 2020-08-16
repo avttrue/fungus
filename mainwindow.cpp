@@ -36,6 +36,7 @@
 #include <QMetaProperty>
 #include <QRandomGenerator>
 #include <QToolTip>
+#include <QMenu>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -80,11 +81,6 @@ void MainWindow::loadGui()
     m_ActionNewProject->setShortcut(Qt::CTRL + Qt::Key_N);
     m_ActionNewProject->setAutoRepeat(false);
 
-    m_ActionInfoRules = new QAction(QIcon(":/resources/img/info.svg"), tr("Information about rules"), this);
-    QObject::connect(m_ActionInfoRules, &QAction::triggered, this, &MainWindow::slotInfoRules);
-    m_ActionInfoRules->setAutoRepeat(false);
-    m_ActionInfoRules->setEnabled(false);
-
     m_ActionLoadProject = new QAction(QIcon(":/resources/img/open_folder.svg"), tr("Load project"), this);
     QObject::connect(m_ActionLoadProject, &QAction::triggered, this, &MainWindow::slotLoadProject);
     m_ActionLoadProject->setShortcut(Qt::CTRL + Qt::Key_O);
@@ -96,9 +92,26 @@ void MainWindow::loadGui()
     m_ActionSaveProject->setAutoRepeat(false);
     m_ActionSaveProject->setEnabled(false);
 
-    m_ActionEditRules = new QAction(QIcon(":/resources/img/rule.svg"), tr("Edit rules"), this);
-    QObject::connect(m_ActionEditRules, &QAction::triggered, this, &MainWindow::slotEditRules);
-    m_ActionEditRules->setAutoRepeat(false);
+    m_ActionRulesMenu = new QAction(QIcon(":/resources/img/rule.svg"), tr("Rules"), this);
+    QObject::connect(m_ActionRulesMenu, &QAction::triggered, this, &MainWindow::slotRulesMenu);
+    m_ActionRulesMenu->setAutoRepeat(false);
+
+    m_ActionNewRule = new QAction(QIcon(":/resources/img/asterisk.svg"), tr("New rule"), this);
+    QObject::connect(m_ActionNewRule, &QAction::triggered, this, &MainWindow::slotNewRule);
+    m_ActionNewRule->setAutoRepeat(false);
+
+    m_ActionLoadEditRule = new QAction(QIcon(":/resources/img/open_folder.svg"), tr("Load and edit rule"), this);
+    QObject::connect(m_ActionLoadEditRule, &QAction::triggered, this, &MainWindow::slotLoadEditRule);
+    m_ActionLoadEditRule->setAutoRepeat(false);
+
+    m_ActionImportRule = new QAction(QIcon(":/resources/img/check.svg"), tr("Import rule"), this);
+    QObject::connect(m_ActionImportRule, &QAction::triggered, this, &MainWindow::slotImportRule);
+    m_ActionImportRule->setAutoRepeat(false);
+
+    m_ActionInfoRule = new QAction(QIcon(":/resources/img/info.svg"), tr("About current rule"), this);
+    QObject::connect(m_ActionInfoRule, &QAction::triggered, this, &MainWindow::slotInfoRule);
+    m_ActionInfoRule->setAutoRepeat(false);
+    m_ActionInfoRule->setEnabled(false);
 
     m_ActionZoomInScene = new QAction(QIcon(":/resources/img/zoom_in.svg"), tr("Zoom IN"), this);
     QObject::connect(m_ActionZoomInScene, &QAction::triggered, this, &MainWindow::slotSceneZoomIn);
@@ -207,7 +220,6 @@ void MainWindow::loadGui()
     m_TbMain->setOrientation(Qt::Horizontal);
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     m_TbMain->addAction(m_ActionNewProject);
-    m_TbMain->addAction(m_ActionInfoRules);
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionLoadProject);
     m_TbMain->addAction(m_ActionSaveProject);
@@ -239,7 +251,7 @@ void MainWindow::loadGui()
     m_TbActions->setOrientation(Qt::Vertical);
     m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    m_TbActions->addAction(m_ActionEditRules);
+    m_TbActions->addAction(m_ActionRulesMenu);
     m_TbActions->addSeparator();
     m_TbActions->addAction(m_ActionSaveCellsToClipbord);
     m_TbActions->addAction(m_ActionLoadCellsFromClipbord);
@@ -453,9 +465,9 @@ void MainWindow::setMainActionsEnable(bool value)
 
     m_ActionNewProject->setEnabled(value);
     m_ActionLoadProject->setEnabled(value);
-    m_ActionEditRules->setEnabled(value);
+    m_ActionRulesMenu->setEnabled(value);
 
-    m_ActionInfoRules->setEnabled(enable);
+    m_ActionInfoRule->setEnabled(enable);
     m_ActionSaveProject->setEnabled(enable);
     m_ActionZoomInScene->setEnabled(enable);
     m_ActionZoomOutScene->setEnabled(enable);
@@ -1540,7 +1552,7 @@ void MainWindow::slotSaveProject()
     QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
 }
 
-void MainWindow::slotEditRules()
+void MainWindow::slotNewRule()
 {
     auto rule = new FieldRule();
     QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
@@ -1548,23 +1560,50 @@ void MainWindow::slotEditRules()
     if(DialogEditRules::FindPreviousCopy()) return;
     auto der = new DialogEditRules(this, rule);
     if(!der->exec()) { rule->deleteLater(); return; }
-    // TODO: slotEditRules
+    // TODO: slotNewRule
 
     rule->deleteLater();
 }
 
-void MainWindow::slotInfoRules()
+void MainWindow::slotLoadEditRule()
+{
+   QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+   // TODO: slotLoadEditRule
+}
+
+void MainWindow::slotRulesMenu()
+{
+    auto *menu = new QMenu;
+    menu->addAction(new MenuCaption(menu, tr("Rules")));
+    menu->addAction(m_ActionInfoRule);
+    menu->addSeparator();
+    menu->addAction(m_ActionNewRule);
+    menu->addAction(m_ActionLoadEditRule);
+    menu->addAction(m_ActionImportRule);
+
+    auto w = m_TbActions->widgetForAction(m_ActionRulesMenu);
+    auto pos = w->mapToGlobal(QPoint(config->ButtonSize(), 0));
+    menu->exec(pos);
+}
+
+void MainWindow::slotInfoRule()
 {
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
-        m_ActionInfoRules->setDisabled(true);
+        m_ActionInfoRule->setDisabled(true);
         qCritical() << __func__ << "Scene not created";
         return;
     }
 
     // TODO: переделать диалог slotInfoRules
     QMessageBox::information(this, tr("Information about rules"), m_Field->getRule()->toString());
+}
+
+void MainWindow::slotImportRule()
+{
+    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+    // TODO: slotImportRule
 }
 
 void MainWindow::slotFieldAvCalc(qreal value)

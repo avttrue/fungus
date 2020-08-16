@@ -76,7 +76,11 @@ private:
     QAction* m_ActionZoomOutScene;
     QAction* m_ActionZoomUndoScene;
     QAction* m_ActionStepStop;
-    QAction* m_ActionEditRules;
+    QAction* m_ActionRulesMenu;
+    QAction* m_ActionNewRule;
+    QAction* m_ActionImportRule;
+    QAction* m_ActionLoadEditRule;
+    QAction* m_ActionInfoRule;
     QAction* m_ActionSaveProject;
     QAction* m_ActionLoadProject;
     QAction* m_ActionRun;
@@ -93,7 +97,6 @@ private:
     QAction* m_ActionSelectAll;
     QAction* m_ActionCreateSnapshot;
     QAction* m_ActionSelectSnapshot;
-    QAction* m_ActionInfoRules;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;
@@ -137,8 +140,11 @@ private Q_SLOTS:
     void slotSelectSnapshot();
     void slotLoadProject();
     void slotSaveProject();
-    void slotEditRules();
-    void slotInfoRules();
+    void slotNewRule();
+    void slotLoadEditRule();
+    void slotRulesMenu();
+    void slotInfoRule();
+    void slotImportRule();
 
 Q_SIGNALS:
     void signalStopField();

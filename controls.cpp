@@ -65,8 +65,6 @@ bool findPreviousWindowCopy(const QString& caption)
     return false;
 }
 
-
-
 ClickableLabel::ClickableLabel(const QString &text, QWidget *parent): QLabel(text, parent)
 {
     setFrameShape(QFrame::Panel);
@@ -92,4 +90,13 @@ void ClickableLabel::leaveEvent(QEvent *event)
     Q_UNUSED(event);
     setFrameShape(QFrame::Panel);
     setFrameShadow(QFrame::Sunken);
+}
+
+MenuCaption::MenuCaption(QObject *parent, const QString &caption)
+    : QWidgetAction(parent)
+{
+    auto labelCaption = new QLabel(QString("<center><h3>%1</h3></center>").arg(caption));
+    labelCaption->setStyleSheet(MENU_CAPTION_STYLE);
+    labelCaption->setAlignment(Qt::AlignHCenter);
+    setDefaultWidget(labelCaption);
 }
