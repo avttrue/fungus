@@ -37,6 +37,7 @@
 #include <QRandomGenerator>
 #include <QToolTip>
 #include <QMenu>
+#include <QToolButton>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -92,10 +93,6 @@ void MainWindow::loadGui()
     m_ActionSaveProject->setAutoRepeat(false);
     m_ActionSaveProject->setEnabled(false);
 
-    m_ActionRulesMenu = new QAction(QIcon(":/resources/img/rule.svg"), tr("Rules"), this);
-    QObject::connect(m_ActionRulesMenu, &QAction::triggered, this, &MainWindow::slotRulesMenu);
-    m_ActionRulesMenu->setAutoRepeat(false);
-
     m_ActionNewRule = new QAction(QIcon(":/resources/img/asterisk.svg"), tr("New rule"), this);
     QObject::connect(m_ActionNewRule, &QAction::triggered, this, &MainWindow::slotNewRule);
     m_ActionNewRule->setAutoRepeat(false);
@@ -107,8 +104,9 @@ void MainWindow::loadGui()
     m_ActionImportRule = new QAction(QIcon(":/resources/img/check.svg"), tr("Import rule"), this);
     QObject::connect(m_ActionImportRule, &QAction::triggered, this, &MainWindow::slotImportRule);
     m_ActionImportRule->setAutoRepeat(false);
+    m_ActionImportRule->setEnabled(false);
 
-    m_ActionInfoRule = new QAction(QIcon(":/resources/img/info.svg"), tr("About current rule"), this);
+    m_ActionInfoRule = new QAction(QIcon(":/resources/img/info.svg"), tr("Current rule"), this);
     QObject::connect(m_ActionInfoRule, &QAction::triggered, this, &MainWindow::slotInfoRule);
     m_ActionInfoRule->setAutoRepeat(false);
     m_ActionInfoRule->setEnabled(false);
@@ -214,6 +212,20 @@ void MainWindow::loadGui()
     m_ActionSelectSnapshot->setAutoRepeat(false);
     m_ActionSelectSnapshot->setEnabled(false);
 
+    m_BtnMenuRules = new QToolButton(this);
+    m_BtnMenuRules->setToolTip(tr("Rules"));
+    m_BtnMenuRules->setIcon(QIcon(":/resources/img/rule.svg"));
+    m_BtnMenuRules->setPopupMode(QToolButton::InstantPopup);
+    m_BtnMenuRules->setArrowType(Qt::NoArrow);
+    auto menuRules = new QMenu(this);
+    menuRules->addAction(new MenuCaption(menuRules, tr("Rules")));
+    menuRules->addAction(m_ActionInfoRule);
+    menuRules->addSeparator();
+    menuRules->addAction(m_ActionNewRule);
+    menuRules->addAction(m_ActionLoadEditRule);
+    menuRules->addAction(m_ActionImportRule);
+    m_BtnMenuRules->setMenu(menuRules);
+
     // тулбар основной
     m_TbMain = new QToolBar(this);
     m_TbMain->setMovable(false);
@@ -251,7 +263,7 @@ void MainWindow::loadGui()
     m_TbActions->setOrientation(Qt::Vertical);
     m_TbActions->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
-    m_TbActions->addAction(m_ActionRulesMenu);
+    m_TbActions->addWidget(m_BtnMenuRules);
     m_TbActions->addSeparator();
     m_TbActions->addAction(m_ActionSaveCellsToClipbord);
     m_TbActions->addAction(m_ActionLoadCellsFromClipbord);
@@ -315,9 +327,6 @@ void MainWindow::loadGui()
 
     m_LabelSelectedCell = new ClickableLabel("-", this);
     m_LabelSelectedCell->setToolTip(tr("Click to show cell"));
-    //    auto palette = m_LabelSelectedCell->palette();
-    //    palette.setColor(m_LabelSelectedCell->foregroundRole(), palette.color(QPalette::Link));
-    //    m_LabelSelectedCell->setPalette(palette);
     QObject::connect(m_LabelSelectedCell, &ClickableLabel::signalClicked, this, &MainWindow::slotLabelSelectedCellClick);
     statusBar->addWidget(m_LabelSelectedCell);
     statusBar->addWidget(new SeparatorV(this));
@@ -465,9 +474,10 @@ void MainWindow::setMainActionsEnable(bool value)
 
     m_ActionNewProject->setEnabled(value);
     m_ActionLoadProject->setEnabled(value);
-    m_ActionRulesMenu->setEnabled(value);
+    m_BtnMenuRules->setEnabled(value);
 
     m_ActionInfoRule->setEnabled(enable);
+    m_ActionImportRule->setEnabled(enable);
     m_ActionSaveProject->setEnabled(enable);
     m_ActionZoomInScene->setEnabled(enable);
     m_ActionZoomOutScene->setEnabled(enable);
@@ -1569,21 +1579,6 @@ void MainWindow::slotLoadEditRule()
 {
    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
    // TODO: slotLoadEditRule
-}
-
-void MainWindow::slotRulesMenu()
-{
-    auto *menu = new QMenu;
-    menu->addAction(new MenuCaption(menu, tr("Rules")));
-    menu->addAction(m_ActionInfoRule);
-    menu->addSeparator();
-    menu->addAction(m_ActionNewRule);
-    menu->addAction(m_ActionLoadEditRule);
-    menu->addAction(m_ActionImportRule);
-
-    auto w = m_TbActions->widgetForAction(m_ActionRulesMenu);
-    auto pos = w->mapToGlobal(QPoint(config->ButtonSize(), 0));
-    menu->exec(pos);
 }
 
 void MainWindow::slotInfoRule()

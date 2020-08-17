@@ -32,6 +32,7 @@ class ClickableLabel;
 class QProgressBar;
 class QThread;
 class JDocumentList;
+class QToolButton;
 
 class MainWindow : public QMainWindow
 {
@@ -71,12 +72,12 @@ private:
     JDocumentList* m_Snapshots;
     QToolBar* m_TbMain;
     QToolBar* m_TbActions;
+    QToolButton* m_BtnMenuRules;
     QAction* m_ActionNewProject;
     QAction* m_ActionZoomInScene;
     QAction* m_ActionZoomOutScene;
     QAction* m_ActionZoomUndoScene;
     QAction* m_ActionStepStop;
-    QAction* m_ActionRulesMenu;
     QAction* m_ActionNewRule;
     QAction* m_ActionImportRule;
     QAction* m_ActionLoadEditRule;
@@ -142,7 +143,6 @@ private Q_SLOTS:
     void slotSaveProject();
     void slotNewRule();
     void slotLoadEditRule();
-    void slotRulesMenu();
     void slotInfoRule();
     void slotImportRule();
 
