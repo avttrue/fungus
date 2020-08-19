@@ -5,6 +5,7 @@
 #include "field/fieldrule.h"
 
 #include <QDebug>
+#include <QMessageBox>
 #include <QApplication>
 #include <QIcon>
 #include <QToolBar>
@@ -52,7 +53,7 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
 
     auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
     actionAccept->setAutoRepeat(false);
-    QObject::connect(actionAccept, &QAction::triggered, [=](){ accept(); });
+    QObject::connect(actionAccept, &QAction::triggered, this, &DialogEditRules::slotActionAccept);
 
     auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Cancel"));
     actionCancel->setAutoRepeat(false);
@@ -291,6 +292,14 @@ void DialogEditRules::editActivity(int index)
     act[index] = element;
     m_Rule->setActivity(act);
     m_lwContent->item(index)->setText(ActivityElementToString(element));
+}
+
+void DialogEditRules::slotActionAccept()
+{
+    if(m_Rule->objectName().isEmpty())
+        QMessageBox::warning(this, tr("Warning"), tr("Rule name is empty."));
+    else
+        accept();
 }
 
 void DialogEditRules::slotActionAdd()

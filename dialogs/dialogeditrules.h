@@ -33,6 +33,7 @@ private:
     ClickableLabel* m_RulesProperties;
 
 private Q_SLOTS:
+    void slotActionAccept();
     void slotActionAdd();
     void slotActionDelete();
     void slotActionUp();
