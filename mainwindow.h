@@ -25,6 +25,7 @@ const QString MW_LABEL_STYLE_DOWN = "background: qlineargradient(x1:0, y1:0, x2:
                                     "padding: 0px 1px 0px 1px; border-radius: 3px;"
                                     "color: green; font-family: monospace; font: bold;";
 class Field;
+class FieldRule;
 class Cell;
 class SceneView;
 class QLabel;
@@ -63,6 +64,7 @@ protected:
     void createSnapshot();
     bool FieldFromJsonObject(QJsonObject *jobject);
     void loadSnapshot(QJsonDocument* document);
+    bool editRule(FieldRule* rule);
 
 private:
     bool m_FieldRunning;   // состояние поля

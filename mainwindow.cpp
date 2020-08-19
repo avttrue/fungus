@@ -624,7 +624,7 @@ QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exce
     QJsonDocument document;
     QJsonObject obj_root {{"DateTime", datetime},
                           {"Application", APP_NAME},
-                          {"Version", APP_VERS}};
+                          {"Version", FORMAT_VERSION}};
     
     CellsToJsonObject(&obj_root, firstcell, secondcell, exceptdead);
     document.setObject(obj_root);
@@ -652,7 +652,7 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
     { qDebug() << __func__  << "Incorrect Json data: 'Application' =" << root_object.value("Application").toString();
         return false; }
 
-    if(!config->JsonIgnoreDataVersion() && root_object.value("Version").toString() != APP_VERS)
+    if(!config->JsonIgnoreDataVersion() && root_object.value("Version").toString() != FORMAT_VERSION)
     { qDebug() << __func__  << "Incorrect Json data: 'Version' =" << root_object.value("Version").toString();
         return false; }
 
@@ -790,7 +790,7 @@ void MainWindow::createSnapshot()
     QJsonDocument document;
     QJsonObject obj_root {{"DateTime", datetime},
                           {"Application", APP_NAME},
-                          {"Version", APP_VERS}};
+                          {"Version", FORMAT_VERSION}};
 
     FieldToJsonObject(&obj_root);
 
@@ -842,6 +842,13 @@ void MainWindow::loadSnapshot(QJsonDocument* document)
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
+}
+
+bool MainWindow::editRule(FieldRule *rule)
+{
+    auto der = new DialogEditRules(this, rule);
+    if(!der->exec()) { rule->deleteLater(); return false; }
+    return true;
 }
 
 void MainWindow::slotSetup()
@@ -1099,7 +1106,7 @@ void MainWindow::slotNewProject()
     m_Field->setRule(ruleslist.value(currentrule));
 
     setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
-                   arg(APP_NAME, APP_VERS, currentrule,
+                   arg(APP_NAME, FORMAT_VERSION, currentrule,
                        QString::number(m_Field->width()),
                        QString::number(m_Field->height()),
                        QString::number(config->SceneCellSize())));
@@ -1567,18 +1574,17 @@ void MainWindow::slotNewRule()
     auto rule = new FieldRule();
     QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
 
-    if(DialogEditRules::FindPreviousCopy()) return;
-    auto der = new DialogEditRules(this, rule);
-    if(!der->exec()) { rule->deleteLater(); return; }
-    // TODO: slotNewRule
-
+    if(editRule(rule))
+    {
+        // TODO: slotNewRule
+    }
     rule->deleteLater();
 }
 
 void MainWindow::slotLoadEditRule()
 {
-   QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
-   // TODO: slotLoadEditRule
+    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+    // TODO: slotLoadEditRule
 }
 
 void MainWindow::slotInfoRule()
@@ -1597,8 +1603,27 @@ void MainWindow::slotInfoRule()
 
 void MainWindow::slotImportRule()
 {
+    auto scene = m_SceneView->getScene();
+    if(!scene)
+    {
+        m_ActionImportRule->setDisabled(true);
+        qCritical() << __func__ << "Scene not created";
+        return;
+    }
+
+    auto frule = m_Field->getRule();
+    auto rule = new FieldRule();
+    rule->setDeathEnd(frule->isDeathEnd());
+    rule->setCurseTime(frule->getCurseTime());
+    rule->setActivity(frule->getActivity());
+
     QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
-    // TODO: slotImportRule
+
+    if(editRule(rule))
+    {
+        // TODO: slotImportRule
+    }
+    rule->deleteLater();
 }
 
 void MainWindow::slotFieldAvCalc(qreal value)

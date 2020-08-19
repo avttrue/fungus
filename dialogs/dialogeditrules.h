@@ -14,7 +14,6 @@ class DialogEditRules : public QDialog
     Q_OBJECT
 public:
     DialogEditRules(QWidget *parent, FieldRule* rules);
-    static bool FindPreviousCopy(); // найти предыдущую копию окна, если найдена, то возвращается TRUE и делает его активным
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);

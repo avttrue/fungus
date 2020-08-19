@@ -18,6 +18,7 @@ const QString DT_FORMAT =                           "yyyy.MM.dd hh:mm:ss";
 const QString LOG_FILE_NAME_FORMAT =                "yyyyMMdd_hhmmss";
 const QString TEXT_CODEC =                          "UTF-8";
 const QString APP_NAME =                            "Fungus";
+const QString FORMAT_VERSION =                      "0.1";
 const QString APP_CFG =                             "config.cfg";
 const QString SCENE_SELECT_COLOR =                  "#5555FF";
 const QString SCENE_BG_COLOR =                      "#757575";

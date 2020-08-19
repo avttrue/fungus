@@ -114,24 +114,6 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogEditRules" << windowTitle() << "destroyed"; });
 }
 
-bool DialogEditRules::FindPreviousCopy()
-{
-    for (QWidget *widget: QApplication::topLevelWidgets())
-    {
-        auto der = qobject_cast<DialogEditRules*>(widget);
-
-        if (!der) continue;
-
-        if(QString(der->metaObject()->className()) == "DialogEditRules")
-        {
-            der->showNormal();
-            der->setWindowState(Qt::WindowActive);
-            return true;
-        }
-    }
-    return false;
-}
-
 bool DialogEditRules::eventFilter(QObject *object, QEvent *event)
 {
     auto o = qobject_cast<DialogEditRules*>(object);
