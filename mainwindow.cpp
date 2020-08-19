@@ -1063,6 +1063,8 @@ void MainWindow::slotNewProject()
 
     QMap<QString, FieldRule*> ruleslist;
     auto rule = new FieldRule; // default rule
+    rule->setDefault();
+
     ruleslist.insert(rule->objectName(), rule);
 
     //TODO: загружать здесь остальные возможные правила
@@ -1603,6 +1605,8 @@ void MainWindow::slotInfoRule()
 
 void MainWindow::slotImportRule()
 {
+    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
@@ -1611,13 +1615,7 @@ void MainWindow::slotImportRule()
         return;
     }
 
-    auto frule = m_Field->getRule();
-    auto rule = new FieldRule();
-    rule->setDeathEnd(frule->isDeathEnd());
-    rule->setCurseTime(frule->getCurseTime());
-    rule->setActivity(frule->getActivity());
-
-    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+    auto rule = new FieldRule(m_Field->getRule());
 
     if(editRule(rule))
     {

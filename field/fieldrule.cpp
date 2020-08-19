@@ -11,31 +11,48 @@ FieldRule::FieldRule(Field *parent)
       m_CurseTime(0),
       m_DeathEnd(true)
 {
-    setDefault(); // TODO: setDefault убрать
-
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldRule" << objectName() <<"destroyed"; });
-    qDebug() << "FieldRule" << objectName() << "created";
+    QObject::connect(this, &QObject::objectNameChanged, [=](){ qDebug() << "FieldRule: name changed to" << objectName(); });
+    qDebug() << "FieldRule created";
+}
+
+FieldRule::FieldRule(FieldRule *rule, Field *parent)
+: QObject(parent)
+{
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldRule" << objectName() <<"destroyed"; });
+    QObject::connect(this, &QObject::objectNameChanged, [=](){ qDebug() << "FieldRule: name changed to" << objectName(); });
+
+    setObjectName(rule->objectName());
+    auto r_mo = rule->metaObject();
+    for(int i = r_mo->propertyOffset(); i < r_mo->propertyCount(); ++i)
+    {
+        auto p = r_mo->property(i);
+        auto value = rule->property(p.name());
+        setProperty(p.name(), value);
+    }
+
+   qDebug() << "FieldRule" << objectName() << "created as copy";
 }
 
 void FieldRule::setActivity(Activity value)
 {
     if (m_Activity == value) return;
     m_Activity = value;
-    qDebug() << "FieldRule" << objectName() << "changed";
+    qDebug() << "FieldRule" << objectName() << "Activity changed:" << m_Activity;
 }
 
 void FieldRule::setCurseTime(int value)
 {
     if (m_CurseTime == value) return;
     m_CurseTime = value;
-    qDebug() << "FieldRule" << objectName() << "CurseTime changed:" << value;
+    qDebug() << "FieldRule" << objectName() << "CurseTime changed:" << m_CurseTime;
 }
 
 void FieldRule::setDeathEnd(bool value)
 {
     if (m_DeathEnd == value) return;
     m_DeathEnd = value;
-    qDebug() << "FieldRule" << objectName() << "DeathEnd changed:" << value;
+    qDebug() << "FieldRule" << objectName() << "DeathEnd changed:" << m_DeathEnd;
 }
 
 QString FieldRule::PropertiesToString()
@@ -87,6 +104,8 @@ void FieldRule::setDefault()
                         QVariant::fromValue(Kernel::ActivityOperand::COUNT),
                         QVariant::fromValue(Kernel::ActivityOperator::MORE),
                         3});
+
+   qDebug() << "FieldRule" << objectName() << "filled as default";
 }
 
 Activity FieldRule::getActivity() const { return m_Activity; } // TODO: FieldRule::getActivity() - возвращать указатель

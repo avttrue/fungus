@@ -17,17 +17,18 @@ class FieldRule : public QObject
 
 public:
     FieldRule(Field *parent = nullptr);
+    FieldRule(FieldRule* rule, Field *parent = nullptr);
     Activity getActivity() const;
+    void setDefault();                      // Conway's LIFE game
     void setActivity(Activity value);
     int getCurseTime() const;
-    void setCurseTime(int value); 
+    void setCurseTime(int value);
     bool isDeathEnd() const;
     void setDeathEnd(bool value);
     QString PropertiesToString();
     QString toString();
 
-protected:
-    void setDefault();                      // Conway's LIFE game
+protected:   
 
 private:
     Activity m_Activity;                    // активность ячейки
