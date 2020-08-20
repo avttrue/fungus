@@ -22,6 +22,12 @@ FieldRule::FieldRule(FieldRule *rule, Field *parent)
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldRule" << objectName() <<"destroyed"; });
     QObject::connect(this, &QObject::objectNameChanged, [=](){ qDebug() << "FieldRule: name changed to" << objectName(); });
 
+    if(!rule)
+    {
+        qCritical() << "Source rule is null";
+        return;
+    }
+
     setObjectName(rule->objectName());
     auto r_mo = rule->metaObject();
     for(int i = r_mo->propertyOffset(); i < r_mo->propertyCount(); ++i)
