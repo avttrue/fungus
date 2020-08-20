@@ -61,6 +61,8 @@ protected:
     bool CellsFromJsonObject(QJsonObject *jobject, Cell* cell);
     void stopFieldCalculating(); // корректная приостановка поля
     void FieldToJsonObject(QJsonObject *jobject);
+    void RuleToJsonObject(FieldRule *rule, QJsonObject *jobject);
+    void saveRuleToFile(FieldRule *rule);
     void createSnapshot();
     bool FieldFromJsonObject(QJsonObject *jobject);
     void loadSnapshot(QJsonDocument* document);

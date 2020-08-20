@@ -109,10 +109,17 @@ int main(int argc, char *argv[])
     qInfo() << "PathLogsDirectory:" << config->PathLogsDir();
 
     // копируются пресеты
+    {
     bool ok = true;
     copyResources(":/resources/presets", config->PathPresetsDir(), config->RewriteResource(), &ok);
-    if(!ok)
-        qCritical() << "Error at presets coping to" << config->PathPresetsDir();
+    if(!ok) qCritical() << "Error at presets coping to" << config->PathPresetsDir();
+    }
+    // копируются правила
+    {
+    bool ok = true;
+    copyResources(":/resources/rules", config->PathRulesDir(), config->RewriteResource(), &ok);
+    if(!ok) qCritical() << "Error at rules coping to" << config->PathRulesDir();
+    }
 
     SplashScreen splash;
     splash.show();

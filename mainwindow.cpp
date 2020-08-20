@@ -776,6 +776,60 @@ void MainWindow::FieldToJsonObject(QJsonObject *jobject)
     jobject->insert("Field", obj_field);
 }
 
+void MainWindow::RuleToJsonObject(FieldRule* rule, QJsonObject *jobject)
+{
+    QJsonObject obj_rule;
+    QJsonArray obj_acts;
+    auto fr_mo = rule->metaObject();
+    for(int i = fr_mo->propertyOffset(); i < fr_mo->propertyCount(); ++i)
+    {
+        auto p = fr_mo->property(i);
+        auto value = rule->property(p.name());
+        if(QString(p.name()) != "Activity")
+            obj_rule.insert(p.name(), value.toJsonValue());
+    }
+    for(auto a: rule->getActivity())
+    {
+        /* {Type, SelfState, Target, TargetState, Operand, Operator, OperandValue} */
+        QJsonObject obj_act;
+        obj_act.insert("Type", a.at(0).toInt());
+        obj_act.insert("SelfState", a.at(1).toInt());
+        obj_act.insert("Target", a.at(2).toInt());
+        obj_act.insert("TargetState", a.at(3).toInt());
+        obj_act.insert("Operand", a.at(4).toInt());
+        obj_act.insert("Operator", a.at(5).toInt());
+        obj_act.insert("OperandValue", a.at(6).toInt());
+        obj_acts.append(obj_act);
+    }
+    obj_rule.insert("Name", rule->objectName());
+    obj_rule.insert("Activity", obj_acts);
+    jobject->insert("Rule", obj_rule);
+}
+
+void MainWindow::saveRuleToFile(FieldRule *rule)
+{
+    auto fileext = RULE_FILE_EXTENSION.toLower();
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save rule"), config->PathRulesDir(),
+                                                 tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
+
+    if(filename.isNull() || filename.isEmpty()) return;
+
+    auto dot_fileext = QString(".%1").arg(fileext);
+    if(!filename.endsWith(dot_fileext, Qt::CaseInsensitive)) filename.append(dot_fileext);
+
+    auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
+    QJsonDocument document;
+    QJsonObject obj_root {{"DateTime", datetime},
+                          {"Application", APP_NAME},
+                          {"Version", FORMAT_VERSION}};
+    RuleToJsonObject(rule, &obj_root);
+    document.setObject(obj_root);
+
+    auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
+    auto text = document.toJson(json_mode);
+    textToFile(text, filename);
+}
+
 void MainWindow::createSnapshot()
 {
     if(!m_SceneView->getScene())
@@ -1574,12 +1628,7 @@ void MainWindow::slotSaveProject()
 void MainWindow::slotNewRule()
 {
     auto rule = new FieldRule();
-    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
-
-    if(editRule(rule))
-    {
-        // TODO: slotNewRule
-    }
+    if(editRule(rule)) saveRuleToFile(rule);
     rule->deleteLater();
 }
 
@@ -1605,8 +1654,6 @@ void MainWindow::slotInfoRule()
 
 void MainWindow::slotImportRule()
 {
-    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
-
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
@@ -1616,11 +1663,7 @@ void MainWindow::slotImportRule()
     }
 
     auto rule = new FieldRule(m_Field->getRule());
-
-    if(editRule(rule))
-    {
-        // TODO: slotImportRule
-    }
+    if(editRule(rule)) saveRuleToFile(rule);
     rule->deleteLater();
 }
 
