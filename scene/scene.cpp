@@ -54,7 +54,11 @@ void Scene::addSceneItem()
 
 void Scene::addSelectionMark()
 {
-    if(!m_SceneItem) { qCritical() << "SceneItem not created"; return; }
+    if(!m_SceneItem)
+    {
+        qCritical() << __func__ << "SceneItem not created";
+        return;
+    }
 
     QPen pen;
     QBrush brush;

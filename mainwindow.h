@@ -62,6 +62,7 @@ protected:
     void stopFieldCalculating(); // корректная приостановка поля
     void FieldToJsonObject(QJsonObject *jobject);
     void RuleToJsonObject(FieldRule *rule, QJsonObject *jobject);
+    void RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject);
     void saveRuleToFile(FieldRule *rule);
     void createSnapshot();
     bool FieldFromJsonObject(QJsonObject *jobject);

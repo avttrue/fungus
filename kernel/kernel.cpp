@@ -9,7 +9,7 @@ QString getNameKernelEnum(const QString &enumname, int index)
     QStringList list = listKernelEnum(enumname);
     if(list.count() <= index)
     {
-        qCritical() << "Wrong index: '" << index << "' for '" << enumname << "' enum; count" << list.count();
+        qCritical() << __func__ << "Wrong index: '" << index << "' for '" << enumname << "' enum; count" << list.count();
         return "";
     }
 
@@ -24,7 +24,7 @@ QStringList listKernelEnum(const QString &enumname)
 
     if(index == -1)
     {
-        qCritical() << "Wrong enum name:" << enumname;
+        qCritical() << __func__ << "Wrong enum name:" << enumname;
         return list;
     }
 
@@ -42,7 +42,7 @@ int countKernelEnum(const QString &enumname)
 
     if(index == -1)
     {
-        qCritical() << "Wrong enum name:" << enumname;
+        qCritical() << __func__ << "Wrong enum name:" << enumname;
         return -1;
     }
 

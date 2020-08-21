@@ -130,7 +130,7 @@ void SceneView::setUpdateMode()
     if(mode == SCENE_VIEW_UPDATE_MODES.at(0)) viewport_update_mode = QGraphicsView::SmartViewportUpdate;
     else if(mode == SCENE_VIEW_UPDATE_MODES.at(1)) viewport_update_mode = QGraphicsView::MinimalViewportUpdate;
     else if(mode == SCENE_VIEW_UPDATE_MODES.at(2)) viewport_update_mode = QGraphicsView::FullViewportUpdate;
-    else qCritical() << "Wrong settins value 'Scene/ViewUpdateMode'" <<  mode;
+    else qCritical() << __func__ << "Wrong settins value 'Scene/ViewUpdateMode'" <<  mode;
 
     setViewportUpdateMode(viewport_update_mode);
     qDebug() << objectName() << "update mode:" << viewportUpdateMode();

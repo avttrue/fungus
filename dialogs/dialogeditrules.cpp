@@ -167,7 +167,7 @@ void DialogEditRules::loadContent()
 {
     if(!m_Rule)
     {
-        qCritical() << "Rule is null";
+        qCritical() << __func__ << "Rule is null";
         return;
     }
 
@@ -282,7 +282,7 @@ void DialogEditRules::editActivity(int index)
     auto element = m_Rule->getActivity().at(index);
     if(element.count() != 7)
     {
-        qCritical() << "Rule activity element #" << index << "length is incorrect:" << element.count();
+        qCritical() << __func__ << "Rule activity element #" << index << "length is incorrect:" << element.count();
         return;
     }
 

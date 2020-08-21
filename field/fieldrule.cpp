@@ -24,7 +24,7 @@ FieldRule::FieldRule(FieldRule *rule, Field *parent)
 
     if(!rule)
     {
-        qCritical() << "Source rule is null";
+        qCritical() << __func__ << "Source rule is null";
         return;
     }
 

@@ -568,6 +568,24 @@ void MainWindow::redrawScene()
 
 void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *secondcell, bool except_dead)
 {
+    if(!firstcell)
+    {
+        qCritical() << __func__ << "First cell is null";
+        return;
+    }
+
+    if(!secondcell)
+    {
+        qCritical() << __func__ << "Second cell is null";
+        return;
+    }
+
+    if(!jobject)
+    {
+        qCritical() << __func__ << "JsonObject is null";
+        return;
+    }
+
     auto time = QDateTime::currentMSecsSinceEpoch();
     auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
@@ -620,6 +638,18 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
 
 QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exceptdead)
 {
+    if(!firstcell)
+    {
+        qCritical() << __func__ << "First cell is null";
+        return "";
+    }
+
+    if(!secondcell)
+    {
+        qCritical() << __func__ << "Second cell is null";
+        return "";
+    }
+
     auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
     QJsonDocument document;
     QJsonObject obj_root {{"DateTime", datetime},
@@ -635,7 +665,18 @@ QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exce
 
 bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
 {
-    auto scene = m_SceneView->getScene();
+    auto scene = m_SceneView->getScene();    
+    if(!scene)
+    {
+        qCritical() << __func__ << "Scene not created";
+        return false;
+    }
+
+    if(!cell)
+    {
+        qCritical() << __func__ << "Cell is null";
+        return false;
+    }
 
     if (text.isNull() || text.isEmpty()) { qDebug() << __func__ << "Text is empty"; return false; }
 
@@ -688,6 +729,18 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
 
 bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
 {
+    if(!cell)
+    {
+        qCritical() << __func__ << "Cell is null";
+        return false;
+    }
+
+    if(!jobject)
+    {
+        qCritical() << __func__ << "JsonObject is null";
+        return false;
+    }
+
     auto time = QDateTime::currentMSecsSinceEpoch();
     auto cx = cell->getIndex().x();
     auto cy = cell->getIndex().y();
@@ -761,6 +814,12 @@ void MainWindow::stopFieldCalculating()
 
 void MainWindow::FieldToJsonObject(QJsonObject *jobject)
 {
+    if(!jobject)
+    {
+        qCritical() << __func__ << "JsonObject is null";
+        return;
+    }
+
     auto fi = m_Field->getInformation();
     auto fi_mo = fi->metaObject();
 
@@ -778,6 +837,18 @@ void MainWindow::FieldToJsonObject(QJsonObject *jobject)
 
 void MainWindow::RuleToJsonObject(FieldRule* rule, QJsonObject *jobject)
 {
+    if(!rule)
+    {
+        qCritical() << __func__ << "FieldRule is null";
+        return;
+    }
+
+    if(!jobject)
+    {
+        qCritical() << __func__ << "JsonObject is null";
+        return;
+    }
+
     QJsonObject obj_rule;
     QJsonArray obj_acts;
     auto fr_mo = rule->metaObject();
@@ -804,6 +875,23 @@ void MainWindow::RuleToJsonObject(FieldRule* rule, QJsonObject *jobject)
     obj_rule.insert("Name", rule->objectName());
     obj_rule.insert("Activity", obj_acts);
     jobject->insert("Rule", obj_rule);
+}
+
+void MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
+{
+    if(!rule)
+    {
+        qCritical() << __func__ << "FieldRule is null";
+        return;
+    }
+
+    if(!jobject)
+    {
+        qCritical() << __func__ << "JsonObject is null";
+        return;
+    }
+
+    // TODO: RuleFromJsonObject
 }
 
 void MainWindow::saveRuleToFile(FieldRule *rule)
@@ -858,6 +946,11 @@ void MainWindow::createSnapshot()
 
 bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
 {
+    if(!jobject)
+    {
+        qCritical() << __func__ << "JsonObject is null";
+        return false;
+    }
     auto obj_field = jobject->value("Field").toObject();
     if(obj_field.isEmpty()) { qDebug() << __func__ << "JsonObject 'Field' is empty"; return false; }
 
