@@ -60,14 +60,14 @@ protected:
     bool CellsFromJsonText(Cell *cell, const QString& text);
     bool CellsFromJsonObject(QJsonObject *jobject, Cell* cell);
     void stopFieldCalculating(); // корректная приостановка поля
-    void FieldToJsonObject(QJsonObject *jobject);
     void RuleToJsonObject(FieldRule *rule, QJsonObject *jobject);
-    void RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject);
+    bool RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject);
+    bool RuleFromJsonText(FieldRule *rule, const QString &text);
     void saveRuleToFile(FieldRule *rule);
-    void createSnapshot();
+    void FieldToJsonObject(QJsonObject *jobject);
     bool FieldFromJsonObject(QJsonObject *jobject);
+    void createSnapshot();
     void loadSnapshot(QJsonDocument* document);
-    bool editRule(FieldRule* rule);
 
 private:
     bool m_FieldRunning;   // состояние поля

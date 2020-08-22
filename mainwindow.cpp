@@ -568,6 +568,7 @@ void MainWindow::redrawScene()
 
 void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *secondcell, bool except_dead)
 {
+    qDebug() << __func__;
     if(!firstcell)
     {
         qCritical() << __func__ << "First cell is null";
@@ -638,6 +639,7 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
 
 QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exceptdead)
 {
+    qDebug() << __func__;
     if(!firstcell)
     {
         qCritical() << __func__ << "First cell is null";
@@ -665,7 +667,8 @@ QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exce
 
 bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
 {
-    auto scene = m_SceneView->getScene();    
+    qDebug() << __func__;
+    auto scene = m_SceneView->getScene();
     if(!scene)
     {
         qCritical() << __func__ << "Scene not created";
@@ -678,23 +681,23 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
         return false;
     }
 
-    if (text.isNull() || text.isEmpty()) { qDebug() << __func__ << "Text is empty"; return false; }
+    if (text.isNull() || text.isEmpty()) { qCritical() << __func__ << "Text is empty"; return false; }
 
     QJsonParseError p_error;
     QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
 
-    if(document.isNull() || document.isEmpty()) { qDebug() << __func__ << "QJsonDocument is empty"; return false; }
-    if(p_error.error != QJsonParseError::NoError) { qDebug() << __func__ << "JsonParseError:" << p_error.errorString(); return false; }
+    if(document.isNull() || document.isEmpty()) { qCritical() << __func__ << "QJsonDocument is empty"; return false; }
+    if(p_error.error != QJsonParseError::NoError) { qCritical() << __func__ << "JsonParseError:" << p_error.errorString(); return false; }
 
     auto root_object = document.object();
-    if(root_object.isEmpty()) { qDebug() << __func__  << "Root JsonObject is empty"; return false; }
+    if(root_object.isEmpty()) { qCritical() << __func__  << "Root JsonObject is empty"; return false; }
 
     if(root_object.value("Application").toString() != APP_NAME)
-    { qDebug() << __func__  << "Incorrect Json data: 'Application' =" << root_object.value("Application").toString();
+    { qCritical() << __func__  << "Incorrect value: 'Application' =" << root_object.value("Application").toString();
         return false; }
 
     if(!config->JsonIgnoreDataVersion() && root_object.value("Version").toString() != FORMAT_VERSION)
-    { qDebug() << __func__  << "Incorrect Json data: 'Version' =" << root_object.value("Version").toString();
+    { qCritical() << __func__  << "Incorrect value: 'Version' =" << root_object.value("Version").toString();
         return false; }
 
     auto obj_size = root_object.value("Size").toObject();
@@ -729,6 +732,7 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
 
 bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
 {
+    qDebug() << __func__;
     if(!cell)
     {
         qCritical() << __func__ << "Cell is null";
@@ -746,7 +750,7 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
     auto cy = cell->getIndex().y();
     auto obj_cells = jobject->value("Cells").toArray();
 
-    if(obj_cells.isEmpty()) {qDebug() << __func__ << "JsonArray 'Cells' is empty"; return false; }
+    if(obj_cells.isEmpty()) { qCritical() << __func__ << "JsonArray 'Cells' is empty"; return false; }
 
     m_ProgressBar->setRange(0, obj_cells.count());
     m_ProgressBar->setValue(0);
@@ -756,16 +760,16 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
     for(auto o: obj_cells)
     {
         auto obj_index = o.toObject().value("Index").toObject();
-        if(obj_index.isEmpty()) {qDebug() << __func__ << "JsonObject 'Index' is empty"; return false; }
+        if(obj_index.isEmpty()) { qCritical() << __func__ << "JsonObject 'Index' is empty"; return false; }
 
         auto obj_x = obj_index.value("X");
-        if(obj_x.isUndefined()) {qDebug() << __func__ << "JsonValue 'Index.X' is undefined"; return false; }
+        if(obj_x.isUndefined()) { qCritical() << __func__ << "JsonValue 'Index.X' is undefined"; return false; }
 
         auto obj_y = obj_index.value("Y");
-        if(obj_y.isUndefined()) {qDebug() << __func__ << "JsonValue 'Index.Y' is undefined"; return false; }
+        if(obj_y.isUndefined()) { qCritical() << __func__ << "JsonValue 'Index.Y' is undefined"; return false; }
 
         auto obj_prop = o.toObject().value("Properties").toObject();
-        if(obj_prop.isEmpty()) {qDebug() << __func__ << "JsonObject 'Properties' is empty"; return false; }
+        if(obj_prop.isEmpty()) { qCritical() << __func__ << "JsonObject 'Properties' is empty"; return false; }
 
         auto x = obj_index.value("X").toInt();
         auto y = obj_index.value("Y").toInt();
@@ -790,6 +794,7 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
 
 void MainWindow::stopFieldCalculating()
 {
+    qDebug() << __func__;
     if(!m_SceneView->getScene()) return;
     if(!m_Field) return;
 
@@ -812,33 +817,11 @@ void MainWindow::stopFieldCalculating()
     }
 }
 
-void MainWindow::FieldToJsonObject(QJsonObject *jobject)
-{
-    if(!jobject)
-    {
-        qCritical() << __func__ << "JsonObject is null";
-        return;
-    }
-
-    auto fi = m_Field->getInformation();
-    auto fi_mo = fi->metaObject();
-
-    QJsonObject obj_prop;
-    for(int i = fi_mo->propertyOffset(); i < fi_mo->propertyCount(); ++i)
-    {
-        auto p = fi_mo->property(i);
-        auto value = fi->property(p.name());
-        obj_prop.insert(p.name(), value.toJsonValue());
-    }
-    QJsonObject obj_field;
-    obj_field.insert("Properties", obj_prop);
-    jobject->insert("Field", obj_field);
-}
-
 void MainWindow::RuleToJsonObject(FieldRule* rule, QJsonObject *jobject)
 {
+    qDebug() << __func__;
     if(!rule)
-    {
+    {qDebug() << __func__;
         qCritical() << __func__ << "FieldRule is null";
         return;
     }
@@ -877,25 +860,106 @@ void MainWindow::RuleToJsonObject(FieldRule* rule, QJsonObject *jobject)
     jobject->insert("Rule", obj_rule);
 }
 
-void MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
+bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
 {
+    qDebug() << __func__;
     if(!rule)
     {
         qCritical() << __func__ << "FieldRule is null";
-        return;
+        return false;
     }
 
     if(!jobject)
     {
         qCritical() << __func__ << "JsonObject is null";
-        return;
+        return false;
     }
 
-    // TODO: RuleFromJsonObject
+    auto obj_rule = jobject->value("Rule").toObject();
+    if(obj_rule.isEmpty()) { qCritical() << __func__ << "JsonObject 'Rule' is empty"; return false; }
+
+    auto obj_act = obj_rule.value("Activity").toArray();
+    if(obj_act.isEmpty()) { qCritical() << __func__ << "JsonArray 'Activity' is empty"; return false; }
+
+    if(!obj_rule.contains("Name"))
+    { qCritical() << __func__ << "Key 'Name' is absent"; return false; }
+    rule->setObjectName(obj_rule["Name"].toString());
+
+    if(!obj_rule.contains("DeathEnd"))
+    { qCritical() << __func__ << "Key 'DeathEnd' is absent"; return false; }
+    rule->setDeathEnd(obj_rule["DeathEnd"].toBool());
+
+    if(!obj_rule.contains("CurseTime"))
+    { qCritical() << __func__ << "Key 'CurseTime' is absent"; return false; }
+    rule->setCurseTime(obj_rule["CurseTime"].toInt());
+
+    Activity activity;
+    /* {Type, SelfState, Target, TargetState, Operand, Operator, OperandValue} */
+    for(auto a : obj_act)
+    {
+        auto o = a.toObject();
+        QVector<QVariant> v;
+
+        if(!o.contains("Type"))
+        { qCritical() << __func__ << "Key 'Activity.Type' is absent"; return false; }
+        v.append(QVariant::fromValue(static_cast<Kernel::ActivityType>(o["Type"].toInt())));
+
+        if(!o.contains("SelfState"))
+        { qCritical() << __func__ << "Key 'Activity.SelfState' is absent"; return false; }
+        v.append(QVariant::fromValue(static_cast<Kernel::CellState>(o["SelfState"].toInt())));
+
+        if(!o.contains("Target"))
+        { qCritical() << __func__ << "Key 'Activity.Target' is absent"; return false; }
+        v.append(QVariant::fromValue(static_cast<Kernel::ActivityTarget>(o["Target"].toInt())));
+
+        if(!o.contains("TargetState"))
+        { qCritical() << __func__ << "Key 'Activity.TargetState' is absent"; return false; }
+        v.append(QVariant::fromValue(static_cast<Kernel::CellState>(o["TargetState"].toInt())));
+
+        if(!o.contains("Operand"))
+        { qCritical() << __func__ << "Key 'Activity.Operand' is absent"; return false; }
+        v.append(QVariant::fromValue(static_cast<Kernel::ActivityOperand>(o["Operand"].toInt())));
+
+        if(!o.contains("Operator"))
+        { qCritical() << __func__ << "Key 'Activity.Operator' is absent"; return false; }
+        v.append(QVariant::fromValue(static_cast<Kernel::ActivityOperator>(o["Operator"].toInt())));
+
+        if(!o.contains("OperandValue"))
+        { qCritical() << __func__ << "Key 'Activity.OperandValue' is absent"; return false; }
+        v.append(o["OperandValue"].toInt());
+
+        activity.append(v);
+    }
+    rule->setActivity(activity);
+    return true;
+}
+
+bool MainWindow::RuleFromJsonText(FieldRule* rule, const QString& text)
+{
+    qDebug() << __func__;
+    QJsonParseError p_error;
+    QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
+
+    if(document.isNull() || document.isEmpty()) { qCritical() << __func__ << "QJsonDocument is empty"; return false; }
+    if(p_error.error != QJsonParseError::NoError) { qCritical() << __func__ << "JsonParseError:" << p_error.errorString(); return false; }
+
+    auto root_object = document.object();
+    if(root_object.isEmpty()) { qCritical() << __func__  << "Root JsonObject is empty"; return false; }
+
+    if(root_object.value("Application").toString() != APP_NAME)
+    { qCritical() << __func__  << "Incorrect value: 'Application' =" << root_object.value("Application").toString();
+        return false; }
+
+    if(!config->JsonIgnoreDataVersion() && root_object.value("Version").toString() != FORMAT_VERSION)
+    { qCritical() << __func__  << "Incorrect value: 'Version' =" << root_object.value("Version").toString();
+        return false; }
+
+    return RuleFromJsonObject(rule, &root_object);
 }
 
 void MainWindow::saveRuleToFile(FieldRule *rule)
 {
+    qDebug() << __func__;
     auto fileext = RULE_FILE_EXTENSION.toLower();
     auto filename = QFileDialog::getSaveFileName(this, tr("Save rule"), config->PathRulesDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
@@ -916,6 +980,59 @@ void MainWindow::saveRuleToFile(FieldRule *rule)
     auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
     auto text = document.toJson(json_mode);
     textToFile(text, filename);
+}
+
+void MainWindow::FieldToJsonObject(QJsonObject *jobject)
+{
+    qDebug() << __func__;
+    if(!jobject)
+    {
+        qCritical() << __func__ << "JsonObject is null";
+        return;
+    }
+
+    auto fi = m_Field->getInformation();
+    auto fi_mo = fi->metaObject();
+
+    QJsonObject obj_prop;
+    for(int i = fi_mo->propertyOffset(); i < fi_mo->propertyCount(); ++i)
+    {
+        auto p = fi_mo->property(i);
+        auto value = fi->property(p.name());
+        obj_prop.insert(p.name(), value.toJsonValue());
+    }
+    QJsonObject obj_field;
+    obj_field.insert("Properties", obj_prop);
+    jobject->insert("Field", obj_field);
+}
+
+bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
+{
+    qDebug() << __func__;
+    if(!jobject)
+    {
+        qCritical() << __func__ << "JsonObject is null";
+        return false;
+    }
+    auto obj_field = jobject->value("Field").toObject();
+    if(obj_field.isEmpty()) { qCritical() << __func__ << "JsonObject 'Field' is empty"; return false; }
+
+    auto obj_prop = obj_field.value("Properties").toObject();
+    if(obj_prop.isEmpty()) { qCritical() << __func__ << "JsonObject 'Properties' is empty"; return false; }
+
+    auto cell = m_Field->getCell({0, 0});
+    if(!CellsFromJsonObject(jobject, cell)) return false;
+
+    auto fi = m_Field->getInformation();
+    for(auto key : obj_prop.keys())
+    {
+        auto v = obj_prop.value(key).toVariant();
+        if(v.type() == QVariant::Double)
+            fi->setProperty(key.toLatin1(), v.toDouble());
+        else
+            fi->setProperty(key.toLatin1(), v.toUInt());
+    }
+    return true;
 }
 
 void MainWindow::createSnapshot()
@@ -944,34 +1061,6 @@ void MainWindow::createSnapshot()
     m_Snapshots->addDocument(name, document);
 }
 
-bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
-{
-    if(!jobject)
-    {
-        qCritical() << __func__ << "JsonObject is null";
-        return false;
-    }
-    auto obj_field = jobject->value("Field").toObject();
-    if(obj_field.isEmpty()) { qDebug() << __func__ << "JsonObject 'Field' is empty"; return false; }
-
-    auto obj_prop = obj_field.value("Properties").toObject();
-    if(obj_prop.isEmpty()) { qDebug() << __func__ << "JsonObject 'Properties' is empty"; return false; }
-
-    auto cell = m_Field->getCell({0, 0});
-    if(!CellsFromJsonObject(jobject, cell)) return false;
-
-    auto fi = m_Field->getInformation();
-    for(auto key : obj_prop.keys())
-    {
-        auto v = obj_prop.value(key).toVariant();
-        if(v.type() == QVariant::Double)
-            fi->setProperty(key.toLatin1(), v.toDouble());
-        else
-            fi->setProperty(key.toLatin1(), v.toUInt());
-    }
-    return true;
-}
-
 void MainWindow::loadSnapshot(QJsonDocument* document)
 {
     if(!m_SceneView->getScene())
@@ -989,13 +1078,6 @@ void MainWindow::loadSnapshot(QJsonDocument* document)
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
-}
-
-bool MainWindow::editRule(FieldRule *rule)
-{
-    auto der = new DialogEditRules(this, rule);
-    if(!der->exec()) { rule->deleteLater(); return false; }
-    return true;
 }
 
 void MainWindow::slotSetup()
@@ -1720,15 +1802,38 @@ void MainWindow::slotSaveProject()
 
 void MainWindow::slotNewRule()
 {
+    qDebug() << __func__;
     auto rule = new FieldRule();
-    if(editRule(rule)) saveRuleToFile(rule);
+    auto der = new DialogEditRules(this, rule);
+    if(der->exec()) saveRuleToFile(rule);
     rule->deleteLater();
 }
 
 void MainWindow::slotLoadEditRule()
 {
-    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
-    // TODO: slotLoadEditRule
+    qDebug() << __func__;
+    auto fileext = RULE_FILE_EXTENSION.toLower();
+    auto filename = QFileDialog::getOpenFileName(this, tr("Load rule"), config->PathRulesDir(),
+                                                 tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
+
+    bool ok;
+    auto text = fileToText(filename, &ok);
+    if(!ok)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Error at loading data from file: '%1'").arg(filename));
+        return;
+    }
+
+    auto rule = new FieldRule;
+    if(!RuleFromJsonText(rule, text))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Error at reading rule from file: '%1'").arg(filename));
+        return;
+    }
+
+    auto der = new DialogEditRules(this, rule);
+    if(der->exec()) saveRuleToFile(rule);
+    rule->deleteLater();
 }
 
 void MainWindow::slotInfoRule()
@@ -1747,6 +1852,7 @@ void MainWindow::slotInfoRule()
 
 void MainWindow::slotImportRule()
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
@@ -1756,7 +1862,8 @@ void MainWindow::slotImportRule()
     }
 
     auto rule = new FieldRule(m_Field->getRule());
-    if(editRule(rule)) saveRuleToFile(rule);
+    auto der = new DialogEditRules(this, rule);
+    if(der->exec()) saveRuleToFile(rule);
     rule->deleteLater();
 }
 
