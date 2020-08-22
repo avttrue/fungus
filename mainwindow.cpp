@@ -681,8 +681,6 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
         return false;
     }
 
-    if (text.isNull() || text.isEmpty()) { qCritical() << __func__ << "Text is empty"; return false; }
-
     QJsonParseError p_error;
     QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
 
@@ -690,20 +688,20 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
     if(p_error.error != QJsonParseError::NoError) { qCritical() << __func__ << "JsonParseError:" << p_error.errorString(); return false; }
 
     auto root_object = document.object();
-    if(root_object.isEmpty()) { qCritical() << __func__  << "Root JsonObject is empty"; return false; }
+    if(root_object.isEmpty()) { qCritical() << __func__ << "Root JsonObject is empty"; return false; }
 
     if(root_object.value("Application").toString() != APP_NAME)
-    { qCritical() << __func__  << "Incorrect value: 'Application' =" << root_object.value("Application").toString();
+    { qCritical() << __func__ << "Incorrect value: 'Application' =" << root_object.value("Application").toString();
         return false; }
 
     if(!config->JsonIgnoreDataVersion() && root_object.value("Version").toString() != FORMAT_VERSION)
-    { qCritical() << __func__  << "Incorrect value: 'Version' =" << root_object.value("Version").toString();
+    { qCritical() << __func__ << "Incorrect value: 'Version' =" << root_object.value("Version").toString();
         return false; }
 
     auto obj_size = root_object.value("Size").toObject();
     int w = obj_size.value("Width").toInt();
     int h = obj_size.value("Height").toInt();
-    qDebug() << __func__  << "Json field size:" << h << "X" << w;
+    qDebug() << "Field size:" << h << "X" << w;
 
     if(scene->getField()->width() < w || scene->getField()->height() < h)
     { QMessageBox::warning(this, tr("Warning"),
@@ -944,14 +942,14 @@ bool MainWindow::RuleFromJsonText(FieldRule* rule, const QString& text)
     if(p_error.error != QJsonParseError::NoError) { qCritical() << __func__ << "JsonParseError:" << p_error.errorString(); return false; }
 
     auto root_object = document.object();
-    if(root_object.isEmpty()) { qCritical() << __func__  << "Root JsonObject is empty"; return false; }
+    if(root_object.isEmpty()) { qCritical() << __func__ << "Root JsonObject is empty"; return false; }
 
     if(root_object.value("Application").toString() != APP_NAME)
-    { qCritical() << __func__  << "Incorrect value: 'Application' =" << root_object.value("Application").toString();
+    { qCritical() << __func__ << "Incorrect value: 'Application' =" << root_object.value("Application").toString();
         return false; }
 
     if(!config->JsonIgnoreDataVersion() && root_object.value("Version").toString() != FORMAT_VERSION)
-    { qCritical() << __func__  << "Incorrect value: 'Version' =" << root_object.value("Version").toString();
+    { qCritical() << __func__ << "Incorrect value: 'Version' =" << root_object.value("Version").toString();
         return false; }
 
     return RuleFromJsonObject(rule, &root_object);
