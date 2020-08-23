@@ -63,6 +63,7 @@ protected:
     void RuleToJsonObject(FieldRule *rule, QJsonObject *jobject);
     bool RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject);
     bool RuleFromJsonText(FieldRule *rule, const QString &text);
+    bool RuleFromFilePath(FieldRule *rule, const QString &path);
     void saveRuleToFile(FieldRule *rule);
     void FieldToJsonObject(QJsonObject *jobject);
     bool FieldFromJsonObject(QJsonObject *jobject);

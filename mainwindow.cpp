@@ -819,7 +819,7 @@ void MainWindow::RuleToJsonObject(FieldRule* rule, QJsonObject *jobject)
 {
     qDebug() << __func__;
     if(!rule)
-    {qDebug() << __func__;
+    {
         qCritical() << __func__ << "FieldRule is null";
         return;
     }
@@ -953,6 +953,24 @@ bool MainWindow::RuleFromJsonText(FieldRule* rule, const QString& text)
         return false; }
 
     return RuleFromJsonObject(rule, &root_object);
+}
+
+bool MainWindow::RuleFromFilePath(FieldRule *rule, const QString &path)
+{
+    bool ok;
+    auto text = fileToText(path, &ok);
+    if(!ok)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Error at loading data from file: '%1'").arg(path));
+        return false;
+    }
+
+    if(!RuleFromJsonText(rule, text))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Error at reading rule from file: '%1'").arg(path));
+        return false;
+    }
+    return true;
 }
 
 void MainWindow::saveRuleToFile(FieldRule *rule)
@@ -1288,13 +1306,26 @@ void MainWindow::slotNewProject()
 {
     stopFieldCalculating();
 
-    QMap<QString, FieldRule*> ruleslist;
+    QMultiMap<QString, FieldRule*> ruleslist;
+
     auto rule = new FieldRule; // default rule
     rule->setDefault();
+    ruleslist.insert(tr("%1 (default)").arg(rule->objectName()), rule);
 
-    ruleslist.insert(rule->objectName(), rule);
+    QDir dir(config->PathRulesDir());
+    dir.setNameFilters(QStringList(QString("*.%1").arg(RULE_FILE_EXTENSION)));
+    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
 
-    //TODO: загружать здесь остальные возможные правила
+    qDebug() << "Rule files count:" << dir.entryList().count();
+    for(auto f: dir.entryList())
+    {
+        auto rule = new FieldRule;
+        if(!RuleFromFilePath(rule, config->PathRulesDir() + QDir::separator() + f))
+            continue;
+        ruleslist.insert(rule->objectName(), rule);
+    }
+    qDebug() << "Rules loaded:" << ruleslist.count();
+
     const QVector<QString> keys = {
         tr("00#_Field properties"),
         tr("01#_Size"),
@@ -1318,7 +1349,7 @@ void MainWindow::slotNewProject()
 
     if(!dvl->exec())
     {
-        rule->deleteLater();
+        for(auto r: ruleslist) r->deleteLater();
         return;
     }
 
@@ -1346,6 +1377,8 @@ void MainWindow::slotNewProject()
     m_LabelSelectedCell->setText("-");
 
     createScene();
+
+    for(auto r: ruleslist) if(!r->parent()) r->deleteLater();
 
     setMainActionsEnable(true);
     setCellsActionsEnable(false);
@@ -1814,18 +1847,12 @@ void MainWindow::slotLoadEditRule()
     auto filename = QFileDialog::getOpenFileName(this, tr("Load rule"), config->PathRulesDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
-    bool ok;
-    auto text = fileToText(filename, &ok);
-    if(!ok)
-    {
-        QMessageBox::critical(this, tr("Error"), tr("Error at loading data from file: '%1'").arg(filename));
-        return;
-    }
+    if(filename.isNull() || filename.isEmpty()) return;
 
     auto rule = new FieldRule;
-    if(!RuleFromJsonText(rule, text))
+    if(!RuleFromFilePath(rule, filename))
     {
-        QMessageBox::critical(this, tr("Error"), tr("Error at reading rule from file: '%1'").arg(filename));
+        rule->deleteLater();
         return;
     }
 
