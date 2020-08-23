@@ -118,6 +118,8 @@ public:
     void setEditRulesWindowHeight(int value);
     int EditRulesWindowWidth() const;
     void setEditRulesWindowWidth(int value);
+    bool SceneCreateDefaultRule() const;
+    void setSceneCreateDefaultRule(bool value);
 
 protected:
     void load();
@@ -176,6 +178,7 @@ private:
     bool m_SaveToPresetExceptDead;                  // при сохранении в пресет исключать мёртвые
     bool m_RewriteResource;                         // переписывать ресурсы при старте
     bool m_SceneFirstSnapshot;                      // создавать снапшот при первом запуске поля
+    bool m_SceneCreateDefaultRule;                  // создавать правило по-умолчанию
 };
 
 #endif // CONFIG_H

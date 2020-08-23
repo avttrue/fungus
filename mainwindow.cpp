@@ -1308,10 +1308,14 @@ void MainWindow::slotNewProject()
 
     QMultiMap<QString, FieldRule*> ruleslist;
 
-    auto rule = new FieldRule; // default rule
-    rule->setDefault();
-    ruleslist.insert(tr("%1 (default)").arg(rule->objectName()), rule);
+    if(config->SceneCreateDefaultRule()) // default rule
+    {
+        auto rule = new FieldRule;
+        rule->setDefault();
+        ruleslist.insert(tr("%1 (default)").arg(rule->objectName()), rule);
+    }
 
+    // rule files
     QDir dir(config->PathRulesDir());
     dir.setNameFilters(QStringList(QString("*.%1").arg(RULE_FILE_EXTENSION)));
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);

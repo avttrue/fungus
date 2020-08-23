@@ -64,6 +64,7 @@ const auto BUTTON_SIZE =                            24;
 const auto SCENE_ITEM_ZVALUE =                      0;
 const auto SPLASH_SIZE =                            640;
 const auto SPLASH_TIME =                            500;
+const auto SCENE_CREATE_DEFAULT_RULE =              true;
 const auto SCENE_ALIVE_CELL_AGE_INDICATE =          true;
 const auto SCENE_CURSE_CELL_AGE_INDICATE =          true;
 const auto WINDOW_SHOW_FIELD_INFO =                 false;

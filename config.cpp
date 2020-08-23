@@ -213,6 +213,18 @@ void Config::load()
     if(!m_Settings->contains("Scene/CellCurseAgeIndicationDiapason"))
         m_Settings->setValue("Scene/CellCurseAgeIndicationDiapason", CELL_CURSE_AGE_INDIC_DIAPASON);
     m_CellCurseAgeIndicDiapason = m_Settings->value("Scene/CellCurseAgeIndicationDiapason").toInt();
+
+    if(!m_Settings->contains("Scene/CreateDefaultRule"))
+        m_Settings->setValue("Scene/CreateDefaultRule", SCENE_CREATE_DEFAULT_RULE);
+    m_SceneCreateDefaultRule = m_Settings->value("Scene/CreateDefaultRule").toBool();
+}
+
+void Config::setSceneCreateDefaultRule(bool value)
+{
+    if(m_SceneCreateDefaultRule == value) return;
+
+    m_SceneCreateDefaultRule = value;
+    m_Settings->setValue("Scene/CreateDefaultRule", m_SceneCreateDefaultRule);
 }
 
 void Config::setEditRulesWindowWidth(int value)
@@ -655,3 +667,4 @@ QString Config::PathRulesDir() const { return m_PathRulesDir; }
 QString Config::PathPojectsDir() const { return m_PathPojectsDir; }
 int Config::EditRulesWindowWidth() const { return m_EditRulesWindowWidth; }
 int Config::EditRulesWindowHeight() const { return m_EditRulesWindowHeight; }
+bool Config::SceneCreateDefaultRule() const { return m_SceneCreateDefaultRule; }
