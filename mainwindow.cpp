@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_FieldRunning(false),
       m_ThreadField(nullptr),
       m_Field(nullptr)
-{    
+{
     setWindowIcon(QIcon(":/resources/img/mushroom.svg"));
     setWindowTitle(QString("%1 %2").arg(APP_NAME, APP_VERS));
     m_Snapshots = new JDocumentList(this);
@@ -347,7 +347,7 @@ void MainWindow::loadGui()
 }
 
 void MainWindow::slotStepStop()
-{    
+{
     if(!m_SceneView->getScene())
     {
         qCritical() << __func__ << "Scene not created";
@@ -495,11 +495,12 @@ void MainWindow::setCellsActionsEnable(bool value)
 {
     auto scene = m_SceneView->getScene();
     bool enable = scene ? value : false;
-    bool group_enable = (scene->getSelectedCell() &&
+    bool group_enable = (enable &&
+                         scene->getSelectedCell() &&
                          scene->getSecondSelectedCell() &&
                          scene->getSelectedCell() != scene->getSecondSelectedCell())
             ? enable : false;
-    bool single_enable = scene->getSelectedCell() ? enable : false;
+    bool single_enable = (enable && scene->getSelectedCell()) ? enable : false;
 
     m_ActionLoadCellsFromPreset->setEnabled(single_enable);
     m_ActionLoadCellsFromClipbord->setEnabled(single_enable);
@@ -657,7 +658,7 @@ QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exce
     QJsonObject obj_root {{"DateTime", datetime},
                           {"Application", APP_NAME},
                           {"Version", FORMAT_VERSION}};
-    
+
     CellsToJsonObject(&obj_root, firstcell, secondcell, exceptdead);
     document.setObject(obj_root);
 
@@ -690,13 +691,22 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
     auto root_object = document.object();
     if(root_object.isEmpty()) { qCritical() << __func__ << "Root JsonObject is empty"; return false; }
 
-    if(root_object.value("Application").toString() != APP_NAME)
-    { qCritical() << __func__ << "Incorrect value: 'Application' =" << root_object.value("Application").toString();
-        return false; }
+    auto appname = root_object.value("Application").toString();
+    if(appname != APP_NAME)
+    {
+        qCritical() << __func__ << "Incorrect value: 'Application' =" << appname;
+        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect application name: '%1'").arg(appname));
+        return false;
+    }
 
-    if(!config->JsonIgnoreDataVersion() && root_object.value("Version").toString() != FORMAT_VERSION)
-    { qCritical() << __func__ << "Incorrect value: 'Version' =" << root_object.value("Version").toString();
-        return false; }
+    auto formvers = root_object.value("Version").toString();
+    qDebug() << "Format version:" << formvers;
+    if(!config->JsonIgnoreDataVersion() && formvers != FORMAT_VERSION)
+    {
+        qCritical() << __func__ << "Incorrect value: 'Version' =" << formvers;
+        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect data format version: '%1'").arg(formvers));
+        return false;
+    }
 
     auto obj_size = root_object.value("Size").toObject();
     int w = obj_size.value("Width").toInt();
@@ -880,15 +890,15 @@ bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
     if(obj_act.isEmpty()) { qCritical() << __func__ << "JsonArray 'Activity' is empty"; return false; }
 
     if(!obj_rule.contains("Name"))
-    { qCritical() << __func__ << "Key 'Name' is absent"; return false; }
+    { qCritical() << __func__ << "JsonValue 'Name' is absent"; return false; }
     rule->setObjectName(obj_rule["Name"].toString());
 
     if(!obj_rule.contains("DeathEnd"))
-    { qCritical() << __func__ << "Key 'DeathEnd' is absent"; return false; }
+    { qCritical() << __func__ << "JsonValue 'DeathEnd' is absent"; return false; }
     rule->setDeathEnd(obj_rule["DeathEnd"].toBool());
 
     if(!obj_rule.contains("CurseTime"))
-    { qCritical() << __func__ << "Key 'CurseTime' is absent"; return false; }
+    { qCritical() << __func__ << "JsonValue 'CurseTime' is absent"; return false; }
     rule->setCurseTime(obj_rule["CurseTime"].toInt());
 
     Activity activity;
@@ -899,31 +909,31 @@ bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
         QVector<QVariant> v;
 
         if(!o.contains("Type"))
-        { qCritical() << __func__ << "Key 'Activity.Type' is absent"; return false; }
+        { qCritical() << __func__ << "JsonValue 'Activity.Type' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::ActivityType>(o["Type"].toInt())));
 
         if(!o.contains("SelfState"))
-        { qCritical() << __func__ << "Key 'Activity.SelfState' is absent"; return false; }
+        { qCritical() << __func__ << "JsonValue 'Activity.SelfState' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::CellState>(o["SelfState"].toInt())));
 
         if(!o.contains("Target"))
-        { qCritical() << __func__ << "Key 'Activity.Target' is absent"; return false; }
+        { qCritical() << __func__ << "JsonValue 'Activity.Target' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::ActivityTarget>(o["Target"].toInt())));
 
         if(!o.contains("TargetState"))
-        { qCritical() << __func__ << "Key 'Activity.TargetState' is absent"; return false; }
+        { qCritical() << __func__ << "JsonValue 'Activity.TargetState' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::CellState>(o["TargetState"].toInt())));
 
         if(!o.contains("Operand"))
-        { qCritical() << __func__ << "Key 'Activity.Operand' is absent"; return false; }
+        { qCritical() << __func__ << "JsonValue 'Activity.Operand' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::ActivityOperand>(o["Operand"].toInt())));
 
         if(!o.contains("Operator"))
-        { qCritical() << __func__ << "Key 'Activity.Operator' is absent"; return false; }
+        { qCritical() << __func__ << "JsonValue 'Activity.Operator' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::ActivityOperator>(o["Operator"].toInt())));
 
         if(!o.contains("OperandValue"))
-        { qCritical() << __func__ << "Key 'Activity.OperandValue' is absent"; return false; }
+        { qCritical() << __func__ << "JsonValue 'Activity.OperandValue' is absent"; return false; }
         v.append(o["OperandValue"].toInt());
 
         activity.append(v);
@@ -944,13 +954,22 @@ bool MainWindow::RuleFromJsonText(FieldRule* rule, const QString& text)
     auto root_object = document.object();
     if(root_object.isEmpty()) { qCritical() << __func__ << "Root JsonObject is empty"; return false; }
 
-    if(root_object.value("Application").toString() != APP_NAME)
-    { qCritical() << __func__ << "Incorrect value: 'Application' =" << root_object.value("Application").toString();
-        return false; }
+    auto appname = root_object.value("Application").toString();
+    if(appname != APP_NAME)
+    {
+        qCritical() << __func__ << "Incorrect value: 'Application' =" << appname;
+        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect application name: '%1'").arg(appname));
+        return false;
+    }
 
-    if(!config->JsonIgnoreDataVersion() && root_object.value("Version").toString() != FORMAT_VERSION)
-    { qCritical() << __func__ << "Incorrect value: 'Version' =" << root_object.value("Version").toString();
-        return false; }
+    auto formvers = root_object.value("Version").toString();
+    qDebug() << "Format version:" << formvers;
+    if(!config->JsonIgnoreDataVersion() && formvers != FORMAT_VERSION)
+    {
+        qCritical() << __func__ << "Incorrect value: 'Version' =" << formvers;
+        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect data format version: '%1'").arg(formvers));
+        return false;
+    }
 
     return RuleFromJsonObject(rule, &root_object);
 }
@@ -995,7 +1014,8 @@ void MainWindow::saveRuleToFile(FieldRule *rule)
 
     auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
     auto text = document.toJson(json_mode);
-    textToFile(text, filename);
+    if(!textToFile(text, filename))
+        QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(filename));
 }
 
 void MainWindow::FieldToJsonObject(QJsonObject *jobject)
@@ -1094,6 +1114,36 @@ void MainWindow::loadSnapshot(QJsonDocument* document)
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
+}
+
+bool MainWindow::loadProjectFromJsonObject(QJsonObject *jobject)
+{
+    auto obj_size = jobject->value("Size").toObject();
+    if(obj_size.isEmpty())
+    {
+        qCritical() << __func__ << "JsonObject 'Size' is empty";
+        return false;
+    }
+
+    auto w = obj_size.value("Width").toInt();
+    auto h = obj_size.value("Height").toInt();
+    if(w <= 0 && h <= 0)
+    {
+        qCritical() << __func__ << "Incorrect values Size (w, h):" << w << h;
+        return false;
+    }
+
+    createField(w, h, false);
+    if(!FieldFromJsonObject(jobject)) return false;
+
+    auto rule = new FieldRule;
+    if(!RuleFromJsonObject(rule, jobject))
+    {
+        rule->deleteLater();
+        return false;
+    }
+    m_Field->setRule(rule);
+    return true;
 }
 
 void MainWindow::slotSetup()
@@ -1357,17 +1407,23 @@ void MainWindow::slotNewProject()
         return;
     }
 
-    m_Snapshots->clearList();
-
     config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
     config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
     auto random = map.value(keys.at(5)).value.toBool();
     config->setWindowShowFieldInfo(map.value(keys.at(6)).value.toBool());
 
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+
     createField(config->SceneFieldSize(), config->SceneFieldSize(), random);
 
     auto currentrule = map.value(keys.at(3)).value.toString();
     m_Field->setRule(ruleslist.value(currentrule));
+    for(auto r: ruleslist) if(!r->parent()) r->deleteLater();
+
+    m_Snapshots->clearList();
+    createScene();
+    if(random) redrawScene();
 
     setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
                    arg(APP_NAME, FORMAT_VERSION, currentrule,
@@ -1375,19 +1431,13 @@ void MainWindow::slotNewProject()
                        QString::number(m_Field->height()),
                        QString::number(config->SceneCellSize())));
 
+    setMainActionsEnable(true);
+
     m_SceneView->zoomer()->Zoom(-1.0);
     m_LabelFieldAvCalc->setText("0 ms");
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     m_LabelSelectedCell->setText("-");
 
-    createScene();
-
-    for(auto r: ruleslist) if(!r->parent()) r->deleteLater();
-
-    setMainActionsEnable(true);
-    setCellsActionsEnable(false);
-
-    if(random) redrawScene();
     if(config->WindowShowFieldInfo()) slotInfoField();
 }
 
@@ -1502,7 +1552,8 @@ void MainWindow::slotSaveCellsToPreset()
     setCellsActionsEnable(false);
 
     auto text = CellsToJsonText(firstcell, secondcell, config->SaveToPresetExceptDead());
-    textToFile(text, filename);
+    if(!textToFile(text, filename))
+        QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(filename));
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
@@ -1536,7 +1587,6 @@ void MainWindow::slotLoadCellsFromPreset()
 
     bool ok;
     auto text = fileToText(filename, &ok);
-
     if(!ok)
     {
         QMessageBox::critical(this, tr("Error"), tr("Error at loading data from file: '%1'").arg(filename));
@@ -1645,15 +1695,15 @@ void MainWindow::slotSaveImageToFile()
         return;
     }
 
-    auto fileformat = config->ImageFileFormat().toLower();
+    auto fileext = config->ImageFileFormat().toLower();
     auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), config->LastDir(),
-                                                 tr("%1 files (*.%2)").arg(fileformat.toUpper(), fileformat));
+                                                 tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
 
     config->setLastDir(QFileInfo(filename).dir().path());
 
-    auto dot_fileformat = QString(".%1").arg(fileformat);
+    auto dot_fileformat = QString(".%1").arg(fileext);
     if(!filename.endsWith(dot_fileformat, Qt::CaseInsensitive)) filename.append(dot_fileformat);
 
     stopFieldCalculating();
@@ -1661,7 +1711,7 @@ void MainWindow::slotSaveImageToFile()
     setCellsActionsEnable(false);
 
     auto pixmap = m_SceneView->getScene()->getSceneItem()->getPixmap();
-    if(!pixmap->save(filename, fileformat.toUpper().toLatin1().constData()))
+    if(!pixmap->save(filename, fileext.toUpper().toLatin1().constData()))
         QMessageBox::critical(this, tr("Error"),
                               tr("Error at file saving. Path: '%1'").arg(filename));
 
@@ -1825,14 +1875,115 @@ void MainWindow::slotSelectSnapshot()
 
 void MainWindow::slotLoadProject()
 {
-    // TODO: slotLoadProject
-    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+    qDebug() << __func__;
+    stopFieldCalculating();
+
+    auto fileext = PROJECT_FILE_EXTENSION.toLower();
+    auto filename = QFileDialog::getOpenFileName(this, tr("Load project"), config->PathPojectsDir(),
+                                                 tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
+
+    if(filename.isNull() || filename.isEmpty()) return;
+
+    bool ok;
+    auto text = fileToText(filename, &ok);
+    if(!ok)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Error at loading data from file: '%1'").arg(filename));
+        return;
+    }
+
+    QJsonParseError p_error;
+    QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
+
+    if(document.isNull() || document.isEmpty()) { qCritical() << __func__ << "QJsonDocument is empty"; return; }
+    if(p_error.error != QJsonParseError::NoError) { qCritical() << __func__ << "JsonParseError:" << p_error.errorString(); return; }
+
+    auto root_object = document.object();
+    if(root_object.isEmpty()) { qCritical() << __func__ << "Root JsonObject is empty"; return; }
+
+    auto appname = root_object.value("Application").toString();
+    if(appname != APP_NAME)
+    {
+        qCritical() << __func__ << "Incorrect value: 'Application' =" << appname;
+        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect application name: '%1'").arg(appname));
+        return;
+    }
+
+    auto formvers = root_object.value("Version").toString();
+    qDebug() << "Format version:" << formvers;
+    if(!config->JsonIgnoreDataVersion() && formvers != FORMAT_VERSION)
+    {
+        qCritical() << __func__ << "Incorrect value: 'Version' =" << formvers;
+        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect data format version: '%1'").arg(formvers));
+        return;
+    }
+
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+
+    if(!loadProjectFromJsonObject(&root_object))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Error at project loading."));
+        return;
+    }
+
+    setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
+                   arg(APP_NAME, FORMAT_VERSION, m_Field->getRule()->objectName(),
+                       QString::number(m_Field->width()),
+                       QString::number(m_Field->height()),
+                       QString::number(config->SceneCellSize())));
+
+    m_SceneView->zoomer()->Zoom(-1.0);
+    m_LabelFieldAvCalc->setText("0 ms");
+    m_LabelSceneAvDraw->setText(tr("0 ms"));
+    m_LabelSelectedCell->setText("-");
+
+    m_Snapshots->clearList();
+    createScene();
+    redrawScene();
+
+    setMainActionsEnable(true);
+    if(config->WindowShowFieldInfo()) slotInfoField();
 }
 
 void MainWindow::slotSaveProject()
 {
-    // TODO: slotSaveProject
-    QMessageBox::information(this, tr("Information"), tr("Not ready yet."));
+    qDebug() << __func__;
+    auto fileext = PROJECT_FILE_EXTENSION.toLower();
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save project"), config->PathPojectsDir(),
+                                                 tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
+
+    if(filename.isNull() || filename.isEmpty()) return;
+
+    stopFieldCalculating();
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+
+    auto dot_fileext = QString(".%1").arg(fileext);
+    if(!filename.endsWith(dot_fileext, Qt::CaseInsensitive)) filename.append(dot_fileext);
+
+    auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
+    QJsonDocument document;
+    QJsonObject obj_root {{"DateTime", datetime},
+                          {"Application", APP_NAME},
+                          {"Version", FORMAT_VERSION}};
+
+    FieldToJsonObject(&obj_root);
+    RuleToJsonObject(m_Field->getRule(),&obj_root);
+
+    auto firstcell = m_Field->getCell({0, 0});
+    auto secondcell = m_Field->getCell({m_Field->width() - 1, m_Field->height() - 1});
+    CellsToJsonObject(&obj_root, firstcell, secondcell, false);
+
+    document.setObject(obj_root);
+    auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
+    auto text = document.toJson(json_mode);
+
+    if(!textToFile(text, filename))
+        QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(filename));
+
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
 }
 
 void MainWindow::slotNewRule()

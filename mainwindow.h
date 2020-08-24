@@ -69,6 +69,7 @@ protected:
     bool FieldFromJsonObject(QJsonObject *jobject);
     void createSnapshot();
     void loadSnapshot(QJsonDocument* document);
+    bool loadProjectFromJsonObject(QJsonObject *jobject);
 
 private:
     bool m_FieldRunning;   // состояние поля

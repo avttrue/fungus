@@ -144,14 +144,15 @@ void Field::calculate()
                 if(m_AbortCalculating) break;
                 c->applyInfo();
             }
+            // статистика актуальная при включённых правилах
+            m_FieldInformation->setActiveCells(active_count);
+            m_FieldInformation->setChangedCells(cells_changed.count());
         }
 
         m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive_count - cursed_count);
         m_FieldInformation->setAliveCells(alive_count);
         m_FieldInformation->setCursedCells(cursed_count);
-        m_FieldInformation->setActiveCells(active_count);
         m_FieldInformation->applyAverageCalc(time);
-        m_FieldInformation->setChangedCells(cells_changed.count());
 
         Q_EMIT signalCalculated(cells_to_redraw);
 
