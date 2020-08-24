@@ -348,6 +348,7 @@ void MainWindow::loadGui()
 
 void MainWindow::slotStepStop()
 {
+    qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
         qCritical() << __func__ << "Scene not created";
@@ -372,6 +373,7 @@ void MainWindow::slotStepStop()
 
 void MainWindow::slotRun()
 {
+    qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
         qCritical() << __func__ << "Scene not created";
@@ -411,6 +413,7 @@ void MainWindow::slotFieldRunning(bool value)
 
 void MainWindow::createScene()
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->addScene(m_Field);
     scene->addSceneItem();
 
@@ -423,6 +426,7 @@ void MainWindow::createScene()
 
 void MainWindow::createField(int w, int h, bool random)
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->getScene();
     if(scene) scene->StopAdvanse();
 
@@ -449,6 +453,7 @@ void MainWindow::createField(int w, int h, bool random)
 
 void MainWindow::fillField(bool random)
 {
+    qDebug() << __func__;
     m_ProgressBar->setRange(0, m_Field->height());
     m_ProgressBar->setValue(0);
     m_ProgressBar->show();
@@ -515,6 +520,7 @@ void MainWindow::setCellsActionsEnable(bool value)
 
 void MainWindow::deleteField()
 {
+    qDebug() << __func__;
     Q_EMIT signalStopField(); // здесь сразу выключаем поле
 
     if(m_Field)
@@ -538,6 +544,7 @@ void MainWindow::deleteField()
 
 void MainWindow::stopThreadField()
 {
+    qDebug() << __func__;
     m_ThreadField->quit();
     m_ThreadField->requestInterruption();
 }
@@ -764,7 +771,6 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
     m_ProgressBar->setValue(0);
     m_ProgressBar->show();
 
-    int counter = 0;
     for(auto o: obj_cells)
     {
         auto obj_index = o.toObject().value("Index").toObject();
@@ -791,7 +797,7 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
         }
         c->applyInfo();
 
-        m_ProgressBar->setValue(++counter);
+        m_ProgressBar->setValue(m_ProgressBar->value() + 1);
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
     }
 
@@ -1073,6 +1079,7 @@ bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
 
 void MainWindow::createSnapshot()
 {
+    qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
         qCritical() << __func__ << "Scene not created";
@@ -1099,6 +1106,7 @@ void MainWindow::createSnapshot()
 
 void MainWindow::loadSnapshot(QJsonDocument* document)
 {
+    qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
         qCritical() << __func__ << "Scene not created";
@@ -1118,6 +1126,7 @@ void MainWindow::loadSnapshot(QJsonDocument* document)
 
 bool MainWindow::loadProjectFromJsonObject(QJsonObject *jobject)
 {
+    qDebug() << __func__;
     auto obj_size = jobject->value("Size").toObject();
     if(obj_size.isEmpty())
     {
@@ -1369,15 +1378,21 @@ void MainWindow::slotNewProject()
     QDir dir(config->PathRulesDir());
     dir.setNameFilters(QStringList(QString("*.%1").arg(RULE_FILE_EXTENSION)));
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+    auto rulecount = dir.entryList().count();
 
-    qDebug() << "Rule files count:" << dir.entryList().count();
+    m_ProgressBar->setRange(0, rulecount);
+    m_ProgressBar->setValue(0);
+    m_ProgressBar->show();
+    qDebug() << "Rule files count:" << rulecount;
     for(auto f: dir.entryList())
     {
+        m_ProgressBar->setValue(m_ProgressBar->value() + 1);
         auto rule = new FieldRule;
         if(!RuleFromFilePath(rule, config->PathRulesDir() + QDir::separator() + f))
             continue;
         ruleslist.insert(rule->objectName(), rule);
     }
+    m_ProgressBar->hide();
     qDebug() << "Rules loaded:" << ruleslist.count();
 
     const QVector<QString> keys = {
@@ -1460,6 +1475,7 @@ void MainWindow::slotZoomUndoScene()
 
 void MainWindow::slotSaveCellsToClipbord()
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
@@ -1492,6 +1508,7 @@ void MainWindow::slotSaveCellsToClipbord()
 
 void MainWindow::slotLoadCellsFromClipbord()
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
@@ -1522,6 +1539,7 @@ void MainWindow::slotLoadCellsFromClipbord()
 
 void MainWindow::slotSaveCellsToPreset()
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
@@ -1561,6 +1579,7 @@ void MainWindow::slotSaveCellsToPreset()
 
 void MainWindow::slotLoadCellsFromPreset()
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
@@ -1602,6 +1621,7 @@ void MainWindow::slotLoadCellsFromPreset()
 
 void MainWindow::slotClearCells()
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
@@ -1689,6 +1709,7 @@ void MainWindow::slotShowCell(Cell *cell)
 
 void MainWindow::slotSaveImageToFile()
 {
+    qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
         qCritical() << __func__ << "Scene not created";
@@ -1721,6 +1742,7 @@ void MainWindow::slotSaveImageToFile()
 
 void MainWindow::slotRandomFill()
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
@@ -1834,6 +1856,7 @@ void MainWindow::slotLabelSelectedCellClick()
 
 void MainWindow::slotCreateSnapshot()
 {
+    qDebug() << __func__;
     stopFieldCalculating();
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
@@ -1848,6 +1871,7 @@ void MainWindow::slotCreateSnapshot()
 
 void MainWindow::slotSelectSnapshot()
 {
+    qDebug() << __func__;
     if(!m_Snapshots->count())
     {
         QMessageBox::warning(this, tr("Warning"), tr("Snapshot list is empty."));
