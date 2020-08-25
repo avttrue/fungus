@@ -105,11 +105,22 @@ void Field::calculate()
 
                     // итог применения правила к ячейке
                     // cell Age
-                    if(oi->getState() == Kernel::CellState::ALIVE) ni->upAge();
-                    else ni->setAge(0);
+                    if(oi->getState() == Kernel::CellState::ALIVE &&
+                            ni->getState() == Kernel::CellState::CURSED)
+                        ni->setAge(0);
+                    else if(oi->getState() == Kernel::CellState::CURSED &&
+                            m_Rule->getCurseTime() > -1 &&
+                            oi->getAge() == ni->getAge())
+                        ni->upAge();
+                    else if(ni->getState() == Kernel::CellState::ALIVE)
+                        ni->upAge();
+                    else
+                        ni->setAge(0);
 
                     // cell Generation
-                    if(oi->getAge() == 0 && ni->getAge() > 0) ni->upGeneration();
+                    if(ni->getState() == Kernel::CellState::ALIVE &&
+                            oi->getAge() == 0 &&
+                            ni->getAge() > 0) ni->upGeneration();
                 }
 
                 auto ois = oi->getState();
@@ -156,7 +167,9 @@ void Field::calculate()
 
         Q_EMIT signalCalculated(cells_to_redraw);
 
-        if(!alive_count) m_CalculatingNonstop = false;
+        if(!alive_count && (!cursed_count || (cursed_count && m_Rule->getCurseTime() < 0)))
+            m_CalculatingNonstop = false;
+
 
         if(!m_CalculatingNonstop) slotStopCalculating();
 
@@ -187,6 +200,12 @@ void Field::applyRules(Cell *cell)
 {
     auto oi = cell->getOldInfo();
     auto ni = cell->getNewInfo();
+
+    // проверка возраста отравленной ячейки
+    if(oi->getState() == Kernel::CellState::CURSED &&
+            m_Rule->getCurseTime() > -1 &&
+            oi->getAge() >= static_cast<uint>(m_Rule->getCurseTime()))
+        ni->setState(Kernel::CellState::DEAD);
 
     // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение]};
     for(auto a: m_Rule->getActivity())
@@ -273,7 +292,10 @@ void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at
     { ci->setState(Kernel::CellState::DEAD); }
 
     else if(at == Kernel::ActivityType::BOMB)
-    { for(auto c: list) c->getOldInfo()->setState(Kernel::CellState::CURSED); }
+    {
+        ci->setState(Kernel::CellState::CURSED);
+        for(auto c: list) c->getNewInfo()->setState(Kernel::CellState::CURSED);
+    }
 }
 
 Cell *Field::getTopCell(Cell *cell)
