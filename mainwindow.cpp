@@ -38,6 +38,7 @@
 #include <QToolTip>
 #include <QMenu>
 #include <QToolButton>
+#include <QSaveFile>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -1155,6 +1156,34 @@ bool MainWindow::loadProjectFromJsonObject(QJsonObject *jobject)
     return true;
 }
 
+bool MainWindow::writeCompressData(const QByteArray &data, const QString &path)
+{
+    qDebug() << __func__ << "compression level:" << config->ProjectFileCompressionLevel();
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    QByteArray ba = qCompress(data, config->ProjectFileCompressionLevel());
+    QSaveFile file(path);
+    file.open(QIODevice::WriteOnly);
+    file.write(ba);
+    qDebug() << "Compress & write data:" << data.size() << "bytes in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    return file.commit();
+}
+
+bool MainWindow::readUncompressData(QByteArray *data, const QString &path)
+{
+    qDebug() << __func__;
+    QFile file(path);
+    if(!file.open(QIODevice::ReadOnly)) return false;
+
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    QByteArray ba = file.readAll();
+    file.close();
+    if(!ba.size()) return false;
+
+    *data = qUncompress(ba);
+    qDebug() << "Read & uncompress data:" << ba.size() << "bytes in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    return data->size();
+}
+
 void MainWindow::slotSetup()
 {
     stopFieldCalculating();
@@ -1163,30 +1192,31 @@ void MainWindow::slotSetup()
                                    tr("02#_Write logs to file (restart required)"),
                                    tr("03#_Buttons size"),
                                    tr("04#_Rewrite resources at start"),
-                                   tr("05#_Scene options"),
-                                   tr("06#_Antialiasing"),
-                                   tr("07#_Update mode"),
-                                   tr("08#_Background color"),
-                                   tr("09#_Selection color"),
-                                   tr("10#_Zoom factor"),
-                                   tr("11#_Cells options"),
-                                   tr("12#_Alive cell color"),
-                                   tr("13#_Dead cell color"),
-                                   tr("14#_Cursed cell color"),
-                                   tr("15#_Indicate value alive cell age"),
-                                   tr("16#__Brightness"),
-                                   tr("17#__Maximal factor"),
-                                   tr("18#__Age diapason"),
-                                   tr("19#_Indicate value cursed cell age"),
-                                   tr("20#__Brightness"),
-                                   tr("21#__Maximal factor"),
-                                   tr("22#__Age diapason"),
-                                   tr("23#_Field options"),
-                                   tr("24#_Create first snapshot"),
-                                   tr("25#_Minimum pause at calculating (ms)"),
-                                   tr("26#_Copy to clipboard except dead cells"),
-                                   tr("27#_Save to preset except dead cells"),
-                                   tr("28#_Field thread priority"),
+                                   tr("05#_Data compression in project files"),
+                                   tr("06#_Scene options"),
+                                   tr("07#_Antialiasing"),
+                                   tr("08#_Update mode"),
+                                   tr("09#_Background color"),
+                                   tr("10#_Selection color"),
+                                   tr("11#_Zoom factor"),
+                                   tr("12#_Cells options"),
+                                   tr("13#_Alive cell color"),
+                                   tr("14#_Dead cell color"),
+                                   tr("15#_Cursed cell color"),
+                                   tr("16#_Indicate value alive cell age"),
+                                   tr("17#__Brightness"),
+                                   tr("18#__Maximal factor"),
+                                   tr("19#__Age diapason"),
+                                   tr("20#_Indicate value cursed cell age"),
+                                   tr("21#__Brightness"),
+                                   tr("22#__Maximal factor"),
+                                   tr("23#__Age diapason"),
+                                   tr("24#_Field options"),
+                                   tr("25#_Create first snapshot"),
+                                   tr("26#_Minimum pause at calculating (ms)"),
+                                   tr("27#_Copy to clipboard except dead cells"),
+                                   tr("28#_Save to preset except dead cells"),
+                                   tr("29#_Field thread priority"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -1194,30 +1224,31 @@ void MainWindow::slotSetup()
      {keys.at(2), {QVariant::Bool, config->WriteLogsToFile()}},
      {keys.at(3), {QVariant::Int, config->ButtonSize(), 16, 100}},
      {keys.at(4), {QVariant::Bool, config->RewriteResource()}},
-     {keys.at(5), {}},
-     {keys.at(6), {QVariant::Bool, config->SceneViewAntialiasing()}},
-     {keys.at(7), {QVariant::StringList, config->SceneViewUpdateMode(), 0, SCENE_VIEW_UPDATE_MODES, DialogValueMode::OneFromList}},
-     {keys.at(8), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(9), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(10), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-     {keys.at(11), {}},
-     {keys.at(12), {QVariant::String, config->SceneCellAliveColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(13), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(14), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(15), {QVariant::Bool, config->CellAliveAgeIndicate()}},
-     {keys.at(16), {QVariant::StringList, config->CellAliveAgeIndicBright(), 0, SCENE_CELL_BRIGHTNESS_VALUES, DialogValueMode::OneFromList}},
-     {keys.at(17), {QVariant::Int, config->CellAliveAgeIndicFactor(), 150, 1000}},
-     {keys.at(18), {QVariant::Int, config->CellAliveAgeIndicDiapason(), 2, 50}},
-     {keys.at(19), {QVariant::Bool, config->CellCurseAgeIndicate()}},
-     {keys.at(20), {QVariant::StringList, config->CellCurseAgeIndicBright(), 0, SCENE_CELL_BRIGHTNESS_VALUES, DialogValueMode::OneFromList}},
-     {keys.at(21), {QVariant::Int, config->CellCurseAgeIndicFactor(), 150, 1000}},
-     {keys.at(22), {QVariant::Int, config->CellCurseAgeIndicDiapason(), 2, 50}},
-     {keys.at(23), {}},
-     {keys.at(24), {QVariant::Bool, config->SceneFirstSnapshot()}},
-     {keys.at(25), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
-     {keys.at(26), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
-     {keys.at(27), {QVariant::Bool, config->SaveToPresetExceptDead()}},
-     {keys.at(28), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
+     {keys.at(5), {QVariant::Bool, config->ProjectFileCompression()}},
+     {keys.at(6), {}},
+     {keys.at(7), {QVariant::Bool, config->SceneViewAntialiasing()}},
+     {keys.at(8), {QVariant::StringList, config->SceneViewUpdateMode(), 0, SCENE_VIEW_UPDATE_MODES, DialogValueMode::OneFromList}},
+     {keys.at(9), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(10), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(11), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
+     {keys.at(12), {}},
+     {keys.at(13), {QVariant::String, config->SceneCellAliveColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(14), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(15), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(16), {QVariant::Bool, config->CellAliveAgeIndicate()}},
+     {keys.at(17), {QVariant::StringList, config->CellAliveAgeIndicBright(), 0, SCENE_CELL_BRIGHTNESS_VALUES, DialogValueMode::OneFromList}},
+     {keys.at(18), {QVariant::Int, config->CellAliveAgeIndicFactor(), 150, 1000}},
+     {keys.at(19), {QVariant::Int, config->CellAliveAgeIndicDiapason(), 2, 50}},
+     {keys.at(20), {QVariant::Bool, config->CellCurseAgeIndicate()}},
+     {keys.at(21), {QVariant::StringList, config->CellCurseAgeIndicBright(), 0, SCENE_CELL_BRIGHTNESS_VALUES, DialogValueMode::OneFromList}},
+     {keys.at(22), {QVariant::Int, config->CellCurseAgeIndicFactor(), 150, 1000}},
+     {keys.at(23), {QVariant::Int, config->CellCurseAgeIndicDiapason(), 2, 50}},
+     {keys.at(24), {}},
+     {keys.at(25), {QVariant::Bool, config->SceneFirstSnapshot()}},
+     {keys.at(26), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
+     {keys.at(27), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
+     {keys.at(28), {QVariant::Bool, config->SaveToPresetExceptDead()}},
+     {keys.at(29), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -1228,30 +1259,31 @@ void MainWindow::slotSetup()
     config->setWriteLogsToFile(map.value(keys.at(2)).value.toBool());
     config->setButtonSize(map.value(keys.at(3)).value.toInt());
     config->setRewriteResource(map.value(keys.at(4)).value.toInt());
+    config->setProjectFileCompression(map.value(keys.at(5)).value.toBool());
     // scene
-    config->setSceneViewAntialiasing(map.value(keys.at(6)).value.toBool());
-    config->setSceneViewUpdateMode(map.value(keys.at(7)).value.toString());
-    config->setSceneBgColor(map.value(keys.at(8)).value.toString());
-    config->setSceneSelectColor(map.value(keys.at(9)).value.toString());
-    config->setSceneScaleStep(map.value(keys.at(10)).value.toDouble());
+    config->setSceneViewAntialiasing(map.value(keys.at(7)).value.toBool());
+    config->setSceneViewUpdateMode(map.value(keys.at(8)).value.toString());
+    config->setSceneBgColor(map.value(keys.at(9)).value.toString());
+    config->setSceneSelectColor(map.value(keys.at(10)).value.toString());
+    config->setSceneScaleStep(map.value(keys.at(11)).value.toDouble());
     // cell
-    config->setSceneCellAliveColor(map.value(keys.at(12)).value.toString());
-    config->setSceneCellDeadColor(map.value(keys.at(13)).value.toString());
-    config->setSceneCellCurseColor(map.value(keys.at(14)).value.toString());
-    config->setCellAliveAgeIndicate(map.value(keys.at(15)).value.toBool());
-    config->setCellAliveAgeIndicBright(map.value(keys.at(16)).value.toString());
-    config->setCellAliveAgeIndicFactor(map.value(keys.at(17)).value.toInt());
-    config->setCellAliveAgeIndicDiapason(map.value(keys.at(18)).value.toInt());
-    config->setCellCurseAgeIndicate(map.value(keys.at(19)).value.toBool());
-    config->setCellCurseAgeIndicBright(map.value(keys.at(20)).value.toString());
-    config->setCellCurseAgeIndicFactor(map.value(keys.at(21)).value.toInt());
-    config->setCellCurseAgeIndicDiapason(map.value(keys.at(22)).value.toInt());
+    config->setSceneCellAliveColor(map.value(keys.at(13)).value.toString());
+    config->setSceneCellDeadColor(map.value(keys.at(14)).value.toString());
+    config->setSceneCellCurseColor(map.value(keys.at(15)).value.toString());
+    config->setCellAliveAgeIndicate(map.value(keys.at(16)).value.toBool());
+    config->setCellAliveAgeIndicBright(map.value(keys.at(17)).value.toString());
+    config->setCellAliveAgeIndicFactor(map.value(keys.at(18)).value.toInt());
+    config->setCellAliveAgeIndicDiapason(map.value(keys.at(19)).value.toInt());
+    config->setCellCurseAgeIndicate(map.value(keys.at(20)).value.toBool());
+    config->setCellCurseAgeIndicBright(map.value(keys.at(21)).value.toString());
+    config->setCellCurseAgeIndicFactor(map.value(keys.at(22)).value.toInt());
+    config->setCellCurseAgeIndicDiapason(map.value(keys.at(23)).value.toInt());
     // field
-    config->setSceneFirstSnapshot(map.value(keys.at(24)).value.toBool());
-    config->setSceneCalculatingMinPause(map.value(keys.at(25)).value.toInt());
-    config->setCopyToClipboardExceptDead(map.value(keys.at(26)).value.toBool());
-    config->setSaveToPresetExceptDead(map.value(keys.at(27)).value.toBool());
-    config->setSceneFieldThreadPriority(map.value(keys.at(28)).value.toString());
+    config->setSceneFirstSnapshot(map.value(keys.at(25)).value.toBool());
+    config->setSceneCalculatingMinPause(map.value(keys.at(26)).value.toInt());
+    config->setCopyToClipboardExceptDead(map.value(keys.at(27)).value.toBool());
+    config->setSaveToPresetExceptDead(map.value(keys.at(28)).value.toBool());
+    config->setSceneFieldThreadPriority(map.value(keys.at(29)).value.toString());
 
     // применение настроек
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
@@ -1908,16 +1940,19 @@ void MainWindow::slotLoadProject()
 
     if(filename.isNull() || filename.isEmpty()) return;
 
+    QByteArray data;
     bool ok;
-    auto text = fileToText(filename, &ok);
+    if(config->ProjectFileCompression()) ok = readUncompressData(&data, filename);
+    else data = fileToText(filename, &ok).toUtf8();
     if(!ok)
     {
+        qCritical() << __func__ << "Error at loading data from file";
         QMessageBox::critical(this, tr("Error"), tr("Error at loading data from file: '%1'").arg(filename));
         return;
     }
 
     QJsonParseError p_error;
-    QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
+    QJsonDocument document = QJsonDocument::fromJson(data, &p_error);
 
     if(document.isNull() || document.isEmpty()) { qCritical() << __func__ << "QJsonDocument is empty"; return; }
     if(p_error.error != QJsonParseError::NoError) { qCritical() << __func__ << "JsonParseError:" << p_error.errorString(); return; }
@@ -2003,8 +2038,14 @@ void MainWindow::slotSaveProject()
     auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
     auto text = document.toJson(json_mode);
 
-    if(!textToFile(text, filename))
+    bool ok;
+    if(config->ProjectFileCompression()) ok = writeCompressData(text, filename);
+    else ok = textToFile(text, filename);
+    if(!ok)
+    {
+        qCritical() << __func__ << "Data writing error";
         QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(filename));
+    }
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);

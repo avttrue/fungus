@@ -70,6 +70,14 @@ void Config::load()
         m_Settings->setValue("ImageFileFormat", IMAGE_FILE_FORMAT);
     m_ImageFileFormat = m_Settings->value("ImageFileFormat").toString();
 
+    if(!m_Settings->contains("ProjectFileCompression"))
+        m_Settings->setValue("ProjectFileCompression", PROJECT_FILE_COMPRESSION);
+    m_ProjectFileCompression = m_Settings->value("ProjectFileCompression").toBool();
+
+    if(!m_Settings->contains("ProjectFileCompressionLevel"))
+        m_Settings->setValue("ProjectFileCompressionLevel", PROJECT_FILE_COMPRESSION_LEVEL);
+    m_ProjectFileCompressionLevel = m_Settings->value("ProjectFileCompressionLevel").toInt();
+
     if(!m_Settings->contains("MainWindow/CellInfoWindowHeight"))
         m_Settings->setValue("MainWindow/CellInfoWindowHeight", CELL_INFO_WINDOW_HEIGHT);
     m_CellInfoWindowHeight = m_Settings->value("MainWindow/CellInfoWindowHeight").toInt();
@@ -219,10 +227,26 @@ void Config::load()
     m_SceneCreateDefaultRule = m_Settings->value("Scene/CreateDefaultRule").toBool();
 }
 
+void Config::setProjectFileCompressionLevel(int value)
+{
+    if(m_ProjectFileCompressionLevel == value) return;
+
+    m_ProjectFileCompressionLevel = value;
+    m_Settings->setValue("ProjectFileCompressionLevel", m_ProjectFileCompressionLevel);
+}
+
+void Config::setProjectFileCompression(bool value)
+{
+    if(m_ProjectFileCompression == value) return;
+
+    m_ProjectFileCompression = value;
+    m_Settings->setValue("ProjectFileCompression", m_ProjectFileCompression);
+}
+
 void Config::setSceneCreateDefaultRule(bool value)
 {
     if(m_SceneCreateDefaultRule == value) return;
-
+    
     m_SceneCreateDefaultRule = value;
     m_Settings->setValue("Scene/CreateDefaultRule", m_SceneCreateDefaultRule);
 }
@@ -668,3 +692,5 @@ QString Config::PathPojectsDir() const { return m_PathPojectsDir; }
 int Config::EditRulesWindowWidth() const { return m_EditRulesWindowWidth; }
 int Config::EditRulesWindowHeight() const { return m_EditRulesWindowHeight; }
 bool Config::SceneCreateDefaultRule() const { return m_SceneCreateDefaultRule; }
+bool Config::ProjectFileCompression() const { return m_ProjectFileCompression; }
+int Config::ProjectFileCompressionLevel() const { return m_ProjectFileCompressionLevel; }

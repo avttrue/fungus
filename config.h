@@ -120,6 +120,10 @@ public:
     void setEditRulesWindowWidth(int value);
     bool SceneCreateDefaultRule() const;
     void setSceneCreateDefaultRule(bool value);
+    bool ProjectFileCompression() const;
+    void setProjectFileCompression(bool value);
+    int ProjectFileCompressionLevel() const;
+    void setProjectFileCompressionLevel(int value);
 
 protected:
     void load();
@@ -164,6 +168,7 @@ private:
     int m_EditRulesWindowWidth;                     // размеры окна редактирования правил
     int m_SplashTime;                               // время отображения сплеш-заставки
     int m_SplashSize;                               // размеры сплеш-заставки
+    int m_ProjectFileCompressionLevel;              // уровень сжатия данных при сохранении проекта: -1 - поумолчанию, 0-9
     Qt::KeyboardModifiers m_SceneZoomKeyModifier;   // модификатор управления зумом
     Qt::KeyboardModifiers m_SceneTooltipKeyModifier;// модификатор отображения координат Field
     Qt::KeyboardModifiers m_SceneMultiselKeyModifier;// модификатор выбора группы Cell
@@ -179,6 +184,7 @@ private:
     bool m_RewriteResource;                         // переписывать ресурсы при старте
     bool m_SceneFirstSnapshot;                      // создавать снапшот при первом запуске поля
     bool m_SceneCreateDefaultRule;                  // создавать правило по-умолчанию
+    bool m_ProjectFileCompression;                  // сжимать данные при сохранении проекта
 };
 
 #endif // CONFIG_H

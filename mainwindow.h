@@ -70,6 +70,8 @@ protected:
     void createSnapshot();
     void loadSnapshot(QJsonDocument* document);
     bool loadProjectFromJsonObject(QJsonObject *jobject);
+    bool writeCompressData(const QByteArray& data, const QString &path);
+    bool readUncompressData(QByteArray* data, const QString &path);
 
 private:
     bool m_FieldRunning;   // состояние поля
