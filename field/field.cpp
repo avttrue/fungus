@@ -238,7 +238,7 @@ void Field::applyRules(Cell *cell)
         switch(aoperator)
         {
         case Kernel::ActivityOperator::EQUAL:
-        {  
+        {
             if(count == avalue) setRulesActivityReaction(ni, atype);
             break;
         }
@@ -264,15 +264,25 @@ uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list
 
     // количество соседей определённого типа
     if(ao == Kernel::ActivityOperand::COUNT)
-    { count = list.count(); }
+    {
+        count = list.count();
+    }
 
     // суммарный возраст соседей определённого типа
     else if(ao == Kernel::ActivityOperand::AGE)
-    { for(auto c: list) count += c->getOldInfo()->getAge(); }
+    {
+        for(auto c: list)
+            count += c->getOldInfo()->getAge();
+    }
 
     // суммарное кол-во поколений соседей определённого типа
     else if(ao == Kernel::ActivityOperand::GEN)
-    { for(auto c: list) count += c->getOldInfo()->getGeneration(); }
+    {
+        for(auto c: list)
+        {
+            count += c->getOldInfo()->getGeneration();
+        }
+    }
 
     return count;
 }
