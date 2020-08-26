@@ -59,11 +59,13 @@ QString ActivityElementToString(const QVector<QVariant> &activity)
      * TargetState,
      * ActivityOperand,
      * ActivityOperator,
-     * ActivityValue}*/
+     * ActivityValue} */
     auto activitytype = QVariant::fromValue(activity.at(0)).toString();
     auto activitysstate = QVariant::fromValue(activity.at(1)).toString();
     auto activitytarget = QVariant::fromValue(activity.at(2)).toString();
-    auto activitytstate = QVariant::fromValue(activity.at(3)).toString();
+    auto activitytstate =
+            static_cast<Kernel::ActivityTarget>(activity.at(2).toInt()) == Kernel::ActivityTarget::SELF
+            ? "****" : QVariant::fromValue(activity.at(3)).toString();
     auto activityoperand = QVariant::fromValue(activity.at(4)).toString();
     auto activityoperator = QVariant::fromValue(activity.at(5)).toString();
     auto activityvalue = activity.at(6).toString();

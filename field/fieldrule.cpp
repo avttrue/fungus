@@ -5,7 +5,6 @@
 #include <QDebug>
 #include <QMetaProperty>
 
-// TODO: Временное исполнение FieldRule
 FieldRule::FieldRule(Field *parent)
     : QObject(parent),
       m_CurseTime(0),
@@ -114,6 +113,6 @@ void FieldRule::setDefault()
    qDebug() << "FieldRule" << objectName() << "filled as default";
 }
 
-Activity FieldRule::getActivity() const { return m_Activity; } // TODO: FieldRule::getActivity() - возвращать указатель
+Activity FieldRule::getActivity() const { return m_Activity; }
 int FieldRule::getCurseTime() const { return m_CurseTime; }
 bool FieldRule::isDeathEnd() const { return m_DeathEnd; }
