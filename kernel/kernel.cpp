@@ -59,7 +59,7 @@ QString ActivityElementToString(const QVector<QVariant> &activity)
      * TargetState,
      * ActivityOperand,
      * ActivityOperator,
-     * [значение]}*/
+     * ActivityValue}*/
     auto activitytype = QVariant::fromValue(activity.at(0)).toString();
     auto activitysstate = QVariant::fromValue(activity.at(1)).toString();
     auto activitytarget = QVariant::fromValue(activity.at(2)).toString();

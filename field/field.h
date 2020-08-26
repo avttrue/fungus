@@ -45,8 +45,8 @@ protected:
     QVector<Cell*> getCellsAround(Cell* cell);
     QVector<Cell*> getCellsAroundByStatus(Cell* cell, Kernel::CellState status);
     void applyRules(Cell* cell);                    // применение правил
-    uint getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list); // получить значение в операнде
-    void setRulesActivityReaction(CellInformation *ci, Kernel::ActivityType at, QVector<Cell*> list);
+    uint getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell *> list); // получить значение в операнде
+    void setRulesActivityReaction(CellInformation *ci, Kernel::ActivityType at);
 
 
 private:

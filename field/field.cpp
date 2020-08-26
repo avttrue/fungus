@@ -107,17 +107,17 @@ void Field::calculate()
                     // cell Age
                     if(oi->getState() == Kernel::CellState::ALIVE &&
                             ni->getState() == Kernel::CellState::CURSED)
-                        ni->setAge(0);
+                        ni->setAge(0); // была жива, стала отравлена
                     else if(oi->getState() == Kernel::CellState::CURSED &&
-                            m_Rule->getCurseTime() > -1 &&
-                            oi->getAge() == ni->getAge())
-                        ni->upAge();
+                            m_Rule->getCurseTime() > -1)
+                        ni->upAge(); // время отравления
                     else if(ni->getState() == Kernel::CellState::ALIVE)
-                        ni->upAge();
+                        ni->upAge(); // возраст живой ячейки
                     else
-                        ni->setAge(0);
+                        ni->setAge(0); // для всех остальных случаев возраст обнуляется
 
                     // cell Generation
+                    // поколение увеличивается, если только что стала живой
                     if(ni->getState() == Kernel::CellState::ALIVE &&
                             oi->getAge() == 0 &&
                             ni->getAge() > 0) ni->upGeneration();
@@ -207,66 +207,69 @@ void Field::applyRules(Cell *cell)
             oi->getAge() >= static_cast<uint>(m_Rule->getCurseTime()))
         ni->setState(Kernel::CellState::DEAD);
 
-    // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение]};
+    // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, ActivityValue};
     for(auto a: m_Rule->getActivity())
     {
-        auto sstate = static_cast<Kernel::CellState>(a.value(1).toInt());   // self state
+        auto sstate = static_cast<Kernel::CellState>(a.value(1).toInt());   // SelfState
         if(oi->getState() != sstate) continue;
 
-        auto atype = static_cast<Kernel::ActivityType>(a.value(0).toInt());
-        auto atarget = static_cast<Kernel::ActivityTarget>(a.value(2).toInt());
-        auto tstate = static_cast<Kernel::CellState>(a.value(3).toInt());
-        auto aoperand = static_cast<Kernel::ActivityOperand>(a.value(4).toInt());
-        auto aoperator = static_cast<Kernel::ActivityOperator>(a.value(5).toInt());
-        auto value =  a.value(6).toUInt();
-        auto list = getCellsAroundByStatus(cell, tstate);
+        auto atype = static_cast<Kernel::ActivityType>(a.value(0).toInt()); // ActivityType
+        auto atarget = static_cast<Kernel::ActivityTarget>(a.value(2).toInt()); // ActivityTarget
+        auto tstate = static_cast<Kernel::CellState>(a.value(3).toInt()); // TargetState
+        auto aoperand = static_cast<Kernel::ActivityOperand>(a.value(4).toInt()); // ActivityOperand
+        auto aoperator = static_cast<Kernel::ActivityOperator>(a.value(5).toInt()); // ActivityOperator
+        auto value =  a.value(6).toUInt(); // ActivityValue
+        auto list = atarget == Kernel::ActivityTarget::NEAR // список соседей определённого типа
+                ? getCellsAroundByStatus(cell, tstate)
+                : QVector<Cell*>{};
 
         // применение оператора к операнду
         switch(aoperator)
         {
         case Kernel::ActivityOperator::EQUAL:
         {
-            if(atarget == Kernel::ActivityTarget::SELF)
+            if(atarget == Kernel::ActivityTarget::SELF) // tstate игнорируется
             {
                 auto count = cell->getOldInfo()->getAge();
-                if(count == value) setRulesActivityReaction(ni, atype, list);
+                if(count == value) setRulesActivityReaction(ni, atype);
             }
             else if(atarget == Kernel::ActivityTarget::NEAR)
             {
-                auto count = getRulesOperandValue(aoperand, list);
-                if(count == value) setRulesActivityReaction(ni, atype, list);
+                auto count = getRulesOperandValue(aoperand, getCellsAroundByStatus(cell, tstate));
+                if(count == value) setRulesActivityReaction(ni, atype);
             }
             break;
         }
         case Kernel::ActivityOperator::LESS:
         {
-            if(atarget == Kernel::ActivityTarget::SELF)
+            if(atarget == Kernel::ActivityTarget::SELF) // tstate игнорируется
             {
                 auto count = cell->getOldInfo()->getAge();
-                if(count < value) setRulesActivityReaction(ni, atype, list);
+                if(count < value) setRulesActivityReaction(ni, atype);
             }
             else if(atarget == Kernel::ActivityTarget::NEAR)
             {
                 auto count = getRulesOperandValue(aoperand, list);
-                if(count < value) setRulesActivityReaction(ni, atype, list);
+                if(count < value) setRulesActivityReaction(ni, atype);
             }
             break;
         }
         case Kernel::ActivityOperator::MORE:
         {
-            if(atarget == Kernel::ActivityTarget::SELF)
+            if(atarget == Kernel::ActivityTarget::SELF) // tstate игнорируется
             {
                 auto count = cell->getOldInfo()->getAge();
-                if(count > value) setRulesActivityReaction(ni, atype, list);
+                if(count > value) setRulesActivityReaction(ni, atype);
             }
             else if(atarget == Kernel::ActivityTarget::NEAR)
             {
                 auto count = getRulesOperandValue(aoperand, list);
-                if(count > value) setRulesActivityReaction(ni, atype, list);
+                if(count > value) setRulesActivityReaction(ni, atype);
             }
             break;
         }
         }
+        // DeathEnd: состояние отличное от живого прекращиет обработку правил
         if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::ALIVE) return;
     }
 }
@@ -274,16 +277,16 @@ void Field::applyRules(Cell *cell)
 uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list)
 {
     uint count = 0;
-    if(ao == Kernel::ActivityOperand::COUNT)
+    if(ao == Kernel::ActivityOperand::COUNT) // количество соседей определённого типа
     { count = list.count(); }
 
-    else if(ao == Kernel::ActivityOperand::AGE)
+    else if(ao == Kernel::ActivityOperand::AGE) // суммарный возраст соседей определённого типа
     { for(auto c: list) count += c->getOldInfo()->getAge(); }
 
     return count;
 }
 
-void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at, QVector<Cell *> list)
+void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at)
 {
     if(at == Kernel::ActivityType::BIRTH)
     { ci->setState(Kernel::CellState::ALIVE); }
@@ -291,11 +294,8 @@ void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at
     else if(at == Kernel::ActivityType::DEATH)
     { ci->setState(Kernel::CellState::DEAD); }
 
-    else if(at == Kernel::ActivityType::BOMB)
-    {
-        ci->setState(Kernel::CellState::CURSED);
-        for(auto c: list) c->getNewInfo()->setState(Kernel::CellState::CURSED);
-    }
+    else if(at == Kernel::ActivityType::CURSE)
+    { ci->setState(Kernel::CellState::CURSED); }
 }
 
 Cell *Field::getTopCell(Cell *cell)

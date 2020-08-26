@@ -17,7 +17,7 @@ public:
     {
         DEAD = 0,           // мертва (пустая)
         ALIVE,              // жива
-        CURSED              // отравлена (может принять такое значение при смерти или взрыве)
+        CURSED              // отравлена
     };
     Q_ENUM(CellState)
 
@@ -28,7 +28,7 @@ public:
     {
         BIRTH = 0,          // рождение
         DEATH,              // смерть
-        BOMB                // взрыв
+        CURSE               // отравление
     };
     Q_ENUM(ActivityType)
 
