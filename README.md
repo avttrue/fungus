@@ -20,8 +20,4 @@ In any case, I'm not a programmer, it's just a hobby for me.
 
 If you can suggest ways to speed up calculations within this architecture, it would be great.
 
-Not ready yet:
-- BOMB action;
-
-- CURSE state;
 
