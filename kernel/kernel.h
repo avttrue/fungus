@@ -59,7 +59,8 @@ public:
     enum class ActivityOperand: int
     {
         COUNT = 0,          // количество
-        AGE                 // возраст
+        AGE,                // возраст
+        GEN                 // поколение
     };
     Q_ENUM(ActivityOperand)
 };

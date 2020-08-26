@@ -207,7 +207,13 @@ void Field::applyRules(Cell *cell)
             oi->getAge() >= static_cast<uint>(m_Rule->getCurseTime()))
         ni->setState(Kernel::CellState::DEAD);
 
-    // {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, ActivityValue};
+    /* {ActivityType,
+     * SelfState,
+     * ActivityTarget,
+     * TargetState,
+     * ActivityOperand,
+     * ActivityOperator,
+     * ActivityValue}; */
     for(auto a: m_Rule->getActivity())
     {
         auto sstate = static_cast<Kernel::CellState>(a.value(1).toInt());   // SelfState
@@ -218,54 +224,32 @@ void Field::applyRules(Cell *cell)
         auto tstate = static_cast<Kernel::CellState>(a.value(3).toInt()); // TargetState
         auto aoperand = static_cast<Kernel::ActivityOperand>(a.value(4).toInt()); // ActivityOperand
         auto aoperator = static_cast<Kernel::ActivityOperator>(a.value(5).toInt()); // ActivityOperator
-        auto value =  a.value(6).toUInt(); // ActivityValue
-        auto list = atarget == Kernel::ActivityTarget::NEAR // список соседей определённого типа
-                ? getCellsAroundByStatus(cell, tstate)
-                : QVector<Cell*>{};
+        auto avalue =  a.value(6).toUInt(); // ActivityValue
+
+        // получение значения операнда
+        uint count = 0;
+        if(atarget == Kernel::ActivityTarget::SELF) // tstate игнорируется
+            count = getRulesOperandValue(aoperand, {cell});
+
+        else if(atarget == Kernel::ActivityTarget::NEAR)
+            count = getRulesOperandValue(aoperand, getCellsAroundByStatus(cell, tstate));
 
         // применение оператора к операнду
         switch(aoperator)
         {
         case Kernel::ActivityOperator::EQUAL:
-        {
-            if(atarget == Kernel::ActivityTarget::SELF) // tstate игнорируется
-            {
-                auto count = cell->getOldInfo()->getAge();
-                if(count == value) setRulesActivityReaction(ni, atype);
-            }
-            else if(atarget == Kernel::ActivityTarget::NEAR)
-            {
-                auto count = getRulesOperandValue(aoperand, getCellsAroundByStatus(cell, tstate));
-                if(count == value) setRulesActivityReaction(ni, atype);
-            }
+        {  
+            if(count == avalue) setRulesActivityReaction(ni, atype);
             break;
         }
         case Kernel::ActivityOperator::LESS:
         {
-            if(atarget == Kernel::ActivityTarget::SELF) // tstate игнорируется
-            {
-                auto count = cell->getOldInfo()->getAge();
-                if(count < value) setRulesActivityReaction(ni, atype);
-            }
-            else if(atarget == Kernel::ActivityTarget::NEAR)
-            {
-                auto count = getRulesOperandValue(aoperand, list);
-                if(count < value) setRulesActivityReaction(ni, atype);
-            }
+            if(count < avalue) setRulesActivityReaction(ni, atype);
             break;
         }
         case Kernel::ActivityOperator::MORE:
         {
-            if(atarget == Kernel::ActivityTarget::SELF) // tstate игнорируется
-            {
-                auto count = cell->getOldInfo()->getAge();
-                if(count > value) setRulesActivityReaction(ni, atype);
-            }
-            else if(atarget == Kernel::ActivityTarget::NEAR)
-            {
-                auto count = getRulesOperandValue(aoperand, list);
-                if(count > value) setRulesActivityReaction(ni, atype);
-            }
+            if(count > avalue) setRulesActivityReaction(ni, atype);
             break;
         }
         }
@@ -277,11 +261,18 @@ void Field::applyRules(Cell *cell)
 uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list)
 {
     uint count = 0;
-    if(ao == Kernel::ActivityOperand::COUNT) // количество соседей определённого типа
+
+    // количество соседей определённого типа
+    if(ao == Kernel::ActivityOperand::COUNT)
     { count = list.count(); }
 
-    else if(ao == Kernel::ActivityOperand::AGE) // суммарный возраст соседей определённого типа
+    // суммарный возраст соседей определённого типа
+    else if(ao == Kernel::ActivityOperand::AGE)
     { for(auto c: list) count += c->getOldInfo()->getAge(); }
+
+    // суммарное кол-во поколений соседей определённого типа
+    else if(ao == Kernel::ActivityOperand::GEN)
+    { for(auto c: list) count += c->getOldInfo()->getGeneration(); }
 
     return count;
 }
