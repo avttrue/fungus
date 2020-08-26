@@ -575,6 +575,61 @@ void MainWindow::redrawScene()
     m_Field->calculate();
 }
 
+bool MainWindow::getJsonRootObject(const QByteArray &data, QJsonObject* root)
+{
+    qDebug() << __func__;
+    QJsonParseError p_error;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &p_error);
+
+    if(doc.isNull() || doc.isEmpty())
+    {
+        qCritical() << __func__ << "QJsonDocument is empty";
+        return false;
+    }
+
+    if(p_error.error != QJsonParseError::NoError)
+    {
+        qCritical() << __func__ << "JsonParseError:" << p_error.errorString();
+        return false;
+    }
+
+    *root = doc.object();
+    if(root->isEmpty())
+    {
+        qCritical() << __func__ << "Root JsonObject is empty";
+        return false;
+    }
+    return true;
+}
+
+bool MainWindow::checkJsonDocumentVersion(QJsonObject *root)
+{
+    qDebug() << __func__;
+
+    auto app = root->value("Application").toString();
+    auto vers = root->value("Version").toString();
+    qDebug() << "Dava version:" << app << vers;
+
+    if(app != APP_NAME)
+    {
+        qCritical() << __func__ << "Incorrect value: 'Application' =" << app;
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Data error. \n Incorrect application name: '%1'").arg(app));
+        return false;
+    }
+
+    if(config->JsonIgnoreDataVersion()) return true;
+
+    if(vers != FORMAT_VERSION)
+    {
+        qCritical() << __func__ << "Incorrect value: 'Version' =" << vers;
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Data error. \n Incorrect data format version: '%1'").arg(vers));
+        return false;
+    }
+    return true;
+}
+
 void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *secondcell, bool except_dead)
 {
     qDebug() << __func__;
@@ -690,31 +745,9 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
         return false;
     }
 
-    QJsonParseError p_error;
-    QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
-
-    if(document.isNull() || document.isEmpty()) { qCritical() << __func__ << "QJsonDocument is empty"; return false; }
-    if(p_error.error != QJsonParseError::NoError) { qCritical() << __func__ << "JsonParseError:" << p_error.errorString(); return false; }
-
-    auto root_object = document.object();
-    if(root_object.isEmpty()) { qCritical() << __func__ << "Root JsonObject is empty"; return false; }
-
-    auto appname = root_object.value("Application").toString();
-    if(appname != APP_NAME)
-    {
-        qCritical() << __func__ << "Incorrect value: 'Application' =" << appname;
-        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect application name: '%1'").arg(appname));
-        return false;
-    }
-
-    auto formvers = root_object.value("Version").toString();
-    qDebug() << "Format version:" << formvers;
-    if(!config->JsonIgnoreDataVersion() && formvers != FORMAT_VERSION)
-    {
-        qCritical() << __func__ << "Incorrect value: 'Version' =" << formvers;
-        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect data format version: '%1'").arg(formvers));
-        return false;
-    }
+    QJsonObject root_object;
+    if(!getJsonRootObject(text.toUtf8(), &root_object)) return false;
+    if(!checkJsonDocumentVersion(&root_object)) return false;
 
     auto obj_size = root_object.value("Size").toObject();
     int w = obj_size.value("Width").toInt();
@@ -952,31 +985,10 @@ bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
 bool MainWindow::RuleFromJsonText(FieldRule* rule, const QString& text)
 {
     qDebug() << __func__;
-    QJsonParseError p_error;
-    QJsonDocument document = QJsonDocument::fromJson(text.toUtf8(), &p_error);
 
-    if(document.isNull() || document.isEmpty()) { qCritical() << __func__ << "QJsonDocument is empty"; return false; }
-    if(p_error.error != QJsonParseError::NoError) { qCritical() << __func__ << "JsonParseError:" << p_error.errorString(); return false; }
-
-    auto root_object = document.object();
-    if(root_object.isEmpty()) { qCritical() << __func__ << "Root JsonObject is empty"; return false; }
-
-    auto appname = root_object.value("Application").toString();
-    if(appname != APP_NAME)
-    {
-        qCritical() << __func__ << "Incorrect value: 'Application' =" << appname;
-        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect application name: '%1'").arg(appname));
-        return false;
-    }
-
-    auto formvers = root_object.value("Version").toString();
-    qDebug() << "Format version:" << formvers;
-    if(!config->JsonIgnoreDataVersion() && formvers != FORMAT_VERSION)
-    {
-        qCritical() << __func__ << "Incorrect value: 'Version' =" << formvers;
-        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect data format version: '%1'").arg(formvers));
-        return false;
-    }
+    QJsonObject root_object;
+    if(!getJsonRootObject(text.toUtf8(), &root_object)) return false;
+    if(!checkJsonDocumentVersion(&root_object)) return false;
 
     return RuleFromJsonObject(rule, &root_object);
 }
@@ -1947,35 +1959,19 @@ void MainWindow::slotLoadProject()
     if(!ok)
     {
         qCritical() << __func__ << "Error at loading data from file";
-        QMessageBox::critical(this, tr("Error"), tr("Error at loading data from file: '%1'").arg(filename));
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Error at loading data from file: '%1'").arg(filename));
         return;
     }
 
-    QJsonParseError p_error;
-    QJsonDocument document = QJsonDocument::fromJson(data, &p_error);
-
-    if(document.isNull() || document.isEmpty()) { qCritical() << __func__ << "QJsonDocument is empty"; return; }
-    if(p_error.error != QJsonParseError::NoError) { qCritical() << __func__ << "JsonParseError:" << p_error.errorString(); return; }
-
-    auto root_object = document.object();
-    if(root_object.isEmpty()) { qCritical() << __func__ << "Root JsonObject is empty"; return; }
-
-    auto appname = root_object.value("Application").toString();
-    if(appname != APP_NAME)
+    QJsonObject root_object;
+    if(!getJsonRootObject(data, &root_object))
     {
-        qCritical() << __func__ << "Incorrect value: 'Application' =" << appname;
-        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect application name: '%1'").arg(appname));
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Data error. Data is not Json document. \n File: '%1'").arg(filename));
         return;
     }
-
-    auto formvers = root_object.value("Version").toString();
-    qDebug() << "Format version:" << formvers;
-    if(!config->JsonIgnoreDataVersion() && formvers != FORMAT_VERSION)
-    {
-        qCritical() << __func__ << "Incorrect value: 'Version' =" << formvers;
-        QMessageBox::critical(this, tr("Error"), tr("Data error. \n Incorrect data format version: '%1'").arg(formvers));
-        return;
-    }
+    if(!checkJsonDocumentVersion(&root_object)) return;
 
     setMainActionsEnable(false);
     setCellsActionsEnable(false);

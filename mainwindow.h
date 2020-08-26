@@ -55,6 +55,8 @@ protected:
     void stopThreadField();
     void setSceneFieldThreadPriority();
     void redrawScene();
+    bool getJsonRootObject(const QByteArray& data, QJsonObject *root);
+    bool checkJsonDocumentVersion(QJsonObject *root);
     void CellsToJsonObject(QJsonObject *jobject, Cell* firstcell, Cell* secondcell, bool except_dead);
     QString CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exceptdead);
     bool CellsFromJsonText(Cell *cell, const QString& text);
