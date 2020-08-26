@@ -44,6 +44,7 @@ protected:
     Cell* getBottomRightCell(Cell* cell);
     QVector<Cell*> getCellsAround(Cell* cell);
     QVector<Cell*> getCellsAroundByStatus(Cell* cell, Kernel::CellState status);
+    QVector<Cell*> getCellsGroupByStatus(Cell* cell, Kernel::CellState status);
     void applyRules(Cell* cell);                    // применение правил
     uint getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell *> list); // получить значение в операнде
     void setRulesActivityReaction(CellInformation *ci, Kernel::ActivityType at);

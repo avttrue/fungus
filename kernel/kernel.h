@@ -38,7 +38,8 @@ public:
     enum class ActivityTarget: int
     {
         SELF = 0,           // сама ячейка
-        NEAR                // соседние ячейки любые
+        NEAR,               // соседние ячейки любые
+        GROUP               // и ячейка и соседи
     };
     Q_ENUM(ActivityTarget)
 

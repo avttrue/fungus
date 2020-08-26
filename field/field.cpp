@@ -216,43 +216,57 @@ void Field::applyRules(Cell *cell)
      * ActivityValue}; */
     for(auto a: m_Rule->getActivity())
     {
-        auto sstate = static_cast<Kernel::CellState>(a.value(1).toInt());   // SelfState
-        if(oi->getState() != sstate) continue;
+        auto s_stat = static_cast<Kernel::CellState>(a.value(1).toInt());   // SelfState
+        if(oi->getState() != s_stat) continue;
 
-        auto atype = static_cast<Kernel::ActivityType>(a.value(0).toInt()); // ActivityType
-        auto atarget = static_cast<Kernel::ActivityTarget>(a.value(2).toInt()); // ActivityTarget
-        auto tstate = static_cast<Kernel::CellState>(a.value(3).toInt()); // TargetState
-        auto aoperand = static_cast<Kernel::ActivityOperand>(a.value(4).toInt()); // ActivityOperand
-        auto aoperator = static_cast<Kernel::ActivityOperator>(a.value(5).toInt()); // ActivityOperator
-        auto avalue =  a.value(6).toUInt(); // ActivityValue
+        auto a_type = static_cast<Kernel::ActivityType>(a.value(0).toInt()); // ActivityType
+        auto a_targ = static_cast<Kernel::ActivityTarget>(a.value(2).toInt()); // ActivityTarget
+        auto t_stat = static_cast<Kernel::CellState>(a.value(3).toInt()); // TargetState
+        auto a_opnd = static_cast<Kernel::ActivityOperand>(a.value(4).toInt()); // ActivityOperand
+        auto a_oper = static_cast<Kernel::ActivityOperator>(a.value(5).toInt()); // ActivityOperator
+        auto a_valu =  a.value(6).toUInt(); // ActivityValue
+        uint value; // реальное значение операнда
 
-        // получение значения операнда
-        uint count = 0;
-        if(atarget == Kernel::ActivityTarget::SELF) // tstate игнорируется
-            count = getRulesOperandValue(aoperand, {cell});
-
-        else if(atarget == Kernel::ActivityTarget::NEAR)
-            count = getRulesOperandValue(aoperand, getCellsAroundByStatus(cell, tstate));
+        // получение реального значения операнда
+        switch(a_targ)
+        {
+        case Kernel::ActivityTarget::SELF: // tstate игнорируется
+        {
+            value = getRulesOperandValue(a_opnd, {cell});
+            break;
+        }
+        case Kernel::ActivityTarget::NEAR:
+        {
+            value = getRulesOperandValue(a_opnd, getCellsAroundByStatus(cell, t_stat));
+            break;
+        }
+        case Kernel::ActivityTarget::GROUP:
+        {
+            value = getRulesOperandValue(a_opnd, getCellsGroupByStatus(cell, t_stat));
+            break;
+        }
+        }
 
         // применение оператора к операнду
-        switch(aoperator)
+        switch(a_oper)
         {
         case Kernel::ActivityOperator::EQUAL:
         {
-            if(count == avalue) setRulesActivityReaction(ni, atype);
+            if(value == a_valu) setRulesActivityReaction(ni, a_type);
             break;
         }
         case Kernel::ActivityOperator::LESS:
         {
-            if(count < avalue) setRulesActivityReaction(ni, atype);
+            if(value < a_valu) setRulesActivityReaction(ni, a_type);
             break;
         }
         case Kernel::ActivityOperator::MORE:
         {
-            if(count > avalue) setRulesActivityReaction(ni, atype);
+            if(value > a_valu) setRulesActivityReaction(ni, a_type);
             break;
         }
         }
+
         // DeathEnd: состояние отличное от живого прекращиет обработку правил
         if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::ALIVE) return;
     }
@@ -460,6 +474,15 @@ QVector<Cell *> Field::getCellsAroundByStatus(Cell *cell, Kernel::CellState stat
     if(nc->getOldInfo()->getState() == status) result.append(nc);
 
     return result;
+}
+
+QVector<Cell *> Field::getCellsGroupByStatus(Cell *cell, Kernel::CellState status)
+{
+   QVector<Cell*> result = getCellsAroundByStatus(cell, status);
+
+   if(cell->getOldInfo()->getState() == status) result.append(cell);
+
+   return result;
 }
 
 void Field::setCalculatingNonstop(bool value)
