@@ -76,6 +76,10 @@ void MainWindow::loadGui()
     QObject::connect(actionQt, &QAction::triggered, qApp, QApplication::aboutQt);
     actionQt->setAutoRepeat(false);
 
+    auto actionAbout = new QAction(QIcon(":/resources/img/info.svg"), tr("About"), this);
+    QObject::connect(actionAbout, &QAction::triggered, this, &MainWindow::slotAbout);
+    actionAbout->setAutoRepeat(false);
+
     auto actionExit = new QAction(QIcon(":/resources/img/exit.svg"), tr("Exit"), this);
     QObject::connect(actionExit, &QAction::triggered, this, &MainWindow::close);
     actionExit->setAutoRepeat(false);
@@ -256,6 +260,7 @@ void MainWindow::loadGui()
     m_TbMain->addWidget(new WidgetSpacer(this));
     m_TbMain->addAction(actionSetup);
     m_TbMain->addSeparator();
+    m_TbMain->addAction(actionAbout);
     m_TbMain->addAction(actionQt);
     m_TbMain->addAction(actionExit);
     addToolBar(Qt::TopToolBarArea, m_TbMain);
@@ -2100,7 +2105,7 @@ void MainWindow::slotInfoRule()
     table.append(QString("<tr><td class='TDTEXT2'><h2>%1</h2></td></tr>").arg(tr("Activities")));
     for(auto a: m_Field->getRule()->getActivity())
         table.append(QString("<tr><td class='TDTEXT1'>%1</td></tr>").
-                     arg(ActivityElementToString(a)));
+                     arg(ActivityElementToString(a).replace(' ', "&nbsp;")));
 
     auto content = QString("<table class='TABLE2'><caption><h2>%1</h2></caption>%2</table>").
             arg(tr("Rule"), table);
@@ -2124,6 +2129,19 @@ void MainWindow::slotImportRule()
     auto der = new DialogEditRules(this, rule);
     if(der->exec()) saveRuleToFile(rule);
     rule->deleteLater();
+}
+
+void MainWindow::slotAbout()
+{
+    auto content = getTextFromRes(":/resources/html/about_body.html").
+                    arg(APP_NAME, APP_VERS, GIT_VERS, BUILD_DATE, getSystemInfo(), QT_VERSION_STR);
+
+    auto title = tr("About %1").arg(APP_NAME);
+    if(findPreviousWindowCopy(title)) return;
+
+    auto dhc = new DialogHtmlContent(title, this);
+    dhc->setContent(title, content);
+    dhc->show();
 }
 
 void MainWindow::slotFieldAvCalc(qreal value)
