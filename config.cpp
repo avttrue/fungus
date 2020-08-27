@@ -94,6 +94,14 @@ void Config::load()
         m_Settings->setValue("MainWindow/FieldInfoWindowHeight", FIELD_INFO_WINDOW_HEIGHT);
     m_FieldInfoWindowHeight = m_Settings->value("MainWindow/FieldInfoWindowHeight").toInt();
 
+    if(!m_Settings->contains("MainWindow/InfoWindowWidth"))
+        m_Settings->setValue("MainWindow/InfoWindowWidth", INFO_WINDOW_WIDTH);
+    m_InfoWindowWidth = m_Settings->value("MainWindow/InfoWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/InfoWindowHeight"))
+        m_Settings->setValue("MainWindow/InfoWindowHeight", INFO_WINDOW_HEIGHT);
+    m_InfoWindowHeight = m_Settings->value("MainWindow/InfoWindowHeight").toInt();
+
     if(!m_Settings->contains("MainWindow/EditRulesWindowWidth"))
         m_Settings->setValue("MainWindow/EditRulesWindowWidth", EDIT_RULES_WINDOW_WIDTH);
     m_EditRulesWindowWidth = m_Settings->value("MainWindow/EditRulesWindowWidth").toInt();
@@ -225,6 +233,22 @@ void Config::load()
     if(!m_Settings->contains("Scene/CreateDefaultRule"))
         m_Settings->setValue("Scene/CreateDefaultRule", SCENE_CREATE_DEFAULT_RULE);
     m_SceneCreateDefaultRule = m_Settings->value("Scene/CreateDefaultRule").toBool();
+}
+
+void Config::setInfoWindowWidth(int value)
+{
+    if(m_InfoWindowWidth == value) return;
+
+    m_InfoWindowWidth = value;
+    m_Settings->setValue("MainWindow/InfoWindowWidth", m_InfoWindowWidth);
+}
+
+void Config::setInfoWindowHeight(int value)
+{
+    if(m_InfoWindowHeight == value) return;
+
+    m_InfoWindowHeight = value;
+    m_Settings->setValue("MainWindow/InfoWindowHeight", m_InfoWindowHeight);
 }
 
 void Config::setProjectFileCompressionLevel(int value)
@@ -643,6 +667,8 @@ Qt::KeyboardModifiers Config::SceneMultiselModifier() const { return m_SceneMult
 QString Config::SceneViewUpdateMode() const { return m_SceneViewUpdateMode; }
 int Config::CellInfoWindowWidth() const { return m_CellInfoWindowWidth; }
 int Config::CellInfoWindowHeight() const { return m_CellInfoWindowHeight; }
+int Config::InfoWindowWidth() const { return m_InfoWindowWidth; }
+int Config::InfoWindowHeight() const { return m_InfoWindowHeight; }
 QString Config::SceneCellCurseColor() const { return m_SceneCellCurseColor; }
 QString Config::SceneSelectColor() const { return m_SceneSelectColor; }
 bool Config::CellAliveAgeIndicate() const { return m_CellAliveAgeIndicate; }

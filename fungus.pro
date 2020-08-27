@@ -16,6 +16,7 @@ SOURCES += \
     dialogs/dialogcellinformation.cpp \
     dialogs/dialogeditrules.cpp \
     dialogs/dialogfieldinformation.cpp \
+    dialogs/dialoghtmlcontent.cpp \
     dialogs/dialoginfopanel.cpp \
     dialogs/dialogvalueslist.cpp \
     dialogs/helpergraphics.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     dialogs/dialogcellinformation.h \
     dialogs/dialogeditrules.h \
     dialogs/dialogfieldinformation.h \
+    dialogs/dialoghtmlcontent.h \
     dialogs/dialoginfopanel.h \
     dialogs/dialogvalueslist.h \
     dialogs/helpergraphics.h \

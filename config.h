@@ -124,6 +124,10 @@ public:
     void setProjectFileCompression(bool value);
     int ProjectFileCompressionLevel() const;
     void setProjectFileCompressionLevel(int value);
+    int InfoWindowHeight() const;
+    void setInfoWindowHeight(int value);
+    int InfoWindowWidth() const;
+    void setInfoWindowWidth(int value);
 
 protected:
     void load();
@@ -164,6 +168,8 @@ private:
     int m_CellInfoWindowWidth;                      // размеры окна информации о Cell
     int m_FieldInfoWindowHeight;                    // размеры окна информации о Field
     int m_FieldInfoWindowWidth;                     // размеры окна информации о Field
+    int m_InfoWindowHeight;                         // размеры справочного окна
+    int m_InfoWindowWidth;                          // размеры справочного окна
     int m_EditRulesWindowHeight;                    // размеры окна редактирования правил
     int m_EditRulesWindowWidth;                     // размеры окна редактирования правил
     int m_SplashTime;                               // время отображения сплеш-заставки

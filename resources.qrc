@@ -73,5 +73,6 @@
         <file>resources/img/plus.svg</file>
         <file>resources/img/update.svg</file>
         <file>resources/rules/Conway's_LIFE_game.frl</file>
+        <file>resources/html/main_body.html</file>
     </qresource>
 </RCC>

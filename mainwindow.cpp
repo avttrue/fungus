@@ -40,6 +40,8 @@
 #include <QToolButton>
 #include <QSaveFile>
 
+#include <dialogs/dialoghtmlcontent.h>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_FieldRunning(false),
@@ -1345,9 +1347,9 @@ void MainWindow::slotEditCell()
       tr("02#_Age"),
       tr("03#_Generation")};
     if(multyselection) keys.append(
-    { tr("04#_Group operations"),
-      tr("05#_Apply to all"),
-      tr("06#_Exclude 'State' property")});
+                { tr("04#_Group operations"),
+                  tr("05#_Apply to all"),
+                  tr("06#_Exclude 'State' property")});
 
     QMap<QString, DialogValue> map =
     { {keys.at(0), {}},
@@ -2087,8 +2089,24 @@ void MainWindow::slotInfoRule()
         return;
     }
 
-    // TODO: переделать диалог slotInfoRules
-    QMessageBox::information(this, tr("Information about rules"), m_Field->getRule()->toString());
+    auto title = tr("Information about current rule");
+    if(findPreviousWindowCopy(title)) return;
+
+    auto dhc = new DialogHtmlContent(title, this);
+
+    auto table = QString("<tr><td class='TDTEXT2'><h2>%1</h2></td></tr>").arg(tr("Properties"));
+    table.append(QString("<tr><td class='TDTEXT1'>%1</td></tr>").
+                 arg(m_Field->getRule()->PropertiesToString().replace('\n', "<br>")));
+    table.append(QString("<tr><td class='TDTEXT2'><h2>%1</h2></td></tr>").arg(tr("Activities")));
+    for(auto a: m_Field->getRule()->getActivity())
+        table.append(QString("<tr><td class='TDTEXT1'>%1</td></tr>").
+                     arg(ActivityElementToString(a)));
+
+    auto content = QString("<table class='TABLE2'><caption><h2>%1</h2></caption>%2</table>").
+            arg(tr("Rule"), table);
+
+    dhc->setContent(m_Field->getRule()->objectName(), content);
+    dhc->show();
 }
 
 void MainWindow::slotImportRule()
