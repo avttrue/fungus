@@ -98,10 +98,9 @@ void DialogHtmlContent::setOpenLinks(bool on)
     {
         QObject::connect(m_Content, &QTextBrowser::anchorClicked, [=](const QUrl &link)
         {
-            //if(!config->OpenUrls()) return;
             if(link.isEmpty() || !link.isValid()) return;
             if (!QDesktopServices::openUrl(link))
-                qCritical() << __func__ << ": error at QDesktopServices::openUrl(" << link.toString() << ")";
+                qCritical() << __func__ << ": error at QDesktopServices::openUrl" << link.toString();
         });
     }
 }

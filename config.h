@@ -128,6 +128,8 @@ public:
     void setInfoWindowHeight(int value);
     int InfoWindowWidth() const;
     void setInfoWindowWidth(int value);
+    int FieldRandomisationValue() const;
+    void setFieldRandomisationValue(int value);
 
 protected:
     void load();
@@ -153,6 +155,7 @@ private:
     QString m_CellAliveAgeIndicBright;              // индикация возраста живой ячейки: ярче/темнее
     QString m_CellCurseAgeIndicBright;              // индикация возраста отравленной ячейки: ярче/темнее
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
+    int m_FieldRandomisationValue;                  // параметр рандомизации 0-100
     int m_CellAliveAgeIndicFactor;                  // индикация возраста живой ячейки: максимальный фактор яркости/тёмности
     int m_CellAliveAgeIndicDiapason;                // индикация возраста живой ячейки: диапазон по возрасту
     int m_CellCurseAgeIndicFactor;                  // индикация возраста отравленной ячейки: максимальный фактор яркости/тёмности

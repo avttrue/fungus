@@ -233,6 +233,18 @@ void Config::load()
     if(!m_Settings->contains("Scene/CreateDefaultRule"))
         m_Settings->setValue("Scene/CreateDefaultRule", SCENE_CREATE_DEFAULT_RULE);
     m_SceneCreateDefaultRule = m_Settings->value("Scene/CreateDefaultRule").toBool();
+
+    if(!m_Settings->contains("Scene/FieldRandomisationValue"))
+        m_Settings->setValue("Scene/FieldRandomisationValue", FIELD_RANDOMISATION_VALUE);
+    m_FieldRandomisationValue = m_Settings->value("Scene/FieldRandomisationValue").toInt();
+}
+
+void Config::setFieldRandomisationValue(int value)
+{
+    if(m_FieldRandomisationValue == value) return;
+
+    m_FieldRandomisationValue = value;
+    m_Settings->setValue("Scene/FieldRandomisationValue", m_FieldRandomisationValue);
 }
 
 void Config::setInfoWindowWidth(int value)
@@ -720,3 +732,4 @@ int Config::EditRulesWindowHeight() const { return m_EditRulesWindowHeight; }
 bool Config::SceneCreateDefaultRule() const { return m_SceneCreateDefaultRule; }
 bool Config::ProjectFileCompression() const { return m_ProjectFileCompression; }
 int Config::ProjectFileCompressionLevel() const { return m_ProjectFileCompressionLevel; }
+int Config::FieldRandomisationValue() const { return m_FieldRandomisationValue; }
