@@ -80,6 +80,10 @@ void MainWindow::loadGui()
     QObject::connect(actionAbout, &QAction::triggered, this, &MainWindow::slotAbout);
     actionAbout->setAutoRepeat(false);
 
+    auto actionHelp = new QAction(QIcon(":/resources/img/question.svg"), tr("Help"), this);
+    QObject::connect(actionHelp, &QAction::triggered, this, &MainWindow::slotHelp);
+    actionHelp->setAutoRepeat(false);
+
     auto actionExit = new QAction(QIcon(":/resources/img/exit.svg"), tr("Exit"), this);
     QObject::connect(actionExit, &QAction::triggered, this, &MainWindow::close);
     actionExit->setAutoRepeat(false);
@@ -260,6 +264,7 @@ void MainWindow::loadGui()
     m_TbMain->addWidget(new WidgetSpacer(this));
     m_TbMain->addAction(actionSetup);
     m_TbMain->addSeparator();
+    m_TbMain->addAction(actionHelp);
     m_TbMain->addAction(actionAbout);
     m_TbMain->addAction(actionQt);
     m_TbMain->addAction(actionExit);
@@ -2140,6 +2145,19 @@ void MainWindow::slotAbout()
     if(findPreviousWindowCopy(title)) return;
 
     auto dhc = new DialogHtmlContent(title, this);
+    dhc->setContent(title, content);
+    dhc->show();
+}
+
+void MainWindow::slotHelp()
+{
+    auto content = getTextFromRes(":/resources/html/documentation_en.html");
+
+    auto title = tr("Help");
+    if(findPreviousWindowCopy(title)) return;
+
+    auto dhc = new DialogHtmlContent(title, this);
+    dhc->setOpenLinks(true);
     dhc->setContent(title, content);
     dhc->show();
 }

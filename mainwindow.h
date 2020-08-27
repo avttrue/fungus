@@ -157,6 +157,7 @@ private Q_SLOTS:
     void slotInfoRule();
     void slotImportRule();
     void slotAbout();
+    void slotHelp();
 
 Q_SIGNALS:
     void signalStopField();

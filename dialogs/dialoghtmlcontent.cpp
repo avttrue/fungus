@@ -30,15 +30,8 @@ DialogHtmlContent::DialogHtmlContent(const QString& title, QWidget *parent)
     setLayout(vblForm);
 
     m_Content = new QTextBrowser(this);
-    m_Content->setOpenLinks(false);
-    m_Content->setUndoRedoEnabled(false);
-    QObject::connect(m_Content, &QTextBrowser::anchorClicked, [=](const QUrl &link)
-    {
-        //if(!config->OpenUrls()) return;
-        if(link.isEmpty() || !link.isValid()) return;
-        if (!QDesktopServices::openUrl(link))
-            qCritical() << ": error at QDesktopServices::openUrl(" << link.toString() << ")";
-    });
+    setOpenLinks();
+    //TODO: DialogHtmlContent: кнопки навигации
 
     auto toolBar = new QToolBar();
     toolBar->setMovable(false);
@@ -91,4 +84,24 @@ void DialogHtmlContent::setContent(const QString &title, const QString& content)
 {
     m_Content->setText(getTextFromRes(":/resources/html/main_body.html").
                        arg(title, content, MAINDIV_MARGIN));
+}
+
+void DialogHtmlContent::setOpenLinks(bool on)
+{
+    m_Content->setOpenLinks(on);
+    m_Content->setUndoRedoEnabled(on);
+    if(on)
+    {
+        QObject::disconnect(m_Content, &QTextBrowser::anchorClicked, nullptr, nullptr);
+    }
+    else
+    {
+        QObject::connect(m_Content, &QTextBrowser::anchorClicked, [=](const QUrl &link)
+        {
+            //if(!config->OpenUrls()) return;
+            if(link.isEmpty() || !link.isValid()) return;
+            if (!QDesktopServices::openUrl(link))
+                qCritical() << __func__ << ": error at QDesktopServices::openUrl(" << link.toString() << ")";
+        });
+    }
 }
