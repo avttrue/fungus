@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+const QString MAINDIV_MARGIN = "10";
+
 class QTextBrowser;
 
 class DialogHtmlContent : public QDialog

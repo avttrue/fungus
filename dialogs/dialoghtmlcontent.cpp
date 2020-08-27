@@ -90,5 +90,5 @@ bool DialogHtmlContent::eventFilter(QObject *object, QEvent *event)
 void DialogHtmlContent::setContent(const QString &title, const QString& content)
 {
     m_Content->setText(getTextFromRes(":/resources/html/main_body.html").
-                       arg(title, content, QString::number(5)));
+                       arg(title, content, MAINDIV_MARGIN));
 }
