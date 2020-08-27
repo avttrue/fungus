@@ -1457,7 +1457,7 @@ void MainWindow::slotNewProject()
         tr("02#_Cell size"),
         tr("03#_Rule [%1]:").arg(QString::number(ruleslist.count())),
         tr("04#_Options"),
-        tr("05#_Random filling, %"),
+        tr("05#_Random filling, % (0 - not fill)"),
         tr("06#_Show field information"),
     };
     QMap<QString, DialogValue> map =
