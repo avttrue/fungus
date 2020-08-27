@@ -33,7 +33,7 @@ Field::Field(int width, int height, QObject *parent)
 
 Cell *Field::addCell(QPoint index) { return addCell(index.x(), index.y()); }
 
-void Field::fill(bool random)
+void Field::fill(int random)
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
     uint alive = 0;
@@ -45,14 +45,11 @@ void Field::fill(bool random)
         for(int w = 0; w < m_Width; w++)
         {
             auto c = addCell(w, h);
-            if(random)
+            if(random && rg.bounded(0, 100) < random)
             {
-                if(rg.bounded(0, 2))
-                {
-                    c->getOldInfo()->setState(Kernel::CellState::ALIVE);
-                    c->getNewInfo()->setState(Kernel::CellState::ALIVE);
-                    alive++;
-                }
+                c->getOldInfo()->setState(Kernel::CellState::ALIVE);
+                c->getNewInfo()->setState(Kernel::CellState::ALIVE);
+                alive++;
             }
         }
         Q_EMIT signalFillingProgress(h + 1);
@@ -478,11 +475,11 @@ QVector<Cell *> Field::getCellsAroundByStatus(Cell *cell, Kernel::CellState stat
 
 QVector<Cell *> Field::getCellsGroupByStatus(Cell *cell, Kernel::CellState status)
 {
-   QVector<Cell*> result = getCellsAroundByStatus(cell, status);
+    QVector<Cell*> result = getCellsAroundByStatus(cell, status);
 
-   if(cell->getOldInfo()->getState() == status) result.append(cell);
+    if(cell->getOldInfo()->getState() == status) result.append(cell);
 
-   return result;
+    return result;
 }
 
 void Field::setCalculatingNonstop(bool value)

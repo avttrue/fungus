@@ -425,7 +425,7 @@ void MainWindow::createScene()
     QObject::connect(scene, &Scene::signalSelectedCellsChanged, this, &MainWindow::slotSelectedCellsChanged);
 }
 
-void MainWindow::createField(int w, int h, bool random)
+void MainWindow::createField(int w, int h, int random)
 {
     qDebug() << __func__;
     auto scene = m_SceneView->getScene();
@@ -452,9 +452,9 @@ void MainWindow::createField(int w, int h, bool random)
     QObject::connect(m_ThreadField, &QThread::started, m_Field, &Field::calculate, Qt::DirectConnection);
 }
 
-void MainWindow::fillField(bool random)
+void MainWindow::fillField(int random)
 {
-    qDebug() << __func__;
+    qDebug() << __func__ << "random:" << random;
     m_ProgressBar->setRange(0, m_Field->height());
     m_ProgressBar->setValue(0);
     m_ProgressBar->show();
@@ -1445,7 +1445,7 @@ void MainWindow::slotNewProject()
         tr("02#_Cell size"),
         tr("03#_Rule [%1]:").arg(QString::number(ruleslist.count())),
         tr("04#_Options"),
-        tr("05#_Random filling"),
+        tr("05#_Random filling, % (0 - not fill)"),
         tr("06#_Show field information"),
     };
     QMap<QString, DialogValue> map =
@@ -1454,7 +1454,7 @@ void MainWindow::slotNewProject()
      {keys.at(2), {QVariant::Int, config->SceneCellSize(), 1, 100}},
      {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
      {keys.at(4), {}},
-     {keys.at(5), {QVariant::Bool, false}},
+     {keys.at(5), {QVariant::Int, 0, 0, 100}},
      {keys.at(6), {QVariant::Bool, config->WindowShowFieldInfo()}},
     };
 
@@ -1468,7 +1468,7 @@ void MainWindow::slotNewProject()
 
     config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
     config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
-    auto random = map.value(keys.at(5)).value.toBool();
+    auto random = map.value(keys.at(5)).value.toInt();
     config->setWindowShowFieldInfo(map.value(keys.at(6)).value.toBool());
 
     setMainActionsEnable(false);

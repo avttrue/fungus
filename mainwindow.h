@@ -47,8 +47,8 @@ protected:
     void closeEvent(QCloseEvent *event);
     void loadGui();
     void createScene();
-    void createField(int w, int h, bool random = false);
-    void fillField(bool random = false);
+    void createField(int w, int h, int random = 0);
+    void fillField(int random = 0);
     void setMainActionsEnable(bool value);
     void setCellsActionsEnable(bool value);
     void deleteField();

@@ -16,7 +16,7 @@ class Field : public QObject
 
 public:
     Field(int width, int height, QObject *parent = nullptr);
-    void fill(bool random = false);
+    void fill(int random = 0);
     int width();
     int height();
     Cell* addCell(int x, int y);
