@@ -76,5 +76,7 @@
         <file>resources/html/main_body.html</file>
         <file>resources/html/about_body.html</file>
         <file>resources/html/documentation_en.html</file>
+        <file>resources/img/left_arrow.svg</file>
+        <file>resources/img/right_arrow.svg</file>
     </qresource>
 </RCC>

@@ -11,13 +11,13 @@
 #include "dialogs/dialogcellinformation.h"
 #include "dialogs/dialogfieldinformation.h"
 #include "dialogs/dialogeditrules.h"
+#include "dialogs/dialoghtmlcontent.h"
 #include "field/field.h"
 #include "field/cell.h"
 #include "field/cellinformation.h"
 #include "field/fieldrule.h"
 #include "field/fieldinformation.h"
 
-#include <cstring>
 #include <QDebug>
 #include <QApplication>
 #include <QCloseEvent>
@@ -39,8 +39,6 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QSaveFile>
-
-#include <dialogs/dialoghtmlcontent.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -1328,6 +1326,7 @@ void MainWindow::slotSetup()
 
 void MainWindow::slotEditCell()
 {
+    qDebug() << __func__;
     stopFieldCalculating();
 
     auto scene = m_SceneView->getScene();
@@ -1419,6 +1418,7 @@ void MainWindow::slotEditCell()
 
 void MainWindow::slotNewProject()
 {
+    qDebug() << __func__;
     stopFieldCalculating();
 
     QMultiMap<QString, FieldRule*> ruleslist;
@@ -2176,7 +2176,7 @@ void MainWindow::slotHelp()
 
     auto dhc = new DialogHtmlContent(title, this);
     dhc->setOpenLinks(true);
-    dhc->setContent(title, content);
+    dhc->setHtml(":/resources/html/documentation_en.html");
     dhc->show();
 }
 

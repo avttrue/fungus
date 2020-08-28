@@ -13,7 +13,8 @@ class DialogHtmlContent : public QDialog
 public:
     DialogHtmlContent(const QString &title, QWidget *parent = nullptr);
     void setContent(const QString& title, const QString& content);
-    void setOpenLinks(bool on = false);
+    void setHtml(const QString& html);
+    void setOpenLinks(bool on);
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);

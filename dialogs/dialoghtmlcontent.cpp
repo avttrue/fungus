@@ -30,8 +30,6 @@ DialogHtmlContent::DialogHtmlContent(const QString& title, QWidget *parent)
     setLayout(vblForm);
 
     m_Content = new QTextBrowser(this);
-    setOpenLinks();
-    //TODO: DialogHtmlContent: кнопки навигации
 
     auto toolBar = new QToolBar();
     toolBar->setMovable(false);
@@ -46,6 +44,8 @@ DialogHtmlContent::DialogHtmlContent(const QString& title, QWidget *parent)
 
     vblForm->addWidget(m_Content);
     vblForm->addWidget(toolBar);
+
+    setOpenLinks(false);
 
     installEventFilter(this);
     resize(config->InfoWindowWidth(), config->InfoWindowHeight());
@@ -82,14 +82,18 @@ bool DialogHtmlContent::eventFilter(QObject *object, QEvent *event)
 
 void DialogHtmlContent::setContent(const QString &title, const QString& content)
 {
-    m_Content->setText(getTextFromRes(":/resources/html/main_body.html").
+    m_Content->setHtml(getTextFromRes(":/resources/html/main_body.html").
                        arg(title, content, MAINDIV_MARGIN));
+}
+
+void DialogHtmlContent::setHtml(const QString &html)
+{
+    m_Content->setHtml(getTextFromRes(html));
 }
 
 void DialogHtmlContent::setOpenLinks(bool on)
 {
     m_Content->setOpenLinks(on);
-    m_Content->setUndoRedoEnabled(on);
     if(on)
     {
         QObject::disconnect(m_Content, &QTextBrowser::anchorClicked, nullptr, nullptr);
