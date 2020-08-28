@@ -1457,8 +1457,9 @@ void MainWindow::slotNewProject()
         tr("02#_Cell size"),
         tr("03#_Rule [%1]:").arg(QString::number(ruleslist.count())),
         tr("04#_Options"),
-        tr("05#_Random filling, % (0 - not fill)"),
-        tr("06#_Show field information"),
+        tr("05#_Random fill"),
+        tr("06#__Density of random fill, %"),
+        tr("07#_Show field information"),
     };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -1466,8 +1467,9 @@ void MainWindow::slotNewProject()
      {keys.at(2), {QVariant::Int, config->SceneCellSize(), 1, 100}},
      {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
      {keys.at(4), {}},
-     {keys.at(5), {QVariant::Int, config->FieldRandomisationValue(), 0, 100}},
-     {keys.at(6), {QVariant::Bool, config->WindowShowFieldInfo()}},
+     {keys.at(5), {QVariant::Bool, false}},
+     {keys.at(6), {QVariant::Int, config->FieldRandomisationValue(), 1, 100}},
+     {keys.at(7), {QVariant::Bool, config->WindowShowFieldInfo()}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/asterisk.svg", tr("New project"), &map);
@@ -1480,21 +1482,23 @@ void MainWindow::slotNewProject()
 
     config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
     config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
-    config->setFieldRandomisationValue(map.value(keys.at(5)).value.toInt());
-    config->setWindowShowFieldInfo(map.value(keys.at(6)).value.toBool());
+    auto currentrule = map.value(keys.at(3)).value.toString();
+    auto rnd_on = map.value(keys.at(5)).value.toBool();
+    config->setFieldRandomisationValue(map.value(keys.at(6)).value.toInt());
+    config->setWindowShowFieldInfo(map.value(keys.at(7)).value.toBool());
 
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
 
-    createField(config->SceneFieldSize(), config->SceneFieldSize(), config->FieldRandomisationValue());
+    auto random = rnd_on ? config->FieldRandomisationValue() : 0;
+    createField(config->SceneFieldSize(), config->SceneFieldSize(), random);
 
-    auto currentrule = map.value(keys.at(3)).value.toString();
     m_Field->setRule(ruleslist.value(currentrule));
     for(auto r: ruleslist) if(!r->parent()) r->deleteLater();
 
     m_Snapshots->clearList();
     createScene();
-    if(config->FieldRandomisationValue()) redrawScene();
+    if(random) redrawScene();
 
     setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
                    arg(APP_NAME, FORMAT_VERSION, currentrule,
@@ -1818,11 +1822,11 @@ void MainWindow::slotRandomFill()
 
     const QVector<QString> keys = {
         tr("00#_Randomisation options"),
-        tr("01#_Random filling, %")
+        tr("01#_Density of random fill, %")
     };
     QMap<QString, DialogValue> map = {
         {keys.at(0), {}},
-        {keys.at(1), {QVariant::Int, config->FieldRandomisationValue(), 0, 100}}
+        {keys.at(1), {QVariant::Int, config->FieldRandomisationValue(), 1, 100}}
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/cells.svg", tr("Randome filling"), &map);
