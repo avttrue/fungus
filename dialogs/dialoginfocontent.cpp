@@ -1,4 +1,4 @@
-#include "dialoghtmlcontent.h"
+#include "dialoginfocontent.h"
 #include "properties.h"
 #include "helper.h"
 #include "controls.h"
@@ -12,7 +12,7 @@
 #include <QWindowStateChangeEvent>
 #include <QDesktopServices>
 
-DialogHtmlContent::DialogHtmlContent(const QString& title, QWidget *parent)
+DialogInfoContent::DialogInfoContent(const QString& title, QWidget *parent)
     : QDialog(parent)
 {
     setWindowFlags(Qt::Dialog |
@@ -49,11 +49,11 @@ DialogHtmlContent::DialogHtmlContent(const QString& title, QWidget *parent)
 
     installEventFilter(this);
     resize(config->InfoWindowWidth(), config->InfoWindowHeight());
-    qDebug() << "DialogHtmlContent" << windowTitle() << "created";
-    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogHtmlContent" << windowTitle() << "destroyed"; });
+    qDebug() << "DialogInfoContent" << windowTitle() << "created";
+    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogInfoContent" << windowTitle() << "destroyed"; });
 }
 
-bool DialogHtmlContent::eventFilter(QObject *object, QEvent *event)
+bool DialogInfoContent::eventFilter(QObject *object, QEvent *event)
 {
     switch (event->type())
     {
@@ -80,18 +80,17 @@ bool DialogHtmlContent::eventFilter(QObject *object, QEvent *event)
     }
 }
 
-void DialogHtmlContent::setContent(const QString &title, const QString& content)
+void DialogInfoContent::setHtmlContent(const QString& content)
 {
-    m_Content->setHtml(getTextFromRes(":/resources/html/main_body.html").
-                       arg(title, content, MAINDIV_MARGIN));
+    m_Content->setHtml(content);
 }
 
-void DialogHtmlContent::setHtml(const QString &html)
+void DialogInfoContent::setMarkdownSource(const QString &source)
 {
-    m_Content->setHtml(getTextFromRes(html));
+    m_Content->setSource(QUrl(source), QTextDocument::MarkdownResource);
 }
 
-void DialogHtmlContent::setOpenLinks(bool on)
+void DialogInfoContent::setOpenLinks(bool on)
 {
     m_Content->setOpenLinks(on);
     if(on)

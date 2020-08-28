@@ -16,10 +16,10 @@ SOURCES += \
     dialogs/dialogcellinformation.cpp \
     dialogs/dialogeditrules.cpp \
     dialogs/dialogfieldinformation.cpp \
-    dialogs/dialoghtmlcontent.cpp \
-    dialogs/dialoginfopanel.cpp \
+    dialogs/dialoginfocontent.cpp \
     dialogs/dialogvalueslist.cpp \
     dialogs/helpergraphics.cpp \
+    dialogs/infopanel.cpp \
     field/cellinformation.cpp \
     field/cell.cpp \
     field/field.cpp \
@@ -43,10 +43,10 @@ HEADERS += \
     dialogs/dialogcellinformation.h \
     dialogs/dialogeditrules.h \
     dialogs/dialogfieldinformation.h \
-    dialogs/dialoghtmlcontent.h \
-    dialogs/dialoginfopanel.h \
+    dialogs/dialoginfocontent.h \
     dialogs/dialogvalueslist.h \
     dialogs/helpergraphics.h \
+    dialogs/infopanel.h \
     field/cellinformation.h \
     field/field.h \
     field/fieldinformation.h \

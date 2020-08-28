@@ -1,5 +1,5 @@
 #include "dialogcellinformation.h"
-#include "dialoginfopanel.h"
+#include "infopanel.h"
 #include "properties.h"
 #include "controls.h"
 #include "field/cell.h"
@@ -107,7 +107,7 @@ bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
 
 void DialogCellInformation::loadInformation()
 {
-    glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), QVariant()));
+    glContent->addWidget(new InfoPanel(this, tr("Properties"), QVariant()));
 
     auto ci = m_Cell->getNewInfo();
     auto ci_mo = ci->metaObject();
@@ -116,16 +116,16 @@ void DialogCellInformation::loadInformation()
     {
         auto p = ci_mo->property(i);
         auto value = ci->property(p.name());
-        auto dip = new DialogInfoPanel(this, p.name(), value);
+        auto dip = new InfoPanel(this, p.name(), value);
 
         glContent->addWidget(dip);
 
         if(QString(p.name()) == "Age")
-            QObject::connect(ci, &CellInformation::signalAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(ci, &CellInformation::signalAgeChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "State")
-            QObject::connect(ci, &CellInformation::signalStateChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(ci, &CellInformation::signalStateChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "Generation")
-            QObject::connect(ci, &CellInformation::signalGenerationChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(ci, &CellInformation::signalGenerationChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
     }
 }
 

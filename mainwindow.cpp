@@ -11,7 +11,7 @@
 #include "dialogs/dialogcellinformation.h"
 #include "dialogs/dialogfieldinformation.h"
 #include "dialogs/dialogeditrules.h"
-#include "dialogs/dialoghtmlcontent.h"
+#include "dialogs/dialoginfocontent.h"
 #include "field/field.h"
 #include "field/cell.h"
 #include "field/cellinformation.h"
@@ -2120,7 +2120,7 @@ void MainWindow::slotInfoRule()
     auto title = tr("Information about current rule");
     if(findPreviousWindowCopy(title)) return;
 
-    auto dhc = new DialogHtmlContent(title, this);
+    auto dhc = new DialogInfoContent(title, this);
 
     auto table = QString("<tr><td class='TDTEXT2'><h2>%1</h2></td></tr>").arg(tr("Properties"));
     table.append(QString("<tr><td class='TDTEXT1'>%1</td></tr>").
@@ -2133,7 +2133,8 @@ void MainWindow::slotInfoRule()
     auto content = QString("<table class='TABLE2'><caption><h2>%1</h2></caption>%2</table>").
             arg(tr("Rule"), table);
 
-    dhc->setContent(m_Field->getRule()->objectName(), content);
+    dhc->setHtmlContent(getTextFromRes(":/resources/html/main_body.html").
+            arg(m_Field->getRule()->objectName(), content, MAINDIV_MARGIN));
     dhc->show();
 }
 
@@ -2162,21 +2163,20 @@ void MainWindow::slotAbout()
     auto title = tr("About %1").arg(APP_NAME);
     if(findPreviousWindowCopy(title)) return;
 
-    auto dhc = new DialogHtmlContent(title, this);
-    dhc->setContent(title, content);
+    auto dhc = new DialogInfoContent(title, this);
+    dhc->setHtmlContent(getTextFromRes(":/resources/html/main_body.html").
+                        arg(title, content, MAINDIV_MARGIN));
     dhc->show();
 }
 
 void MainWindow::slotHelp()
 {
-    auto content = getTextFromRes(":/resources/html/documentation_en.html");
-
     auto title = tr("Help");
     if(findPreviousWindowCopy(title)) return;
 
-    auto dhc = new DialogHtmlContent(title, this);
+    auto dhc = new DialogInfoContent(title, this);
     dhc->setOpenLinks(true);
-    dhc->setHtml(":/resources/html/documentation_en.html");
+    dhc->setMarkdownSource("qrc:/resources/md/doc_en.md");
     dhc->show();
 }
 

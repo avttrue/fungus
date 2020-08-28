@@ -1,5 +1,5 @@
-#ifndef DIALOGINFOPANEL_H
-#define DIALOGINFOPANEL_H
+#ifndef INFOPANEL_H
+#define INFOPANEL_H
 
 #include <QFrame>
 
@@ -15,15 +15,15 @@ const auto DCI_INFOPANEL_KEY_PROPERTY = "KeyValue";
 
 class QLabel;
 
-class DialogInfoPanel : public QFrame
+class InfoPanel : public QFrame
 {
     Q_OBJECT
 public:
-    DialogInfoPanel(QWidget *parent, const QString& caption, const QVariant &value);
+    InfoPanel(QWidget *parent, const QString& caption, const QVariant &value);
     void setValue(const QVariant &value);
 
 private:
     QLabel* m_LabelValue;
 };
 
-#endif // DIALOGINFOPANEL_H
+#endif // INFOPANEL_H

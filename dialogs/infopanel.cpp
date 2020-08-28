@@ -1,11 +1,11 @@
-#include "dialoginfopanel.h"
+#include "infopanel.h"
 #include "kernel/kernel.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QVariant>
 
-DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const QVariant &value)
+InfoPanel::InfoPanel(QWidget *parent, const QString &caption, const QVariant &value)
     : QFrame(parent)
 {
     setLineWidth(1);
@@ -44,7 +44,7 @@ DialogInfoPanel::DialogInfoPanel(QWidget *parent, const QString &caption, const 
     setProperty(DCI_INFOPANEL_KEY_PROPERTY, caption);
 }
 
-void DialogInfoPanel::setValue(const QVariant &value)
+void InfoPanel::setValue(const QVariant &value)
 {
     if(value.type() == QVariant::Bool)
         value.toBool() ? m_LabelValue->setText("[+]") : m_LabelValue->setText("[ ]");

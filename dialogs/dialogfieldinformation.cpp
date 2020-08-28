@@ -1,5 +1,5 @@
 #include "dialogfieldinformation.h"
-#include "dialoginfopanel.h"
+#include "infopanel.h"
 #include "properties.h"
 #include "controls.h"
 #include "field/field.h"
@@ -116,7 +116,7 @@ bool DialogFieldInformation::eventFilter(QObject *object, QEvent *event)
 
 void DialogFieldInformation::loadInformation()
 {
-    glContent->addWidget(new DialogInfoPanel(this, tr("Properties"), QVariant()));
+    glContent->addWidget(new InfoPanel(this, tr("Properties"), QVariant()));
 
     auto fi = m_Field->getInformation();
     auto fi_mo = fi->metaObject();
@@ -128,26 +128,26 @@ void DialogFieldInformation::loadInformation()
         if(QString(p.name()) == "AverageCalc") continue;
 
         auto value = fi->property(p.name());
-        auto dip = new DialogInfoPanel(this, p.name(), value);
+        auto dip = new InfoPanel(this, p.name(), value);
 
         glContent->addWidget(dip);
 
         if(QString(p.name()) == "Age")
-            QObject::connect(fi, &FieldInformation::signalAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(fi, &FieldInformation::signalAgeChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "DeadCells")
-            QObject::connect(fi, &FieldInformation::signalDeadCellsChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(fi, &FieldInformation::signalDeadCellsChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "AliveCells")
-            QObject::connect(fi, &FieldInformation::signalAliveCellsChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(fi, &FieldInformation::signalAliveCellsChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "CursedCells")
-            QObject::connect(fi, &FieldInformation::signalCursedCellsChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(fi, &FieldInformation::signalCursedCellsChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "ActiveCells")
-            QObject::connect(fi, &FieldInformation::signalActiveCellsChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(fi, &FieldInformation::signalActiveCellsChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "LastActiveAge")
-            QObject::connect(fi, &FieldInformation::signalLastActiveAgeChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(fi, &FieldInformation::signalLastActiveAgeChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "Density")
-            QObject::connect(fi, &FieldInformation::signalDensityChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(fi, &FieldInformation::signalDensityChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "ChangedCells")
-            QObject::connect(fi, &FieldInformation::signalChangedCellsChanged, dip, &DialogInfoPanel::setValue, Qt::QueuedConnection);
+            QObject::connect(fi, &FieldInformation::signalChangedCellsChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
     }
 }
 

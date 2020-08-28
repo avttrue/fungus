@@ -75,8 +75,13 @@
         <file>resources/rules/Conway's_LIFE_game.frl</file>
         <file>resources/html/main_body.html</file>
         <file>resources/html/about_body.html</file>
-        <file>resources/html/documentation_en.html</file>
         <file>resources/img/left_arrow.svg</file>
         <file>resources/img/right_arrow.svg</file>
+        <file>resources/md/doc_en.md</file>
+        <file>resources/md/doc1_en.md</file>
+        <file>resources/md/doc2_en.md</file>
+        <file>resources/md/doc3_en.md</file>
+        <file>resources/md/doc4_en.md</file>
+        <file>resources/md/doc5_en.md</file>
     </qresource>
 </RCC>
