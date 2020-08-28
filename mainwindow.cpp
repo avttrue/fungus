@@ -2176,7 +2176,7 @@ void MainWindow::slotHelp()
 
     auto dhc = new DialogInfoContent(title, this);
     dhc->setOpenLinks(true);
-    dhc->setMarkdownSource("qrc:/resources/md/doc_en.md");
+    dhc->setMarkdownSource("qrc:/resources/md/help/doc_en.md");
     dhc->show();
 }
 
