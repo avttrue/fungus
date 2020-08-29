@@ -32,6 +32,7 @@
  | `[CTRL + mouse wheel]` | *Zoom IN / Zoom OUT* | 
  | `[mouse left btn]` | *Select the single (first) cell* | 
  | `[CTRL + mouse left btn]` | *Select the second cell for multiple selection* | 
+ | `[mouse right btn]` | *Unselect the cell(s)* | 
  | `[SHIFT + mouse hover]` | *Cell index* |   
  
 ##  
