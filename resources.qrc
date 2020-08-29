@@ -82,5 +82,6 @@
         <file>resources/md/help/doc3_en.md</file>
         <file>resources/md/help/doc4_en.md</file>
         <file>resources/md/help/doc5_en.md</file>
+        <file>resources/md/help/license.md</file>
     </qresource>
 </RCC>

@@ -1,6 +1,6 @@
-## Caption doc
+## "Fungus" user guide
 
-[doc1](doc1_en.md)
+[Hotkeys and control](doc1_en.md)
 
 [doc2](doc2_en.md)
 
@@ -9,3 +9,9 @@
 [doc4](doc4_en.md)
 
 [doc5](doc5_en.md)
+
+##  
+
+---
+
+[license](license.md)
