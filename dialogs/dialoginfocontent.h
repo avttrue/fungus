@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-const QString MAINDIV_MARGIN = "10";
+const QString EXTERN_URL = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
 
 class QTextBrowser;
 
@@ -14,7 +14,7 @@ public:
     DialogInfoContent(const QString &title, QWidget *parent = nullptr);
     void setHtmlContent(const QString& content);
     void setMarkdownSource(const QString& source);
-    void setOpenLinks(bool on);
+    void setMarkdownContent(const QString& content);
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);

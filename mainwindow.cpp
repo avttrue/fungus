@@ -2122,19 +2122,18 @@ void MainWindow::slotInfoRule()
 
     auto dhc = new DialogInfoContent(title, this);
 
-    auto table = QString("<tr><td class='TDTEXT2'><h2>%1</h2></td></tr>").arg(tr("Properties"));
-    table.append(QString("<tr><td class='TDTEXT1'>%1</td></tr>").
-                 arg(m_Field->getRule()->PropertiesToString().replace('\n', "<br>")));
-    table.append(QString("<tr><td class='TDTEXT2'><h2>%1</h2></td></tr>").arg(tr("Activities")));
+    QString content = "## Properties\n";
+    for(auto s: m_Field->getRule()->PropertiesToString().split('\n'))
+        content.append(QString(" - <pre><b>%1</b></pre>\n").arg(s));
+
+    content.append("\n --- \n");
+
+    content.append("## Activities\n");
     for(auto a: m_Field->getRule()->getActivity())
-        table.append(QString("<tr><td class='TDTEXT1'>%1</td></tr>").
-                     arg(ActivityElementToString(a).replace(' ', "&nbsp;")));
+        content.append(QString(" - <pre><b>%1</b></pre>\n").
+                       arg(ActivityElementToString(a)));
 
-    auto content = QString("<table class='TABLE2'><caption><h2>%1</h2></caption>%2</table>").
-            arg(tr("Rule"), table);
-
-    dhc->setHtmlContent(getTextFromRes(":/resources/html/main_body.html").
-            arg(m_Field->getRule()->objectName(), content, MAINDIV_MARGIN));
+    dhc->setMarkdownContent(content);
     dhc->show();
 }
 
@@ -2164,8 +2163,7 @@ void MainWindow::slotAbout()
     if(findPreviousWindowCopy(title)) return;
 
     auto dhc = new DialogInfoContent(title, this);
-    dhc->setHtmlContent(getTextFromRes(":/resources/html/main_body.html").
-                        arg(title, content, MAINDIV_MARGIN));
+    dhc->setHtmlContent(content);
     dhc->show();
 }
 
@@ -2175,7 +2173,6 @@ void MainWindow::slotHelp()
     if(findPreviousWindowCopy(title)) return;
 
     auto dhc = new DialogInfoContent(title, this);
-    dhc->setOpenLinks(true);
     dhc->setMarkdownSource("qrc:/resources/md/help/doc_en.md");
     dhc->show();
 }

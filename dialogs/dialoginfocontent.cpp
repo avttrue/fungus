@@ -30,6 +30,19 @@ DialogInfoContent::DialogInfoContent(const QString& title, QWidget *parent)
     setLayout(vblForm);
 
     m_Content = new QTextBrowser(this);
+    m_Content->setOpenLinks(false);
+    QObject::connect(m_Content, &QTextBrowser::anchorClicked, [=](const QUrl &link)
+    {
+        if(!link.isValid()) return;
+        if(!link.toString().contains(QRegExp(EXTERN_URL)))
+        {
+            auto res_type = m_Content->sourceType();
+            m_Content->setSource(link, res_type);
+            return;
+        }
+        if(!QDesktopServices::openUrl(link))
+            qCritical() << __func__ << ": error at QDesktopServices::openUrl" << link.toString();
+    });
 
     auto toolBar = new QToolBar();
     toolBar->setMovable(false);
@@ -44,8 +57,6 @@ DialogInfoContent::DialogInfoContent(const QString& title, QWidget *parent)
 
     vblForm->addWidget(m_Content);
     vblForm->addWidget(toolBar);
-
-    setOpenLinks(false);
 
     installEventFilter(this);
     resize(config->InfoWindowWidth(), config->InfoWindowHeight());
@@ -90,20 +101,7 @@ void DialogInfoContent::setMarkdownSource(const QString &source)
     m_Content->setSource(QUrl(source), QTextDocument::MarkdownResource);
 }
 
-void DialogInfoContent::setOpenLinks(bool on)
+void DialogInfoContent::setMarkdownContent(const QString &content)
 {
-    m_Content->setOpenLinks(on);
-    if(on)
-    {
-        QObject::disconnect(m_Content, &QTextBrowser::anchorClicked, nullptr, nullptr);
-    }
-    else
-    {
-        QObject::connect(m_Content, &QTextBrowser::anchorClicked, [=](const QUrl &link)
-        {
-            if(link.isEmpty() || !link.isValid()) return;
-            if (!QDesktopServices::openUrl(link))
-                qCritical() << __func__ << ": error at QDesktopServices::openUrl" << link.toString();
-        });
-    }
+    m_Content->document()->setMarkdown(content, QTextDocument::MarkdownDialectGitHub);
 }

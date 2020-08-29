@@ -62,7 +62,7 @@ void FieldRule::setDeathEnd(bool value)
 
 QString FieldRule::PropertiesToString()
 {
-    QString result = tr("Name : %1").arg(objectName());
+    QString result = tr("Name : \"%1\"").arg(objectName());
     for(int i = metaObject()->propertyOffset(); i < metaObject()->propertyCount(); ++i)
     {
         auto p = metaObject()->property(i);
