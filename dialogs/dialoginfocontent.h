@@ -3,8 +3,6 @@
 
 #include <QDialog>
 
-const QString EXTERN_URL = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
-
 class QTextBrowser;
 
 class DialogInfoContent : public QDialog
@@ -21,6 +19,8 @@ protected:
 
 private:
     QTextBrowser* m_Content;
+    QAction* m_ActionBackward;
+    QAction* m_ActionForward;
 };
 
 #endif // DIALOGINFOCONTENT_H

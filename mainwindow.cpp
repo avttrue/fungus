@@ -158,6 +158,7 @@ void MainWindow::loadGui()
 
     m_ActionInfoCell = new QAction(QIcon(":/resources/img/cell.svg"), tr("Cell information"), this);
     QObject::connect(m_ActionInfoCell, &QAction::triggered, this, &MainWindow::slotInfoCell);
+    m_ActionInfoCell->setShortcut(Qt::CTRL + Qt::Key_I);
     m_ActionInfoCell->setAutoRepeat(false);
     m_ActionInfoCell->setEnabled(false);
 
