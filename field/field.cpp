@@ -120,7 +120,6 @@ void Field::calculate()
                             ni->getAge() > 0) ni->upGeneration();
 
                     else if(ni->getState() == Kernel::CellState::CURSED) ni->setGeneration(0);
-
                 }
 
                 auto ois = oi->getState();

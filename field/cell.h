@@ -2,7 +2,6 @@
 #define CELL_H
 
 #include <QObject>
-#include <QPoint>
 #include <QRect>
 
 class CellInformation;

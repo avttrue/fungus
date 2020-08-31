@@ -246,11 +246,11 @@ void MainWindow::loadGui()
     m_TbMain->addAction(m_ActionLoadProject);
     m_TbMain->addAction(m_ActionSaveProject);
     m_TbMain->addSeparator();
+    m_TbMain->addAction(m_ActionSaveImageToFile);
+    m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionZoomUndoScene);
     m_TbMain->addAction(m_ActionZoomInScene);
     m_TbMain->addAction(m_ActionZoomOutScene);
-    m_TbMain->addSeparator();
-    m_TbMain->addAction(m_ActionSaveImageToFile);
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionEditCell);
     m_TbMain->addAction(m_ActionInfoCell);
@@ -1215,7 +1215,7 @@ void MainWindow::slotSetup()
                                    tr("02#_Write logs to file (restart required)"),
                                    tr("03#_Buttons size"),
                                    tr("04#_Rewrite resources at start"),
-                                   tr("05#_Data compression in project files"),
+                                   tr("05#_Compress data in project files"),
                                    tr("06#_Scene options"),
                                    tr("07#_Antialiasing"),
                                    tr("08#_Update mode"),
