@@ -118,6 +118,9 @@ void Field::calculate()
                     if(ni->getState() == Kernel::CellState::ALIVE &&
                             oi->getAge() == 0 &&
                             ni->getAge() > 0) ni->upGeneration();
+
+                    else if(ni->getState() == Kernel::CellState::CURSED) ni->setGeneration(0);
+
                 }
 
                 auto ois = oi->getState();
@@ -272,42 +275,38 @@ void Field::applyRules(Cell *cell)
 uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list)
 {
     uint count = 0;
-
-    // количество соседей определённого типа
-    if(ao == Kernel::ActivityOperand::COUNT)
+    switch(ao)
+    {
+    case Kernel::ActivityOperand::COUNT: // количество соседей определённого типа
     {
         count = list.count();
+        break;
     }
-
-    // суммарный возраст соседей определённого типа
-    else if(ao == Kernel::ActivityOperand::AGE)
+    case Kernel::ActivityOperand::AGE: // суммарный возраст соседей определённого типа
     {
-        for(auto c: list)
-            count += c->getOldInfo()->getAge();
+        for(auto c: list) count += c->getOldInfo()->getAge();
+        break;
     }
-
-    // суммарное кол-во поколений соседей определённого типа
-    else if(ao == Kernel::ActivityOperand::GEN)
+    case Kernel::ActivityOperand::GEN: // суммарное кол-во поколений соседей определённого типа
     {
-        for(auto c: list)
-        {
-            count += c->getOldInfo()->getGeneration();
-        }
+        for(auto c: list) count += c->getOldInfo()->getGeneration();
+        break;
     }
-
+    }
     return count;
 }
 
 void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at)
 {
-    if(at == Kernel::ActivityType::BIRTH)
-    { ci->setState(Kernel::CellState::ALIVE); }
-
-    else if(at == Kernel::ActivityType::DEATH)
-    { ci->setState(Kernel::CellState::DEAD); }
-
-    else if(at == Kernel::ActivityType::CURSE)
-    { ci->setState(Kernel::CellState::CURSED); }
+    switch(at)
+    {
+    case Kernel::ActivityType::BIRTH:
+    { ci->setState(Kernel::CellState::ALIVE);  break; }
+    case Kernel::ActivityType::DEATH:
+    { ci->setState(Kernel::CellState::DEAD);  break; }
+    case Kernel::ActivityType::CURSE:
+    { ci->setState(Kernel::CellState::CURSED);  break; }
+    }
 }
 
 Cell *Field::getTopCell(Cell *cell)
@@ -476,9 +475,7 @@ QVector<Cell *> Field::getCellsAroundByStatus(Cell *cell, Kernel::CellState stat
 QVector<Cell *> Field::getCellsGroupByStatus(Cell *cell, Kernel::CellState status)
 {
     QVector<Cell*> result = getCellsAroundByStatus(cell, status);
-
     if(cell->getOldInfo()->getState() == status) result.append(cell);
-
     return result;
 }
 
