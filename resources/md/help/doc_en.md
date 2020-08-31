@@ -2,7 +2,7 @@
 
 [Hotkeys and control](doc1_en.md)
 
-[doc2](doc2_en.md)
+[Snapshots](doc2_en.md)
 
 [doc3](doc3_en.md)
 
