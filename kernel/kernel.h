@@ -38,8 +38,16 @@ public:
     enum class ActivityTarget: int
     {
         SELF = 0,           // сама ячейка
-        NEAR,               // соседние ячейки любые
-        GROUP               // и ячейка и соседи
+        NEAR,               // соседние ячейки
+        GROUP,              // и ячейка и соседи
+        TOP,                // верхняя ячейка
+        TOPRIGHT,           // верхняя правая ячейка
+        RIGHT,              // правая ячейка
+        BOTTOMRIGHT,        // нижняя правая ячейка
+        BOTTOM,             // нижняя ячейка
+        BOTTOMLEFT,         // нижняя левая ячейка
+        LEFT,               // левая ячейка
+        TOPLEFT             // верхняя левая ячейка
     };
     Q_ENUM(ActivityTarget)
 

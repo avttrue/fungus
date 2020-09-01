@@ -206,13 +206,13 @@ void Field::applyRules(Cell *cell)
             oi->getAge() >= static_cast<uint>(m_Rule->getCurseTime()))
         ni->setState(Kernel::CellState::DEAD);
 
-    /* {ActivityType,
+    /* ActivityType,
      * SelfState,
      * ActivityTarget,
      * TargetState,
      * ActivityOperand,
      * ActivityOperator,
-     * ActivityValue}; */
+     * ActivityValue */
     for(auto a: m_Rule->getActivity())
     {
         auto s_stat = static_cast<Kernel::CellState>(a.value(1).toInt());   // SelfState
@@ -227,24 +227,74 @@ void Field::applyRules(Cell *cell)
         uint value; // реальное значение операнда
 
         // получение реального значения операнда
+        QVector<Cell*> at_cells;
         switch(a_targ)
         {
         case Kernel::ActivityTarget::SELF: // tstate игнорируется
         {
-            value = getRulesOperandValue(a_opnd, {cell});
+            at_cells.append(cell);
             break;
         }
         case Kernel::ActivityTarget::NEAR:
         {
-            value = getRulesOperandValue(a_opnd, getCellsAroundByStatus(cell, t_stat));
+            at_cells.append(getCellsAroundByStatus(cell, t_stat));
             break;
         }
         case Kernel::ActivityTarget::GROUP:
         {
-            value = getRulesOperandValue(a_opnd, getCellsGroupByStatus(cell, t_stat));
+            at_cells.append(getCellsGroupByStatus(cell, t_stat));
+            break;
+        }
+        case Kernel::ActivityTarget::TOP:
+        {
+            auto c = getTopCell(cell);
+            if(c->getOldInfo()->getState() == t_stat) at_cells.append(c);
+            break;
+        }
+        case Kernel::ActivityTarget::TOPRIGHT:
+        {
+            auto c = getTopRightCell(cell);
+            if(c->getOldInfo()->getState() == t_stat) at_cells.append(c);
+            break;
+        }
+        case Kernel::ActivityTarget::RIGHT:
+        {
+            auto c = getRightCell(cell);
+            if(c->getOldInfo()->getState() == t_stat) at_cells.append(c);
+            break;
+        }
+        case Kernel::ActivityTarget::BOTTOMRIGHT:
+        {
+            auto c = getBottomRightCell(cell);
+            if(c->getOldInfo()->getState() == t_stat) at_cells.append(c);
+            break;
+        }
+        case Kernel::ActivityTarget::BOTTOM:
+        {
+            auto c = getBottomCell(cell);
+            if(c->getOldInfo()->getState() == t_stat) at_cells.append(c);
+            break;
+        }
+        case Kernel::ActivityTarget::BOTTOMLEFT:
+        {
+            auto c = getBottomLeftCell(cell);
+            if(c->getOldInfo()->getState() == t_stat) at_cells.append(c);
+            break;
+        }
+        case Kernel::ActivityTarget::LEFT:
+        {
+            auto c = getLeftCell(cell);
+            if(c->getOldInfo()->getState() == t_stat) at_cells.append(c);
+            break;
+        }
+        case Kernel::ActivityTarget::TOPLEFT:
+        {
+            auto c = getTopLeftCell(cell);
+            if(c->getOldInfo()->getState() == t_stat) at_cells.append(c);
             break;
         }
         }
+        value = getRulesOperandValue(a_opnd, at_cells);
 
         // применение оператора к операнду
         bool ao_check = false;

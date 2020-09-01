@@ -50,11 +50,27 @@
 
 ### Activity target
 
-* **SELF** - *the cell's own state, the* **Target_State** *will be ignored*
+* **SELF** - *the cell's own properties, the* **Target_State** *will be ignored*
 
-* **NEAR** - *state of neighboring cells*
+* **NEAR** - *properties of neighboring cells*
 
-* **GROUP** - *the cell's own state and state of neighboring cells*
+* **GROUP** - *the cell's own properties and properties of neighboring cells*
+
+* **TOP** - *properties of top cell*
+
+* **TOPRIGHT** - *properties of top-right cell*
+
+* **RIGHT** - *properties of right cell*
+
+* **BOTTOMRIGHT** - *properties of bottom-right cell*
+
+* **BOTTOM** - *properties of bottom cell*
+
+* **BOTTOMLEFT** - *properties of bottom-left cell*
+
+* **LEFT** - *properties of left cell*
+
+* **TOPLEFT** - *properties of top-left cell*
 
 ### Activity operand
 
