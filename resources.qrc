@@ -84,5 +84,6 @@
         <file>resources/md/help/doc5_en.md</file>
         <file>resources/md/help/license.md</file>
         <file>resources/rules/game_of_flame.frl</file>
+        <file>resources/presets/Game_of_Flame/traveler1.fpr</file>
     </qresource>
 </RCC>
