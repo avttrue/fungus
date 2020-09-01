@@ -28,7 +28,8 @@ public:
     {
         BIRTH = 0,          // рождение
         DEATH,              // смерть
-        CURSE               // отравление
+        CURSE,              // отравление
+        STOP,               // прервать выполнение правила
     };
     Q_ENUM(ActivityType)
 

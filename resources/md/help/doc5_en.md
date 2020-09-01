@@ -10,7 +10,7 @@
 
 * **Name** - *just the name of the rule, should not be empty*
 * **CurseTime** - *the time during which the cell will remain cursed (always:* **-1** *)*
-* **DeathEnd** - *non-alive state completes the rule processing*
+* **DeathEnd** - *non-alive state stops the rule processing*
 
 ## Activity
 
@@ -43,6 +43,8 @@
 * **DEATH** - *sets cell state to* **DEAD**
 
 * **CURCE** - *sets cell state to* **CURSED**
+
+* **STOP** - *stops the rule processing*
 
 ### State and Target state
 

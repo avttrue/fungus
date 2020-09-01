@@ -309,8 +309,11 @@ void Field::applyRules(Cell *cell)
         case Kernel::ActivityOperator::NOT:
         { ao_check = (value != a_valu); break; }
         }
-        if(ao_check) setRulesActivityReaction(ni, a_type);
-
+        if(ao_check)
+        {
+            if(a_type == Kernel::ActivityType::STOP) return;
+            setRulesActivityReaction(ni, a_type);
+        }
         // DeathEnd: состояние отличное от живого прекращиет обработку правил
         if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::ALIVE) return;
     }
@@ -350,6 +353,8 @@ void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at
     { ci->setState(Kernel::CellState::DEAD);  break; }
     case Kernel::ActivityType::CURSE:
     { ci->setState(Kernel::CellState::CURSED);  break; }
+    case Kernel::ActivityType::STOP:
+    { break; }
     }
 }
 
