@@ -408,7 +408,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
 }
 
 bool DialogValuesList::eventFilter(QObject* object, QEvent *event)
-{
+{    
     auto o = qobject_cast<DialogValuesList*>(object);
     if(o)
     {

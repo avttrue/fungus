@@ -28,7 +28,6 @@ private:
     CellInformation* m_OldInformation;
     CellInformation* m_NewInformation;
     QRect m_Rect;
-
 };
 
 #endif // CELL_H

@@ -50,7 +50,8 @@ public:
     {
         EQUAL = 0,          // равен
         MORE,               // больше
-        LESS                // меньше
+        LESS,               // меньше
+        NOT                 // не равен
     };
     Q_ENUM(ActivityOperator)
 

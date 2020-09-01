@@ -247,24 +247,19 @@ void Field::applyRules(Cell *cell)
         }
 
         // применение оператора к операнду
+        bool ao_check = false;
         switch(a_oper)
         {
         case Kernel::ActivityOperator::EQUAL:
-        {
-            if(value == a_valu) setRulesActivityReaction(ni, a_type);
-            break;
-        }
+        { ao_check = (value == a_valu); break; }
         case Kernel::ActivityOperator::LESS:
-        {
-            if(value < a_valu) setRulesActivityReaction(ni, a_type);
-            break;
-        }
+        { ao_check = (value < a_valu); break; }
         case Kernel::ActivityOperator::MORE:
-        {
-            if(value > a_valu) setRulesActivityReaction(ni, a_type);
-            break;
+        { ao_check = (value > a_valu); break; }
+        case Kernel::ActivityOperator::NOT:
+        { ao_check = (value != a_valu); break; }
         }
-        }
+        if(ao_check) setRulesActivityReaction(ni, a_type);
 
         // DeathEnd: состояние отличное от живого прекращиет обработку правил
         if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::ALIVE) return;

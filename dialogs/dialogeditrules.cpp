@@ -389,7 +389,7 @@ void DialogEditRules::slotEditRules()
     auto dvl = new DialogValuesList(this, ":/resources/img/edit.svg", tr("Rule property"), &map);
     if(!dvl->exec()) return;
 
-    m_Rule->setObjectName(map.value(keys.at(1)).value.toString());
+    m_Rule->setObjectName(map.value(keys.at(1)).value.toString().simplified());
     m_Rule->setProperty("CurseTime", map.value(keys.at(3)).value.toInt());
     m_Rule->setProperty("DeathEnd", map.value(keys.at(5)).value.toBool());
 
