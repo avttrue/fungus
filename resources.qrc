@@ -83,5 +83,6 @@
         <file>resources/md/help/doc4_en.md</file>
         <file>resources/md/help/doc5_en.md</file>
         <file>resources/md/help/license.md</file>
+        <file>resources/rules/game_of_flame.frl</file>
     </qresource>
 </RCC>
