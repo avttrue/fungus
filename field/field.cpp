@@ -297,17 +297,17 @@ void Field::applyRules(Cell *cell)
         value = getRulesOperandValue(a_opnd, at_cells);
 
         // применение оператора к операнду
-        bool ao_check = false;
+        bool ao_check;
         switch(a_oper)
         {
         case Kernel::ActivityOperator::EQUAL:
-        { ao_check = (value == a_valu); break; }
+        { ao_check = value == a_valu ? true : false; break; }
         case Kernel::ActivityOperator::LESS:
-        { ao_check = (value < a_valu); break; }
+        { ao_check = value < a_valu ? true : false; break; }
         case Kernel::ActivityOperator::MORE:
-        { ao_check = (value > a_valu); break; }
+        { ao_check = value > a_valu ? true : false; break; }
         case Kernel::ActivityOperator::NOT:
-        { ao_check = (value != a_valu); break; }
+        { ao_check = value != a_valu ? true : false; break; }
         }
         if(ao_check)
         {
