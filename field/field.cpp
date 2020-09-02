@@ -189,7 +189,7 @@ Cell *Field::addCell(int x, int y)
 {
     auto c = new Cell(this);
     c->moveToThread(thread()); c->setParent(this); // NOTE: field выполняется не в основном потоке
-    c->setIndex({x, y});
+    c->setPosition({x, y});
     c->setObjectName(QString("[%1X%2]").arg(QString::number(x), QString::number(y)));
     m_Cells[x][y] = c;
     return c;

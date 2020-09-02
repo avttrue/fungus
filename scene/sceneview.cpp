@@ -117,8 +117,15 @@ Cell *SceneView::getCell(qreal x, qreal y)
     auto field = m_Scene->getField();
     if(!field) return nullptr;
 
-    auto cx = qFloor(x / config->SceneCellSize());
-    auto cy = qFloor(y / config->SceneCellSize());
+    auto glw = config->SceneGridLineWidth();
+    auto cs = config->SceneCellSize();
+    qreal dglw = static_cast<qreal>(glw) / 2;
+    qreal dx = qMax(x - dglw, dglw);
+    qreal dy = qMax(y - dglw, dglw);
+
+    auto cx = qMin(qFloor(dx  / (cs + glw)), field->width() - 1);
+    auto cy = qMin(qFloor(dy / (cs + glw)), field->height() - 1);
+
     return field->cells()->at(cx).at(cy);
 }
 

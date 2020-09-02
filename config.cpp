@@ -237,6 +237,18 @@ void Config::load()
     if(!m_Settings->contains("Scene/FieldRandomisationValue"))
         m_Settings->setValue("Scene/FieldRandomisationValue", FIELD_RANDOMISATION_VALUE);
     m_FieldRandomisationValue = m_Settings->value("Scene/FieldRandomisationValue").toInt();
+
+    if(!m_Settings->contains("Scene/GridLineWidth"))
+        m_Settings->setValue("Scene/GridLineWidth", SCENE_GRID_LINE_WIDTH);
+    m_SceneGridLineWidth = m_Settings->value("Scene/GridLineWidth").toInt();
+}
+
+void Config::setSceneGridLineWidth(int value)
+{
+    if(m_SceneGridLineWidth == value) return;
+
+    m_SceneGridLineWidth = value;
+    m_Settings->setValue("Scene/GridLineWidth", m_SceneGridLineWidth);
 }
 
 void Config::setFieldRandomisationValue(int value)
@@ -733,3 +745,4 @@ bool Config::SceneCreateDefaultRule() const { return m_SceneCreateDefaultRule; }
 bool Config::ProjectFileCompression() const { return m_ProjectFileCompression; }
 int Config::ProjectFileCompressionLevel() const { return m_ProjectFileCompressionLevel; }
 int Config::FieldRandomisationValue() const { return m_FieldRandomisationValue; }
+int Config::SceneGridLineWidth() const { return m_SceneGridLineWidth; }

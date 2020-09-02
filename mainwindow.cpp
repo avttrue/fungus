@@ -1455,22 +1455,26 @@ void MainWindow::slotNewProject()
     const QVector<QString> keys = {
         tr("00#_Field properties"),
         tr("01#_Size"),
-        tr("02#_Cell size"),
-        tr("03#_Rule [%1]:").arg(QString::number(ruleslist.count())),
-        tr("04#_Options"),
-        tr("05#_Random fill"),
-        tr("06#__Density of random fill, %"),
-        tr("07#_Show field information"),
+        tr("02#_Rule [%1]:").arg(QString::number(ruleslist.count())),
+        tr("03#_View"),
+        tr("04#_Cell size"),
+        tr("05#_Grid lines width"),
+        tr("06#_Options"),
+        tr("07#_Random fill"),
+        tr("08#__Density of random fill, %"),
+        tr("09#_Show field information"),
     };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
      {keys.at(1), {QVariant::Int, config->SceneFieldSize(), 2, 10000}},
-     {keys.at(2), {QVariant::Int, config->SceneCellSize(), 1, 100}},
-     {keys.at(3), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
-     {keys.at(4), {}},
-     {keys.at(5), {QVariant::Bool, false}},
-     {keys.at(6), {QVariant::Int, config->FieldRandomisationValue(), 1, 100}},
-     {keys.at(7), {QVariant::Bool, config->WindowShowFieldInfo()}},
+     {keys.at(2), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
+     {keys.at(3), {}},
+     {keys.at(4), {QVariant::Int, config->SceneCellSize(), 1, 100}},
+     {keys.at(5), {QVariant::Int, config->SceneGridLineWidth(), 0, 100}},
+     {keys.at(6), {}},
+     {keys.at(7), {QVariant::Bool, false}},
+     {keys.at(8), {QVariant::Int, config->FieldRandomisationValue(), 1, 100}},
+     {keys.at(9), {QVariant::Bool, config->WindowShowFieldInfo()}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/asterisk.svg", tr("New project"), &map);
@@ -1480,13 +1484,16 @@ void MainWindow::slotNewProject()
         for(auto r: ruleslist) r->deleteLater();
         return;
     }
-
+    // properties
     config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
-    config->setSceneCellSize(map.value(keys.at(2)).value.toInt());
-    auto currentrule = map.value(keys.at(3)).value.toString();
-    auto rnd_on = map.value(keys.at(5)).value.toBool();
-    config->setFieldRandomisationValue(map.value(keys.at(6)).value.toInt());
-    config->setWindowShowFieldInfo(map.value(keys.at(7)).value.toBool());
+    auto currentrule = map.value(keys.at(2)).value.toString();
+    // view
+    config->setSceneCellSize(map.value(keys.at(4)).value.toInt());
+    config->setSceneGridLineWidth(map.value(keys.at(5)).value.toInt());
+    // options
+    auto rnd_on = map.value(keys.at(7)).value.toBool();
+    config->setFieldRandomisationValue(map.value(keys.at(8)).value.toInt());
+    config->setWindowShowFieldInfo(map.value(keys.at(9)).value.toBool());
 
     setMainActionsEnable(false);
     setCellsActionsEnable(false);

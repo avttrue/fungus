@@ -26,7 +26,6 @@ Scene::Scene(QObject* parent, Field *field)
     setObjectName(QString("SCENE[%1X%2]").
                   arg(QString::number(m_Field->width()), QString::number(m_Field->height())));
 
-    m_Size = QSize(m_Field->width(), m_Field->height()) * config->SceneCellSize();
     setItemIndexMethod(QGraphicsScene::NoIndex);
     setBackgroundColor(QColor(config->SceneBgColor()));
 
@@ -36,6 +35,8 @@ Scene::Scene(QObject* parent, Field *field)
 
     applyCellIndication();
     applyCellsColors();
+
+    m_Size = m_SceneItem->rect().size();
 
     QObject::connect(m_Field, &Field::signalCalculated, this, &Scene::slotAdvance, Qt::DirectConnection);
     QObject::connect(this, &Scene::signalReady, m_Field, &Field::slotSceneReady, Qt::DirectConnection);

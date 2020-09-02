@@ -40,6 +40,7 @@ const QString PROJECTS_DIRECTORY =                  "projects";
 const QString LOG_DIRECTORY =                       "logs";
 const QString EXTERN_URL_RG = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
 const qreal SCENE_SCALE_STEP =                      1.0001;
+const auto SCENE_GRID_LINE_WIDTH =                  0;
 const auto SCENE_CELL_SIZE =                        10;
 const auto SCENE_MULTISELECT_ALFA =                 50;  // 0-254
 const auto SCENE_SELECT_ALFA =                      100; // 0-254
@@ -79,7 +80,7 @@ const auto JSON_IGNORE_DATA_VERSION =               false;
 const auto COPY_TO_CLIPBOARD_EXCEPT_DEAD =          true;
 const auto SAVE_TO_PRESET_EXCEPT_DEAD =             true;
 const auto REWITE_RESOURCES =                       false;
-const auto SCENE_FIRST_SNAPSHOT =                   false;
+const auto SCENE_FIRST_SNAPSHOT =                   true;
 const auto WRITE_LOGS_TO_FILE =                     false;
 
 #endif // PROPERTIES_H

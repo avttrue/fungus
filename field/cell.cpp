@@ -32,13 +32,15 @@ void Cell::applyInfo()
     m_OldInformation->setGeneration(m_NewInformation->getGeneration());
 }
 
-void Cell::setIndex(const QPoint &value)
+void Cell::setPosition(const QPoint &value)
 {
     m_Index = value;
-    m_Rect = QRect(value.x() * config->SceneCellSize(),
-                   value.y() * config->SceneCellSize(),
-                   config->SceneCellSize(),
-                   config->SceneCellSize());
+
+    auto glw = config->SceneGridLineWidth();
+    auto cs = config->SceneCellSize();
+    m_Rect = QRect(value.x() * (cs + glw) + glw,
+                   value.y() * (cs + glw) + glw,
+                   cs, cs);
 }
 
 QRect Cell::getRect() const { return m_Rect; }

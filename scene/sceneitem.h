@@ -12,6 +12,7 @@ public:
     Scene *getScene() const;
     QPixmap* getBuffer();
     QPixmap* getPixmap();
+    QRect rect() const;
 
 protected:
     QRectF boundingRect() const override;

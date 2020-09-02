@@ -130,6 +130,8 @@ public:
     void setInfoWindowWidth(int value);
     int FieldRandomisationValue() const;
     void setFieldRandomisationValue(int value);
+    int SceneGridLineWidth() const;
+    void setSceneGridLineWidth(int value);
 
 protected:
     void load();
@@ -178,6 +180,7 @@ private:
     int m_SplashTime;                               // время отображения сплеш-заставки
     int m_SplashSize;                               // размеры сплеш-заставки
     int m_ProjectFileCompressionLevel;              // уровень сжатия данных при сохранении проекта: -1 - поумолчанию, 0-9
+    int m_SceneGridLineWidth;                       // ширина линий в сетки
     Qt::KeyboardModifiers m_SceneZoomKeyModifier;   // модификатор управления зумом
     Qt::KeyboardModifiers m_SceneTooltipKeyModifier;// модификатор отображения координат Field
     Qt::KeyboardModifiers m_SceneMultiselKeyModifier;// модификатор выбора группы Cell

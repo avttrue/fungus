@@ -14,7 +14,7 @@ class Cell : public QObject
 public:
     explicit Cell(Field *parent);
     QPoint getIndex();
-    void setIndex(const QPoint &value);
+    void setPosition(const QPoint &value);
     CellInformation* getOldInfo();
     CellInformation *getNewInfo();
     void clear();
