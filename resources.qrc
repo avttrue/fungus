@@ -92,5 +92,9 @@
         <file>resources/rules/Life_and_Curse.frl</file>
         <file>resources/rules/Life_without_Death.frl</file>
         <file>resources/rules/High_Life.frl</file>
+        <file>resources/img/cell_curse.svg</file>
+        <file>resources/img/cell_dead.svg</file>
+        <file>resources/img/nothing.svg</file>
+        <file>resources/img/sel_unsel.svg</file>
     </qresource>
 </RCC>

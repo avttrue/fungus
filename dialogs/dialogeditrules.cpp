@@ -2,7 +2,6 @@
 #include "properties.h"
 #include "controls.h"
 #include "dialogvalueslist.h"
-#include "field/fieldrule.h"
 
 #include <QDebug>
 #include <QMessageBox>
@@ -155,12 +154,28 @@ bool DialogEditRules::eventFilter(QObject *object, QEvent *event)
     }
 }
 
-void DialogEditRules::addContentItem(const QString &text)
+void DialogEditRules::addContentItem(const QString &text, Kernel::ActivityType type)
 {
-    auto icon = QIcon(":/resources/img/running.svg");
-    auto item = new QListWidgetItem(icon, text, m_lwContent);
+    auto item = new QListWidgetItem(ActivityTypeToIcon(type), text, m_lwContent);
     item->setData(Qt::FontRole, QFont("monospace", -1, QFont::Bold));
     m_lwContent->addItem(item);
+}
+
+QIcon DialogEditRules::ActivityTypeToIcon(Kernel::ActivityType type)
+{
+    QIcon icon;
+    switch (type)
+    {
+    case Kernel::ActivityType::BIRTH:
+    { icon = QIcon(":/resources/img/cell.svg"); break; }
+    case Kernel::ActivityType::DEATH:
+    { icon = QIcon(":/resources/img/cell_dead.svg"); break; }
+    case Kernel::ActivityType::CURSE:
+    { icon = QIcon(":/resources/img/cell_curse.svg"); break; }
+    case Kernel::ActivityType::NOTHING:
+    { icon = QIcon(":/resources/img/nothing.svg"); break; }
+    }
+    return icon;
 }
 
 void DialogEditRules::loadContent()
@@ -181,7 +196,10 @@ void DialogEditRules::loadContent()
 
     m_lwContent->clear();
     for(auto a: m_Rule->getActivity())
-        addContentItem(ActivityElementToString(a));
+    {
+        auto type = static_cast<Kernel::ActivityType>(a.at(0).toInt());
+        addContentItem(ActivityElementToString(a), type);
+    }
 
     auto count = m_lwContent->count();
     if(row > -1 && row < count) m_lwContent->setCurrentRow(row);
@@ -291,7 +309,11 @@ void DialogEditRules::editActivity(int index)
     auto act = m_Rule->getActivity();
     act[index] = element;
     m_Rule->setActivity(act);
+
     m_lwContent->item(index)->setText(ActivityElementToString(element));
+    auto type = static_cast<Kernel::ActivityType>(element.at(0).toInt());
+    m_lwContent->item(index)->setIcon(ActivityTypeToIcon(type));
+
 }
 
 void DialogEditRules::slotActionAccept()
@@ -320,7 +342,8 @@ void DialogEditRules::slotActionAdd()
     act.append(element);
     m_Rule->setActivity(act);
 
-    addContentItem(ActivityElementToString(element));
+    auto type = static_cast<Kernel::ActivityType>(element.at(0).toInt());
+    addContentItem(ActivityElementToString(element), type);
     m_lwContent->setCurrentRow(m_lwContent->count() -1);
 }
 

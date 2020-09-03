@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "field/fieldrule.h"
+
 class FieldRule;
 class QGridLayout;
 class QListWidget;
@@ -17,7 +19,8 @@ public:
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);
-    void addContentItem(const QString& text);
+    void addContentItem(const QString& text, Kernel::ActivityType type);
+    QIcon ActivityTypeToIcon(Kernel::ActivityType type);
     void loadContent();
     void slotRowChanged(int value);
     bool editActivityElement(QVector<QVariant>* element);
