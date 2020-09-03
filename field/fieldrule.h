@@ -13,7 +13,6 @@ class FieldRule : public QObject
     Q_OBJECT
     Q_PROPERTY(Activity Activity READ getActivity WRITE setActivity)
     Q_PROPERTY(int CurseTime READ getCurseTime WRITE setCurseTime)
-    Q_PROPERTY(bool DeathEnd READ isDeathEnd WRITE setDeathEnd)
 
 public:
     FieldRule(Field *parent = nullptr);
@@ -23,8 +22,6 @@ public:
     void setActivity(Activity value);
     int getCurseTime() const;
     void setCurseTime(int value);
-    bool isDeathEnd() const;
-    void setDeathEnd(bool value);
     QString PropertiesToString();
     QString toString();
 

@@ -18,7 +18,7 @@ const QString DT_FORMAT =                           "yyyy.MM.dd hh:mm:ss";
 const QString LOG_FILE_NAME_FORMAT =                "yyyyMMdd_hhmmss";
 const QString TEXT_CODEC =                          "UTF-8";
 const QString APP_NAME =                            "Fungus";
-const QString FORMAT_VERSION =                      "0.1";
+const QString FORMAT_VERSION =                      "1";
 const QString APP_CFG =                             "config.cfg";
 const QString SCENE_SELECT_COLOR =                  "#5555FF";
 const QString SCENE_BG_COLOR =                      "#757575";
@@ -79,7 +79,7 @@ const auto JSON_COMPACT_MODE =                      true;
 const auto JSON_IGNORE_DATA_VERSION =               false;
 const auto COPY_TO_CLIPBOARD_EXCEPT_DEAD =          true;
 const auto SAVE_TO_PRESET_EXCEPT_DEAD =             true;
-const auto REWITE_RESOURCES =                       false;
+const auto REWITE_RESOURCES =                       true;
 const auto SCENE_FIRST_SNAPSHOT =                   true;
 const auto WRITE_LOGS_TO_FILE =                     false;
 

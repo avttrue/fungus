@@ -944,10 +944,6 @@ bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
     { qCritical() << __func__ << "JsonValue 'Name' is absent"; return false; }
     rule->setObjectName(obj_rule["Name"].toString());
 
-    if(!obj_rule.contains("DeathEnd"))
-    { qCritical() << __func__ << "JsonValue 'DeathEnd' is absent"; return false; }
-    rule->setDeathEnd(obj_rule["DeathEnd"].toBool());
-
     if(!obj_rule.contains("CurseTime"))
     { qCritical() << __func__ << "JsonValue 'CurseTime' is absent"; return false; }
     rule->setCurseTime(obj_rule["CurseTime"].toInt());
@@ -1509,7 +1505,7 @@ void MainWindow::slotNewProject()
     if(random) redrawScene();
 
     setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
-                   arg(APP_NAME, FORMAT_VERSION, currentrule,
+                   arg(APP_NAME, APP_VERS, currentrule,
                        QString::number(m_Field->width()),
                        QString::number(m_Field->height()),
                        QString::number(config->SceneCellSize())));
@@ -2021,7 +2017,7 @@ void MainWindow::slotLoadProject()
     }
 
     setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
-                   arg(APP_NAME, FORMAT_VERSION, m_Field->getRule()->objectName(),
+                   arg(APP_NAME, APP_VERS, m_Field->getRule()->objectName(),
                        QString::number(m_Field->width()),
                        QString::number(m_Field->height()),
                        QString::number(config->SceneCellSize())));

@@ -10,7 +10,6 @@
 
 * **Name** - *just the name of the rule, should not be empty*
 * **CurseTime** - *the time during which the cell will remain cursed (always:* **-1** *)*
-* **DeathEnd** - *non-alive state stops the rule processing*
 
 ## Activity
 
@@ -28,7 +27,7 @@
 
 > set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT MORE 3 }**
 
-*Activities are applied one-by-one of the list with the* **DeathEnd** *property checking.*
+*Activities are applied one-by-one of the list. The first condition that is will be met interrupt the rule at current tick.*
 
 *The activity checks the* **current** *state of the* [cell](doc4_en.md) *, and the result is written to the* **new** *state of the cell.* 
 
@@ -44,7 +43,7 @@
 
 * **CURCE** - *sets cell state to* **CURSED**
 
-* **STOP** - *stops the rule processing*
+* **NOTHING** - *do nothing*
 
 ### State and Target state
 
@@ -94,7 +93,7 @@
 
 ### Activity value
 
-*This is just integer value*
+*This is just integer value for comparison*
 
 ##  
 

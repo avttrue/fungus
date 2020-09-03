@@ -53,13 +53,6 @@ void FieldRule::setCurseTime(int value)
     qDebug() << "FieldRule" << objectName() << "CurseTime changed:" << m_CurseTime;
 }
 
-void FieldRule::setDeathEnd(bool value)
-{
-    if (m_DeathEnd == value) return;
-    m_DeathEnd = value;
-    qDebug() << "FieldRule" << objectName() << "DeathEnd changed:" << m_DeathEnd;
-}
-
 QString FieldRule::PropertiesToString()
 {
     QString result = tr("Name : \"%1\"").arg(objectName());
@@ -115,4 +108,3 @@ void FieldRule::setDefault()
 
 Activity FieldRule::getActivity() const { return m_Activity; }
 int FieldRule::getCurseTime() const { return m_CurseTime; }
-bool FieldRule::isDeathEnd() const { return m_DeathEnd; }

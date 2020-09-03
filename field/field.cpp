@@ -311,11 +311,10 @@ void Field::applyRules(Cell *cell)
         }
         if(ao_check)
         {
-            if(a_type == Kernel::ActivityType::STOP) return;
+
             setRulesActivityReaction(ni, a_type);
+            return;
         }
-        // DeathEnd: состояние отличное от живого прекращиет обработку правил
-        if(m_Rule->isDeathEnd() && ni->getState() != Kernel::CellState::ALIVE) return;
     }
 }
 
@@ -326,8 +325,7 @@ uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list
     {
     case Kernel::ActivityOperand::COUNT: // количество соседей определённого типа
     {
-        count = list.count();
-        break;
+        count = list.count(); break;
     }
     case Kernel::ActivityOperand::AGE: // суммарный возраст соседей определённого типа
     {
@@ -353,7 +351,7 @@ void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at
     { ci->setState(Kernel::CellState::DEAD);  break; }
     case Kernel::ActivityType::CURSE:
     { ci->setState(Kernel::CellState::CURSED);  break; }
-    case Kernel::ActivityType::STOP:
+    case Kernel::ActivityType::NOTHING:
     { break; }
     }
 }

@@ -15,9 +15,9 @@ public:
      */
     enum class CellState: int
     {
-        DEAD = 0,           // мертва (пустая)
+        DEAD = 0,           // мертва
         ALIVE,              // жива
-        CURSED              // отравлена
+        CURSED,             // мертва и отравлена
     };
     Q_ENUM(CellState)
 
@@ -29,7 +29,7 @@ public:
         BIRTH = 0,          // рождение
         DEATH,              // смерть
         CURSE,              // отравление
-        STOP,               // прервать выполнение правила
+        NOTHING,            // ничего не делать
     };
     Q_ENUM(ActivityType)
 
@@ -48,7 +48,7 @@ public:
         BOTTOM,             // нижняя ячейка
         BOTTOMLEFT,         // нижняя левая ячейка
         LEFT,               // левая ячейка
-        TOPLEFT             // верхняя левая ячейка
+        TOPLEFT,            // верхняя левая ячейка
     };
     Q_ENUM(ActivityTarget)
 
@@ -60,7 +60,7 @@ public:
         EQUAL = 0,          // равен
         MORE,               // больше
         LESS,               // меньше
-        NOT                 // не равен
+        NOT,                // не равен
     };
     Q_ENUM(ActivityOperator)
 
@@ -71,7 +71,7 @@ public:
     {
         COUNT = 0,          // количество
         AGE,                // возраст
-        GEN                 // поколение
+        GEN,                // поколение
     };
     Q_ENUM(ActivityOperand)
 };
