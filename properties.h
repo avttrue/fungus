@@ -40,6 +40,7 @@ const QString PROJECTS_DIRECTORY =                  "projects";
 const QString LOG_DIRECTORY =                       "logs";
 const QString EXTERN_URL_RG = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
 const qreal SCENE_SCALE_STEP =                      1.0001;
+const auto FIELD_RULE_PROPERTY_LENGTH =             50;
 const auto SCENE_GRID_LINE_WIDTH =                  0;
 const auto SCENE_CELL_SIZE =                        10;
 const auto SCENE_MULTISELECT_ALFA =                 50;  // 0-254

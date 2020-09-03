@@ -89,5 +89,8 @@
         <file>resources/presets/Day_and_Night/butterfly.fpr</file>
         <file>resources/presets/Day_and_Night/snail14-7.fpr</file>
         <file>resources/presets/Day_and_Night/oscillator16.fpr</file>
+        <file>resources/rules/Life_and_Curse.frl</file>
+        <file>resources/rules/Life_without_Death.frl</file>
+        <file>resources/rules/High_Life.frl</file>
     </qresource>
 </RCC>

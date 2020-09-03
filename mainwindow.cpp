@@ -122,11 +122,13 @@ void MainWindow::loadGui()
 
     m_ActionZoomInScene = new QAction(QIcon(":/resources/img/zoom_in.svg"), tr("Zoom IN"), this);
     QObject::connect(m_ActionZoomInScene, &QAction::triggered, this, &MainWindow::slotSceneZoomIn);
+    m_ActionZoomInScene->setShortcut(Qt::CTRL + Qt::Key_Plus);
     m_ActionZoomInScene->setAutoRepeat(false);
     m_ActionZoomInScene->setEnabled(false);
 
     m_ActionZoomOutScene = new QAction(QIcon(":/resources/img/zoom_out.svg"), tr("Zoom OUT"), this);
     QObject::connect(m_ActionZoomOutScene, &QAction::triggered, this, &MainWindow::slotSceneZoomOut);
+    m_ActionZoomOutScene->setShortcut(Qt::CTRL + Qt::Key_Minus);
     m_ActionZoomOutScene->setAutoRepeat(false);
     m_ActionZoomOutScene->setEnabled(false);
 
@@ -943,6 +945,9 @@ bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
     if(!obj_rule.contains("Name"))
     { qCritical() << __func__ << "JsonValue 'Name' is absent"; return false; }
     rule->setObjectName(obj_rule["Name"].toString());
+
+    if(obj_rule.contains("Description"))
+    rule->setDescription(obj_rule["Description"].toString());
 
     if(!obj_rule.contains("CurseTime"))
     { qCritical() << __func__ << "JsonValue 'CurseTime' is absent"; return false; }
