@@ -373,25 +373,25 @@ void DialogEditRules::slotEditRules()
 {
     const QVector<QString> keys = {
         tr("00#_Rule name"), "01#_",
-        tr("02#_The time during which the cell will remain cursed (always: -1)"), tr("03#_value"),
-        tr("04#_Death state stops the rule processing"), tr("05#_switch on"),
+        tr("02#_Rule description"), tr("03#_"),
+        tr("04#_The time during which the cell will remain cursed (always: -1)"), tr("05#_value"),
     };
 
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
      {keys.at(1), {QVariant::String,  m_Rule->objectName(), "", ""}},
      {keys.at(2), {}},
-     {keys.at(3), {QVariant::Int,  m_Rule->property("CurseTime").toInt(), -1, -1}},
+     {keys.at(3), {QVariant::String,  m_Rule->getDescription(), "", ""}},
      {keys.at(4), {}},
-     {keys.at(5), {QVariant::Bool,  m_Rule->property("DeathEnd").toBool()}},
+     {keys.at(5), {QVariant::Int,  m_Rule->getCurseTime(), -1, -1}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/edit.svg", tr("Rule property"), &map);
     if(!dvl->exec()) return;
 
     m_Rule->setObjectName(map.value(keys.at(1)).value.toString().simplified());
-    m_Rule->setProperty("CurseTime", map.value(keys.at(3)).value.toInt());
-    m_Rule->setProperty("DeathEnd", map.value(keys.at(5)).value.toBool());
+    m_Rule->setDescription(map.value(keys.at(3)).value.toString());
+    m_Rule->setCurseTime(map.value(keys.at(5)).value.toInt());
 
     m_RulesProperties->setText(m_Rule->PropertiesToString());
 }

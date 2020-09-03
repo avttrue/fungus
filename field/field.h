@@ -73,6 +73,7 @@ Q_SIGNALS:
     void signalCalculatingDone();                   // calculate остановлен/завершён
     void signalCalculated(QVector<Cell*> cells);    // завершена итерация calculate
     void signalFillingProgress(int step);           // для индикации создания
+    void signalRuleMessage(const QString& text);    // сообщение из обработчика правил
 };
 
 #endif // FIELD_H

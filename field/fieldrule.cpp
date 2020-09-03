@@ -7,8 +7,7 @@
 
 FieldRule::FieldRule(Field *parent)
     : QObject(parent),
-      m_CurseTime(0),
-      m_DeathEnd(true)
+      m_CurseTime(0)
 {
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldRule" << objectName() <<"destroyed"; });
     QObject::connect(this, &QObject::objectNameChanged, [=](){ qDebug() << "FieldRule: name changed to" << objectName(); });
@@ -108,3 +107,5 @@ void FieldRule::setDefault()
 
 Activity FieldRule::getActivity() const { return m_Activity; }
 int FieldRule::getCurseTime() const { return m_CurseTime; }
+QString FieldRule::getDescription() const { return m_Description; }
+void FieldRule::setDescription(const QString &value) { m_Description = value; }

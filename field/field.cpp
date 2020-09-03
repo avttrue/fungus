@@ -311,8 +311,9 @@ void Field::applyRules(Cell *cell)
         }
         if(ao_check)
         {
-
+            //qDebug() << cell->objectName() << ActivityElementToString(a);
             setRulesActivityReaction(ni, a_type);
+            //Q_EMIT signalRuleMessage(QString("%1 : %2").arg(cell->objectName(), ActivityElementToString(a)));
             return;
         }
     }

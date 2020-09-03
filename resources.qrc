@@ -85,5 +85,9 @@
         <file>resources/md/help/license.md</file>
         <file>resources/rules/game_of_flame.frl</file>
         <file>resources/presets/Game_of_Flame/traveler1.fpr</file>
+        <file>resources/rules/day_and_night.frl</file>
+        <file>resources/presets/Day_and_Night/butterfly.fpr</file>
+        <file>resources/presets/Day_and_Night/snail14-7.fpr</file>
+        <file>resources/presets/Day_and_Night/oscillator16.fpr</file>
     </qresource>
 </RCC>
