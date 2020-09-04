@@ -312,7 +312,7 @@ void Field::applyRules(Cell *cell)
         if(ao_check)
         {
             //qDebug() << cell->objectName() << ActivityElementToString(a);
-            setRulesActivityReaction(ni, a_type);
+            setRulesActivityReaction(oi, ni, a_type);
             //Q_EMIT signalRuleMessage(QString("%1 : %2").arg(cell->objectName(), ActivityElementToString(a)));
             return;
         }
@@ -342,18 +342,26 @@ uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list
     return count;
 }
 
-void Field::setRulesActivityReaction(CellInformation*ci, Kernel::ActivityType at)
+void Field::setRulesActivityReaction(CellInformation *oi, CellInformation* ni, Kernel::ActivityType at)
 {
     switch(at)
     {
     case Kernel::ActivityType::BIRTH:
-    { ci->setState(Kernel::CellState::ALIVE);  break; }
+    { ni->setState(Kernel::CellState::ALIVE);  break; }
     case Kernel::ActivityType::DEATH:
-    { ci->setState(Kernel::CellState::DEAD);  break; }
+    { ni->setState(Kernel::CellState::DEAD);  break; }
     case Kernel::ActivityType::CURSE:
-    { ci->setState(Kernel::CellState::CURSED);  break; }
+    { ni->setState(Kernel::CellState::CURSED);  break; }
     case Kernel::ActivityType::NOTHING:
     { break; }
+    case Kernel::ActivityType::UP_AGE:
+    { ni->upAge(); break; }
+    case Kernel::ActivityType::DOWN_AGE:
+    { ni->downAge(); break; }
+    case Kernel::ActivityType::INVERT:
+    { if(oi->getState() == Kernel::CellState::ALIVE) ni->setState(Kernel::CellState::DEAD);
+        else if(oi->getState() == Kernel::CellState::DEAD) ni->setState(Kernel::CellState::ALIVE);
+        break; }
     }
 }
 

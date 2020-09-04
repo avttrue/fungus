@@ -45,6 +45,12 @@
 
 * **NOTHING** - *do nothing*
 
+* **UP_AGE** - *to increase age of cell by* **1** 
+
+* **UP_DOWN** - *to decrease age of cell by* **1** *, but not less than to* **0**
+
+* **INVERT** - *to invert cell state*
+
 ### State and Target state
 
 *This is just cell's own state or target cell(s) state.*

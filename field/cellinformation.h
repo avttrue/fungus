@@ -22,6 +22,7 @@ public:
     void setState(Kernel::CellState value);
     void setAge(uint value);
     void upAge();
+    void downAge();
     void setGeneration(uint value);
     void upGeneration();    
 

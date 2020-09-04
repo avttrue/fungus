@@ -99,5 +99,8 @@
         <file>resources/presets/Life_and_Curse/rocket.fpr</file>
         <file>resources/presets/Life_and_Curse/swastika.fpr</file>
         <file>resources/presets/Life_and_Curse/swastika_inverted.fpr</file>
+        <file>resources/img/down.svg</file>
+        <file>resources/img/up.svg</file>
+        <file>resources/presets/Life_and_Curse/bullet.fpr</file>
     </qresource>
 </RCC>

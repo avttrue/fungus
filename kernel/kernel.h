@@ -30,6 +30,9 @@ public:
         DEATH,              // смерть
         CURSE,              // отравление
         NOTHING,            // ничего не делать
+        UP_AGE,             // постареть на 1
+        DOWN_AGE,           // помолодеть на 1, но не моложе 0
+        INVERT,             // инвертировать состояние
     };
     Q_ENUM(ActivityType)
 
@@ -94,6 +97,8 @@ QStringList listKernelEnum(const QString& enumname);
  * \param index - индекс искомого члена enum'а
  */
 QString getNameKernelEnum(const QString& enumname, int index);
+
+QIcon ActivityTypeToIcon(Kernel::ActivityType type);
 
 QString ActivityElementToString(const QVector<QVariant>& activity);
 

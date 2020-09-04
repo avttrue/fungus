@@ -32,6 +32,13 @@ void CellInformation::upAge()
     Q_EMIT signalAgeChanged(m_Age);
 }
 
+void CellInformation::downAge()
+{
+    if(m_Age == 0) return;
+    m_Age--;
+    Q_EMIT signalAgeChanged(m_Age);
+}
+
 void CellInformation::setGeneration(uint value)
 {
     if (m_Generation == value) return;

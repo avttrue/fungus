@@ -47,7 +47,7 @@ protected:
     QVector<Cell*> getCellsGroupByStatus(Cell* cell, Kernel::CellState status);
     void applyRules(Cell* cell);                    // применение правил
     uint getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell *> list); // получить значение в операнде
-    void setRulesActivityReaction(CellInformation *ci, Kernel::ActivityType at);
+    void setRulesActivityReaction(CellInformation *oi, CellInformation *ni, Kernel::ActivityType at);
 
 
 private:

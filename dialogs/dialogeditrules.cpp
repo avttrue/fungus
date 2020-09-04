@@ -161,23 +161,6 @@ void DialogEditRules::addContentItem(const QString &text, Kernel::ActivityType t
     m_lwContent->addItem(item);
 }
 
-QIcon DialogEditRules::ActivityTypeToIcon(Kernel::ActivityType type)
-{
-    QIcon icon;
-    switch (type)
-    {
-    case Kernel::ActivityType::BIRTH:
-    { icon = QIcon(":/resources/img/cell.svg"); break; }
-    case Kernel::ActivityType::DEATH:
-    { icon = QIcon(":/resources/img/cell_dead.svg"); break; }
-    case Kernel::ActivityType::CURSE:
-    { icon = QIcon(":/resources/img/cell_curse.svg"); break; }
-    case Kernel::ActivityType::NOTHING:
-    { icon = QIcon(":/resources/img/nothing.svg"); break; }
-    }
-    return icon;
-}
-
 void DialogEditRules::loadContent()
 {
     if(!m_Rule)

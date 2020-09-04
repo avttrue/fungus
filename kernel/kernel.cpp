@@ -1,6 +1,7 @@
 #include "kernel.h"
 
 #include <QDebug>
+#include <QIcon>
 #include <QMetaProperty>
 #include <QObject>
 
@@ -78,4 +79,27 @@ QString ActivityElementToString(const QVector<QVariant> &activity)
                 activityoperand,
                 activityoperator,
                 activityvalue);
+}
+
+QIcon ActivityTypeToIcon(Kernel::ActivityType type)
+{
+    QIcon icon;
+    switch (type)
+    {
+    case Kernel::ActivityType::BIRTH:
+    { icon = QIcon(":/resources/img/cell.svg"); break; }
+    case Kernel::ActivityType::DEATH:
+    { icon = QIcon(":/resources/img/cell_dead.svg"); break; }
+    case Kernel::ActivityType::CURSE:
+    { icon = QIcon(":/resources/img/cell_curse.svg"); break; }
+    case Kernel::ActivityType::NOTHING:
+    { icon = QIcon(":/resources/img/nothing.svg"); break; }
+    case Kernel::ActivityType::UP_AGE:
+    { icon = QIcon(":/resources/img/up.svg"); break; }
+    case Kernel::ActivityType::DOWN_AGE:
+    { icon = QIcon(":/resources/img/down.svg"); break; }
+    case Kernel::ActivityType::INVERT:
+    { icon = QIcon(":/resources/img/sel_unsel.svg"); break; }
+    }
+    return icon;
 }
