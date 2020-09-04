@@ -1923,7 +1923,6 @@ void MainWindow::slotInvert()
             auto c = m_Field->getCell({x, y});
             auto ni = c->getNewInfo();
             auto oi = c->getOldInfo();
-            //c->clear();
             if(oi->getState() == Kernel::CellState::ALIVE)
             {
                 oi->setState(Kernel::CellState::DEAD);
