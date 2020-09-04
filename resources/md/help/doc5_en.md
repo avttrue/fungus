@@ -43,13 +43,13 @@
 
 * **CURCE** - *sets cell state to* **CURSED**
 
-* **NOTHING** - *do nothing*
+* **NOTHING** - *do nothing (* **experimental** *)*
 
 * **UP_AGE** - *to increase age of cell by* **1** 
 
 * **UP_DOWN** - *to decrease age of cell by* **1** *, but not less than to* **0**
 
-* **INVERT** - *to invert cell state*
+* **INVERT** - *to invert cell state (* **experimental** *)*
 
 ### State and Target state
 

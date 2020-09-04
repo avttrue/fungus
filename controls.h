@@ -67,4 +67,10 @@ void setWidgetToParentCenter(QWidget* w);
 
 bool findPreviousWindowCopy(const QString& caption);
 
+QString strippedActionText(QString text);
+
+void removeShortcutFromToolTip(QAction *action);
+
+void addShortcutToToolTip(QAction *action);
+
 #endif // CONTROLS_H

@@ -89,16 +89,19 @@ void MainWindow::loadGui()
     m_ActionNewProject = new QAction(QIcon(":/resources/img/asterisk.svg"), tr("New project"), this);
     QObject::connect(m_ActionNewProject, &QAction::triggered, this, &MainWindow::slotNewProject);
     m_ActionNewProject->setShortcut(Qt::CTRL + Qt::Key_N);
+    addShortcutToToolTip(m_ActionNewProject);
     m_ActionNewProject->setAutoRepeat(false);
 
     m_ActionLoadProject = new QAction(QIcon(":/resources/img/open_folder.svg"), tr("Load project"), this);
     QObject::connect(m_ActionLoadProject, &QAction::triggered, this, &MainWindow::slotLoadProject);
     m_ActionLoadProject->setShortcut(Qt::CTRL + Qt::Key_O);
+    addShortcutToToolTip(m_ActionLoadProject);
     m_ActionLoadProject->setAutoRepeat(false);
 
     m_ActionSaveProject = new QAction(QIcon(":/resources/img/save.svg"), tr("Save project"), this);
     QObject::connect(m_ActionSaveProject, &QAction::triggered, this, &MainWindow::slotSaveProject);
     m_ActionSaveProject->setShortcut(Qt::CTRL + Qt::Key_S);
+    addShortcutToToolTip(m_ActionSaveProject);
     m_ActionSaveProject->setAutoRepeat(false);
     m_ActionSaveProject->setEnabled(false);
 
@@ -123,12 +126,14 @@ void MainWindow::loadGui()
     m_ActionZoomInScene = new QAction(QIcon(":/resources/img/zoom_in.svg"), tr("Zoom IN"), this);
     QObject::connect(m_ActionZoomInScene, &QAction::triggered, this, &MainWindow::slotSceneZoomIn);
     m_ActionZoomInScene->setShortcut(Qt::CTRL + Qt::Key_Plus);
+    addShortcutToToolTip(m_ActionZoomInScene);
     m_ActionZoomInScene->setAutoRepeat(false);
     m_ActionZoomInScene->setEnabled(false);
 
     m_ActionZoomOutScene = new QAction(QIcon(":/resources/img/zoom_out.svg"), tr("Zoom OUT"), this);
     QObject::connect(m_ActionZoomOutScene, &QAction::triggered, this, &MainWindow::slotSceneZoomOut);
     m_ActionZoomOutScene->setShortcut(Qt::CTRL + Qt::Key_Minus);
+    addShortcutToToolTip(m_ActionZoomOutScene);
     m_ActionZoomOutScene->setAutoRepeat(false);
     m_ActionZoomOutScene->setEnabled(false);
 
@@ -144,6 +149,7 @@ void MainWindow::loadGui()
     m_ActionStepStop = new QAction(QIcon(":/resources/img/step_stop.svg"), tr("Step / Stop"), this);
     QObject::connect(m_ActionStepStop, &QAction::triggered, this, &MainWindow::slotStepStop);
     m_ActionStepStop->setShortcut(Qt::CTRL + Qt::Key_Space);
+    addShortcutToToolTip(m_ActionStepStop);
     m_ActionStepStop->setAutoRepeat(false);
     m_ActionStepStop->setEnabled(false);
 
@@ -155,24 +161,28 @@ void MainWindow::loadGui()
     m_ActionEditCell = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit cell"), this);
     QObject::connect(m_ActionEditCell, &QAction::triggered, this, &MainWindow::slotEditCell);
     m_ActionEditCell->setShortcut(Qt::CTRL + Qt::Key_E);
+    addShortcutToToolTip(m_ActionEditCell);
     m_ActionEditCell->setAutoRepeat(false);
     m_ActionEditCell->setEnabled(false);
 
     m_ActionInfoCell = new QAction(QIcon(":/resources/img/cell.svg"), tr("Cell information"), this);
     QObject::connect(m_ActionInfoCell, &QAction::triggered, this, &MainWindow::slotInfoCell);
     m_ActionInfoCell->setShortcut(Qt::CTRL + Qt::Key_I);
+    addShortcutToToolTip(m_ActionInfoCell);
     m_ActionInfoCell->setAutoRepeat(false);
     m_ActionInfoCell->setEnabled(false);
 
     m_ActionSaveCellsToClipbord = new QAction(QIcon(":/resources/img/copy.svg"), tr("Copy selected cells to clipboard"), this);
     QObject::connect(m_ActionSaveCellsToClipbord, &QAction::triggered, this, &MainWindow::slotSaveCellsToClipbord);
     m_ActionSaveCellsToClipbord->setShortcut(Qt::CTRL + Qt::Key_C);
+    addShortcutToToolTip(m_ActionSaveCellsToClipbord);
     m_ActionSaveCellsToClipbord->setAutoRepeat(false);
     m_ActionSaveCellsToClipbord->setEnabled(false);
 
     m_ActionLoadCellsFromClipbord = new QAction(QIcon(":/resources/img/paste.svg"), tr("Paste cells from clipboard"), this);
     QObject::connect(m_ActionLoadCellsFromClipbord, &QAction::triggered, this, &MainWindow::slotLoadCellsFromClipbord);
     m_ActionLoadCellsFromClipbord->setShortcut(Qt::CTRL + Qt::Key_V);
+    addShortcutToToolTip(m_ActionLoadCellsFromClipbord);
     m_ActionLoadCellsFromClipbord->setAutoRepeat(false);
     m_ActionLoadCellsFromClipbord->setEnabled(false);
 
@@ -188,21 +198,23 @@ void MainWindow::loadGui()
     m_ActionInfoField = new QAction(QIcon(":/resources/img/field.svg"), tr("Field information"), this);
     QObject::connect(m_ActionInfoField, &QAction::triggered, this, &MainWindow::slotInfoField);
     m_ActionInfoField->setShortcut(Qt::CTRL + Qt::Key_F);
+    addShortcutToToolTip(m_ActionInfoField);
     m_ActionInfoField->setAutoRepeat(false);
     m_ActionInfoField->setEnabled(false);
 
     m_ActionClearCells = new QAction(QIcon(":/resources/img/delete.svg"), tr("Clear selected cells"), this);
     QObject::connect(m_ActionClearCells, &QAction::triggered, this, &MainWindow::slotClearCells);
     m_ActionClearCells->setShortcut(Qt::CTRL + Qt::Key_D);
+    addShortcutToToolTip(m_ActionClearCells);
     m_ActionClearCells->setAutoRepeat(false);
     m_ActionClearCells->setEnabled(false);
 
-    m_ActionRandomFill = new QAction(QIcon(":/resources/img/cells.svg"), tr("Random fill selected cells"), this);
+    m_ActionRandomFill = new QAction(QIcon(":/resources/img/cells.svg"), tr("Random fill states selected cells"), this);
     QObject::connect(m_ActionRandomFill, &QAction::triggered, this, &MainWindow::slotRandomFill);
     m_ActionRandomFill->setAutoRepeat(false);
     m_ActionRandomFill->setEnabled(false);
 
-    m_ActionInvert = new QAction(QIcon(":/resources/img/sel_unsel.svg"), tr("Invert selected cells"), this);
+    m_ActionInvert = new QAction(QIcon(":/resources/img/sel_unsel.svg"), tr("Invert states selected cells"), this);
     QObject::connect(m_ActionInvert, &QAction::triggered, this, &MainWindow::slotInvert);
     m_ActionInvert->setAutoRepeat(false);
     m_ActionInvert->setEnabled(false);
@@ -216,12 +228,14 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionSelectAll, &QAction::triggered, this, &MainWindow::slotSelectAll);
     m_ActionSelectAll->setAutoRepeat(false);
     m_ActionSelectAll->setShortcut(Qt::CTRL + Qt::Key_A);
+    addShortcutToToolTip(m_ActionSelectAll);
     m_ActionSelectAll->setEnabled(false);
 
     m_ActionCreateSnapshot = new QAction(QIcon(":/resources/img/check.svg"), tr("Create snapshot"), this);
     QObject::connect(m_ActionCreateSnapshot, &QAction::triggered, this, &MainWindow::slotCreateSnapshot);
     m_ActionCreateSnapshot->setAutoRepeat(false);
     m_ActionCreateSnapshot->setShortcut(Qt::CTRL + Qt::Key_W);
+    addShortcutToToolTip(m_ActionCreateSnapshot);
     m_ActionCreateSnapshot->setEnabled(false);
 
     m_ActionSelectSnapshot = new QAction(QIcon(":/resources/img/next_snapshot.svg"), tr("Load snapshot"), this);
