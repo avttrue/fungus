@@ -309,15 +309,13 @@ void DialogEditRules::slotActionAccept()
 
 void DialogEditRules::slotActionAdd()
 {
-    // глупый дефолт, ну да ладно
-    // TODO: slotActionAdd - придумать адекватный дефолт
     QVector<QVariant> element = { QVariant::fromValue(Kernel::ActivityType::BIRTH),
                                   QVariant::fromValue(Kernel::CellState::DEAD),
                                   QVariant::fromValue(Kernel::ActivityTarget::NEAR),
-                                  QVariant::fromValue(Kernel::CellState::DEAD),
+                                  QVariant::fromValue(Kernel::CellState::ALIVE),
                                   QVariant::fromValue(Kernel::ActivityOperand::COUNT),
-                                  QVariant::fromValue(Kernel::ActivityOperator::LESS),
-                                  0};
+                                  QVariant::fromValue(Kernel::ActivityOperator::EQUAL),
+                                  1};
 
     if(!editActivityElement(&element)) return;
 
