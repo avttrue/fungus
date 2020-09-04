@@ -106,6 +106,7 @@ private:
     QAction* m_ActionLoadCellsFromPreset;
     QAction* m_ActionClearCells;
     QAction* m_ActionRandomFill;
+    QAction* m_ActionInvert;
     QAction* m_ActionSelectAll;
     QAction* m_ActionCreateSnapshot;
     QAction* m_ActionSelectSnapshot;
@@ -145,6 +146,7 @@ private Q_SLOTS:
     void slotShowCell(Cell* cell);
     void slotSaveImageToFile();
     void slotRandomFill();
+    void slotInvert();
     void slotSelectAll();
     void slotSelectedCellsChanged(Cell* first, Cell* second);
     void slotLabelSelectedCellClick();

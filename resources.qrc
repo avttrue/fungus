@@ -96,5 +96,8 @@
         <file>resources/img/cell_dead.svg</file>
         <file>resources/img/nothing.svg</file>
         <file>resources/img/sel_unsel.svg</file>
+        <file>resources/presets/Life_and_Curse/rocket.fpr</file>
+        <file>resources/presets/Life_and_Curse/swastika.fpr</file>
+        <file>resources/presets/Life_and_Curse/swastika_inverted.fpr</file>
     </qresource>
 </RCC>

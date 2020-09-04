@@ -202,6 +202,11 @@ void MainWindow::loadGui()
     m_ActionRandomFill->setAutoRepeat(false);
     m_ActionRandomFill->setEnabled(false);
 
+    m_ActionInvert = new QAction(QIcon(":/resources/img/sel_unsel.svg"), tr("Invert selected cells"), this);
+    QObject::connect(m_ActionInvert, &QAction::triggered, this, &MainWindow::slotInvert);
+    m_ActionInvert->setAutoRepeat(false);
+    m_ActionInvert->setEnabled(false);
+
     m_ActionSaveImageToFile = new QAction(QIcon(":/resources/img/camera.svg"), tr("Save image to file"), this);
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
     m_ActionSaveImageToFile->setAutoRepeat(false);
@@ -289,6 +294,7 @@ void MainWindow::loadGui()
     m_TbActions->addAction(m_ActionSelectSnapshot);
     m_TbActions->addSeparator();
     m_TbActions->addAction(m_ActionRandomFill);
+    m_TbActions->addAction(m_ActionInvert);
     m_TbActions->addSeparator();
     m_TbActions->addAction(m_ActionClearCells);
     addToolBar(Qt::LeftToolBarArea, m_TbActions);
@@ -530,6 +536,7 @@ void MainWindow::setCellsActionsEnable(bool value)
     m_ActionSaveCellsToPreset->setEnabled(group_enable);
     m_ActionClearCells->setEnabled(group_enable);
     m_ActionRandomFill->setEnabled(group_enable);
+    m_ActionInvert->setEnabled(group_enable);
 }
 
 void MainWindow::deleteField()
@@ -947,7 +954,7 @@ bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
     rule->setObjectName(obj_rule["Name"].toString());
 
     if(obj_rule.contains("Description"))
-    rule->setDescription(obj_rule["Description"].toString());
+        rule->setDescription(obj_rule["Description"].toString());
 
     if(!obj_rule.contains("CurseTime"))
     { qCritical() << __func__ << "JsonValue 'CurseTime' is absent"; return false; }
@@ -1874,6 +1881,64 @@ void MainWindow::slotRandomFill()
     qDebug() << "Ramdom filled" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
     redrawScene();
 
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
+}
+
+void MainWindow::slotInvert()
+{
+    qDebug() << __func__;
+    auto scene = m_SceneView->getScene();
+    if(!scene)
+    {
+        m_ActionInvert->setDisabled(true);
+        qCritical() << __func__ << "Scene not created";
+        return;
+    }
+
+    auto firstcell = scene->getSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
+    if(!firstcell || !secondcell || firstcell == secondcell)
+    {
+        m_ActionInvert->setDisabled(true);
+        qDebug() << __func__ << "Target cell not selected";
+        return;
+    }
+
+    stopFieldCalculating();
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
+
+    for(int x = xmin; x <= xmax; x++)
+    {
+        for(int y = ymin; y <= ymax; y++)
+        {
+            auto c = m_Field->getCell({x, y});
+            auto ni = c->getNewInfo();
+            auto oi = c->getOldInfo();
+            //c->clear();
+            if(oi->getState() == Kernel::CellState::ALIVE)
+            {
+                oi->setState(Kernel::CellState::DEAD);
+                ni->setState(Kernel::CellState::DEAD);
+            }
+            else if(oi->getState() == Kernel::CellState::DEAD)
+            {
+                oi->setState(Kernel::CellState::ALIVE);
+                ni->setState(Kernel::CellState::ALIVE);
+            }
+        }
+    }
+    qDebug() << "Inverted" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+
+    redrawScene();
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
 }
