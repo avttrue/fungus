@@ -86,6 +86,14 @@ void Config::load()
         m_Settings->setValue("MainWindow/CellInfoWindowWidth", CELL_INFO_WINDOW_WIDTH);
     m_CellInfoWindowWidth = m_Settings->value("MainWindow/CellInfoWindowWidth").toInt();
 
+    if(!m_Settings->contains("MainWindow/CellMonitorWindowWidth"))
+        m_Settings->setValue("MainWindow/CellMonitorWindowWidth", CELL_MONITOR_WINDOW_WIDTH);
+    m_CellMonitorWindowWidth = m_Settings->value("MainWindow/CellMonitorWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/CellMonitorWindowHeight"))
+        m_Settings->setValue("MainWindow/CellMonitorWindowHeight", CELL_MONITOR_WINDOW_HEIGHT);
+    m_CellMonitorWindowHeight = m_Settings->value("MainWindow/CellMonitorWindowHeight").toInt();
+
     if(!m_Settings->contains("MainWindow/FieldInfoWindowWidth"))
         m_Settings->setValue("MainWindow/FieldInfoWindowWidth", FIELD_INFO_WINDOW_WIDTH);
     m_FieldInfoWindowWidth = m_Settings->value("MainWindow/FieldInfoWindowWidth").toInt();
@@ -241,6 +249,22 @@ void Config::load()
     if(!m_Settings->contains("Scene/GridLineWidth"))
         m_Settings->setValue("Scene/GridLineWidth", SCENE_GRID_LINE_WIDTH);
     m_SceneGridLineWidth = m_Settings->value("Scene/GridLineWidth").toInt();
+}
+
+void Config::setCellMonitorWindowWidth(int value)
+{
+    if(m_CellMonitorWindowWidth == value) return;
+
+    m_CellMonitorWindowWidth = value;
+    m_Settings->setValue("MainWindow/CellMonitorWindowWidth", m_CellMonitorWindowWidth);
+}
+
+void Config::setCellMonitorWindowHeight(int value)
+{
+    if(m_CellMonitorWindowHeight == value) return;
+
+    m_CellMonitorWindowHeight = value;
+    m_Settings->setValue("MainWindow/CellMonitorWindowHeight", m_CellMonitorWindowHeight);
 }
 
 void Config::setSceneGridLineWidth(int value)
@@ -746,3 +770,5 @@ bool Config::ProjectFileCompression() const { return m_ProjectFileCompression; }
 int Config::ProjectFileCompressionLevel() const { return m_ProjectFileCompressionLevel; }
 int Config::FieldRandomisationValue() const { return m_FieldRandomisationValue; }
 int Config::SceneGridLineWidth() const { return m_SceneGridLineWidth; }
+int Config::CellMonitorWindowHeight() const { return m_CellMonitorWindowHeight; }
+int Config::CellMonitorWindowWidth() const { return m_CellMonitorWindowWidth; }

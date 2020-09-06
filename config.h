@@ -132,6 +132,10 @@ public:
     void setFieldRandomisationValue(int value);
     int SceneGridLineWidth() const;
     void setSceneGridLineWidth(int value);
+    int CellMonitorWindowHeight() const;
+    void setCellMonitorWindowHeight(int value);
+    int CellMonitorWindowWidth() const;
+    void setCellMonitorWindowWidth(int value);
 
 protected:
     void load();
@@ -171,6 +175,8 @@ private:
     int m_SceneFieldSize;                           // размер сцены при создании
     int m_CellInfoWindowHeight;                     // размеры окна информации о Cell
     int m_CellInfoWindowWidth;                      // размеры окна информации о Cell
+    int m_CellMonitorWindowHeight;                  // размеры окна мониторинга Cell
+    int m_CellMonitorWindowWidth;                   // размеры окна мониторинга Cell
     int m_FieldInfoWindowHeight;                    // размеры окна информации о Field
     int m_FieldInfoWindowWidth;                     // размеры окна информации о Field
     int m_InfoWindowHeight;                         // размеры справочного окна

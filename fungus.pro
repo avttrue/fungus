@@ -14,6 +14,7 @@ DEFINES     += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     dialogs/dialogcellinformation.cpp \
+    dialogs/dialogcellmonitor.cpp \
     dialogs/dialogeditrules.cpp \
     dialogs/dialogfieldinformation.cpp \
     dialogs/dialoginfocontent.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
 
 HEADERS += \
     dialogs/dialogcellinformation.h \
+    dialogs/dialogcellmonitor.h \
     dialogs/dialogeditrules.h \
     dialogs/dialogfieldinformation.h \
     dialogs/dialoginfocontent.h \
