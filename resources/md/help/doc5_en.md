@@ -83,9 +83,9 @@
 
 * **COUNT** - *cells count*
 
-* **AGE** - *cell age or total age of cells* 
+* **AGE** - *cell age or total age of cells (NEAR and GROUP targets)* 
 
-* **GEN** - *value of cell generation or total generations of cells*  
+* **GEN** - *value of cell generation or total generations of cells (NEAR and GROUP targets)*  
 
 ### Activity operator
 

@@ -72,7 +72,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     resources.qrc
 
-DISTFILES += \
-    resources/presets/Life_and_Curse/rect_3.fpr \
-    resources/presets/Life_and_Curse/rect_cross.fpr \
-    resources/presets/Life_and_Curse/rect_swastika.fpr
+DISTFILES +=
