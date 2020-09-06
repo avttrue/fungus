@@ -10,7 +10,8 @@ Cell::Cell(Field *parent)
     : QObject(parent),
       m_Field(parent),
       m_Index(-1, -1),
-      m_Rect(-1, -1, -1, -1)
+      m_Rect(-1, -1, -1, -1),
+      m_Observed(false)
 {
     m_OldInformation = new CellInformation(this);
     m_NewInformation = new CellInformation(this);
@@ -44,6 +45,8 @@ void Cell::setPosition(const QPoint &value)
 }
 
 QRect Cell::getRect() const { return m_Rect; }
+bool Cell::isObserved() { return m_Observed; }
+void Cell::setObserved(bool value) { m_Observed = value; }
 QPoint Cell::getIndex() { return m_Index; }
 CellInformation *Cell::getOldInfo() { return m_OldInformation; }
 CellInformation *Cell::getNewInfo() { return m_NewInformation; }

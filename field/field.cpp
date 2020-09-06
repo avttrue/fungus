@@ -311,9 +311,15 @@ void Field::applyRules(Cell *cell)
         }
         if(ao_check)
         {
-            //qDebug() << cell->objectName() << ActivityElementToString(a);
             setRulesActivityReaction(oi, ni, a_type);
-            //Q_EMIT signalRuleMessage(QString("%1 : %2").arg(cell->objectName(), ActivityElementToString(a)));
+            if(cell->isObserved())
+            {
+                Q_EMIT signalRuleMessage(QString("%1 : %2 %3").
+                                         arg(cell->objectName(),
+                                             QString::number(m_FieldInformation->getAge()),
+                                             ActivityElementToString(a)));
+                qInfo() << m_FieldInformation->getAge() << cell->objectName() << ActivityElementToString(a);
+            }
             return;
         }
     }

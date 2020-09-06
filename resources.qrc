@@ -102,5 +102,10 @@
         <file>resources/img/down.svg</file>
         <file>resources/img/up.svg</file>
         <file>resources/presets/Life_and_Curse/bullet.fpr</file>
+        <file>resources/img/cell_monitor.svg</file>
+        <file>resources/presets/Life_and_Curse/rect_2.fpr</file>
+        <file>resources/presets/Life_and_Curse/rect_3.fpr</file>
+        <file>resources/presets/Life_and_Curse/rect_cross.fpr</file>
+        <file>resources/presets/Life_and_Curse/rect_swastika.fpr</file>
     </qresource>
 </RCC>

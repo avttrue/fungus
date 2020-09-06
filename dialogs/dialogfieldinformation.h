@@ -21,6 +21,7 @@ protected:
 private:
     Field* m_Field;
     QGridLayout* glContent;
+
 };
 
 #endif // DIALOGFIELDINFORMATION_H

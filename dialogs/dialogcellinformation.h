@@ -27,7 +27,6 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void signalShowCell(Cell* cell);
-
 };
 
 #endif // DIALOGCELLINFORMATION_H
