@@ -9,7 +9,7 @@ class DialogInfoContent : public QDialog
 {
     Q_OBJECT
 public:
-    DialogInfoContent(const QString &title, QWidget *parent = nullptr);
+    DialogInfoContent(QWidget *parent, const QString &title);
     void setHtmlContent(const QString& content);
     void setMarkdownSource(const QString& source);
     void setMarkdownContent(const QString& content);

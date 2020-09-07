@@ -14,7 +14,7 @@
 #include <QWindowStateChangeEvent>
 #include <QMetaProperty>
 
-DialogFieldInformation::DialogFieldInformation(QWidget *parent, Field* field)
+DialogFieldInformation::DialogFieldInformation(QWidget *parent, const QString& title, Field* field)
     : QDialog(parent),
       m_Field(field)
 {
@@ -22,7 +22,7 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, Field* field)
                    Qt::CustomizeWindowHint |
                    Qt::WindowTitleHint);
     setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(tr("Field"));
+    setWindowTitle(title);
     setWindowIcon(QIcon(":/resources/img/field.svg"));
     setModal(false);
 
@@ -67,24 +67,6 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, Field* field)
     QObject::connect(field, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection);
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogFieldInformation" << windowTitle() << "destroyed"; });
     qDebug() << "DialogFieldInformation" << windowTitle() << "created";
-}
-
-bool DialogFieldInformation::FindPreviousCopy(Field *field)
-{
-    for (QWidget *widget: QApplication::topLevelWidgets())
-    {
-        auto dfi = qobject_cast<DialogFieldInformation*>(widget);
-
-        if (!dfi) continue;
-
-        if(dfi->getField() == field)
-        {
-            dfi->showNormal();
-            dfi->setWindowState(Qt::WindowActive);
-            return true;
-        }
-    }
-    return false;
 }
 
 bool DialogFieldInformation::eventFilter(QObject *object, QEvent *event)

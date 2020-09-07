@@ -12,7 +12,7 @@ class DialogCellMonitor : public QDialog
 {
     Q_OBJECT
 public:
-    DialogCellMonitor(QWidget *parent, Scene* scene, const QString &title);
+    DialogCellMonitor(QWidget *parent, const QString &title, Scene* scene);
 
 private:
     Scene* m_Scene;

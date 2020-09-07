@@ -1780,9 +1780,10 @@ void MainWindow::slotInfoField()
 {
     if(!m_Field) { m_ActionInfoField->setDisabled(true); return; }
 
-    if(DialogFieldInformation::FindPreviousCopy(m_Field)) return;
+    auto title = tr("Field");
+    if(findPreviousWindowCopy(title)) return;
 
-    auto dfi = new DialogFieldInformation(this, m_Field);
+    auto dfi = new DialogFieldInformation(this, title, m_Field);
     dfi->show();
 }
 
@@ -2219,7 +2220,7 @@ void MainWindow::slotInfoRule()
     auto title = tr("Information about current rule");
     if(findPreviousWindowCopy(title)) return;
 
-    auto dhc = new DialogInfoContent(title, this);
+    auto dhc = new DialogInfoContent(this, title);
 
     QString content = "## Properties\n";
     for(auto s: m_Field->getRule()->PropertiesToString().split('\n'))
@@ -2261,7 +2262,7 @@ void MainWindow::slotAbout()
     auto title = tr("About %1").arg(APP_NAME);
     if(findPreviousWindowCopy(title)) return;
 
-    auto dhc = new DialogInfoContent(title, this);
+    auto dhc = new DialogInfoContent(this, title);
     dhc->setHtmlContent(content);
     dhc->show();
 }
@@ -2271,7 +2272,7 @@ void MainWindow::slotHelp()
     auto title = tr("Help");
     if(findPreviousWindowCopy(title)) return;
 
-    auto dhc = new DialogInfoContent(title, this);
+    auto dhc = new DialogInfoContent(this, title);
     dhc->setMarkdownSource("qrc:/resources/md/help/doc_en.md");
     dhc->show();
 }
@@ -2281,7 +2282,7 @@ void MainWindow::slotCellMonitor()
     auto title = tr("Cells monitor");
     if(findPreviousWindowCopy(title)) return;
 
-    auto dcm = new DialogCellMonitor(this, m_SceneView->getScene(), title);
+    auto dcm = new DialogCellMonitor(this, title, m_SceneView->getScene());
     dcm->show();
 }
 

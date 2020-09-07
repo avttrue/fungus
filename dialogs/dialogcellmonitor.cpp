@@ -10,7 +10,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-DialogCellMonitor::DialogCellMonitor(QWidget *parent, Scene *scene, const QString& title)
+DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scene *scene)
     :QDialog(parent),
       m_Scene(scene),
       m_CurrentCellIndex(-1)

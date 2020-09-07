@@ -12,7 +12,7 @@
 #include <QWindowStateChangeEvent>
 #include <QDesktopServices>
 
-DialogInfoContent::DialogInfoContent(const QString& title, QWidget *parent)
+DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
     : QDialog(parent)
 {
     setWindowFlags(Qt::Dialog |

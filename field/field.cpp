@@ -115,26 +115,9 @@ void Field::calculate()
                         {
                             ni->setState(Kernel::CellState::DEAD);
                             ni->setAge(0);
-                            if(c->isObserved())
-                                Q_EMIT signalRuleMessage(tr("%1 : %2 State %3 -> %4").
-                                                         arg(QString::number(m_FieldInformation->getAge()),
-                                                             c->objectName(),
-                                                             QVariant::fromValue(oi->getState()).toString(),
-                                                             QVariant::fromValue(ni->getState()).toString()
-                                                             ));
                         }
                         else { ni->upAge(); }
                         cells_changed.append(c);
-                    }
-
-                    if(c->isObserved() && oi->getAge() != ni->getAge())
-                    {
-                        Q_EMIT signalRuleMessage(tr("%1 : %2 Age %3 -> %4").
-                                                 arg(QString::number(m_FieldInformation->getAge()),
-                                                     c->objectName(),
-                                                     QString::number(oi->getAge()),
-                                                     QString::number(ni->getAge())
-                                                     ));
                     }
 
                     // cell Generation
@@ -142,14 +125,29 @@ void Field::calculate()
                     else if(oi->getState() != Kernel::CellState::ALIVE && ni->getState() == Kernel::CellState::ALIVE)
                         ni->upGeneration(); // поколение увеличивается, если только что стала живой
 
-                    if(c->isObserved() && oi->getGeneration() != ni->getGeneration())
+                    // messages
+                    if(c->isObserved())
                     {
-                        Q_EMIT signalRuleMessage(tr("%1 : %2 Generation %3 -> %4").
-                                                 arg(QString::number(m_FieldInformation->getAge()),
-                                                     c->objectName(),
-                                                     QString::number(oi->getGeneration()),
-                                                     QString::number(ni->getGeneration())
-                                                     ));
+                        if(oi->getState() != ni->getState())
+                            Q_EMIT signalRuleMessage(tr("%1 : %2 State %3 -> %4").
+                                                     arg(QString::number(m_FieldInformation->getAge()),
+                                                         c->objectName(),
+                                                         QVariant::fromValue(oi->getState()).toString(),
+                                                         QVariant::fromValue(ni->getState()).toString()));
+
+                        if(oi->getAge() != ni->getAge())
+                            Q_EMIT signalRuleMessage(tr("%1 : %2 Age %3 -> %4").
+                                                     arg(QString::number(m_FieldInformation->getAge()),
+                                                         c->objectName(),
+                                                         QString::number(oi->getAge()),
+                                                         QString::number(ni->getAge())));
+
+                        if(oi->getGeneration() != ni->getGeneration())
+                            Q_EMIT signalRuleMessage(tr("%1 : %2 Generation %3 -> %4").
+                                                     arg(QString::number(m_FieldInformation->getAge()),
+                                                         c->objectName(),
+                                                         QString::number(oi->getGeneration()),
+                                                         QString::number(ni->getGeneration())));
                     }
                 }
 

@@ -10,8 +10,7 @@ class DialogFieldInformation : public QDialog
 {
     Q_OBJECT
 public:
-    DialogFieldInformation(QWidget *parent, Field* field);
-    static bool FindPreviousCopy(Field* field); // найти предыдущую копию окна, если найдена, то возвращается TRUE и делает его активным
+    DialogFieldInformation(QWidget *parent, const QString &title, Field* field);
     Field *getField() const;
 
 protected:
