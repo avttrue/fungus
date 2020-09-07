@@ -18,8 +18,10 @@ private:
     Scene* m_Scene;
     QVector<Cell*> m_Cells;
     QAction* m_ActionSelectCell;
+    QAction* m_ActionNextCell;
     TextLog* m_TextContent;
     QLabel* m_LabelCount;
+    int m_CurrentCellIndex;
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);
@@ -30,7 +32,7 @@ private Q_SLOTS:
     void slotSelectedCellChanged(Cell* cell);
     void slotAddCell();
     void slotClearObservationList();
-
+    void slotShowNextCell();
 };
 
 #endif // DIALOGCELLMONITOR_H

@@ -1949,11 +1949,15 @@ void MainWindow::slotInvert()
             {
                 oi->setState(Kernel::CellState::DEAD);
                 ni->setState(Kernel::CellState::DEAD);
+                oi->setAge(0);
+                ni->setAge(0);
             }
             else if(oi->getState() == Kernel::CellState::DEAD)
             {
                 oi->setState(Kernel::CellState::ALIVE);
                 ni->setState(Kernel::CellState::ALIVE);
+                oi->setGeneration(1);
+                ni->setGeneration(1);
             }
         }
     }

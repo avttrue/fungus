@@ -12,7 +12,8 @@
 
 DialogCellMonitor::DialogCellMonitor(QWidget *parent, Scene *scene, const QString& title)
     :QDialog(parent),
-      m_Scene(scene)
+      m_Scene(scene),
+      m_CurrentCellIndex(-1)
 {
     setWindowFlags(Qt::Dialog |
                    Qt::CustomizeWindowHint |
@@ -46,9 +47,15 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, Scene *scene, const QStrin
     m_ActionSelectCell->setAutoRepeat(false);
     m_ActionSelectCell->setEnabled(false);
 
+    m_ActionNextCell = new QAction(QIcon(":/resources/img/right_arrow.svg"), tr("Show next cell"));
+    QObject::connect(m_ActionNextCell, &QAction::triggered, this, &DialogCellMonitor::slotShowNextCell);
+    m_ActionNextCell->setAutoRepeat(false);
+    m_ActionNextCell->setEnabled(false);
+
     m_LabelCount = new QLabel("0", this);
 
     toolBarMain->addAction(m_ActionSelectCell);
+    toolBarMain->addAction(m_ActionNextCell);
     toolBarMain->addSeparator();
     toolBarMain->addAction(actionClear);
     toolBarMain->addSeparator();
@@ -124,6 +131,8 @@ void DialogCellMonitor::slotAddCell()
 
     m_LabelCount->setText(QString::number(m_Cells.count()));
 
+    m_ActionNextCell->setEnabled(true);
+    m_CurrentCellIndex = m_Cells.count() - 1;
     QObject::connect(this, &QObject::destroyed, cell, &Cell::setObservedOff);
 }
 
@@ -134,6 +143,23 @@ void DialogCellMonitor::slotClearObservationList()
     m_TextContent->clear();
     addStartText();
     m_LabelCount->setText(QString::number(m_Cells.count()));
+    m_ActionNextCell->setEnabled(false);
+    m_CurrentCellIndex = -1;
+}
+
+void DialogCellMonitor::slotShowNextCell()
+{
+    if(m_Cells.isEmpty()) { m_ActionNextCell->setEnabled(false); return; }
+    if(m_CurrentCellIndex == -1 || m_CurrentCellIndex >= m_Cells.count() - 1)
+    {
+        m_CurrentCellIndex = 0;
+        m_Scene->selectCell(m_Cells.at(m_CurrentCellIndex), false);
+    }
+    else
+    {
+        m_CurrentCellIndex++;
+        m_Scene->selectCell(m_Cells.at(m_CurrentCellIndex), false);
+    }
 }
 
 void DialogCellMonitor::slotAddText(const QString &text) { m_TextContent->appendHtml(QString("<p>%1</p>").arg(text)); }
