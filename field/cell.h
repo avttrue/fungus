@@ -22,7 +22,8 @@ public:
     void applyInfo();
     QRect getRect() const;
     bool isObserved();
-    void setObserved(bool value);
+    void setObservedOn();
+    void setObservedOff();
 
 private:
     Field* m_Field;

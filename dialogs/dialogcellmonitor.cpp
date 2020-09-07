@@ -120,16 +120,16 @@ void DialogCellMonitor::slotAddCell()
     m_TextContent->appendPlainText(QString("%1 added to observation list").arg(cell->objectName()));
     m_TextContent->addTextSeparator();
     m_Cells.append(cell);
-    cell->setObserved(true);
+    cell->setObservedOn();
 
     m_LabelCount->setText(QString::number(m_Cells.count()));
 
-    QObject::connect(this, &QObject::destroyed, [=](){ cell->setObserved(false); });
+    QObject::connect(this, &QObject::destroyed, cell, &Cell::setObservedOff);
 }
 
 void DialogCellMonitor::slotClearObservationList()
 {
-    for(auto c: m_Cells) c->setObserved(false);
+    for(auto c: m_Cells) c->setObservedOff();
     m_Cells.clear();
     m_TextContent->clear();
     addStartText();
