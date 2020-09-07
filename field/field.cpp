@@ -102,48 +102,75 @@ void Field::calculate()
 
                     // итог применения правила к ячейке
                     // cell Age
-                    if(oi->getState() == Kernel::CellState::ALIVE &&
-                            ni->getState() == Kernel::CellState::CURSED)
+                    if(oi->getState() == Kernel::CellState::ALIVE && ni->getState() == Kernel::CellState::CURSED)
                         ni->setAge(0); // была жива, стала отравлена
-                    else if(oi->getState() == Kernel::CellState::CURSED &&
-                            m_Rule->getCurseTime() > -1)
-                        ni->upAge(); // время отравления
-                    else if(ni->getState() == Kernel::CellState::ALIVE)
+                    else if(oi->getState() == Kernel::CellState::ALIVE && ni->getState() == Kernel::CellState::ALIVE)
                         ni->upAge(); // возраст живой ячейки
-                    else
-                        ni->setAge(0); // для всех остальных случаев возраст обнуляется
+                    else if(oi->getState() != Kernel::CellState::DEAD && ni->getState() == Kernel::CellState::DEAD)
+                        ni->setAge(0); // стала мёртвой
+                    // проверка возраста отравленной ячейки
+                    else if(oi->getState() == Kernel::CellState::CURSED && m_Rule->getCurseTime() > -1)
+                    {
+                        if(oi->getAge() >= static_cast<uint>(m_Rule->getCurseTime()))
+                        {
+                            ni->setState(Kernel::CellState::DEAD);
+                            ni->setAge(0);
+                            if(c->isObserved())
+                                Q_EMIT signalRuleMessage(tr("%1 : %2 State %3 -> %4").
+                                                         arg(QString::number(m_FieldInformation->getAge()),
+                                                             c->objectName(),
+                                                             QVariant::fromValue(oi->getState()).toString(),
+                                                             QVariant::fromValue(ni->getState()).toString()
+                                                             ));
+                        }
+                        else { ni->upAge(); }
+                        cells_changed.append(c);
+                    }
+
+                    if(c->isObserved() && oi->getAge() != ni->getAge())
+                    {
+                        Q_EMIT signalRuleMessage(tr("%1 : %2 Age %3 -> %4").
+                                                 arg(QString::number(m_FieldInformation->getAge()),
+                                                     c->objectName(),
+                                                     QString::number(oi->getAge()),
+                                                     QString::number(ni->getAge())
+                                                     ));
+                    }
 
                     // cell Generation
-                    // поколение увеличивается, если только что стала живой
-                    if(ni->getState() == Kernel::CellState::ALIVE &&
-                            oi->getAge() == 0 &&
-                            ni->getAge() > 0) ni->upGeneration();
+                    if(ni->getState() == Kernel::CellState::CURSED) ni->setGeneration(0);
+                    else if(oi->getState() != Kernel::CellState::ALIVE && ni->getState() == Kernel::CellState::ALIVE)
+                        ni->upGeneration(); // поколение увеличивается, если только что стала живой
 
-                    else if(ni->getState() == Kernel::CellState::CURSED) ni->setGeneration(0);
+                    if(c->isObserved() && oi->getGeneration() != ni->getGeneration())
+                    {
+                        Q_EMIT signalRuleMessage(tr("%1 : %2 Generation %3 -> %4").
+                                                 arg(QString::number(m_FieldInformation->getAge()),
+                                                     c->objectName(),
+                                                     QString::number(oi->getGeneration()),
+                                                     QString::number(ni->getGeneration())
+                                                     ));
+                    }
                 }
-
-                auto ois = oi->getState();
-                auto nis = ni->getState();
-
-                // если и старое и новое состояние - мёртвое, то ячейка не менялась
-                if(nis != Kernel::CellState::DEAD || ois != Kernel::CellState::DEAD)
-                    cells_changed.append(c);
 
                 // Field Information
 
                 if(oi->getGeneration() < ni->getGeneration()) active_count++;
 
                 //Kernel::CellState::Dead не считаем
-                if(nis == Kernel::CellState::ALIVE)
+                if(ni->getState() == Kernel::CellState::ALIVE)
                 {
                     cells_to_redraw.append(c);
                     alive_count++;
                 }
-                else if(nis == Kernel::CellState::CURSED)
+                else if(ni->getState() == Kernel::CellState::CURSED)
                 {
                     cells_to_redraw.append(c);
                     cursed_count++;
                 }
+
+                if(!(oi->getState() == Kernel::CellState::DEAD && ni->getState() == Kernel::CellState::DEAD))
+                    cells_changed.append(c);
             }
         }
 
@@ -199,12 +226,6 @@ void Field::applyRules(Cell *cell)
 {
     auto oi = cell->getOldInfo();
     auto ni = cell->getNewInfo();
-
-    // проверка возраста отравленной ячейки
-    if(oi->getState() == Kernel::CellState::CURSED &&
-            m_Rule->getCurseTime() > -1 &&
-            oi->getAge() >= static_cast<uint>(m_Rule->getCurseTime()))
-        ni->setState(Kernel::CellState::DEAD);
 
     /* ActivityType,
      * SelfState,
@@ -318,7 +339,6 @@ void Field::applyRules(Cell *cell)
                                          arg(QString::number(m_FieldInformation->getAge()),
                                              cell->objectName(),
                                              ActivityElementToString(a)));
-                //qInfo() << m_FieldInformation->getAge() << cell->objectName() << ActivityElementToString(a);
             }
             return;
         }
