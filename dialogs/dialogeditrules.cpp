@@ -110,8 +110,8 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
 
     installEventFilter(this);
 
-    qDebug() << "DialogEditRules" << windowTitle() << "created";
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogEditRules" << windowTitle() << "destroyed"; });
+    qDebug() << "DialogEditRules" << windowTitle() << "created";
 }
 
 bool DialogEditRules::eventFilter(QObject *object, QEvent *event)

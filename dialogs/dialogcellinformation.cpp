@@ -68,15 +68,13 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     loadInformation();
 
-
-    QObject::connect(cell, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection); // закрывать при уничтожении cell
-
     installEventFilter(this);
     resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());
 
-    qDebug() << "DialogCellInformation" << windowTitle() << "created";
+    QObject::connect(cell, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection);
     QObject::connect(this, &QObject::destroyed,
                      [=]() { qDebug() << "DialogCellInformation" << windowTitle() << "destroyed"; });
+    qDebug() << "DialogCellInformation" << windowTitle() << "created";
 }
 
 bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)

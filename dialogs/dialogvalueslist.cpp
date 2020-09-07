@@ -80,8 +80,8 @@ DialogValuesList::DialogValuesList(QWidget* parent,
 
     installEventFilter(this);
 
-    qDebug() << "DialogValuesList" << windowTitle() << "created";
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogValuesList" << windowTitle() << "destroyed"; });
+    qDebug() << "DialogValuesList" << windowTitle() << "created";
 }
 
 void DialogValuesList::addWidgetContent(QWidget *widget, bool sub_item)

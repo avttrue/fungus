@@ -83,9 +83,10 @@ DialogInfoContent::DialogInfoContent(const QString& title, QWidget *parent)
 
     installEventFilter(this);
     resize(config->InfoWindowWidth(), config->InfoWindowHeight());
-    qDebug() << "DialogInfoContent" << windowTitle() << "created";
+
     QObject::connect(this, &QObject::destroyed, [=]()
     { qDebug() << "DialogInfoContent" << windowTitle() << "destroyed"; });
+    qDebug() << "DialogInfoContent" << windowTitle() << "created";
 }
 
 bool DialogInfoContent::eventFilter(QObject *object, QEvent *event)

@@ -21,6 +21,7 @@ SOURCES += \
     dialogs/dialogvalueslist.cpp \
     dialogs/helpergraphics.cpp \
     dialogs/infopanel.cpp \
+    dialogs/textlog.cpp \
     field/cellinformation.cpp \
     field/cell.cpp \
     field/field.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     dialogs/dialogvalueslist.h \
     dialogs/helpergraphics.h \
     dialogs/infopanel.h \
+    dialogs/textlog.h \
     field/cellinformation.h \
     field/field.h \
     field/fieldinformation.h \

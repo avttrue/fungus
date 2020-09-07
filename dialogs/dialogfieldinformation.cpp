@@ -61,12 +61,12 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, Field* field)
 
     loadInformation();
 
-    QObject::connect(field, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection); // закрывать при уничтожении field
-
     installEventFilter(this);
     resize(config->FieldInfoWindowWidth(), config->FieldInfoWindowHeight());
-    qDebug() << "DialogFieldInformation" << windowTitle() << "created";
+
+    QObject::connect(field, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection);
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogFieldInformation" << windowTitle() << "destroyed"; });
+    qDebug() << "DialogFieldInformation" << windowTitle() << "created";
 }
 
 bool DialogFieldInformation::FindPreviousCopy(Field *field)

@@ -315,10 +315,10 @@ void Field::applyRules(Cell *cell)
             if(cell->isObserved())
             {
                 Q_EMIT signalRuleMessage(QString("%1 : %2 %3").
-                                         arg(cell->objectName(),
-                                             QString::number(m_FieldInformation->getAge()),
+                                         arg(QString::number(m_FieldInformation->getAge()),
+                                             cell->objectName(),
                                              ActivityElementToString(a)));
-                qInfo() << m_FieldInformation->getAge() << cell->objectName() << ActivityElementToString(a);
+                //qInfo() << m_FieldInformation->getAge() << cell->objectName() << ActivityElementToString(a);
             }
             return;
         }

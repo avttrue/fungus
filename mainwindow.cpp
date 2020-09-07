@@ -12,6 +12,7 @@
 #include "dialogs/dialogfieldinformation.h"
 #include "dialogs/dialogeditrules.h"
 #include "dialogs/dialoginfocontent.h"
+#include "dialogs/dialogcellmonitor.h"
 #include "field/field.h"
 #include "field/cell.h"
 #include "field/cellinformation.h"
@@ -202,6 +203,11 @@ void MainWindow::loadGui()
     m_ActionInfoField->setAutoRepeat(false);
     m_ActionInfoField->setEnabled(false);
 
+    m_ActionCellMonitor = new QAction(QIcon(":/resources/img/cell_monitor.svg"), tr("Cells minitor"), this);
+    QObject::connect(m_ActionCellMonitor, &QAction::triggered, this, &MainWindow::slotCellMonitor);
+    m_ActionCellMonitor->setAutoRepeat(false);
+    m_ActionCellMonitor->setEnabled(false);
+
     m_ActionClearCells = new QAction(QIcon(":/resources/img/delete.svg"), tr("Clear selected cells"), this);
     QObject::connect(m_ActionClearCells, &QAction::triggered, this, &MainWindow::slotClearCells);
     m_ActionClearCells->setShortcut(Qt::CTRL + Qt::Key_D);
@@ -275,6 +281,7 @@ void MainWindow::loadGui()
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionEditCell);
     m_TbMain->addAction(m_ActionInfoCell);
+    m_TbMain->addAction(m_ActionCellMonitor);
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionInfoField);
     m_TbMain->addAction(m_ActionSelectAll);
@@ -523,6 +530,7 @@ void MainWindow::setMainActionsEnable(bool value)
     m_ActionZoomUndoScene->setEnabled(enable);
     m_ActionStepStop->setEnabled(enable);
     m_ActionInfoField->setEnabled(enable);
+    m_ActionCellMonitor->setEnabled(enable);
     m_ActionSaveImageToFile->setEnabled(enable);
     m_ActionRun->setEnabled(enable);
     m_ActionSelectAll->setEnabled(enable);
@@ -2262,6 +2270,15 @@ void MainWindow::slotHelp()
     auto dhc = new DialogInfoContent(title, this);
     dhc->setMarkdownSource("qrc:/resources/md/help/doc_en.md");
     dhc->show();
+}
+
+void MainWindow::slotCellMonitor()
+{
+    auto title = tr("Cells monitor");
+    if(findPreviousWindowCopy(title)) return;
+
+    auto dcm = new DialogCellMonitor(this, m_SceneView->getScene(), title);
+    dcm->show();
 }
 
 void MainWindow::slotFieldAvCalc(qreal value)
