@@ -806,8 +806,9 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
         y = qFloor(static_cast<qreal>(scene->getField()->height() - h) / 2);
 
         auto answer = QMessageBox::question(this, tr("Question"), tr("The target cell is not selected."
-                                                                     "\n To try placing it in the center of the field "
-                                                                     "[%1 X %2]?").arg(QString::number(x), QString::number(y)));
+                                                                     "\n To try placing it in the center of the field?"
+                                                                     "\n New target cell: [%1 X %2]").
+                                            arg(QString::number(x), QString::number(y)));
         if (!answer) return false;
 
         cell = m_Field->getCell({x, y});
