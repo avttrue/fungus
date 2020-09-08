@@ -14,7 +14,6 @@ TextLog::TextLog(QWidget *parent)
 
     m_ActionClearText = new QAction(QIcon(":/resources/img/delete.svg"), tr("Clear all"), this);
     m_ActionClearText->setAutoRepeat(false);
-    m_ActionClearText->setShortcut(Qt::Key_Delete);
     QObject::connect(m_ActionClearText, &QAction::triggered, [=](){ clear(); });
 }
 
