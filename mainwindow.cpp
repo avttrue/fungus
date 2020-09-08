@@ -19,6 +19,7 @@
 #include "field/fieldrule.h"
 #include "field/fieldinformation.h"
 
+#include <QtMath>
 #include <QDebug>
 #include <QApplication>
 #include <QCloseEvent>
@@ -549,8 +550,9 @@ void MainWindow::setCellsActionsEnable(bool value)
             ? enable : false;
     bool single_enable = (enable && scene->getSelectedCell()) ? enable : false;
 
-    m_ActionLoadCellsFromPreset->setEnabled(single_enable);
-    m_ActionLoadCellsFromClipbord->setEnabled(single_enable);
+    m_ActionLoadCellsFromPreset->setEnabled(enable);
+    m_ActionLoadCellsFromClipbord->setEnabled(enable);
+
     m_ActionEditCell->setEnabled(single_enable);
     m_ActionInfoCell->setEnabled(single_enable);
 
@@ -781,12 +783,6 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
         return false;
     }
 
-    if(!cell)
-    {
-        qCritical() << __func__ << "Cell is null";
-        return false;
-    }
-
     QJsonObject root_object;
     if(!getJsonRootObject(text.toUtf8(), &root_object)) return false;
     if(!checkJsonDocumentVersion(&root_object)) return false;
@@ -803,13 +799,32 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
                                QString::number(scene->getField()->height()),
                                QString::number(w), QString::number(h))); return false; }
 
-    if(cell->getIndex().x() + w > scene->getField()->width() ||
-            cell->getIndex().y() + h > scene->getField()->height())
+    int x, y = 0;
+    if(!cell)
+    {
+        x = qFloor(static_cast<qreal>(scene->getField()->width() - w) / 2);
+        y = qFloor(static_cast<qreal>(scene->getField()->height() - h) / 2);
+
+        auto answer = QMessageBox::question(this, tr("Question"), tr("The target cell is not selected."
+                                                                     "\n To try placing it in the center of the field "
+                                                                     "[%1 X %2]?").arg(QString::number(x), QString::number(y)));
+        if (!answer) return false;
+
+        cell = m_Field->getCell({x, y});
+        scene->selectCell(cell, false);
+    }
+    else
+    {
+        x = cell->getIndex().x();
+        y = cell->getIndex().y();
+    }
+
+    if(x + w > scene->getField()->width() ||
+            y + h > scene->getField()->height())
     { QMessageBox::warning(this, tr("Warning"),
-                           tr("Pasted field (%1X%2) does not fit in the cell coordinates (%3X%4).").
+                           tr("Pasted field (%1X%2) does not fit in the selected coordinates (%3X%4).").
                            arg(QString::number(w), QString::number(h),
-                               QString::number(cell->getIndex().x()),
-                               QString::number(cell->getIndex().y()))); return false; }
+                               QString::number(x), QString::number(y))); return false; }
 
 
     if(!CellsFromJsonObject(&root_object, cell))
@@ -1545,6 +1560,7 @@ void MainWindow::slotNewProject()
                        QString::number(config->SceneCellSize())));
 
     setMainActionsEnable(true);
+    setCellsActionsEnable(true);
 
     m_SceneView->zoomer()->Zoom(-1.0);
     m_LabelFieldAvCalc->setText("0 ms");
@@ -1615,14 +1631,6 @@ void MainWindow::slotLoadCellsFromClipbord()
         return;
     }
 
-    auto cell = scene->getSelectedCell();
-    if(!cell)
-    {
-        m_ActionLoadCellsFromClipbord->setDisabled(true);
-        qDebug() << __func__ << "Target cell not selected";
-        return;
-    }
-
     stopFieldCalculating();
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
@@ -1630,7 +1638,7 @@ void MainWindow::slotLoadCellsFromClipbord()
     auto clipboard = QGuiApplication::clipboard();
     auto text = clipboard->text();
 
-    if(CellsFromJsonText(cell, text)) redrawScene();
+    if(CellsFromJsonText(scene->getSelectedCell(), text)) redrawScene();
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
 }
@@ -1686,14 +1694,6 @@ void MainWindow::slotLoadCellsFromPreset()
         return;
     }
 
-    auto cell = scene->getSelectedCell();
-    if(!cell)
-    {
-        m_ActionLoadCellsFromPreset->setDisabled(true);
-        qDebug() << __func__ << "Target cell not selected";
-        return;
-    }
-
     stopFieldCalculating();
 
     auto fileext = PRESET_FILE_EXTENSION.toLower();
@@ -1712,7 +1712,7 @@ void MainWindow::slotLoadCellsFromPreset()
 
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
-    if(CellsFromJsonText(cell, text)) redrawScene();
+    if(CellsFromJsonText(scene->getSelectedCell(), text)) redrawScene();
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
 }
