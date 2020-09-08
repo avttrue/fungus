@@ -47,8 +47,17 @@ void Cell::setPosition(const QPoint &value)
 QRect Cell::getRect() const { return m_Rect; }
 bool Cell::isObserved() { return m_Observed; }
 
-void Cell::setObservedOn() { m_Observed = true; }
-void Cell::setObservedOff() { m_Observed = false; }
+void Cell::setObservedOn()
+{
+    m_Observed = true;
+    qDebug() << objectName() << "Observed on";
+}
+
+void Cell::setObservedOff()
+{
+    m_Observed = false;
+    qDebug() << objectName() << "Observed off";
+}
 QPoint Cell::getIndex() { return m_Index; }
 CellInformation *Cell::getOldInfo() { return m_OldInformation; }
 CellInformation *Cell::getNewInfo() { return m_NewInformation; }

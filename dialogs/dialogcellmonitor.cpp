@@ -65,7 +65,6 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
     toolBarMain->addAction(actionClose);
 
     m_TextContent = new TextLog(this);
-    slotAddText(tr("Select a cell and push selection button"));
 
     vblForm->addWidget(m_TextContent);
     vblForm->addWidget(toolBarMain);
@@ -79,6 +78,10 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
     QObject::connect(m_Scene, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection);
     QObject::connect(this, &QObject::destroyed,
                      [=]() { qDebug() << "DialogCellMonitor" << windowTitle() << "destroyed"; });
+
+    if(scene->getSelectedCell()) slotAddCell();
+    else slotAddText(tr("Select a cell and push selection button"));
+
     qDebug() << "DialogCellMonitor" << windowTitle() << "created";
 }
 
