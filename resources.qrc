@@ -109,5 +109,6 @@
         <file>resources/presets/Life_and_Curse/rect_swastika.fpr</file>
         <file>resources/presets/Life_and_Curse/five_rects.fpr</file>
         <file>resources/presets/Life_and_Curse/big_cross.fpr</file>
+        <file>resources/md/help/doc6_en.md</file>
     </qresource>
 </RCC>

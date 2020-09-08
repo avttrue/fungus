@@ -28,6 +28,8 @@
 
 [Snapshots](doc2_en.md)
 
+[Clipboard and Presets](doc6_en.md)
+
 ##  
 
 ---
