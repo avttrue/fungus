@@ -197,6 +197,7 @@ void Scene::setBackgroundColor(const QColor &value)
 
 void Scene::slotAdvance(QVector<Cell *> cells)
 {
+    qDebug() << __func__;
     auto time = QDateTime::currentMSecsSinceEpoch();
     auto pixmap = m_SceneItem->getBuffer();
 

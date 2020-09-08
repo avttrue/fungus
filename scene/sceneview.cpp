@@ -78,7 +78,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
             auto item = m_Scene->itemAt(mouseSceneEvent->scenePos(), transform());
             if(!item)
             {
-                qWarning()<< __func__ << ": GraphicsSceneMousePress: target item not detected";
+                qWarning() << __func__ << ": GraphicsSceneMousePress: target item not detected";
                 return true;
             }
         }
