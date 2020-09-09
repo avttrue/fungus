@@ -15,7 +15,6 @@ class FieldInformation : public QObject
     Q_PROPERTY(qreal AverageCalc READ getAverageCalc WRITE setAverageCalc)
     Q_PROPERTY(uint ActiveCells READ getActiveCells WRITE setActiveCells NOTIFY signalActiveCellsChanged)
     Q_PROPERTY(uint LastActiveAge READ getLastActiveAge WRITE setLastActiveAge NOTIFY signalLastActiveAgeChanged)
-    Q_PROPERTY(uint ChangedCells READ getChangedCells WRITE setChangedCells NOTIFY signalChangedCellsChanged)
 
 public:
     explicit FieldInformation(QObject *parent = nullptr);
@@ -41,8 +40,6 @@ public:
     void applyDensity();
     uint getCellsCount() const;
     void setCellsCount(const uint &value);   
-    uint getChangedCells() const;
-    void setChangedCells(uint value);
 
 private:
     uint m_CellsCount;
@@ -54,7 +51,6 @@ private:
     uint m_ActiveCells;
     uint m_LastActiveAge;
     qreal m_Density;    
-    uint m_ChangedCells;
 
 Q_SIGNALS:
     void signalAgeChanged(uint value);
@@ -67,7 +63,6 @@ Q_SIGNALS:
     void signalCursedCellsChanged(uint value);
     void signalActiveCellsChanged(uint value);
     void signalLastActiveAgeChanged(uint value);
-    void signalChangedCellsChanged(uint value);
 };
 
 #endif // FIELDINFORMATION_H

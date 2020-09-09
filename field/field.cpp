@@ -82,7 +82,6 @@ void Field::calculate()
         uint cursed_count = 0;
         uint active_count = 0;
         QVector<Cell*> cells_to_redraw;
-        QVector<Cell*> cells_changed;
 
         if(m_RuleOn) m_FieldInformation->upAge();
         for(int h = 0; h < m_Height; h++)
@@ -102,12 +101,18 @@ void Field::calculate()
 
                     // итог применения правила к ячейке
                     // cell Age
+                    // была жива, стала отравлена
                     if(oi->getState() == Kernel::CellState::ALIVE && ni->getState() == Kernel::CellState::CURSED)
-                        ni->setAge(0); // была жива, стала отравлена
+                        ni->setAge(0);
+
+                    // возраст живой ячейки
                     else if(oi->getState() == Kernel::CellState::ALIVE && ni->getState() == Kernel::CellState::ALIVE)
-                        ni->upAge(); // возраст живой ячейки
+                        ni->upAge();
+
+                    // стала мёртвой
                     else if(oi->getState() != Kernel::CellState::DEAD && ni->getState() == Kernel::CellState::DEAD)
-                        ni->setAge(0); // стала мёртвой
+                        ni->setAge(0);
+
                     // проверка возраста отравленной ячейки
                     else if(oi->getState() == Kernel::CellState::CURSED && m_Rule->getCurseTime() > -1)
                     {
@@ -116,14 +121,16 @@ void Field::calculate()
                             ni->setState(Kernel::CellState::DEAD);
                             ni->setAge(0);
                         }
-                        else { ni->upAge(); }
-                        cells_changed.append(c);
+                        else
+                        { ni->upAge(); }
                     }
 
                     // cell Generation
                     if(ni->getState() == Kernel::CellState::CURSED) ni->setGeneration(0);
+
+                    // поколение увеличивается, если только что стала живой
                     else if(oi->getState() != Kernel::CellState::ALIVE && ni->getState() == Kernel::CellState::ALIVE)
-                        ni->upGeneration(); // поколение увеличивается, если только что стала живой
+                        ni->upGeneration();
 
                     // messages
                     if(c->isObserved())
@@ -166,22 +173,22 @@ void Field::calculate()
                     cells_to_redraw.append(c);
                     cursed_count++;
                 }
-
-                if(!(oi->getState() == Kernel::CellState::DEAD && ni->getState() == Kernel::CellState::DEAD))
-                    cells_changed.append(c);
             }
         }
 
-        if(m_RuleOn) // apply changes
+        if(m_RuleOn)
         {
-            for(auto c: cells_changed)
+            for(int h = 0; h < m_Height; h++)
             {
                 if(m_AbortCalculating) break;
-                c->applyInfo();
+                for(int w = 0; w < m_Width; w++)
+                {
+                    if(m_AbortCalculating) break;
+                    m_Cells.at(w).at(h)->applyInfo();
+                }
             }
             // статистика актуальная при включённых правилах
             m_FieldInformation->setActiveCells(active_count);
-            m_FieldInformation->setChangedCells(cells_changed.count());
         }
 
         m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive_count - cursed_count);

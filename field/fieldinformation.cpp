@@ -13,8 +13,7 @@ FieldInformation::FieldInformation(QObject *parent)
       m_AliveCells(-1),
       m_CursedCells(-1),
       m_ActiveCells(-1),
-      m_Density(0),
-      m_ChangedCells(0)
+      m_Density(0)
 {
     setObjectName("FieldInformation");
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
@@ -104,14 +103,6 @@ void FieldInformation::applyDensity()
 
 void FieldInformation::setCellsCount(const uint &value) { m_CellsCount = value; }
 
-void FieldInformation::setChangedCells(uint value)
-{
-    if (m_ChangedCells == value) return;
-
-    m_ChangedCells = value;
-    Q_EMIT signalChangedCellsChanged(m_ChangedCells);
-}
-
 void FieldInformation::setAge(uint value)
 {
     if (m_Age == value) return;
@@ -144,4 +135,3 @@ uint FieldInformation::getDeadCells() const { return m_DeadCells; }
 uint FieldInformation::getAliveCells() const { return m_AliveCells; }
 uint FieldInformation::getCursedCells() const { return m_CursedCells; }
 uint FieldInformation::getCellsCount() const { return m_CellsCount; }
-uint FieldInformation::getChangedCells() const { return m_ChangedCells; }

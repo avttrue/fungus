@@ -128,8 +128,6 @@ void DialogFieldInformation::loadInformation()
             QObject::connect(fi, &FieldInformation::signalLastActiveAgeChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "Density")
             QObject::connect(fi, &FieldInformation::signalDensityChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
-        else if(QString(p.name()) == "ChangedCells")
-            QObject::connect(fi, &FieldInformation::signalChangedCellsChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
     }
 }
 
