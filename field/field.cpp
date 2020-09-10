@@ -100,7 +100,6 @@ void Field::calculate()
                 {
                     if(applyRules(c)) cells_to_update << c;
 
-                    // итог применения правила к ячейке
                     // cell Age
                     // была жива, стала отравлена
                     if(oi->getState() == Kernel::CellState::ALIVE && ni->getState() == Kernel::CellState::CURSED)
@@ -134,6 +133,7 @@ void Field::calculate()
                     }
 
                     // cell Generation
+                    // поколение обнуляется, если только что стала отравленной
                     if(oi->getState() != Kernel::CellState::CURSED && ni->getState() == Kernel::CellState::CURSED)
                     {
                         ni->setGeneration(0);
