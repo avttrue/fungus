@@ -13,10 +13,10 @@
  | `CTRL + N` | *New* [project](doc3_en.md) | <img src="qrc:/resources/img/asterisk.svg" height="30"/> | 
  | `CTRL + O` | *Open project* | <img src="qrc:/resources/img/open_folder.svg" height="30"/> |
  | `CTRL + S` | *Save project* | <img src="qrc:/resources/img/save.svg" height="30"/> |
- | `CTRL + R` | *Information about current rule* | <img src="qrc:/resources/img/info.svg" height="30"/> |
+ | `CTRL + R` | *Information about current* [rule](doc5_en.md) | <img src="qrc:/resources/img/info.svg" height="30"/> |
  | `CTRL + SPACE` | *Stop / Step field* | <img src="qrc:/resources/img/step_stop.svg" height="30"/> |
  | `CTRL + F` | [Field](doc5_en.md) *information* | <img src="qrc:/resources/img/field.svg" height="30"/> |
- | `CTRL + I` | *Information about selected* [cell](doc5_en.md) | <img src="qrc:/resources/img/cell.svg" height="30"/> | 
+ | `CTRL + I` | *Information about selected* [cell](doc4_en.md) | <img src="qrc:/resources/img/cell.svg" height="30"/> | 
  | `CTRL + E` | *Edit cell* | <img src="qrc:/resources/img/edit.svg" height="30"/> | 
  | `CTRL + C` | *Copy selected cells to clipboard* | <img src="qrc:/resources/img/copy.svg" height="30"/> |
  | `CTRL + V` | *Paste cells from clipboard* | <img src="qrc:/resources/img/paste.svg" height="30"/> |
