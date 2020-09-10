@@ -50,13 +50,13 @@ bool Cell::isObserved() { return m_Observed; }
 void Cell::setObservedOn()
 {
     m_Observed = true;
-    qDebug() << objectName() << ": Observed on";
+    qDebug() << "Cell" << objectName() << ": Observed on";
 }
 
 void Cell::setObservedOff()
 {
     m_Observed = false;
-    qDebug() << objectName() << ": Observed off";
+    qDebug() << "Cell" << objectName() << ": Observed off";
 }
 QPoint Cell::getIndex() { return m_Index; }
 CellInformation *Cell::getOldInfo() { return m_OldInformation; }

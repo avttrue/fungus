@@ -314,7 +314,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
                               ? std::numeric_limits<double>::max()
                               : maxv.toDouble());
             spinbox->setDecimals(DOUBLE_SPINBOX_DECIMALS);
-            spinbox->setSingleStep(0.1);// TODO: QDoubleSpinBox->setSingleStep
+            spinbox->setSingleStep(0.1);
             spinbox->setStepType(QAbstractSpinBox::AdaptiveDecimalStepType);
             spinbox->setValue(v.toDouble());
             spinbox->installEventFilter(this);

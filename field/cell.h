@@ -22,8 +22,6 @@ public:
     void applyInfo();
     QRect getRect() const;
     bool isObserved();
-    void setObservedOn();
-    void setObservedOff();
 
 private:
     Field* m_Field;
@@ -32,6 +30,10 @@ private:
     CellInformation* m_NewInformation;
     QRect m_Rect;
     bool m_Observed; // флаг того, что клетка под наблюдением
+
+public Q_SLOTS:
+    void setObservedOn();
+    void setObservedOff();
 
 };
 

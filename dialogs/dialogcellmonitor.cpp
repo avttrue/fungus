@@ -35,7 +35,7 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
     toolBarMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
     auto actionClose = new QAction(QIcon(":/resources/img/no.svg"), tr("Close"));
-    QObject::connect(actionClose, &QAction::triggered, [=](){ close(); });
+    QObject::connect(actionClose, &QAction::triggered, [=](){ slotClearObservationList(); close(); });
     actionClose->setAutoRepeat(false);
 
     auto actionClear = new QAction(QIcon(":/resources/img/delete.svg"), tr("Clear observation list"));
@@ -124,19 +124,19 @@ void DialogCellMonitor::slotAddCell()
     if(!cell) return;
     if(m_Cells.contains(cell)) return;
 
-    if(m_Cells.isEmpty()) m_TextContent->clear();
-
     m_TextContent->addTextSeparator();
     m_TextContent->appendPlainText(QString("%1 added to observation list").arg(cell->objectName()));
     m_TextContent->addTextSeparator();
     m_Cells.append(cell);
     cell->setObservedOn();
+    //QObject::connect(this, &QObject::destroyed, cell, &Cell::setObservedOff); // TODO: не срабатывает?
 
     m_LabelCount->setText(QString::number(m_Cells.count()));
 
     m_ActionNextCell->setEnabled(true);
     m_CurrentCellIndex = m_Cells.count() - 1;
-    QObject::connect(this, &QObject::destroyed, cell, &Cell::setObservedOff);
+
+    qDebug() << "Observation list count:" << m_Cells.count();
 }
 
 void DialogCellMonitor::slotClearObservationList()

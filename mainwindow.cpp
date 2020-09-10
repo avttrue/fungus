@@ -122,6 +122,7 @@ void MainWindow::loadGui()
 
     m_ActionInfoRule = new QAction(QIcon(":/resources/img/info.svg"), tr("Current rule"), this);
     QObject::connect(m_ActionInfoRule, &QAction::triggered, this, &MainWindow::slotInfoRule);
+    m_ActionInfoRule->setShortcut(Qt::CTRL + Qt::Key_R);
     m_ActionInfoRule->setAutoRepeat(false);
     m_ActionInfoRule->setEnabled(false);
 
@@ -652,7 +653,7 @@ bool MainWindow::checkJsonDocumentVersion(QJsonObject *root)
 
     auto app = root->value("Application").toString();
     auto vers = root->value("Version").toString();
-    qDebug() << "Dava version:" << app << vers;
+    qDebug() << "Data version:" << app << vers;
 
     if(app != APP_NAME)
     {
