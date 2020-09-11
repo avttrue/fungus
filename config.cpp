@@ -253,6 +253,18 @@ void Config::load()
     if(!m_Settings->contains("Scene/GridLineWidth"))
         m_Settings->setValue("Scene/GridLineWidth", SCENE_GRID_LINE_WIDTH);
     m_SceneGridLineWidth = m_Settings->value("Scene/GridLineWidth").toInt();
+
+    if(!m_Settings->contains("Scene/LastRule"))
+        m_Settings->setValue("Scene/LastRule", "");
+    m_SceneLastRule = m_Settings->value("Scene/LastRule").toString();
+}
+
+void Config::setSceneLastRule(const QString &value)
+{
+    if(m_SceneLastRule == value) return;
+
+    m_SceneLastRule = value;
+    m_Settings->setValue("Scene/LastRule", m_SceneLastRule);
 }
 
 
@@ -786,3 +798,4 @@ int Config::SceneGridLineWidth() const { return m_SceneGridLineWidth; }
 int Config::CellMonitorWindowHeight() const { return m_CellMonitorWindowHeight; }
 int Config::CellMonitorWindowWidth() const { return m_CellMonitorWindowWidth; }
 Qt::KeyboardModifiers Config::FieldFasteditKeyModifier() const { return m_FieldFasteditKeyModifier; }
+QString Config::SceneLastRule() const { return m_SceneLastRule; }

@@ -138,6 +138,8 @@ public:
     void setCellMonitorWindowHeight(int value);
     int CellMonitorWindowWidth() const;
     void setCellMonitorWindowWidth(int value);
+    QString SceneLastRule() const;
+    void setSceneLastRule(const QString &value);
 
 protected:
     void load();
@@ -159,6 +161,7 @@ private:
     QString m_SceneCellCurseColor;                  // цвет отравленной ячейки
     QString m_SceneViewUpdateMode;                  // метод отрисовки SceneView
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
+    QString m_SceneLastRule;                        // последнее правило
     QString m_ImageFileFormat;                      // формат файлов для сохранения картинки сцены
     QString m_CellAliveAgeIndicBright;              // индикация возраста живой ячейки: ярче/темнее
     QString m_CellCurseAgeIndicBright;              // индикация возраста отравленной ячейки: ярче/темнее

@@ -1491,6 +1491,16 @@ void MainWindow::slotNewProject()
     m_ProgressBar->hide();
     qDebug() << "Rules loaded:" << ruleslist.count();
 
+    int last_rule = 0;
+    for(int i = 0; i < ruleslist.count(); i++)
+    {
+        if(ruleslist.keys().at(i) == config->SceneLastRule())
+        {
+            last_rule = i;
+            break;
+        }
+    }
+
     const QVector<QString> keys = {
         tr("00#_Field properties"),
         tr("01#_Size"),
@@ -1506,7 +1516,7 @@ void MainWindow::slotNewProject()
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
      {keys.at(1), {QVariant::Int, config->SceneFieldSize(), 2, 10000}},
-     {keys.at(2), {QVariant::StringList, ruleslist.keys().at(0), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
+     {keys.at(2), {QVariant::StringList, ruleslist.keys().at(last_rule), 0, QStringList(ruleslist.keys()), DialogValueMode::OneFromList}},
      {keys.at(3), {}},
      {keys.at(4), {QVariant::Int, config->SceneCellSize(), 1, 100}},
      {keys.at(5), {QVariant::Int, config->SceneGridLineWidth(), 0, 100}},
@@ -1526,6 +1536,8 @@ void MainWindow::slotNewProject()
     // properties
     config->setSceneFieldSize(map.value(keys.at(1)).value.toInt());
     auto currentrule = map.value(keys.at(2)).value.toString();
+    config->setSceneLastRule(currentrule);
+    qDebug() << "Selected rule:" << currentrule;
     // view
     config->setSceneCellSize(map.value(keys.at(4)).value.toInt());
     config->setSceneGridLineWidth(map.value(keys.at(5)).value.toInt());
