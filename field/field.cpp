@@ -399,10 +399,7 @@ void Field::setRulesActivityReaction(CellInformation *oi, CellInformation* ni, K
     case Kernel::ActivityType::INVERT:
     {
         if(oi->getState() == Kernel::CellState::ALIVE)
-        {
             ni->setState(Kernel::CellState::DEAD);
-            ni->setAge(0);
-        }
         else if(oi->getState() == Kernel::CellState::DEAD)
             ni->setState(Kernel::CellState::ALIVE);
         break;

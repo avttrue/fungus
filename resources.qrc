@@ -110,9 +110,9 @@
         <file>resources/presets/Life_and_Curse/big_cross.fpr</file>
         <file>resources/md/help/doc6_en.md</file>
         <file>resources/rules/Life_and_Curse_Long.frl</file>
-        <file>resources/presets/Life_and_Curse/fly1.fpr</file>
         <file>resources/presets/Life_and_Curse/fly2.fpr</file>
-        <file>resources/presets/Life_and_Curse/rocket1.fpr</file>
         <file>resources/presets/Life_and_Curse/rocket2.fpr</file>
+        <file>resources/presets/Life_and_Curse/fly1.fpr</file>
+        <file>resources/presets/Life_and_Curse/rocket1.fpr</file>
     </qresource>
 </RCC>
