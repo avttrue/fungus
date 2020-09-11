@@ -111,5 +111,6 @@
         <file>resources/presets/Life_and_Curse/big_cross.fpr</file>
         <file>resources/md/help/doc6_en.md</file>
         <file>resources/rules/Life_and_Curse_Long.frl</file>
+        <file>resources/presets/Life_and_Curse/fly.fpr</file>
     </qresource>
 </RCC>
