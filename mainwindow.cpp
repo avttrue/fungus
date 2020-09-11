@@ -612,14 +612,6 @@ void MainWindow::setSceneFieldThreadPriority()
     qDebug() << "Field thread priority:" << m_ThreadField->priority() << mode;
 }
 
-void MainWindow::redrawScene()
-{
-    m_Field->setRuleOn(false);
-    m_Field->setCalculatingNonstop(false);
-    m_Field->slotStartCalculating();
-    m_Field->calculate();
-}
-
 bool MainWindow::getJsonRootObject(const QByteArray &data, QJsonObject* root)
 {
     qDebug() << __func__;
@@ -1189,7 +1181,7 @@ void MainWindow::loadSnapshot(QJsonDocument* document)
     setCellsActionsEnable(false);
 
     auto root_object = document->object();
-    if(FieldFromJsonObject(&root_object)) redrawScene();
+    if(FieldFromJsonObject(&root_object)) m_Field->updateScene();
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
@@ -1461,7 +1453,7 @@ void MainWindow::slotEditCell()
         cni->setGeneration(map.value(keys.at(3)).value.toUInt());
         firstcell->applyInfo();
     }
-    redrawScene();
+    m_Field->updateScene();
 }
 
 void MainWindow::slotNewProject()
@@ -1553,7 +1545,7 @@ void MainWindow::slotNewProject()
 
     m_Snapshots->clearList();
     createScene();
-    if(random) redrawScene();
+    if(random) m_Field->updateScene();
 
     setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
                    arg(APP_NAME, APP_VERS, currentrule,
@@ -1640,7 +1632,7 @@ void MainWindow::slotLoadCellsFromClipbord()
     auto clipboard = QGuiApplication::clipboard();
     auto text = clipboard->text();
 
-    if(CellsFromJsonText(scene->getSelectedCell(), text)) redrawScene();
+    if(CellsFromJsonText(scene->getSelectedCell(), text)) m_Field->updateScene();
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
 }
@@ -1714,7 +1706,7 @@ void MainWindow::slotLoadCellsFromPreset()
 
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
-    if(CellsFromJsonText(scene->getSelectedCell(), text)) redrawScene();
+    if(CellsFromJsonText(scene->getSelectedCell(), text)) m_Field->updateScene();
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
 }
@@ -1760,7 +1752,7 @@ void MainWindow::slotClearCells()
     }
     qDebug() << "Cleared" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 
-    redrawScene();
+    m_Field->updateScene();
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
 }
@@ -1904,7 +1896,7 @@ void MainWindow::slotRandomFill()
         }
     }
     qDebug() << "Ramdom filled" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
-    redrawScene();
+    m_Field->updateScene();
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
@@ -1942,31 +1934,12 @@ void MainWindow::slotInvert()
     auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
 
     for(int x = xmin; x <= xmax; x++)
-    {
         for(int y = ymin; y <= ymax; y++)
-        {
-            auto c = m_Field->getCell({x, y});
-            auto ni = c->getNewInfo();
-            auto oi = c->getOldInfo();
-            if(oi->getState() == Kernel::CellState::ALIVE)
-            {
-                oi->setState(Kernel::CellState::DEAD);
-                ni->setState(Kernel::CellState::DEAD);
-                oi->setAge(0);
-                ni->setAge(0);
-            }
-            else if(oi->getState() == Kernel::CellState::DEAD)
-            {
-                oi->setState(Kernel::CellState::ALIVE);
-                ni->setState(Kernel::CellState::ALIVE);
-                oi->setGeneration(1);
-                ni->setGeneration(1);
-            }
-        }
-    }
+            m_Field->invertCellState({x, y});
+
     qDebug() << "Inverted" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 
-    redrawScene();
+    m_Field->updateScene();
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
 }
@@ -2127,7 +2100,7 @@ void MainWindow::slotLoadProject()
 
     m_Snapshots->clearList();
     createScene();
-    redrawScene();
+    m_Field->updateScene();
 
     setMainActionsEnable(true);
     if(config->WindowShowFieldInfo()) slotInfoField();

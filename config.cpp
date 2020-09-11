@@ -142,6 +142,10 @@ void Config::load()
         m_Settings->setValue("Scene/MultiselectKeyModifier", SCENE_MULTISELECT_KEY_MODIFIER);
     m_SceneMultiselKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/MultiselectKeyModifier").toInt());
 
+    if(!m_Settings->contains("Scene/FieldFasteditKeyModifier"))
+        m_Settings->setValue("Scene/FieldFasteditKeyModifier", FIELD_FASTEDIT_KEY_MODIFIER);
+    m_FieldFasteditKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/FieldFasteditKeyModifier").toInt());
+
     if(!m_Settings->contains("Scene/BackgroundColor"))
         m_Settings->setValue("Scene/BackgroundColor", SCENE_BG_COLOR);
     m_SceneBgColor = m_Settings->value("Scene/BackgroundColor").toString();
@@ -249,6 +253,15 @@ void Config::load()
     if(!m_Settings->contains("Scene/GridLineWidth"))
         m_Settings->setValue("Scene/GridLineWidth", SCENE_GRID_LINE_WIDTH);
     m_SceneGridLineWidth = m_Settings->value("Scene/GridLineWidth").toInt();
+}
+
+
+void Config::setFieldFasteditKeyModifier(const Qt::KeyboardModifiers &value)
+{
+    if(m_FieldFasteditKeyModifier == value) return;
+
+    m_FieldFasteditKeyModifier = value;
+    m_Settings->setValue("Scene/FieldFasteditKeyModifier", static_cast<int>(m_FieldFasteditKeyModifier));
 }
 
 void Config::setCellMonitorWindowWidth(int value)
@@ -772,3 +785,4 @@ int Config::FieldRandomisationValue() const { return m_FieldRandomisationValue; 
 int Config::SceneGridLineWidth() const { return m_SceneGridLineWidth; }
 int Config::CellMonitorWindowHeight() const { return m_CellMonitorWindowHeight; }
 int Config::CellMonitorWindowWidth() const { return m_CellMonitorWindowWidth; }
+Qt::KeyboardModifiers Config::FieldFasteditKeyModifier() const { return m_FieldFasteditKeyModifier; }

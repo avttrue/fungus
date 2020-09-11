@@ -31,8 +31,6 @@ Field::Field(int width, int height, QObject *parent)
     qDebug() << objectName() << "created";
 }
 
-Cell *Field::addCell(QPoint index) { return addCell(index.x(), index.y()); }
-
 void Field::fill(int random)
 {
     auto time = QDateTime::currentMSecsSinceEpoch();
@@ -44,7 +42,7 @@ void Field::fill(int random)
     {
         for(int w = 0; w < m_Width; w++)
         {
-            auto c = addCell(w, h);
+            auto c = addCell({w, h});
             if(random && rg.bounded(0, 100) < random)
             {
                 c->getOldInfo()->setState(Kernel::CellState::ALIVE);
@@ -223,9 +221,11 @@ void Field::calculate()
     Q_EMIT signalCalculatingDone();
 }
 
-Cell *Field::addCell(int x, int y)
+Cell *Field::addCell(QPoint index)
 {
     auto c = new Cell(this);
+    int x = index.x();
+    int y = index.y();
     c->moveToThread(thread()); c->setParent(this); // NOTE: field выполняется не в основном потоке
     c->setPosition({x, y});
     c->setObjectName(QString("[%1X%2]").arg(QString::number(x), QString::number(y)));
@@ -397,9 +397,16 @@ void Field::setRulesActivityReaction(CellInformation *oi, CellInformation* ni, K
     case Kernel::ActivityType::DOWN_AGE:
     { ni->downAge(); break; }
     case Kernel::ActivityType::INVERT:
-    { if(oi->getState() == Kernel::CellState::ALIVE) ni->setState(Kernel::CellState::DEAD);
-        else if(oi->getState() == Kernel::CellState::DEAD) ni->setState(Kernel::CellState::ALIVE);
-        break; }
+    {
+        if(oi->getState() == Kernel::CellState::ALIVE)
+        {
+            ni->setState(Kernel::CellState::DEAD);
+            ni->setAge(0);
+        }
+        else if(oi->getState() == Kernel::CellState::DEAD)
+            ni->setState(Kernel::CellState::ALIVE);
+        break;
+    }
     }
 }
 
@@ -630,5 +637,40 @@ bool Field::isCalculating() { return m_Calculating; }
 FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::slotSceneReady() { m_WaitScene = false; }
 bool Field::isWaitScene() const { return m_WaitScene; }
+
+// функционал для ручного редактирования
+void Field::invertCellState(Cell *cell)
+{
+    auto ni = cell->getNewInfo();
+    auto oi = cell->getOldInfo();
+    if(oi->getState() == Kernel::CellState::ALIVE)
+    {
+        oi->setState(Kernel::CellState::DEAD);
+        ni->setState(Kernel::CellState::DEAD);
+        oi->setAge(0);
+        ni->setAge(0);
+    }
+    else if(oi->getState() == Kernel::CellState::DEAD)
+    {
+        oi->setState(Kernel::CellState::ALIVE);
+        ni->setState(Kernel::CellState::ALIVE);
+        oi->setGeneration(1);
+        ni->setGeneration(1);
+    }
+}
+
+void Field::invertCellState(QPoint index)
+{
+    auto cell = getCell(index);
+    invertCellState(cell);
+}
+
+void Field::updateScene()
+{
+    setRuleOn(false);
+    setCalculatingNonstop(false);
+    slotStartCalculating();
+    calculate();
+}
 
 

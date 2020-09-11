@@ -76,6 +76,8 @@ public:
     void setWindowShowFieldInfo(bool value);
     Qt::KeyboardModifiers SceneMultiselModifier() const;
     void setSceneMultiselModifier(const Qt::KeyboardModifiers &value);
+    Qt::KeyboardModifiers FieldFasteditKeyModifier() const;
+    void setFieldFasteditKeyModifier(const Qt::KeyboardModifiers &value);
     int SceneMultiselAlfa() const;
     void setSceneMultiselAlfa(int value);
     bool JsonCompactMode() const;
@@ -190,6 +192,7 @@ private:
     Qt::KeyboardModifiers m_SceneZoomKeyModifier;   // модификатор управления зумом
     Qt::KeyboardModifiers m_SceneTooltipKeyModifier;// модификатор отображения координат Field
     Qt::KeyboardModifiers m_SceneMultiselKeyModifier;// модификатор выбора группы Cell
+    Qt::KeyboardModifiers m_FieldFasteditKeyModifier;// модификатор быстрого редактирования ячейки
     bool m_CellAliveAgeIndicate;                    // индикация возраста живой ячейки
     bool m_CellCurseAgeIndicate;                    // индикация возраста отравленной ячейки
     bool m_WriteLogsToFile;                         // писать логи в файл

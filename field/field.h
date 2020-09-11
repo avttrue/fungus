@@ -19,7 +19,6 @@ public:
     void fill(int random = 0);
     int width();
     int height();
-    Cell* addCell(int x, int y);
     Cell* addCell(QPoint index);
     Cell* getCell(QPoint index);
     QVector<QVector<Cell *>>* cells() const;
@@ -32,6 +31,9 @@ public:
     void AbortCalculating();
     void setRuleOn(bool value);
     bool isWaitScene() const;
+    void invertCellState(Cell* cell);
+    void invertCellState(QPoint index);
+    void updateScene();
 
 protected:
     Cell* getTopCell(Cell* cell);

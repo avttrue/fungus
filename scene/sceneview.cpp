@@ -85,6 +85,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
 
         if(event->type() == QEvent::GraphicsSceneMouseRelease)
         {
+            // выбор первой ячейки
             if(mouseSceneEvent->modifiers() == Qt::NoModifier &&
                     mouseSceneEvent->button() == Qt::LeftButton)
             {
@@ -93,6 +94,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
+            // выбор второй ячейки
             if(mouseSceneEvent->modifiers() == config->SceneMultiselModifier() &&
                     mouseSceneEvent->button() == Qt::LeftButton)
             {
@@ -101,6 +103,19 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
 
+            // быстрое редактирование (инвертирование)
+            if(mouseSceneEvent->modifiers() == config->FieldFasteditKeyModifier() &&
+                    mouseSceneEvent->button() == Qt::RightButton &&
+                    !m_Scene->getField()->isCalculating())
+            {
+                auto c = getCell(mouseSceneEvent->scenePos().x(), mouseSceneEvent->scenePos().y());
+                m_Scene->getField()->invertCellState(c);
+                m_Scene->getField()->updateScene();
+                m_Scene->selectCell(c, false);
+                return true;
+            }
+
+            // сброс выбора
             if(mouseSceneEvent->button() == Qt::RightButton)
             {
                 m_Scene->selectCell(nullptr);
