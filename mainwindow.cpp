@@ -430,7 +430,7 @@ void MainWindow::slotRun()
 
     if(!m_Field->isCalculating())
     {
-        if(config->SceneFirstSnapshot() && !m_Snapshots->count())
+        if(config->SceneFirstSnapshot() && !m_Field->getInformation()->getAge())
             createSnapshot();
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);

@@ -176,12 +176,12 @@ void Field::calculate()
                 //Kernel::CellState::Dead не считаем
                 if(ni->getState() == Kernel::CellState::ALIVE)
                 {
-                    cells_to_redraw.append(c);
+                    cells_to_redraw << c;
                     alive_count++;
                 }
                 else if(ni->getState() == Kernel::CellState::CURSED)
                 {
-                    cells_to_redraw.append(c);
+                    cells_to_redraw << c;
                     cursed_count++;
                 }
             }

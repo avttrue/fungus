@@ -96,8 +96,6 @@
         <file>resources/img/cell_dead.svg</file>
         <file>resources/img/nothing.svg</file>
         <file>resources/img/sel_unsel.svg</file>
-        <file>resources/presets/Life_and_Curse/swastika.fpr</file>
-        <file>resources/presets/Life_and_Curse/swastika_inverted.fpr</file>
         <file>resources/img/down.svg</file>
         <file>resources/img/up.svg</file>
         <file>resources/presets/Life_and_Curse/bullet.fpr</file>
@@ -114,5 +112,7 @@
         <file>resources/presets/Life_and_Curse/rocket2.fpr</file>
         <file>resources/presets/Life_and_Curse/fly1.fpr</file>
         <file>resources/presets/Life_and_Curse/rocket1.fpr</file>
+        <file>resources/presets/Life_and_Curse/fly3_bl.fpr</file>
+        <file>resources/presets/Life_and_Curse/fly3_tr.fpr</file>
     </qresource>
 </RCC>
