@@ -114,5 +114,7 @@
         <file>resources/presets/Life_and_Curse/rocket1.fpr</file>
         <file>resources/presets/Life_and_Curse/fly3_bl.fpr</file>
         <file>resources/presets/Life_and_Curse/fly3_tr.fpr</file>
+        <file>resources/presets/Life_and_Curse/rect-rect.fpr</file>
+        <file>resources/rules/Life_and_Curse_Long_32-64.frl</file>
     </qresource>
 </RCC>
