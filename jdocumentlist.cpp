@@ -48,6 +48,17 @@ QJsonDocument JDocumentList::getDocument(const QString &key)
     return QJsonDocument();
 }
 
+QJsonDocument JDocumentList::getFirstDocument()
+{
+    if(m_List.isEmpty())
+    {
+        qDebug() << __func__ << "List is empty";
+        return QJsonDocument();
+    }
+
+    return m_List.at(0).second;
+}
+
 QStringList JDocumentList::keys()
 {
     QStringList list;

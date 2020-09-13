@@ -198,6 +198,11 @@ void MainWindow::loadGui()
     m_ActionLoadCellsFromPreset->setAutoRepeat(false);
     m_ActionLoadCellsFromPreset->setEnabled(false);
 
+    m_ActionLoadFirstSnapshot = new QAction(this);
+    QObject::connect(m_ActionLoadFirstSnapshot, &QAction::triggered, this, &MainWindow::slotLoadFirstSnapshot);
+    m_ActionLoadFirstSnapshot->setShortcut(Qt::ALT + Qt::Key_W);
+    addAction(m_ActionLoadFirstSnapshot);
+
     m_ActionInfoField = new QAction(QIcon(":/resources/img/field.svg"), tr("Field information"), this);
     QObject::connect(m_ActionInfoField, &QAction::triggered, this, &MainWindow::slotInfoField);
     m_ActionInfoField->setShortcut(Qt::CTRL + Qt::Key_F);
@@ -2055,6 +2060,16 @@ void MainWindow::slotSelectSnapshot()
 
     auto key = map.value(keys.at(1)).value.toString();
     auto jdoc = m_Snapshots->getDocument(key);
+    loadSnapshot(&jdoc);
+}
+
+void MainWindow::slotLoadFirstSnapshot()
+{
+    qDebug() << __func__;
+
+    if(!m_Snapshots->count()) return;
+
+    auto jdoc = m_Snapshots->getFirstDocument();
     loadSnapshot(&jdoc);
 }
 

@@ -12,6 +12,7 @@ public:
     void clearList();
     void addDocument(const QString& key, QJsonDocument document);
     QJsonDocument getDocument(const QString& key);
+    QJsonDocument getFirstDocument();
     QStringList keys();
     int count();
 

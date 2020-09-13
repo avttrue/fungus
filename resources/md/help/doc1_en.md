@@ -23,6 +23,7 @@
  | CTRL + D | *Clear selected cells* | <img src="qrc:/resources/img/delete.svg" height="30"/> |
  | CTRL + A | *Select all cells* | <img src="qrc:/resources/img/select_all.svg" height="30"/> |
  | CTRL + W | *Create* [snapshot](doc2_en.md) | <img src="qrc:/resources/img/check.svg" height="30"/> |
+ | ALT + W | *Restore first (by field age) snapshot* |   |
 
 ##   
 
