@@ -110,11 +110,11 @@
         <file>resources/rules/Life_and_Curse_Long.frl</file>
         <file>resources/presets/Life_and_Curse/fly2.fpr</file>
         <file>resources/presets/Life_and_Curse/rocket2.fpr</file>
-        <file>resources/presets/Life_and_Curse/fly1.fpr</file>
-        <file>resources/presets/Life_and_Curse/rocket1.fpr</file>
         <file>resources/presets/Life_and_Curse/fly3_bl.fpr</file>
         <file>resources/presets/Life_and_Curse/fly3_tr.fpr</file>
         <file>resources/presets/Life_and_Curse/rect-rect.fpr</file>
         <file>resources/rules/Life_and_Curse_Long_32-64.frl</file>
+        <file>resources/presets/Life_and_Curse/fly1.fpr</file>
+        <file>resources/presets/Life_and_Curse/rocket1.fpr</file>
     </qresource>
 </RCC>
