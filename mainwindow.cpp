@@ -232,6 +232,16 @@ void MainWindow::loadGui()
     m_ActionInvert->setAutoRepeat(false);
     m_ActionInvert->setEnabled(false);
 
+    m_ActionFlipHorizontal = new QAction(QIcon(":/resources/img/flip_h.svg"), tr("Flip on the horizontal axis"), this);
+    QObject::connect(m_ActionFlipHorizontal, &QAction::triggered, this, &MainWindow::slotInvert);
+    m_ActionFlipHorizontal->setAutoRepeat(false);
+    m_ActionFlipHorizontal->setEnabled(false);
+
+    m_ActionFlipVertical = new QAction(QIcon(":/resources/img/flip_v.svg"), tr("Flip on the vertical axis"), this);
+    QObject::connect(m_ActionFlipVertical, &QAction::triggered, this, &MainWindow::slotInvert);
+    m_ActionFlipVertical->setAutoRepeat(false);
+    m_ActionFlipVertical->setEnabled(false);
+
     m_ActionSaveImageToFile = new QAction(QIcon(":/resources/img/camera.svg"), tr("Save image to file"), this);
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
     m_ActionSaveImageToFile->setAutoRepeat(false);
@@ -399,7 +409,7 @@ void MainWindow::slotStepStop()
     qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -424,12 +434,7 @@ void MainWindow::slotRun()
     qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
-        qCritical() << __func__ << "Scene not created";
-        return;
-    }
-    if(!m_Field)
-    {
-        qCritical() << __func__ << "Field not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -625,20 +630,20 @@ bool MainWindow::getJsonRootObject(const QByteArray &data, QJsonObject* root)
 
     if(doc.isNull() || doc.isEmpty())
     {
-        qCritical() << __func__ << "QJsonDocument is empty";
+        qCritical() << "QJsonDocument is empty";
         return false;
     }
 
     if(p_error.error != QJsonParseError::NoError)
     {
-        qCritical() << __func__ << "JsonParseError:" << p_error.errorString();
+        qCritical() << "JsonParseError:" << p_error.errorString();
         return false;
     }
 
     *root = doc.object();
     if(root->isEmpty())
     {
-        qCritical() << __func__ << "Root JsonObject is empty";
+        qCritical() << "Root JsonObject is empty";
         return false;
     }
     return true;
@@ -654,7 +659,7 @@ bool MainWindow::checkJsonDocumentVersion(QJsonObject *root)
 
     if(app != APP_NAME)
     {
-        qCritical() << __func__ << "Incorrect value: 'Application' =" << app;
+        qCritical() << "Incorrect value: 'Application' =" << app;
         QMessageBox::critical(this, tr("Error"),
                               tr("Data error. \n Incorrect application name: '%1'").arg(app));
         return false;
@@ -664,7 +669,7 @@ bool MainWindow::checkJsonDocumentVersion(QJsonObject *root)
 
     if(vers != FORMAT_VERSION)
     {
-        qCritical() << __func__ << "Incorrect value: 'Version' =" << vers;
+        qCritical() << "Incorrect value: 'Version' =" << vers;
         QMessageBox::critical(this, tr("Error"),
                               tr("Data error. \n Incorrect data format version: '%1'").arg(vers));
         return false;
@@ -677,19 +682,19 @@ void MainWindow::CellsToJsonObject(QJsonObject* jobject, Cell *firstcell, Cell *
     qDebug() << __func__;
     if(!firstcell)
     {
-        qCritical() << __func__ << "First cell is null";
+        qCritical() << "First cell is null";
         return;
     }
 
     if(!secondcell)
     {
-        qCritical() << __func__ << "Second cell is null";
+        qCritical() << "Second cell is null";
         return;
     }
 
     if(!jobject)
     {
-        qCritical() << __func__ << "JsonObject is null";
+        qCritical() << "JsonObject is null";
         return;
     }
 
@@ -748,13 +753,13 @@ QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exce
     qDebug() << __func__;
     if(!firstcell)
     {
-        qCritical() << __func__ << "First cell is null";
+        qCritical() << "First cell is null";
         return "";
     }
 
     if(!secondcell)
     {
-        qCritical() << __func__ << "Second cell is null";
+        qCritical() << "Second cell is null";
         return "";
     }
 
@@ -777,7 +782,7 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return false;
     }
 
@@ -840,13 +845,13 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
     qDebug() << __func__;
     if(!cell)
     {
-        qCritical() << __func__ << "Cell is null";
+        qCritical() << "Cell is null";
         return false;
     }
 
     if(!jobject)
     {
-        qCritical() << __func__ << "JsonObject is null";
+        qCritical() << "JsonObject is null";
         return false;
     }
 
@@ -855,7 +860,7 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
     auto cy = cell->getIndex().y();
     auto obj_cells = jobject->value("Cells").toArray();
 
-    if(obj_cells.isEmpty()) { qCritical() << __func__ << "JsonArray 'Cells' is empty"; return false; }
+    if(obj_cells.isEmpty()) { qCritical() << "JsonArray 'Cells' is empty"; return false; }
 
     m_ProgressBar->setRange(0, obj_cells.count());
     m_ProgressBar->setValue(0);
@@ -864,16 +869,16 @@ bool MainWindow::CellsFromJsonObject(QJsonObject *jobject, Cell *cell)
     for(auto o: obj_cells)
     {
         auto obj_index = o.toObject().value("Index").toObject();
-        if(obj_index.isEmpty()) { qCritical() << __func__ << "JsonObject 'Index' is empty"; return false; }
+        if(obj_index.isEmpty()) { qCritical() << "JsonObject 'Index' is empty"; return false; }
 
         auto obj_x = obj_index.value("X");
-        if(obj_x.isUndefined()) { qCritical() << __func__ << "JsonValue 'Index.X' is undefined"; return false; }
+        if(obj_x.isUndefined()) { qCritical() << "JsonValue 'Index.X' is undefined"; return false; }
 
         auto obj_y = obj_index.value("Y");
-        if(obj_y.isUndefined()) { qCritical() << __func__ << "JsonValue 'Index.Y' is undefined"; return false; }
+        if(obj_y.isUndefined()) { qCritical() << "JsonValue 'Index.Y' is undefined"; return false; }
 
         auto obj_prop = o.toObject().value("Properties").toObject();
-        if(obj_prop.isEmpty()) { qCritical() << __func__ << "JsonObject 'Properties' is empty"; return false; }
+        if(obj_prop.isEmpty()) { qCritical() << "JsonObject 'Properties' is empty"; return false; }
 
         auto x = obj_index.value("X").toInt();
         auto y = obj_index.value("Y").toInt();
@@ -926,13 +931,13 @@ void MainWindow::RuleToJsonObject(FieldRule* rule, QJsonObject *jobject)
     qDebug() << __func__;
     if(!rule)
     {
-        qCritical() << __func__ << "FieldRule is null";
+        qCritical() << "FieldRule is null";
         return;
     }
 
     if(!jobject)
     {
-        qCritical() << __func__ << "JsonObject is null";
+        qCritical() << "JsonObject is null";
         return;
     }
 
@@ -969,31 +974,31 @@ bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
     qDebug() << __func__;
     if(!rule)
     {
-        qCritical() << __func__ << "FieldRule is null";
+        qCritical() << "FieldRule is null";
         return false;
     }
 
     if(!jobject)
     {
-        qCritical() << __func__ << "JsonObject is null";
+        qCritical() << "JsonObject is null";
         return false;
     }
 
     auto obj_rule = jobject->value("Rule").toObject();
-    if(obj_rule.isEmpty()) { qCritical() << __func__ << "JsonObject 'Rule' is empty"; return false; }
+    if(obj_rule.isEmpty()) { qCritical() << "JsonObject 'Rule' is empty"; return false; }
 
     auto obj_act = obj_rule.value("Activity").toArray();
-    if(obj_act.isEmpty()) { qCritical() << __func__ << "JsonArray 'Activity' is empty"; return false; }
+    if(obj_act.isEmpty()) { qCritical() << "JsonArray 'Activity' is empty"; return false; }
 
     if(!obj_rule.contains("Name"))
-    { qCritical() << __func__ << "JsonValue 'Name' is absent"; return false; }
+    { qCritical() << "JsonValue 'Name' is absent"; return false; }
     rule->setObjectName(obj_rule["Name"].toString());
 
     if(obj_rule.contains("Description"))
         rule->setDescription(obj_rule["Description"].toString());
 
     if(!obj_rule.contains("CurseTime"))
-    { qCritical() << __func__ << "JsonValue 'CurseTime' is absent"; return false; }
+    { qCritical() << "JsonValue 'CurseTime' is absent"; return false; }
     rule->setCurseTime(obj_rule["CurseTime"].toInt());
 
     Activity activity;
@@ -1004,31 +1009,31 @@ bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
         QVector<QVariant> v;
 
         if(!o.contains("Type"))
-        { qCritical() << __func__ << "JsonValue 'Activity.Type' is absent"; return false; }
+        { qCritical() << "JsonValue 'Activity.Type' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::ActivityType>(o["Type"].toInt())));
 
         if(!o.contains("SelfState"))
-        { qCritical() << __func__ << "JsonValue 'Activity.SelfState' is absent"; return false; }
+        { qCritical() << "JsonValue 'Activity.SelfState' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::CellState>(o["SelfState"].toInt())));
 
         if(!o.contains("Target"))
-        { qCritical() << __func__ << "JsonValue 'Activity.Target' is absent"; return false; }
+        { qCritical() << "JsonValue 'Activity.Target' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::ActivityTarget>(o["Target"].toInt())));
 
         if(!o.contains("TargetState"))
-        { qCritical() << __func__ << "JsonValue 'Activity.TargetState' is absent"; return false; }
+        { qCritical() << "JsonValue 'Activity.TargetState' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::CellState>(o["TargetState"].toInt())));
 
         if(!o.contains("Operand"))
-        { qCritical() << __func__ << "JsonValue 'Activity.Operand' is absent"; return false; }
+        { qCritical() << "JsonValue 'Activity.Operand' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::ActivityOperand>(o["Operand"].toInt())));
 
         if(!o.contains("Operator"))
-        { qCritical() << __func__ << "JsonValue 'Activity.Operator' is absent"; return false; }
+        { qCritical() << "JsonValue 'Activity.Operator' is absent"; return false; }
         v.append(QVariant::fromValue(static_cast<Kernel::ActivityOperator>(o["Operator"].toInt())));
 
         if(!o.contains("OperandValue"))
-        { qCritical() << __func__ << "JsonValue 'Activity.OperandValue' is absent"; return false; }
+        { qCritical() << "JsonValue 'Activity.OperandValue' is absent"; return false; }
         v.append(o["OperandValue"].toInt());
 
         activity.append(v);
@@ -1097,7 +1102,7 @@ void MainWindow::FieldToJsonObject(QJsonObject *jobject)
     qDebug() << __func__;
     if(!jobject)
     {
-        qCritical() << __func__ << "JsonObject is null";
+        qCritical() << "JsonObject is null";
         return;
     }
 
@@ -1121,14 +1126,14 @@ bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
     qDebug() << __func__;
     if(!jobject)
     {
-        qCritical() << __func__ << "JsonObject is null";
+        qCritical() << "JsonObject is null";
         return false;
     }
     auto obj_field = jobject->value("Field").toObject();
-    if(obj_field.isEmpty()) { qCritical() << __func__ << "JsonObject 'Field' is empty"; return false; }
+    if(obj_field.isEmpty()) { qCritical() << "JsonObject 'Field' is empty"; return false; }
 
     auto obj_prop = obj_field.value("Properties").toObject();
-    if(obj_prop.isEmpty()) { qCritical() << __func__ << "JsonObject 'Properties' is empty"; return false; }
+    if(obj_prop.isEmpty()) { qCritical() << "JsonObject 'Properties' is empty"; return false; }
 
     auto cell = m_Field->getCell({0, 0});
     if(!CellsFromJsonObject(jobject, cell)) return false;
@@ -1150,7 +1155,7 @@ void MainWindow::createSnapshot()
     qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1177,7 +1182,7 @@ void MainWindow::loadSnapshot(QJsonDocument* document)
     qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1198,7 +1203,7 @@ bool MainWindow::loadProjectFromJsonObject(QJsonObject *jobject)
     auto obj_size = jobject->value("Size").toObject();
     if(obj_size.isEmpty())
     {
-        qCritical() << __func__ << "JsonObject 'Size' is empty";
+        qCritical() << "JsonObject 'Size' is empty";
         return false;
     }
 
@@ -1206,7 +1211,7 @@ bool MainWindow::loadProjectFromJsonObject(QJsonObject *jobject)
     auto h = obj_size.value("Height").toInt();
     if(w <= 0 && h <= 0)
     {
-        qCritical() << __func__ << "Incorrect values Size (w, h):" << w << h;
+        qCritical() << "Incorrect values Size (w, h):" << w << h;
         return false;
     }
 
@@ -1378,7 +1383,7 @@ void MainWindow::slotEditCell()
     if(!scene)
     {
         m_ActionEditCell->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1386,7 +1391,7 @@ void MainWindow::slotEditCell()
     if(!firstcell)
     {
         m_ActionEditCell->setDisabled(true);
-        qDebug() << __func__ << "Cell for editing not selected";
+        qDebug() << "Cell for editing not selected";
         return;
     }
 
@@ -1605,7 +1610,7 @@ void MainWindow::slotSaveCellsToClipbord()
     if(!scene)
     {
         m_ActionSaveCellsToClipbord->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1615,7 +1620,7 @@ void MainWindow::slotSaveCellsToClipbord()
     if(!firstcell || !secondcell || firstcell == secondcell)
     {
         m_ActionSaveCellsToClipbord->setDisabled(true);
-        qDebug() << __func__ << "Cells for saving not selected";
+        qDebug() << "Cells for saving not selected";
         return;
     }
 
@@ -1638,7 +1643,7 @@ void MainWindow::slotLoadCellsFromClipbord()
     if(!scene)
     {
         m_ActionLoadCellsFromClipbord->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1661,7 +1666,7 @@ void MainWindow::slotSaveCellsToPreset()
     if(!scene)
     {
         m_ActionSaveCellsToPreset->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1670,7 +1675,7 @@ void MainWindow::slotSaveCellsToPreset()
     if(!firstcell || !secondcell || firstcell == secondcell)
     {
         m_ActionSaveCellsToPreset->setDisabled(true);
-        qDebug() << __func__ << "Cells for saving not selected";
+        qDebug() << "Cells for saving not selected";
         return;
     }
 
@@ -1701,7 +1706,7 @@ void MainWindow::slotLoadCellsFromPreset()
     if(!scene)
     {
         m_ActionLoadCellsFromPreset->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1735,7 +1740,7 @@ void MainWindow::slotClearCells()
     if(!scene)
     {
         m_ActionClearCells->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1744,7 +1749,7 @@ void MainWindow::slotClearCells()
     if(!firstcell || !secondcell || firstcell == secondcell)
     {
         m_ActionClearCells->setDisabled(true);
-        qDebug() << __func__ << "Target cell not selected";
+        qDebug() << "Target cell not selected";
         return;
     }
 
@@ -1800,16 +1805,17 @@ void MainWindow::slotInfoField()
 
 void MainWindow::slotShowCell(Cell *cell)
 {
+    qDebug() << __func__;
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
     if(!cell)
     {
-        qDebug() << __func__ << "Target cell is empty";
+        qDebug() << "Target cell is empty";
         return;
     }
 
@@ -1822,7 +1828,7 @@ void MainWindow::slotSaveImageToFile()
     qDebug() << __func__;
     if(!m_SceneView->getScene())
     {
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1857,7 +1863,7 @@ void MainWindow::slotRandomFill()
     if(!scene)
     {
         m_ActionRandomFill->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1866,7 +1872,7 @@ void MainWindow::slotRandomFill()
     if(!firstcell || !secondcell || firstcell == secondcell)
     {
         m_ActionRandomFill->setDisabled(true);
-        qDebug() << __func__ << "Target cells not selected";
+        qDebug() << "Target cells not selected";
         return;
     }
 
@@ -1926,7 +1932,7 @@ void MainWindow::slotInvert()
     if(!scene)
     {
         m_ActionInvert->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -1935,7 +1941,7 @@ void MainWindow::slotInvert()
     if(!firstcell || !secondcell || firstcell == secondcell)
     {
         m_ActionInvert->setDisabled(true);
-        qDebug() << __func__ << "Target cell not selected";
+        qDebug() << "Target cells not selected";
         return;
     }
 
@@ -1961,13 +1967,94 @@ void MainWindow::slotInvert()
     setCellsActionsEnable(true);
 }
 
+void MainWindow::slotFlipHorizontal()
+{
+    qDebug() << __func__;
+    auto scene = m_SceneView->getScene();
+    if(!scene)
+    {
+        m_ActionFlipHorizontal->setDisabled(true);
+        qCritical() << "Scene not created";
+        return;
+    }
+
+    auto firstcell = scene->getSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
+    if(!firstcell || !secondcell || firstcell == secondcell)
+    {
+        m_ActionInvert->setDisabled(true);
+        qDebug() << "Target cells not selected";
+        return;
+    }
+
+    stopFieldCalculating();
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
+
+
+    //TODO slotFlipHorizontal
+
+    qDebug() << "Flipped" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+
+    m_Field->updateScene();
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
+}
+
+void MainWindow::slotFlipVertical()
+{
+    qDebug() << __func__;
+    auto scene = m_SceneView->getScene();
+    if(!scene)
+    {
+        m_ActionFlipVertical->setDisabled(true);
+        qCritical() << "Scene not created";
+        return;
+    }
+
+    auto firstcell = scene->getSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
+    if(!firstcell || !secondcell || firstcell == secondcell)
+    {
+        m_ActionInvert->setDisabled(true);
+        qDebug() << "Target cells not selected";
+        return;
+    }
+
+    stopFieldCalculating();
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
+
+    // TODO slotFlipVertical
+
+    qDebug() << "Flipped" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+
+    m_Field->updateScene();
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
+}
+
 void MainWindow::slotSelectAll()
 {
     auto scene = m_SceneView->getScene();
     if(!scene)
     {
         m_ActionSelectAll->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -2090,7 +2177,7 @@ void MainWindow::slotLoadProject()
     else data = fileToText(filename, &ok).toUtf8();
     if(!ok)
     {
-        qCritical() << __func__ << "Error at loading data from file";
+        qCritical() << "Error at loading data from file";
         QMessageBox::critical(this, tr("Error"),
                               tr("Error at loading data from file: '%1'").arg(filename));
         return;
@@ -2171,7 +2258,7 @@ void MainWindow::slotSaveProject()
     else ok = textToFile(text, filename);
     if(!ok)
     {
-        qCritical() << __func__ << "Data writing error";
+        qCritical() << "Data writing error";
         QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(filename));
     }
 
@@ -2215,7 +2302,7 @@ void MainWindow::slotInfoRule()
     if(!scene)
     {
         m_ActionInfoRule->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 
@@ -2246,7 +2333,7 @@ void MainWindow::slotImportRule()
     if(!scene)
     {
         m_ActionImportRule->setDisabled(true);
-        qCritical() << __func__ << "Scene not created";
+        qCritical() << "Scene not created";
         return;
     }
 

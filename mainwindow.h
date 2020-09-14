@@ -150,6 +150,8 @@ private Q_SLOTS:
     void slotSaveImageToFile();
     void slotRandomFill();
     void slotInvert();
+    void slotFlipHorizontal();
+    void slotFlipVertical();
     void slotSelectAll();
     void slotSelectedCellsChanged(Cell* first, Cell* second);
     void slotLabelSelectedCellClick();
