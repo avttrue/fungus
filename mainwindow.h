@@ -106,11 +106,13 @@ private:
     QAction* m_ActionClearCells;
     QAction* m_ActionRandomFill;
     QAction* m_ActionInvert;
+    QAction* m_ActionFlipHorizontal;
+    QAction* m_ActionFlipVertical;
     QAction* m_ActionSelectAll;
     QAction* m_ActionCreateSnapshot;
     QAction* m_ActionSelectSnapshot;
     QAction* m_ActionLoadFirstSnapshot;
-    QAction* m_ActionCellMonitor;
+    QAction* m_ActionCellMonitor;    
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;

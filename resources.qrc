@@ -117,7 +117,5 @@
         <file>resources/presets/Life_and_Curse/fly1.fpr</file>
         <file>resources/presets/Life_and_Curse/rocket1.fpr</file>
         <file>resources/rules/Life_and_Curse_Long_8-8.frl</file>
-        <file>resources/img/revert_h.svg</file>
-        <file>resources/img/revert_v.svg</file>
     </qresource>
 </RCC>
