@@ -59,10 +59,10 @@ private:
     FieldRule* m_Rule;
     FieldInformation* m_FieldInformation;
     bool m_RuleOn;                                  // включить расчёт правил (для отрисовки при редактировании)
-    bool m_Calculating;                             // флаг управления циклом calculate
-    bool m_CalculatingNonstop;                      // флаг управления режимом calculate: одиночный шаг / постоянное выполнение
-    bool m_WaitScene;                               // ожидание готовности сцены
-    bool m_AbortCalculating;                        // остановка цикла calculate перед выходом и т.д.
+    volatile bool m_Calculating;                    // флаг управления циклом calculate
+    volatile bool m_CalculatingNonstop;             // флаг управления режимом calculate: одиночный шаг / постоянное выполнение
+    volatile bool m_WaitScene;                      // ожидание готовности сцены
+    volatile bool m_AbortCalculating;               // остановка цикла calculate перед выходом и т.д.
 
 public Q_SLOTS:
     void slotSceneReady();
