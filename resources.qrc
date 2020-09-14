@@ -119,5 +119,6 @@
         <file>resources/rules/Life_and_Curse_Long_8-8.frl</file>
         <file>resources/img/flip_h.svg</file>
         <file>resources/img/flip_v.svg</file>
+        <file>resources/img/edit_cell.svg</file>
     </qresource>
 </RCC>

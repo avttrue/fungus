@@ -161,7 +161,7 @@ void MainWindow::loadGui()
     m_ActionRun->setAutoRepeat(false);
     m_ActionRun->setEnabled(false);
 
-    m_ActionEditCell = new QAction(QIcon(":/resources/img/edit.svg"), tr("Edit cell"), this);
+    m_ActionEditCell = new QAction(QIcon(":/resources/img/edit_cell.svg"), tr("Edit cell"), this);
     QObject::connect(m_ActionEditCell, &QAction::triggered, this, &MainWindow::slotEditCell);
     m_ActionEditCell->setShortcut(Qt::CTRL + Qt::Key_E);
     addShortcutToToolTip(m_ActionEditCell);
