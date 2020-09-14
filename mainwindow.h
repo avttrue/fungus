@@ -83,6 +83,7 @@ private:
     QToolBar* m_TbMain;
     QToolBar* m_TbActions;
     QToolButton* m_BtnMenuRules;
+    QToolButton* m_BtnMenuEditCells;
     QAction* m_ActionNewProject;
     QAction* m_ActionZoomInScene;
     QAction* m_ActionZoomOutScene;

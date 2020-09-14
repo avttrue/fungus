@@ -222,12 +222,12 @@ void MainWindow::loadGui()
     m_ActionClearCells->setAutoRepeat(false);
     m_ActionClearCells->setEnabled(false);
 
-    m_ActionRandomFill = new QAction(QIcon(":/resources/img/cells.svg"), tr("Random fill states selected cells"), this);
+    m_ActionRandomFill = new QAction(QIcon(":/resources/img/cells.svg"), tr("Random fill states"), this);
     QObject::connect(m_ActionRandomFill, &QAction::triggered, this, &MainWindow::slotRandomFill);
     m_ActionRandomFill->setAutoRepeat(false);
     m_ActionRandomFill->setEnabled(false);
 
-    m_ActionInvert = new QAction(QIcon(":/resources/img/sel_unsel.svg"), tr("Invert states selected cells"), this);
+    m_ActionInvert = new QAction(QIcon(":/resources/img/sel_unsel.svg"), tr("Invert states"), this);
     QObject::connect(m_ActionInvert, &QAction::triggered, this, &MainWindow::slotInvert);
     m_ActionInvert->setAutoRepeat(false);
     m_ActionInvert->setEnabled(false);
@@ -266,19 +266,38 @@ void MainWindow::loadGui()
     m_ActionSelectSnapshot->setAutoRepeat(false);
     m_ActionSelectSnapshot->setEnabled(false);
 
+    // меню кнопки редактирования правил
     m_BtnMenuRules = new QToolButton(this);
     m_BtnMenuRules->setToolTip(tr("Rules"));
     m_BtnMenuRules->setIcon(QIcon(":/resources/img/rule.svg"));
     m_BtnMenuRules->setPopupMode(QToolButton::InstantPopup);
     m_BtnMenuRules->setArrowType(Qt::NoArrow);
     auto menuRules = new QMenu(this);
-    menuRules->addAction(new MenuCaption(menuRules, tr("Rules")));
+    menuRules->addAction(new MenuCaption(menuRules, m_BtnMenuRules->toolTip()));
     menuRules->addAction(m_ActionInfoRule);
     menuRules->addSeparator();
     menuRules->addAction(m_ActionNewRule);
     menuRules->addAction(m_ActionLoadEditRule);
     menuRules->addAction(m_ActionImportRule);
     m_BtnMenuRules->setMenu(menuRules);
+
+    // TODO m_BtnMenuEditCells
+    // меню кнопки редактирования правил
+    m_BtnMenuEditCells = new QToolButton(this);
+    m_BtnMenuEditCells->setToolTip(tr("Edit cells"));
+    m_BtnMenuEditCells->setIcon(QIcon(":/resources/img/edit.svg"));
+    m_BtnMenuEditCells->setPopupMode(QToolButton::InstantPopup);
+    m_BtnMenuEditCells->setArrowType(Qt::NoArrow);
+    auto menuEditCells = new QMenu(this);
+    menuEditCells->addAction(new MenuCaption(menuRules, m_BtnMenuEditCells->toolTip()));
+    menuEditCells->addAction(m_ActionClearCells);
+    menuEditCells->addSeparator();
+    menuEditCells->addAction(m_ActionRandomFill);
+    menuEditCells->addAction(m_ActionInvert);
+//    menuEditCells->addSeparator();
+//    menuEditCells->addAction(m_ActionFlipHorizontal);
+//    menuEditCells->addAction(m_ActionFlipVertical);
+    m_BtnMenuEditCells->setMenu(menuEditCells);
 
     // тулбар основной
     m_TbMain = new QToolBar(this);
@@ -301,7 +320,6 @@ void MainWindow::loadGui()
     m_TbMain->addAction(m_ActionCellMonitor);
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionInfoField);
-    m_TbMain->addAction(m_ActionSelectAll);
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionStepStop);
     m_TbMain->addAction(m_ActionRun);
@@ -331,10 +349,8 @@ void MainWindow::loadGui()
     m_TbActions->addAction(m_ActionCreateSnapshot);
     m_TbActions->addAction(m_ActionSelectSnapshot);
     m_TbActions->addSeparator();
-    m_TbActions->addAction(m_ActionRandomFill);
-    m_TbActions->addAction(m_ActionInvert);
-    m_TbActions->addSeparator();
-    m_TbActions->addAction(m_ActionClearCells);
+    m_TbActions->addAction(m_ActionSelectAll);
+    m_TbActions->addWidget(m_BtnMenuEditCells);
     addToolBar(Qt::LeftToolBarArea, m_TbActions);
 
     // SceneView
