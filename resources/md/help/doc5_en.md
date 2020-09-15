@@ -97,7 +97,7 @@
 
 * **NOT** - *this is* **!=** *operator* 
 
-* **DIV** - *if* **operand** *or* **value** *is equal to* **0** *will be returned* **FALSE** *, else will be returned* **operand** *divisibility by* **value**
+* **IS_DIV** - *if* **operand** *or* **value** *is equal to* **0** *will be returned* **FALSE** *, else will be returned* **operand** *divisibility by* **value**
 
 ### Activity value
 

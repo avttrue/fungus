@@ -64,7 +64,7 @@ public:
         MORE,               // больше
         LESS,               // меньше
         NOT,                // не равен
-        DIV,                // divisibility кратность
+        IS_DIV,             // divisibility кратность
     };
     Q_ENUM(ActivityOperator)
 
