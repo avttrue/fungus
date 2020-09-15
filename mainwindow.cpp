@@ -215,7 +215,7 @@ void MainWindow::loadGui()
     m_ActionCellMonitor->setAutoRepeat(false);
     m_ActionCellMonitor->setEnabled(false);
 
-    m_ActionClearCells = new QAction(QIcon(":/resources/img/delete.svg"), tr("Clear selected cells"), this);
+    m_ActionClearCells = new QAction(QIcon(":/resources/img/delete.svg"), tr("Full cell clearing"), this);
     QObject::connect(m_ActionClearCells, &QAction::triggered, this, &MainWindow::slotClearCells);
     m_ActionClearCells->setShortcut(Qt::CTRL + Qt::Key_D);
     addShortcutToToolTip(m_ActionClearCells);
@@ -232,12 +232,12 @@ void MainWindow::loadGui()
     m_ActionInvert->setAutoRepeat(false);
     m_ActionInvert->setEnabled(false);
 
-    m_ActionFlipHorizontal = new QAction(QIcon(":/resources/img/flip_h.svg"), tr("Flip on the horizontal axis"), this);
+    m_ActionFlipHorizontal = new QAction(QIcon(":/resources/img/flip_h.svg"), tr("Flip states on the horizontal"), this);
     QObject::connect(m_ActionFlipHorizontal, &QAction::triggered, this, &MainWindow::slotFlipHorizontal);
     m_ActionFlipHorizontal->setAutoRepeat(false);
     m_ActionFlipHorizontal->setEnabled(false);
 
-    m_ActionFlipVertical = new QAction(QIcon(":/resources/img/flip_v.svg"), tr("Flip on the vertical axis"), this);
+    m_ActionFlipVertical = new QAction(QIcon(":/resources/img/flip_v.svg"), tr("Flip states on the vertical"), this);
     QObject::connect(m_ActionFlipVertical, &QAction::triggered, this, &MainWindow::slotFlipVertical);
     m_ActionFlipVertical->setAutoRepeat(false);
     m_ActionFlipVertical->setEnabled(false);
@@ -284,7 +284,7 @@ void MainWindow::loadGui()
     // TODO m_BtnMenuEditCells
     // меню кнопки редактирования правил
     m_BtnMenuEditCells = new QToolButton(this);
-    m_BtnMenuEditCells->setToolTip(tr("Edit cells"));
+    m_BtnMenuEditCells->setToolTip(tr("Edit cells states"));
     m_BtnMenuEditCells->setIcon(QIcon(":/resources/img/edit.svg"));
     m_BtnMenuEditCells->setPopupMode(QToolButton::InstantPopup);
     m_BtnMenuEditCells->setArrowType(Qt::NoArrow);
