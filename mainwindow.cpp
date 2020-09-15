@@ -233,12 +233,12 @@ void MainWindow::loadGui()
     m_ActionInvert->setEnabled(false);
 
     m_ActionFlipHorizontal = new QAction(QIcon(":/resources/img/flip_h.svg"), tr("Flip on the horizontal axis"), this);
-    QObject::connect(m_ActionFlipHorizontal, &QAction::triggered, this, &MainWindow::slotInvert);
+    QObject::connect(m_ActionFlipHorizontal, &QAction::triggered, this, &MainWindow::slotFlipHorizontal);
     m_ActionFlipHorizontal->setAutoRepeat(false);
     m_ActionFlipHorizontal->setEnabled(false);
 
     m_ActionFlipVertical = new QAction(QIcon(":/resources/img/flip_v.svg"), tr("Flip on the vertical axis"), this);
-    QObject::connect(m_ActionFlipVertical, &QAction::triggered, this, &MainWindow::slotInvert);
+    QObject::connect(m_ActionFlipVertical, &QAction::triggered, this, &MainWindow::slotFlipVertical);
     m_ActionFlipVertical->setAutoRepeat(false);
     m_ActionFlipVertical->setEnabled(false);
 
@@ -294,9 +294,8 @@ void MainWindow::loadGui()
     menuEditCells->addSeparator();
     menuEditCells->addAction(m_ActionRandomFill);
     menuEditCells->addAction(m_ActionInvert);
-//    menuEditCells->addSeparator();
-//    menuEditCells->addAction(m_ActionFlipHorizontal);
-//    menuEditCells->addAction(m_ActionFlipVertical);
+    menuEditCells->addAction(m_ActionFlipHorizontal);
+    menuEditCells->addAction(m_ActionFlipVertical);
     m_BtnMenuEditCells->setMenu(menuEditCells);
 
     // тулбар основной
@@ -588,6 +587,8 @@ void MainWindow::setCellsActionsEnable(bool value)
     m_ActionClearCells->setEnabled(group_enable);
     m_ActionRandomFill->setEnabled(group_enable);
     m_ActionInvert->setEnabled(group_enable);
+    m_ActionFlipHorizontal->setEnabled(group_enable);
+    m_ActionFlipVertical->setEnabled(group_enable);
 }
 
 void MainWindow::deleteField()
@@ -2012,12 +2013,27 @@ void MainWindow::slotFlipHorizontal()
     auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
     auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto ymax_2 = ymin + (ymax - ymin) / 2;
     auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
 
+    for(int x = xmin; x <= xmax; x++)
+    {
+        auto sy = ymax;
+        for(int fy = ymin; fy <= ymax_2; fy++)
+        {
+            if(fy == sy) break;
+            auto f_state = m_Field->getCell({x, fy})->getOldInfo()->getState();
+            auto s_state = m_Field->getCell({x, sy})->getOldInfo()->getState();
 
-    //TODO slotFlipHorizontal
+            m_Field->getCell({x, fy})->getNewInfo()->setState(s_state);
+            m_Field->getCell({x, fy})->getOldInfo()->setState(s_state);
+            m_Field->getCell({x, sy})->getNewInfo()->setState(f_state);
+            m_Field->getCell({x, sy})->getOldInfo()->setState(f_state);
 
-    qDebug() << "Flipped" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+            sy--;
+        }
+    }
+    qDebug() << "Flipped horizontal" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 
     m_Field->updateScene();
     setMainActionsEnable(true);
@@ -2053,11 +2069,27 @@ void MainWindow::slotFlipVertical()
     auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
     auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
     auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto xmax_2 = xmin + (xmax - xmin) / 2;
     auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
 
-    // TODO slotFlipVertical
+    for(int y = ymin; y <= ymax; y++)
+    {
+        auto sx = xmax;
+        for(int fx = xmin; fx <= xmax_2; fx++)
+        {
+            if(fx == sx) break;
+            auto f_state = m_Field->getCell({fx, y})->getOldInfo()->getState();
+            auto s_state = m_Field->getCell({sx, y})->getOldInfo()->getState();
 
-    qDebug() << "Flipped" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+            m_Field->getCell({fx, y})->getNewInfo()->setState(s_state);
+            m_Field->getCell({fx, y})->getOldInfo()->setState(s_state);
+            m_Field->getCell({sx, y})->getNewInfo()->setState(f_state);
+            m_Field->getCell({sx, y})->getOldInfo()->setState(f_state);
+
+            sx--;
+        }
+    }
+    qDebug() << "Flipped vertical" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 
     m_Field->updateScene();
     setMainActionsEnable(true);
