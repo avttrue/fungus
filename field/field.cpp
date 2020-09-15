@@ -639,33 +639,6 @@ FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::slotSceneReady() { m_WaitScene = false; }
 bool Field::isWaitScene() const { return m_WaitScene; }
 
-// функционал для ручного редактирования
-void Field::invertCellState(Cell *cell)
-{
-    auto ni = cell->getNewInfo();
-    auto oi = cell->getOldInfo();
-    if(oi->getState() == Kernel::CellState::ALIVE)
-    {
-        oi->setState(Kernel::CellState::DEAD);
-        ni->setState(Kernel::CellState::DEAD);
-        oi->setAge(0);
-        ni->setAge(0);
-    }
-    else if(oi->getState() == Kernel::CellState::DEAD)
-    {
-        oi->setState(Kernel::CellState::ALIVE);
-        ni->setState(Kernel::CellState::ALIVE);
-        oi->setGeneration(1);
-        ni->setGeneration(1);
-    }
-}
-
-void Field::invertCellState(QPoint index)
-{
-    auto cell = getCell(index);
-    invertCellState(cell);
-}
-
 void Field::updateScene()
 {
     setRuleOn(false);

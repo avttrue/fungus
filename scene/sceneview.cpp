@@ -109,7 +109,7 @@ bool SceneView::eventFilter(QObject *object, QEvent *event)
                     !m_Scene->getField()->isCalculating())
             {
                 auto c = getCell(mouseSceneEvent->scenePos().x(), mouseSceneEvent->scenePos().y());
-                m_Scene->getField()->invertCellState(c);
+                c->invertState();
                 m_Scene->getField()->updateScene();
                 m_Scene->selectCell(c, false);
                 return true;

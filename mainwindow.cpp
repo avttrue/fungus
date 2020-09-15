@@ -1976,7 +1976,7 @@ void MainWindow::slotInvert()
 
     for(int x = xmin; x <= xmax; x++)
         for(int y = ymin; y <= ymax; y++)
-            m_Field->invertCellState({x, y});
+            m_Field->getCell({x, y})->invertState();
 
     qDebug() << "Inverted" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 

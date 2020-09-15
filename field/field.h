@@ -31,8 +31,6 @@ public:
     void AbortCalculating();
     void setRuleOn(bool value);
     bool isWaitScene() const;
-    void invertCellState(Cell* cell);
-    void invertCellState(QPoint index);
     void updateScene();
 
 protected:

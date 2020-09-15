@@ -49,6 +49,22 @@ void Cell::flipInfo(const QPoint &value)
     c->applyInfo();
 }
 
+// функционал для ручного редактирования
+void Cell::invertState()
+{
+    if(getOldInfo()->getState() == Kernel::CellState::ALIVE)
+    {
+        getNewInfo()->setState(Kernel::CellState::DEAD);
+        getNewInfo()->setAge(0);
+    }
+    else if(getOldInfo()->getState() == Kernel::CellState::DEAD)
+    {
+        getNewInfo()->setState(Kernel::CellState::ALIVE);
+        getNewInfo()->setGeneration(1);
+    }
+    applyInfo();
+}
+
 void Cell::setPosition(const QPoint &value)
 {
     m_Index = value;

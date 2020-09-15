@@ -21,6 +21,7 @@ public:
     Field *getField() const;
     void applyInfo();
     void flipInfo(const QPoint &value);
+    void invertState();
     QRect getRect() const;
     bool isObserved();
 
