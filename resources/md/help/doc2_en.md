@@ -10,7 +10,7 @@
 
 *If this option is selected, a snapshot is created if the current* [field](doc4_en.md) *age = 0.*
 
-*Snapshots are created for the current field age.*
+*All snapshots are created for the current field age.*
 
 ##  
 

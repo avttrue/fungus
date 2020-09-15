@@ -340,6 +340,10 @@ bool Field::applyRules(Cell *cell)
         { ao_check = value > a_valu ? true : false; break; }
         case Kernel::ActivityOperator::NOT:
         { ao_check = value != a_valu ? true : false; break; }
+        case Kernel::ActivityOperator::DIV:
+        {
+            if(value == 0 || a_valu == 0) { ao_check = false; break; }
+            ao_check = (value % a_valu) == 0 ? true : false; break; }
         }
         if(ao_check)
         {
