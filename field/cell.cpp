@@ -33,6 +33,22 @@ void Cell::applyInfo()
     m_OldInformation->setGeneration(m_NewInformation->getGeneration());
 }
 
+void Cell::flipInfo(const QPoint &value)
+{
+    auto c = getField()->getCell(value);
+
+    m_NewInformation->setAge(c->m_OldInformation->getAge());
+    m_NewInformation->setState(c->m_OldInformation->getState());
+    m_NewInformation->setGeneration(c->m_OldInformation->getGeneration());
+
+    c->m_NewInformation->setAge(m_OldInformation->getAge());
+    c->m_NewInformation->setState(m_OldInformation->getState());
+    c->m_NewInformation->setGeneration(m_OldInformation->getGeneration());
+
+    applyInfo();
+    c->applyInfo();
+}
+
 void Cell::setPosition(const QPoint &value)
 {
     m_Index = value;

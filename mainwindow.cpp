@@ -222,22 +222,22 @@ void MainWindow::loadGui()
     m_ActionClearCells->setAutoRepeat(false);
     m_ActionClearCells->setEnabled(false);
 
-    m_ActionRandomFill = new QAction(QIcon(":/resources/img/cells.svg"), tr("Random fill states"), this);
+    m_ActionRandomFill = new QAction(QIcon(":/resources/img/cells.svg"), tr("Random fill"), this);
     QObject::connect(m_ActionRandomFill, &QAction::triggered, this, &MainWindow::slotRandomFill);
     m_ActionRandomFill->setAutoRepeat(false);
     m_ActionRandomFill->setEnabled(false);
 
-    m_ActionInvert = new QAction(QIcon(":/resources/img/sel_unsel.svg"), tr("Invert states"), this);
+    m_ActionInvert = new QAction(QIcon(":/resources/img/sel_unsel.svg"), tr("Invert"), this);
     QObject::connect(m_ActionInvert, &QAction::triggered, this, &MainWindow::slotInvert);
     m_ActionInvert->setAutoRepeat(false);
     m_ActionInvert->setEnabled(false);
 
-    m_ActionFlipHorizontal = new QAction(QIcon(":/resources/img/flip_h.svg"), tr("Flip states on the horizontal"), this);
+    m_ActionFlipHorizontal = new QAction(QIcon(":/resources/img/flip_h.svg"), tr("Flip on the horizontal"), this);
     QObject::connect(m_ActionFlipHorizontal, &QAction::triggered, this, &MainWindow::slotFlipHorizontal);
     m_ActionFlipHorizontal->setAutoRepeat(false);
     m_ActionFlipHorizontal->setEnabled(false);
 
-    m_ActionFlipVertical = new QAction(QIcon(":/resources/img/flip_v.svg"), tr("Flip states on the vertical"), this);
+    m_ActionFlipVertical = new QAction(QIcon(":/resources/img/flip_v.svg"), tr("Flip on the vertical"), this);
     QObject::connect(m_ActionFlipVertical, &QAction::triggered, this, &MainWindow::slotFlipVertical);
     m_ActionFlipVertical->setAutoRepeat(false);
     m_ActionFlipVertical->setEnabled(false);
@@ -281,10 +281,9 @@ void MainWindow::loadGui()
     menuRules->addAction(m_ActionImportRule);
     m_BtnMenuRules->setMenu(menuRules);
 
-    // TODO m_BtnMenuEditCells
-    // меню кнопки редактирования правил
+    // меню кнопки редактирования ячеек
     m_BtnMenuEditCells = new QToolButton(this);
-    m_BtnMenuEditCells->setToolTip(tr("Edit cells states"));
+    m_BtnMenuEditCells->setToolTip(tr("Edit cells"));
     m_BtnMenuEditCells->setIcon(QIcon(":/resources/img/edit.svg"));
     m_BtnMenuEditCells->setPopupMode(QToolButton::InstantPopup);
     m_BtnMenuEditCells->setArrowType(Qt::NoArrow);
@@ -1931,7 +1930,9 @@ void MainWindow::slotRandomFill()
             if(rg.bounded(0, 100) < config->FieldRandomisationValue())
             {
                 ni->setState(Kernel::CellState::ALIVE);
+                ni->setGeneration(1);
                 oi->setState(Kernel::CellState::ALIVE);
+                oi->setGeneration(1);
             }
         }
     }
@@ -2022,14 +2023,7 @@ void MainWindow::slotFlipHorizontal()
         for(int fy = ymin; fy <= ymax_2; fy++)
         {
             if(fy == sy) break;
-            auto f_state = m_Field->getCell({x, fy})->getOldInfo()->getState();
-            auto s_state = m_Field->getCell({x, sy})->getOldInfo()->getState();
-
-            m_Field->getCell({x, fy})->getNewInfo()->setState(s_state);
-            m_Field->getCell({x, fy})->getOldInfo()->setState(s_state);
-            m_Field->getCell({x, sy})->getNewInfo()->setState(f_state);
-            m_Field->getCell({x, sy})->getOldInfo()->setState(f_state);
-
+            m_Field->getCell({x, fy})->flipInfo({x, sy});
             sy--;
         }
     }
@@ -2078,14 +2072,7 @@ void MainWindow::slotFlipVertical()
         for(int fx = xmin; fx <= xmax_2; fx++)
         {
             if(fx == sx) break;
-            auto f_state = m_Field->getCell({fx, y})->getOldInfo()->getState();
-            auto s_state = m_Field->getCell({sx, y})->getOldInfo()->getState();
-
-            m_Field->getCell({fx, y})->getNewInfo()->setState(s_state);
-            m_Field->getCell({fx, y})->getOldInfo()->setState(s_state);
-            m_Field->getCell({sx, y})->getNewInfo()->setState(f_state);
-            m_Field->getCell({sx, y})->getOldInfo()->setState(f_state);
-
+            m_Field->getCell({fx, y})->flipInfo({sx, y});
             sx--;
         }
     }

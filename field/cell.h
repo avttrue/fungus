@@ -20,6 +20,7 @@ public:
     void clear();
     Field *getField() const;
     void applyInfo();
+    void flipInfo(const QPoint &value);
     QRect getRect() const;
     bool isObserved();
 
