@@ -178,6 +178,10 @@ void Config::load()
         m_Settings->setValue("Scene/FirstSnapshot", SCENE_FIRST_SNAPSHOT);
     m_SceneFirstSnapshot = m_Settings->value("Scene/FirstSnapshot").toBool();
 
+    if(!m_Settings->contains("Scene/FirstSnapshotClearList"))
+        m_Settings->setValue("Scene/FirstSnapshotClearList", SCENE_FIRST_SNAPSHOT_CLEAR_LIST);
+    m_SceneFirstSnapshotClearList = m_Settings->value("Scene/FirstSnapshotClearList").toBool();
+
     if(!m_Settings->contains("Scene/CellDeadColor"))
         m_Settings->setValue("Scene/CellDeadColor", SCENE_CELL_DEAD_COLOR);
     m_SceneCellDeadColor = m_Settings->value("Scene/CellDeadColor").toString();
@@ -257,6 +261,14 @@ void Config::load()
     if(!m_Settings->contains("Scene/LastRule"))
         m_Settings->setValue("Scene/LastRule", "");
     m_SceneLastRule = m_Settings->value("Scene/LastRule").toString();
+}
+
+void Config::setSceneFirstSnapshotClearList(bool value)
+{
+    if(m_SceneFirstSnapshotClearList == value) return;
+
+    m_SceneFirstSnapshotClearList = value;
+    m_Settings->setValue("Scene/FirstSnapshotClearList", m_SceneFirstSnapshotClearList);
 }
 
 void Config::setSceneLastRule(const QString &value)
@@ -799,3 +811,4 @@ int Config::CellMonitorWindowHeight() const { return m_CellMonitorWindowHeight; 
 int Config::CellMonitorWindowWidth() const { return m_CellMonitorWindowWidth; }
 Qt::KeyboardModifiers Config::FieldFasteditKeyModifier() const { return m_FieldFasteditKeyModifier; }
 QString Config::SceneLastRule() const { return m_SceneLastRule; }
+bool Config::SceneFirstSnapshotClearList() const { return m_SceneFirstSnapshotClearList; }

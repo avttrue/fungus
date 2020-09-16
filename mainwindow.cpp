@@ -1175,6 +1175,10 @@ void MainWindow::createSnapshot()
         return;
     }
 
+    if(m_Field->getInformation()->getAge() == 0 &&
+            config->SceneFirstSnapshotClearList())
+        m_Snapshots->clearList();
+
     auto name = QString("Age: %1").arg(QString::number(m_Field->getInformation()->getAge()));
     auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
 
@@ -1301,10 +1305,11 @@ void MainWindow::slotSetup()
                                    tr("23#__Age diapason"),
                                    tr("24#_Field options"),
                                    tr("25#_Create first snapshot"),
-                                   tr("26#_Minimum pause at calculating (ms)"),
-                                   tr("27#_Copy to clipboard except dead cells"),
-                                   tr("28#_Save to preset except dead cells"),
-                                   tr("29#_Field thread priority"),
+                                   tr("26#_Clear snapshot list at first snapshot"),
+                                   tr("27#_Minimum pause at calculating (ms)"),
+                                   tr("28#_Copy to clipboard except dead cells"),
+                                   tr("29#_Save to preset except dead cells"),
+                                   tr("30#_Field thread priority"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -1333,10 +1338,11 @@ void MainWindow::slotSetup()
      {keys.at(23), {QVariant::Int, config->CellCurseAgeIndicDiapason(), 2, 50}},
      {keys.at(24), {}},
      {keys.at(25), {QVariant::Bool, config->SceneFirstSnapshot()}},
-     {keys.at(26), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
-     {keys.at(27), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
-     {keys.at(28), {QVariant::Bool, config->SaveToPresetExceptDead()}},
-     {keys.at(29), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
+     {keys.at(26), {QVariant::Bool, config->SceneFirstSnapshotClearList()}},
+     {keys.at(27), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
+     {keys.at(28), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
+     {keys.at(29), {QVariant::Bool, config->SaveToPresetExceptDead()}},
+     {keys.at(30), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -1368,10 +1374,11 @@ void MainWindow::slotSetup()
     config->setCellCurseAgeIndicDiapason(map.value(keys.at(23)).value.toInt());
     // field
     config->setSceneFirstSnapshot(map.value(keys.at(25)).value.toBool());
-    config->setSceneCalculatingMinPause(map.value(keys.at(26)).value.toInt());
-    config->setCopyToClipboardExceptDead(map.value(keys.at(27)).value.toBool());
-    config->setSaveToPresetExceptDead(map.value(keys.at(28)).value.toBool());
-    config->setSceneFieldThreadPriority(map.value(keys.at(29)).value.toString());
+    config->setSceneFirstSnapshotClearList(map.value(keys.at(26)).value.toBool());
+    config->setSceneCalculatingMinPause(map.value(keys.at(27)).value.toInt());
+    config->setCopyToClipboardExceptDead(map.value(keys.at(28)).value.toBool());
+    config->setSaveToPresetExceptDead(map.value(keys.at(29)).value.toBool());
+    config->setSceneFieldThreadPriority(map.value(keys.at(30)).value.toString());
 
     // применение настроек
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));

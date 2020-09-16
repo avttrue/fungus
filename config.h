@@ -140,6 +140,8 @@ public:
     void setCellMonitorWindowWidth(int value);
     QString SceneLastRule() const;
     void setSceneLastRule(const QString &value);
+    bool SceneFirstSnapshotClearList() const;
+    void setSceneFirstSnapshotClearList(bool value);
 
 protected:
     void load();
@@ -207,6 +209,7 @@ private:
     bool m_SaveToPresetExceptDead;                  // при сохранении в пресет исключать мёртвые
     bool m_RewriteResource;                         // переписывать ресурсы при старте
     bool m_SceneFirstSnapshot;                      // создавать снапшот при первом запуске поля
+    bool m_SceneFirstSnapshotClearList;             // очищать список снапшотов при первом снапшоте
     bool m_SceneCreateDefaultRule;                  // создавать правило по-умолчанию
     bool m_ProjectFileCompression;                  // сжимать данные при сохранении проекта
 };

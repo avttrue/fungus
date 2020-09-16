@@ -85,6 +85,7 @@ const auto COPY_TO_CLIPBOARD_EXCEPT_DEAD =          true;
 const auto SAVE_TO_PRESET_EXCEPT_DEAD =             true;
 const auto REWITE_RESOURCES =                       true;
 const auto SCENE_FIRST_SNAPSHOT =                   true;
+const auto SCENE_FIRST_SNAPSHOT_CLEAR_LIST =        true;
 const auto WRITE_LOGS_TO_FILE =                     false;
 
 #endif // PROPERTIES_H
