@@ -1,6 +1,7 @@
 https://github.com/QuasarApp/CQtDeployer 
 
 LINUX
+sudo snap install cqtdeployer
 snap connect cqtdeployer:system-backup :system-backup
 cqtdeployer -bin fungus deploySystem noTranslations
 ----------------------------------------------------
