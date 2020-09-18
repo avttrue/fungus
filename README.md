@@ -1,4 +1,4 @@
-# fungus
+# FUNGUS
 
 TThis application is designed to study the behavior of simple [cellular automata](https://en.wikipedia.org/wiki/Cellular_automaton).
 
@@ -16,4 +16,4 @@ In any case, I'm not a programmer, it's just a hobby for me.
 
 If you can suggest ways to speed up calculations within this architecture, it would be great.
 
-
+[Latest build](https://yadi.sk/d/EJKtTK-kr5PU7w)
