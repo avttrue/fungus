@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_Field(nullptr)
 {
     setWindowIcon(QIcon(":/resources/img/mushroom.svg"));
-    setWindowTitle(QString("%1 %2").arg(APP_NAME, APP_VERS));
+    setWindowTitle(QString("%1 %2").arg(APP_NAME, APP_VERSION));
     m_Snapshots = new JDocumentList(this);
     loadGui();
     setWidgetToScreenCenter(this);
@@ -115,14 +115,15 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionLoadEditRule, &QAction::triggered, this, &MainWindow::slotLoadEditRule);
     m_ActionLoadEditRule->setAutoRepeat(false);
 
-    m_ActionImportRule = new QAction(QIcon(":/resources/img/check.svg"), tr("Import rule"), this);
+    m_ActionImportRule = new QAction(QIcon(":/resources/img/check.svg"), tr("Edit current rule"), this);
     QObject::connect(m_ActionImportRule, &QAction::triggered, this, &MainWindow::slotImportRule);
+    m_ActionImportRule->setShortcut(Qt::CTRL + Qt::Key_R);
     m_ActionImportRule->setAutoRepeat(false);
     m_ActionImportRule->setEnabled(false);
 
     m_ActionInfoRule = new QAction(QIcon(":/resources/img/info.svg"), tr("Current rule"), this);
     QObject::connect(m_ActionInfoRule, &QAction::triggered, this, &MainWindow::slotInfoRule);
-    m_ActionInfoRule->setShortcut(Qt::CTRL + Qt::Key_R);
+    m_ActionInfoRule->setShortcut(Qt::ALT + Qt::Key_R);
     m_ActionInfoRule->setAutoRepeat(false);
     m_ActionInfoRule->setEnabled(false);
 
@@ -1593,7 +1594,7 @@ void MainWindow::slotNewProject()
     if(random) m_Field->updateScene();
 
     setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
-                   arg(APP_NAME, APP_VERS, currentrule,
+                   arg(APP_NAME, APP_VERSION, currentrule,
                        QString::number(m_Field->width()),
                        QString::number(m_Field->height()),
                        QString::number(config->SceneCellSize())));
@@ -2244,7 +2245,7 @@ void MainWindow::slotLoadProject()
     }
 
     setWindowTitle(QString("%1 %2 <%3> [%4 X %5 X %6]").
-                   arg(APP_NAME, APP_VERS, m_Field->getRule()->objectName(),
+                   arg(APP_NAME, APP_VERSION, m_Field->getRule()->objectName(),
                        QString::number(m_Field->width()),
                        QString::number(m_Field->height()),
                        QString::number(config->SceneCellSize())));
@@ -2388,7 +2389,7 @@ void MainWindow::slotImportRule()
 void MainWindow::slotAbout()
 {
     auto content = getTextFromRes(":/resources/html/about_body.html").
-            arg(APP_NAME, APP_VERS, GIT_VERS, BUILD_DATE, getSystemInfo(), QT_VERSION_STR);
+            arg(APP_NAME, APP_VERSION, GIT_VERS, BUILD_DATE, getSystemInfo(), QT_VERSION_STR);
 
     auto title = tr("About %1").arg(APP_NAME);
     if(findPreviousWindowCopy(title)) return;

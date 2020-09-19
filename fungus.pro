@@ -6,9 +6,7 @@ CONFIG += c++17
 
 TARGET       = fungus
 TEMPLATE     = app
-VERSION      = 1.0
 
-DEFINES     += APP_VERS=\\\"$${VERSION}\\\"
 DEFINES     += GIT_VERS=\\\"$$system(git describe --always)\\\"
 #DEFINES     += GIT_VERS=\\\"-------\\\"
 DEFINES     += BUILD_DATE='"\\\"$(shell date)\\\""'

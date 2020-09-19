@@ -49,7 +49,7 @@ void Config::load()
     m_JsonIgnoreDataVersion = m_Settings->value("JsonIgnoreDataVersion").toBool();
 
     if(!m_Settings->contains("DateTimeFormat"))
-        m_Settings->setValue("DateTimeFormat", DT_FORMAT);
+        m_Settings->setValue("DateTimeFormat", FORMAT_DT);
     m_DateTimeFormat = m_Settings->value("DateTimeFormat").toString();
 
     if(!m_Settings->contains("MainWindow/Height"))
