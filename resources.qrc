@@ -121,5 +121,7 @@
         <file>resources/img/flip_v.svg</file>
         <file>resources/img/edit_cell.svg</file>
         <file>resources/doc/install.txt</file>
+        <file>resources/img/circle_dot.svg</file>
+        <file>resources/img/circle.svg</file>
     </qresource>
 </RCC>
