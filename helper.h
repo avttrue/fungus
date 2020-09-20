@@ -40,4 +40,6 @@ QString getSystemInfo();
 
 void copyResources(const QString& outPath, const QString& inPath, bool rewrite, bool* ok);
 
+QString BoolToString(bool value);
+
 #endif // HELPER_H

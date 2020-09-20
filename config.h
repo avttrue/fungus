@@ -142,6 +142,8 @@ public:
     void setSceneLastRule(const QString &value);
     bool SceneFirstSnapshotClearList() const;
     void setSceneFirstSnapshotClearList(bool value);
+    QString SceneCellTraitColor() const;
+    void setSceneCellTraitColor(const QString &value);
 
 protected:
     void load();
@@ -160,6 +162,7 @@ private:
     QString m_SceneBgColor;                         // цвет задника сцены
     QString m_SceneCellDeadColor;                   // цвет мёртвой ячейки
     QString m_SceneCellAliveColor;                  // цвет живой ячейки
+    QString m_SceneCellTraitColor;                  // цвет живой особенной ячейки
     QString m_SceneCellCurseColor;                  // цвет отравленной ячейки
     QString m_SceneViewUpdateMode;                  // метод отрисовки SceneView
     QString m_SceneFieldThreadPriority;             // приоритет потока Field

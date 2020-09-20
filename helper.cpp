@@ -185,3 +185,5 @@ void copyResources(const QString& outPath, const QString& inPath, bool rewrite, 
         }
     }
 }
+
+QString BoolToString(bool value) { return value ? "[+]" : "[-]"; }

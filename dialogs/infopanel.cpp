@@ -1,5 +1,6 @@
 #include "infopanel.h"
 #include "kernel/kernel.h"
+#include "helper.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -47,7 +48,7 @@ InfoPanel::InfoPanel(QWidget *parent, const QString &caption, const QVariant &va
 void InfoPanel::setValue(const QVariant &value)
 {
     if(value.type() == QVariant::Bool)
-        value.toBool() ? m_LabelValue->setText("[+]") : m_LabelValue->setText("[ ]");
+        m_LabelValue->setText(BoolToString(value.toBool()));
     else if(value.type() == QVariant::Double)
         m_LabelValue->setText(QString::number(value.toReal(), 'f', REAL_VALUE_PRECISION));
     else

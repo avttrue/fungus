@@ -34,12 +34,14 @@ const QString SCENE_SELECT_COLOR =                  "#5555FF";
 const QString SCENE_BG_COLOR =                      "#AAAA00";
 const QString SCENE_CELL_DEAD_COLOR =               "#FFFFFF";
 const QString SCENE_CELL_ALIVE_COLOR =              "#000000";
+const QString SCENE_CELL_TRAIT_COLOR =              "#00AA00";
 const QString SCENE_CELL_CURSE_COLOR =              "#AA0000";
 const QString SCENE_VIEW_UPDATE_MODE =              "MINIMAL";
 const QString SCENE_FIELD_THREAD_PRIORITY =         "NORMAL";
 const QString CELL_ALIVE_AGE_INDIC_BRIGHTNESS =     "LIGHTER";
 const QString CELL_CURSE_AGE_INDIC_BRIGHTNESS =     "LIGHTER";
-const QString EXTERN_URL_RG = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
+const QString EXTERN_URL_RG = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]"
+                              "{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
 const qreal SCENE_SCALE_STEP =                      1.0001;
 const auto FIELD_RULE_PROPERTY_LENGTH =             50;
 const auto SCENE_GRID_LINE_WIDTH =                  0;

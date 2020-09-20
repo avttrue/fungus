@@ -190,6 +190,10 @@ void Config::load()
         m_Settings->setValue("Scene/CellAliveColor", SCENE_CELL_ALIVE_COLOR);
     m_SceneCellAliveColor = m_Settings->value("Scene/CellAliveColor").toString();
 
+    if(!m_Settings->contains("Scene/CellTraitColor"))
+        m_Settings->setValue("Scene/CellTraitColor", SCENE_CELL_TRAIT_COLOR);
+    m_SceneCellTraitColor = m_Settings->value("Scene/CellTraitColor").toString();
+
     if(!m_Settings->contains("Scene/SelectColor"))
         m_Settings->setValue("Scene/SelectColor", SCENE_SELECT_COLOR);
     m_SceneSelectColor = m_Settings->value("Scene/SelectColor").toString();
@@ -458,6 +462,14 @@ void Config::setSceneCellAliveColor(const QString &value)
 
     m_SceneCellAliveColor = value;
     m_Settings->setValue("Scene/CellAliveColor", m_SceneCellAliveColor);
+}
+
+void Config::setSceneCellTraitColor(const QString &value)
+{
+    if(m_SceneCellTraitColor == value) return;
+
+    m_SceneCellTraitColor = value;
+    m_Settings->setValue("Scene/CellTraitColor", m_SceneCellTraitColor);
 }
 
 void Config::setSplashSize(int value)
@@ -812,3 +824,4 @@ int Config::CellMonitorWindowWidth() const { return m_CellMonitorWindowWidth; }
 Qt::KeyboardModifiers Config::FieldFasteditKeyModifier() const { return m_FieldFasteditKeyModifier; }
 QString Config::SceneLastRule() const { return m_SceneLastRule; }
 bool Config::SceneFirstSnapshotClearList() const { return m_SceneFirstSnapshotClearList; }
+QString Config::SceneCellTraitColor() const { return m_SceneCellTraitColor; }
