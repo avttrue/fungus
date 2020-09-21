@@ -1,6 +1,6 @@
 # FUNGUS
 
-TThis application is designed to study the behavior of simple [cellular automata](https://en.wikipedia.org/wiki/Cellular_automaton).
+This application is designed to study the behavior of simple [cellular automata](https://en.wikipedia.org/wiki/Cellular_automaton).
 
 A special case of such a automaton is the [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
