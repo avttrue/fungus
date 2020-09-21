@@ -19,15 +19,6 @@ FieldInformation::FieldInformation(QObject *parent)
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
 }
 
-
-uint FieldInformation::upAge()
-{
-    m_Age++;
-
-    Q_EMIT signalAgeChanged(m_Age);
-    return m_Age;
-}
-
 void FieldInformation::applyAverageCalc(uint time)
 {
     auto new_c = QDateTime::currentMSecsSinceEpoch() - time;
@@ -91,6 +82,30 @@ void FieldInformation::setLastActiveAge(uint value)
     Q_EMIT signalLastActiveAgeChanged(m_LastActiveAge);
 }
 
+void FieldInformation::setCellsWithTrait(uint value)
+{
+    if (m_CellsWithTrait == value) return;
+
+    m_CellsWithTrait = value;
+    Q_EMIT signalCellsWithTraitChanged(m_CellsWithTrait);
+}
+
+void FieldInformation::setAge(uint value)
+{
+    if (m_Age == value) return;
+
+    m_Age = value;
+    Q_EMIT signalAgeChanged(m_Age);
+}
+
+uint FieldInformation::upAge()
+{
+    m_Age++;
+
+    Q_EMIT signalAgeChanged(m_Age);
+    return m_Age;
+}
+
 void FieldInformation::applyDensity()
 {
     qreal value = static_cast<qreal>(m_AliveCells) /
@@ -99,16 +114,6 @@ void FieldInformation::applyDensity()
 
     m_Density = value;
     Q_EMIT signalDensityChanged(m_Density);
-}
-
-void FieldInformation::setCellsCount(const uint &value) { m_CellsCount = value; }
-
-void FieldInformation::setAge(uint value)
-{
-    if (m_Age == value) return;
-
-    m_Age = value;
-    Q_EMIT signalAgeChanged(value);
 }
 
 void FieldInformation::setDensity(qreal value)
@@ -126,6 +131,8 @@ void FieldInformation::setAverageCalc(qreal value)
     m_AverageCalc = value;
     Q_EMIT signalAverageCalcChanged(m_AverageCalc);
 }
+
+void FieldInformation::setCellsCount(const uint &value) { m_CellsCount = value; }
 qreal FieldInformation::getDensity() const { return m_Density; }
 uint FieldInformation::getLastActiveAge() const { return m_LastActiveAge; }
 uint FieldInformation::getActiveCells() const { return m_ActiveCells; }
@@ -135,3 +142,4 @@ uint FieldInformation::getDeadCells() const { return m_DeadCells; }
 uint FieldInformation::getAliveCells() const { return m_AliveCells; }
 uint FieldInformation::getCursedCells() const { return m_CursedCells; }
 uint FieldInformation::getCellsCount() const { return m_CellsCount; }
+uint FieldInformation::getCellsWithTrait() const { return m_CellsWithTrait; }

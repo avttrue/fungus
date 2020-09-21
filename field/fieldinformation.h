@@ -11,35 +11,39 @@ class FieldInformation : public QObject
     Q_PROPERTY(uint DeadCells READ getDeadCells WRITE setDeadCells NOTIFY signalDeadCellsChanged)
     Q_PROPERTY(uint AliveCells READ getAliveCells WRITE setAliveCells NOTIFY signalAliveCellsChanged)
     Q_PROPERTY(uint CursedCells READ getCursedCells WRITE setCursedCells NOTIFY signalCursedCellsChanged)
+    Q_PROPERTY(uint CellsWithTrait READ getCellsWithTrait WRITE setCellsWithTrait NOTIFY signalCellsWithTraitChanged)
     Q_PROPERTY(qreal Density READ getDensity WRITE setDensity)
-    Q_PROPERTY(qreal AverageCalc READ getAverageCalc WRITE setAverageCalc)
     Q_PROPERTY(uint ActiveCells READ getActiveCells WRITE setActiveCells NOTIFY signalActiveCellsChanged)
     Q_PROPERTY(uint LastActiveAge READ getLastActiveAge WRITE setLastActiveAge NOTIFY signalLastActiveAgeChanged)
 
 public:
     explicit FieldInformation(QObject *parent = nullptr);
 
-    uint getAge() const;
-    void setAge(uint value);
+    uint getAge() const;    
     uint upAge();
     qreal getAverageCalc() const;
     void setAverageCalc(qreal value);
     void applyAverageCalc(uint time);
-    uint getDeadCells() const;
-    void setDeadCells(uint value);
-    uint getAliveCells() const;
-    void setAliveCells(uint value);
-    uint getCursedCells() const;
-    void setCursedCells(uint value);    
-    uint getActiveCells() const;
-    void setActiveCells(uint value);   
-    uint getLastActiveAge() const;
-    void setLastActiveAge(uint value);
-    qreal getDensity() const;
-    void setDensity(qreal value);
+    uint getDeadCells() const;    
+    uint getAliveCells() const;    
+    uint getCursedCells() const;        
+    uint getActiveCells() const;       
+    uint getLastActiveAge() const;    
+    qreal getDensity() const;    
     void applyDensity();
     uint getCellsCount() const;
-    void setCellsCount(const uint &value);   
+    uint getCellsWithTrait() const;
+
+public Q_SLOTS:
+    void setCellsWithTrait(uint value);
+    void setCellsCount(const uint &value);
+    void setDensity(qreal value);
+    void setLastActiveAge(uint value);
+    void setActiveCells(uint value);
+    void setCursedCells(uint value);
+    void setAliveCells(uint value);
+    void setDeadCells(uint value);
+    void setAge(uint value);
 
 private:
     uint m_CellsCount;
@@ -50,7 +54,8 @@ private:
     uint m_CursedCells;
     uint m_ActiveCells;
     uint m_LastActiveAge;
-    qreal m_Density;    
+    qreal m_Density;        
+    uint m_CellsWithTrait;
 
 Q_SIGNALS:
     void signalAgeChanged(uint value);
@@ -63,6 +68,7 @@ Q_SIGNALS:
     void signalCursedCellsChanged(uint value);
     void signalActiveCellsChanged(uint value);
     void signalLastActiveAgeChanged(uint value);
+    void signalCellsWithTraitChanged(uint value);
 };
 
 #endif // FIELDINFORMATION_H

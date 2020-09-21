@@ -129,7 +129,6 @@ void DialogCellMonitor::slotAddCell()
     m_TextContent->addTextSeparator();
     m_Cells.append(cell);
     cell->setObservedOn();
-    //QObject::connect(this, &QObject::destroyed, cell, &Cell::setObservedOff); // TODO: не срабатывает?
 
     m_LabelCount->setText(QString::number(m_Cells.count()));
 

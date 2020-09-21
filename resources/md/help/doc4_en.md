@@ -21,15 +21,16 @@
 * **DEAD** - *empty cell*
 * **ALIVE** - *occupied, live cell*
 * **CURSED** - *this cell cannot accept the alive state during the time specified by the rule;*
-*when cell switch to this state, the* **GENERATION** *property receive the value* **0**
+*when cell switch to this state, the GENERATION property receive the value* **0**
 
 ##  
 
  *A cell has the following properties:*
- 
-* **AGE** - *age of a alive cell; when switching from the* **ALIVE** *state to the* **DEAD** *state, the* **AGE** *property receive the value* **0**
-* **GENERATION** - *count of generations; when cell switch from* **DEAD** *state to* **ALIVE** *state, the* **GENERATION** *property increases by* **1**
-*; when cell switch to* **CURSED** *state, the* **GENERATION** *property receive the value* **0**
+
+* **TRAIT** - *just a flag, a mark on the cell; you can use it in the* [rules](doc5_en.md) *; resets if the cell becomes DEAD or CURSED*
+* **AGE** - *age of a alive cell; when switching from the ALIVE state to the DEAD state, the AGE property receive the value* **0**
+* **GENERATION** - *count of generations; when cell switch from DEAD state to ALIVE state, the GENERATION property increases by* **1**
+*; when cell switch to CURSED state, the GENERATION property receive the value* **0**
 
 ##  
 

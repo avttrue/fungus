@@ -163,9 +163,10 @@ void DialogEditRules::addContentItem(const QString &text, Kernel::ActivityType t
 
 void DialogEditRules::loadContent()
 {
+    qDebug() << __func__;
     if(!m_Rule)
     {
-        qCritical() << __func__ << "Rule is null";
+        qCritical() << "Rule is null";
         return;
     }
 
@@ -227,16 +228,15 @@ void DialogEditRules::slotRowChanged(int value)
 
 bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
 {
-    /*
-     * {ActivityType,
+    /* {ActivityType,
      * SelfState,
      * ActivityTarget,
      * TargetState,
      * ActivityOperand,
      * ActivityOperator,
-     * [значение]}
-     */
-
+     * [значение],
+     * Break} */
+    qDebug() << __func__;
     auto atypelist = listKernelEnum("ActivityType");
     auto statelist = listKernelEnum("CellState");
     auto atargetlist = listKernelEnum("ActivityTarget");
@@ -244,11 +244,11 @@ bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
     auto aoperator = listKernelEnum("ActivityOperator");
 
     const QVector<QString> keys = {
-        tr("00#_Set"), "01#_",
-        tr("02#_If cell is"), "03#_",
-        tr("04#_And"), "05#_",
-        tr("06#_Is {"), "07#_", "08#_", "09#_",
-        tr("10#_value"), "11#_}"
+        tr("00#_Set"), "01#__",
+        tr("02#_If cell is"), "03#__",
+        tr("04#_And"), "05#__",
+        tr("06#_Is"), "07#__", "08#__", "09#__", tr("10#__value"),
+        tr("11#_and Break"), tr("12#__value"),
     };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -263,6 +263,7 @@ bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
      {keys.at(9), {QVariant::StringList, QVariant::fromValue(element->at(5)), 0, aoperator, DialogValueMode::OneFromList}},
      {keys.at(10), {QVariant::Int, element->at(6).toInt(), 0, 0}},
      {keys.at(11), {}},
+     {keys.at(12), {QVariant::Bool, element->at(7).toBool()}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/edit.svg", tr("Activity element"), &map);
@@ -275,15 +276,17 @@ bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
     element->data()[4].setValue(static_cast<Kernel::ActivityOperand>(aoperand.indexOf(map.value(keys.at(8)).value.toString())));
     element->data()[5].setValue(static_cast<Kernel::ActivityOperator>(aoperator.indexOf(map.value(keys.at(9)).value.toString())));
     element->data()[6].setValue(map.value(keys.at(10)).value.toInt());
+    element->data()[7].setValue(map.value(keys.at(12)).value.toBool());
     return true;
 }
 
 void DialogEditRules::editActivity(int index)
 {
+    qDebug() << __func__;
     auto element = m_Rule->getActivity().at(index);
-    if(element.count() != 7)
+    if(element.count() != RULE_ACTIVITY_LEN)
     {
-        qCritical() << __func__ << "Rule activity element #" << index << "length is incorrect:" << element.count();
+        qCritical() << "Rule activity element #" << index << "length is incorrect:" << element.count();
         return;
     }
 
@@ -315,7 +318,7 @@ void DialogEditRules::slotActionAdd()
                                   QVariant::fromValue(Kernel::CellState::ALIVE),
                                   QVariant::fromValue(Kernel::ActivityOperand::COUNT),
                                   QVariant::fromValue(Kernel::ActivityOperator::EQUAL),
-                                  1};
+                                  0, true};
 
     if(!editActivityElement(&element)) return;
 

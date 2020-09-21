@@ -8,7 +8,8 @@
 
 FieldRule::FieldRule(Field *parent)
     : QObject(parent),
-      m_CurseTime(0)
+      m_CurseTime(0),
+      m_Description("")
 {
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "FieldRule" << objectName() <<"destroyed"; });
     QObject::connect(this, &QObject::objectNameChanged, [=](){ qDebug() << "FieldRule: name changed to" << objectName(); });
@@ -60,8 +61,11 @@ QString FieldRule::PropertiesToString()
     {
         auto p = metaObject()->property(i);
         auto value = property(p.name());
+        auto s_value = value.type() == QVariant::Bool
+                ? BoolToString(value.toBool())
+                : value.toString();
         if(QString(p.name()) != "Activity")
-            result.append(QString("\n%1 : %2").arg(p.name(), value.toString().leftRef(FIELD_RULE_PROPERTY_LENGTH)));
+            result.append(QString("\n%1 : %2").arg(p.name(), s_value.leftRef(FIELD_RULE_PROPERTY_LENGTH)));
     }
     return result;
 }
@@ -86,7 +90,7 @@ void FieldRule::setDefault()
                         QVariant::fromValue(Kernel::CellState::ALIVE),
                         QVariant::fromValue(Kernel::ActivityOperand::COUNT),
                         QVariant::fromValue(Kernel::ActivityOperator::EQUAL),
-                        3});
+                        3, true});
 
     m_Activity.append({ QVariant::fromValue(Kernel::ActivityType::DEATH),
                         QVariant::fromValue(Kernel::CellState::ALIVE),
@@ -94,7 +98,7 @@ void FieldRule::setDefault()
                         QVariant::fromValue(Kernel::CellState::ALIVE),
                         QVariant::fromValue(Kernel::ActivityOperand::COUNT),
                         QVariant::fromValue(Kernel::ActivityOperator::LESS),
-                        2});
+                        2, true});
 
     m_Activity.append({ QVariant::fromValue(Kernel::ActivityType::DEATH),
                         QVariant::fromValue(Kernel::CellState::ALIVE),
@@ -102,7 +106,7 @@ void FieldRule::setDefault()
                         QVariant::fromValue(Kernel::CellState::ALIVE),
                         QVariant::fromValue(Kernel::ActivityOperand::COUNT),
                         QVariant::fromValue(Kernel::ActivityOperator::MORE),
-                        3});
+                        3, true});
 
     qDebug() << "FieldRule" << objectName() << "filled as default";
 }

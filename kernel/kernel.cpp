@@ -54,13 +54,14 @@ int countKernelEnum(const QString &enumname)
 
 QString ActivityElementToString(const QVector<QVariant> &activity)
 {
-    /* {ActivityType,
+    /* { ActivityType,
      * SelfState,
      * ActivityTarget,
      * TargetState,
      * ActivityOperand,
      * ActivityOperator,
-     * ActivityValue} */
+     * ActivityValue,
+     * Break } */
     auto activitytype = QVariant::fromValue(activity.at(0)).toString();
     auto activitysstate = QVariant::fromValue(activity.at(1)).toString();
     auto activitytarget = QVariant::fromValue(activity.at(2)).toString();
@@ -70,15 +71,17 @@ QString ActivityElementToString(const QVector<QVariant> &activity)
     auto activityoperand = QVariant::fromValue(activity.at(4)).toString();
     auto activityoperator = QVariant::fromValue(activity.at(5)).toString();
     auto activityvalue = activity.at(6).toString();
+    auto activitybreak = activity.at(7).toBool() ? "BREAK" : "CONTINUE";
 
-    return QObject::tr("set %1 if cell is %2 and %3 is { %4 %5 %6 %7 }").
+    return QObject::tr("set %1 if cell is %2 and %3 is { %4 %5 %6 %7 } and %8").
             arg(activitytype,
                 activitysstate,
                 activitytarget,
                 activitytstate,
                 activityoperand,
                 activityoperator,
-                activityvalue);
+                activityvalue,
+                activitybreak);
 }
 
 QIcon ActivityTypeToIcon(Kernel::ActivityType type)
@@ -100,6 +103,10 @@ QIcon ActivityTypeToIcon(Kernel::ActivityType type)
     { icon = QIcon(":/resources/img/down.svg"); break; }
     case Kernel::ActivityType::INVERT:
     { icon = QIcon(":/resources/img/sel_unsel.svg"); break; }
+    case Kernel::ActivityType::TRAIT:
+    { icon = QIcon(":/resources/img/circle_dot.svg"); break; }
+    case Kernel::ActivityType::WO_TRAIT:
+    { icon = QIcon(":/resources/img/circle.svg"); break; }
     }
     return icon;
 }

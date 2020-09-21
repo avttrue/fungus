@@ -33,6 +33,8 @@ public:
         UP_AGE,             // постареть на 1
         DOWN_AGE,           // помолодеть на 1, но не моложе 0
         INVERT,             // инвертировать состояние
+        TRAIT,              // установить особенность
+        WO_TRAIT,           // снять особенность
     };
     Q_ENUM(ActivityType)
 
@@ -64,7 +66,7 @@ public:
         MORE,               // больше
         LESS,               // меньше
         NOT,                // не равен
-        IS_DIV,             // divisibility кратность
+        IS_DIV,             // divisibility, кратность
     };
     Q_ENUM(ActivityOperator)
 
@@ -76,6 +78,7 @@ public:
         COUNT = 0,          // количество
         AGE,                // возраст
         GEN,                // поколение
+        TRAIT,              // особенность
     };
     Q_ENUM(ActivityOperand)
 };
@@ -105,7 +108,7 @@ QString ActivityElementToString(const QVector<QVariant>& activity);
 
 /*!
  * \brief Activity - список активностей ячейки:
- * {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение]};
+ * {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение], Break};
  *
  * Что сделать (ActivityType)
  * если
@@ -115,6 +118,7 @@ QString ActivityElementToString(const QVector<QVariant>& activity);
  * проверяем у цели что (ActivityOperand)
  * оператор проверки (ActivityOperator)
  * значение проверки
+ * Break (bool) - прервать обработку правила после отработки активности
  * выполняется по-очереди начиная с первого правила
  */
 typedef QVector<QVector<QVariant>> Activity;

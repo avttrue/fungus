@@ -30,6 +30,7 @@ void Cell::applyInfo()
 {
     m_OldInformation->setAge(m_NewInformation->getAge());
     m_OldInformation->setState(m_NewInformation->getState());
+    m_OldInformation->setTrait(m_NewInformation->isTrait());
     m_OldInformation->setGeneration(m_NewInformation->getGeneration());
 }
 

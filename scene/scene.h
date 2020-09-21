@@ -52,6 +52,7 @@ private:
     QGraphicsRectItem* m_MultiSelectionMark;               // метка выбраной группы Cell
     QColor m_BackgroundColor;
     QColor m_AliveCellColor;
+    QColor m_TraitCellColor;
     QColor m_DeadCellColor;
     QColor m_CurseCellColor;
     QSize m_Size;

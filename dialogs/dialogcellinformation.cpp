@@ -120,10 +120,12 @@ void DialogCellInformation::loadInformation()
 
         glContent->addWidget(dip);
 
-        if(QString(p.name()) == "Age")
-            QObject::connect(ci, &CellInformation::signalAgeChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
-        else if(QString(p.name()) == "State")
+        if(QString(p.name()) == "State")
             QObject::connect(ci, &CellInformation::signalStateChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
+        else if(QString(p.name()) == "Trait")
+            QObject::connect(ci, &CellInformation::signalTraitChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
+        else if(QString(p.name()) == "Age")
+            QObject::connect(ci, &CellInformation::signalAgeChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "Generation")
             QObject::connect(ci, &CellInformation::signalGenerationChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
     }

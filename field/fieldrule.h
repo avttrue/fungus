@@ -18,22 +18,22 @@ class FieldRule : public QObject
 public:
     FieldRule(Field *parent = nullptr);
     FieldRule(FieldRule* rule, Field *parent = nullptr);
-    Activity getActivity() const;
     void setDefault();                      // Conway's LIFE game
-    void setActivity(Activity value);
+    Activity getActivity() const;
     int getCurseTime() const;
-    void setCurseTime(int value);
     QString PropertiesToString();
-    QString toString();    
+    QString toString();
     QString getDescription() const;
-    void setDescription(const QString& value);
 
-protected:
+public Q_SLOTS:
+    void setActivity(Activity value);
+    void setCurseTime(int value);
+    void setDescription(const QString& value);
 
 private:
     Activity m_Activity;                    // активность ячейки
-    int m_CurseTime;                        // время отравления ячейки (0 - не отравляется, -1 - вечно отравленая)   
-    QString m_Description;
+    int m_CurseTime;                        // время отравления ячейки (0 - не отравляется, -1 - вечно отравленая)
+    QString m_Description;                  // описание правила
 };
 
 

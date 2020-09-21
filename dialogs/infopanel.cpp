@@ -1,6 +1,6 @@
 #include "infopanel.h"
-#include "kernel/kernel.h"
 #include "helper.h"
+#include "kernel/kernel.h"
 
 #include <QLabel>
 #include <QVBoxLayout>

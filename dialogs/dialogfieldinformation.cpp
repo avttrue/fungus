@@ -107,8 +107,6 @@ void DialogFieldInformation::loadInformation()
     {
         auto p = fi_mo->property(i);
 
-        if(QString(p.name()) == "AverageCalc") continue;
-
         auto value = fi->property(p.name());
         auto dip = new InfoPanel(this, p.name(), value);
 
@@ -128,6 +126,8 @@ void DialogFieldInformation::loadInformation()
             QObject::connect(fi, &FieldInformation::signalLastActiveAgeChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "Density")
             QObject::connect(fi, &FieldInformation::signalDensityChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
+        else if(QString(p.name()) == "CellsWithTrait")
+            QObject::connect(fi, &FieldInformation::signalCellsWithTraitChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
     }
 }
 

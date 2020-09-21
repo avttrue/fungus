@@ -970,7 +970,7 @@ void MainWindow::RuleToJsonObject(FieldRule* rule, QJsonObject *jobject)
     }
     for(auto a: rule->getActivity())
     {
-        /* {Type, SelfState, Target, TargetState, Operand, Operator, OperandValue} */
+        /* {Type, SelfState, Target, TargetState, Operand, Operator, OperandValue, Break} */
         QJsonObject obj_act;
         obj_act.insert("Type", a.at(0).toInt());
         obj_act.insert("SelfState", a.at(1).toInt());
@@ -979,6 +979,7 @@ void MainWindow::RuleToJsonObject(FieldRule* rule, QJsonObject *jobject)
         obj_act.insert("Operand", a.at(4).toInt());
         obj_act.insert("Operator", a.at(5).toInt());
         obj_act.insert("OperandValue", a.at(6).toInt());
+        obj_act.insert("Break", a.at(7).toBool());
         obj_acts.append(obj_act);
     }
     obj_rule.insert("Name", rule->objectName());
@@ -1053,6 +1054,10 @@ bool MainWindow::RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject)
         if(!o.contains("OperandValue"))
         { qCritical() << "JsonValue 'Activity.OperandValue' is absent"; return false; }
         v.append(o["OperandValue"].toInt());
+
+        if(!o.contains("Break"))
+        {  qCritical() << "JsonValue 'Activity.Break' is absent"; v.append(true); }
+        else v.append(o["Break"].toBool());
 
         activity.append(v);
     }
@@ -1431,14 +1436,14 @@ void MainWindow::slotEditCell()
     QVector<QString> keys =
     { tr("00#_Cell properties"),
       tr("01#_State"),
-      //tr("02#_Trait (for AlIVE cells)"),
-      tr("02#_Cell statistics"),
-      tr("03#_Age"),
-      tr("04#_Generation")};
+      tr("02#_Trait (for AlIVE cells)"),
+      tr("03#_Cell statistics"),
+      tr("04#_Age"),
+      tr("05#_Generation")};
     if(multyselection) keys.append(
-                { tr("05#_Group operations"),
-                  tr("06#_Apply to all"),
-                  tr("07#_Only statistics")});
+                { tr("06#_Group operations"),
+                  tr("07#_Apply to all"),
+                  tr("08#_Only statistics")});
 
     QMap<QString, DialogValue> map =
     { {keys.at(0), {}},
@@ -1446,17 +1451,17 @@ void MainWindow::slotEditCell()
                     getNameKernelEnum("CellState", static_cast<int>(cni->getState())), 0,
                     statelist, DialogValueMode::OneFromList}},
 
-      //{keys.at(2), {QVariant::Bool, cni->isTrait()}},
-      {keys.at(2), {}},
-      {keys.at(3), {QVariant::Int, cni->getAge(), 0, 0}},
-      {keys.at(4), {QVariant::Int, cni->getGeneration(), 0, 0}}
+      {keys.at(2), {QVariant::Bool, cni->isTrait()}},
+      {keys.at(3), {}},
+      {keys.at(4), {QVariant::Int, cni->getAge(), 0, 0}},
+      {keys.at(5), {QVariant::Int, cni->getGeneration(), 0, 0}}
     };
     if(multyselection)
     {
         QMap<QString, DialogValue> addmap =
-        { {keys.at(5), {}},
-          {keys.at(6), {QVariant::Bool, true}},
-          {keys.at(7), {QVariant::Bool, false}}};
+        { {keys.at(6), {}},
+          {keys.at(7), {QVariant::Bool, true}},
+          {keys.at(8), {QVariant::Bool, false}}};
         map.insert(addmap);
     }
 
@@ -1464,9 +1469,9 @@ void MainWindow::slotEditCell()
                                     tr("Edit cell %1").arg(firstcell->objectName()), &map);
     if(!dvl->exec()) return;
 
-    if(multyselection && map.value(keys.at(6)).value.toBool())
+    if(multyselection && map.value(keys.at(7)).value.toBool())
     {
-        auto only_stat = map.value(keys.at(7)).value.toBool();
+        auto only_stat = map.value(keys.at(8)).value.toBool();
         auto time = QDateTime::currentMSecsSinceEpoch();
         auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
         auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
@@ -1484,10 +1489,10 @@ void MainWindow::slotEditCell()
                 {
                     auto state = statelist.indexOf(map.value(keys.at(1)).value.toString());
                     cni->setState(static_cast<Kernel::CellState>(state));
-                    //cni->setTrait(map.value(keys.at(2)).value.toBool());
+                    cni->setTrait(map.value(keys.at(2)).value.toBool());
                 }
-                cni->setAge(map.value(keys.at(3)).value.toUInt());
-                cni->setGeneration(map.value(keys.at(4)).value.toUInt());
+                cni->setAge(map.value(keys.at(4)).value.toUInt());
+                cni->setGeneration(map.value(keys.at(5)).value.toUInt());
                 c->applyInfo();
             }
         }
@@ -1497,9 +1502,9 @@ void MainWindow::slotEditCell()
     {
         auto state = statelist.indexOf(map.value(keys.at(1)).value.toString());
         cni->setState(static_cast<Kernel::CellState>(state));
-        //cni->setTrait(map.value(keys.at(2)).value.toBool());
-        cni->setAge(map.value(keys.at(3)).value.toUInt());
-        cni->setGeneration(map.value(keys.at(4)).value.toUInt());
+        cni->setTrait(map.value(keys.at(2)).value.toBool());
+        cni->setAge(map.value(keys.at(4)).value.toUInt());
+        cni->setGeneration(map.value(keys.at(5)).value.toUInt());
         firstcell->applyInfo();
     }
     m_Field->updateScene();

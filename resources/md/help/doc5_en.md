@@ -17,15 +17,17 @@
 
 *The activity structure is as follows:*
 
-> set **Activity_Type** if cell is **State** and **Activity_Target** is **{ [Target_State] [Operand] [Operator] [Value] }**
+> set **Activity_Type** if cell is **State** and **Activity_Target** is **{ [Target_State] [Operand] [Operator] [Value] }** and **BREAK_FLAG**
+
+**BREAK_FLAG** *means - to interrupt or continue executing the rule after this activity is triggered*
 
 *For example the "Conway's LIFE game" rule looks like this:*
 
-> set **BIRTH** if cell is **DEAD** and **NEAR** is **{ ALIVE COUNT EQUAL 3 }**
+> set **BIRTH** if cell is **DEAD** and **NEAR** is **{ ALIVE COUNT EQUAL 3 }** and **BREAK**
 
-> set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT LESS 2 }**
+> set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT LESS 2 }** and **BREAK**
 
-> set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT MORE 3 }**
+> set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT MORE 3 }** and **BREAK**
 
 *Activities are applied one-by-one of the list. The first condition that is will be met interrupt the rule at current tick.*
 
@@ -50,6 +52,10 @@
 * **UP_DOWN** - *to decrease age of cell by* **1** *, but not less than to* **0**
 
 * **INVERT** - *to invert cell state (* **experimental** *)*
+
+* **TRAIT** - *set TRAIT to the cell*
+
+* **WO_TRAIT** - *reset TRAIT at the cell (without trait)* 
 
 ### State and Target state
 
@@ -81,11 +87,13 @@
 
 ### Activity operand
 
-* **COUNT** - *cells count*
+* **COUNT** - *cells count(NEAR and GROUP targets)*
 
-* **AGE** - *cell age or total age of cells (NEAR and GROUP targets)* 
+* **AGE** - *cell age or total age of cells (SELF, NEAR, GROUP targets)* 
 
-* **GEN** - *value of cell generation or total generations of cells (NEAR and GROUP targets)*  
+* **GEN** - *value of cell generation or total generations of cells (SELF, NEAR, GROUP targets)*
+
+* **TRAIT** - *total cells with TRAIT (SELF, NEAR, GROUP targets)*
 
 ### Activity operator
 

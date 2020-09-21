@@ -134,6 +134,11 @@ void Scene::applyCellsColors()
         alive_color = "#111111"; // для цвета #000000 не работает QColor::lighter()
     m_AliveCellColor = QColor(alive_color);
 
+    auto trait_color = config->SceneCellTraitColor();
+    if(config->CellAliveAgeIndicate() && trait_color == "#000000")
+        trait_color = "#111111"; // для цвета #000000 не работает QColor::lighter()
+    m_TraitCellColor = QColor(trait_color);
+
     auto curse_color = config->SceneCellCurseColor();
     if(config->CellCurseAgeIndicate() && curse_color == "#000000")
         curse_color = "#111111"; // для цвета #000000 не работает QColor::lighter()
@@ -213,8 +218,9 @@ void Scene::slotAdvance(QVector<Cell *> cells)
         {
         case Kernel::CellState::ALIVE:
         {
-            auto color = m_AliveCellColor;
-            if(c_alive_ind.on) // индикация возраста живой ячейки
+            auto color = ci->isTrait() ? m_TraitCellColor : m_AliveCellColor;
+            // индикация возраста живой ячейки без особенности
+            if(c_alive_ind.on && !ci->isTrait())
             {
                 auto factor = c_alive_ind.factor;
                 if(ci->getAge() < c_alive_ind.diapason)
@@ -241,7 +247,7 @@ void Scene::slotAdvance(QVector<Cell *> cells)
             painter.fillRect(c->getRect(), color);
             break;
         }
-        default: break; // мёртвый цвет уже нарисован
+        default: break;
         }
     }
     painter.end();

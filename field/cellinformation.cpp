@@ -5,9 +5,10 @@
 
 CellInformation::CellInformation(Cell *parent)
     : QObject(parent),
+      m_State(Kernel::CellState::DEAD),
+      m_Trait(false),
       m_Age(0),
-      m_Generation(0),
-      m_State(Kernel::CellState::DEAD)
+      m_Generation(0)
 { }
 
 void CellInformation::setState(Kernel::CellState value)
@@ -53,6 +54,15 @@ void CellInformation::upGeneration()
     Q_EMIT signalGenerationChanged(m_Generation);
 }
 
+void CellInformation::setTrait(bool value)
+{
+    if (m_Trait == value) return;
+
+    m_Trait = value;
+    Q_EMIT signalTraitChanged(m_Trait);
+}
+
 Kernel::CellState CellInformation::getState() const { return m_State; }
 uint CellInformation::getAge() const { return m_Age; }
 uint CellInformation::getGeneration() const { return m_Generation; }
+bool CellInformation::isTrait() const { return m_Trait; }

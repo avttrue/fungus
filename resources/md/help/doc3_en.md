@@ -10,7 +10,7 @@
 
 *When creating a project, you can select a field rule and, if necessary, fill in the field with a choice of fill density.*
 
-*In case of accidental filling of the cells of the field, cell can get only two states:* **ALIVE** *or* **DEAD**.
+*In case of accidental filling of the cells of the field, cell can get only two states: ALIVE or DEAD*.
 
 ##  
 

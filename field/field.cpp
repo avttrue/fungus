@@ -4,6 +4,7 @@
 #include "fieldrule.h"
 #include "fieldinformation.h"
 #include "properties.h"
+#include "helper.h"
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -79,6 +80,7 @@ void Field::calculate()
         uint alive_count = 0;
         uint cursed_count = 0;
         uint active_count = 0;
+        uint trait_count = 0;
         QVector<Cell*> cells_to_redraw;
         QSet<Cell*> cells_to_update;
 
@@ -96,13 +98,15 @@ void Field::calculate()
 
                 if(m_RuleOn)
                 {
-                    if(applyRules(c)) cells_to_update << c;
+                    auto rule_trigger = applyRules(c);
+                    if(rule_trigger) cells_to_update << c;
 
                     // cell Age
                     // была жива, стала отравлена
                     if(oi->getState() == Kernel::CellState::ALIVE && ni->getState() == Kernel::CellState::CURSED)
                     {
                         ni->setAge(0);
+                        ni->setTrait(false);
                         cells_to_update << c;
                     }
                     // возраст живой ячейки
@@ -115,6 +119,7 @@ void Field::calculate()
                     else if(oi->getState() != Kernel::CellState::DEAD && ni->getState() == Kernel::CellState::DEAD)
                     {
                         ni->setAge(0);
+                        ni->setTrait(false);
                         cells_to_update << c;
                     }
                     // проверка возраста отравленной ячейки
@@ -146,26 +151,47 @@ void Field::calculate()
                     // messages
                     if(c->isObserved())
                     {
+                        bool need_separator = false;
                         if(oi->getState() != ni->getState())
+                        {
                             Q_EMIT signalRuleMessage(tr("%1 : %2 State %3 -> %4").
                                                      arg(QString::number(m_FieldInformation->getAge()),
                                                          c->objectName(),
                                                          QVariant::fromValue(oi->getState()).toString(),
                                                          QVariant::fromValue(ni->getState()).toString()));
+                            need_separator = true;
+                        }
+
+                        if(oi->isTrait() != ni->isTrait())
+                        {
+                            Q_EMIT signalRuleMessage(tr("%1 : %2 Trait %3 -> %4").
+                                                     arg(QString::number(m_FieldInformation->getAge()),
+                                                         c->objectName(),
+                                                         BoolToString(oi->isTrait()),
+                                                         BoolToString(ni->isTrait())));
+                            need_separator = true;
+                        }
 
                         if(oi->getAge() != ni->getAge())
+                        {
                             Q_EMIT signalRuleMessage(tr("%1 : %2 Age %3 -> %4").
                                                      arg(QString::number(m_FieldInformation->getAge()),
                                                          c->objectName(),
                                                          QString::number(oi->getAge()),
                                                          QString::number(ni->getAge())));
+                            need_separator = true;
+                        }
 
                         if(oi->getGeneration() != ni->getGeneration())
+                        {
                             Q_EMIT signalRuleMessage(tr("%1 : %2 Generation %3 -> %4").
                                                      arg(QString::number(m_FieldInformation->getAge()),
                                                          c->objectName(),
                                                          QString::number(oi->getGeneration()),
                                                          QString::number(ni->getGeneration())));
+                            need_separator = true;
+                        }
+                        if(rule_trigger || need_separator) Q_EMIT signalRuleMessage(FIELD_LOG_SEPARATOR);
                     }
                 }
 
@@ -173,11 +199,12 @@ void Field::calculate()
 
                 if(oi->getGeneration() < ni->getGeneration()) active_count++;
 
-                //Kernel::CellState::Dead не считаем
+                // список на отрисовку и статистика
                 if(ni->getState() == Kernel::CellState::ALIVE)
                 {
                     cells_to_redraw << c;
                     alive_count++;
+                    if(ni->isTrait()) trait_count++;
                 }
                 else if(ni->getState() == Kernel::CellState::CURSED)
                 {
@@ -198,6 +225,7 @@ void Field::calculate()
         m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive_count - cursed_count);
         m_FieldInformation->setAliveCells(alive_count);
         m_FieldInformation->setCursedCells(cursed_count);
+        m_FieldInformation->setCellsWithTrait(trait_count);
         m_FieldInformation->applyAverageCalc(time);
 
         Q_EMIT signalCalculated(cells_to_redraw);
@@ -255,7 +283,8 @@ bool Field::applyRules(Cell *cell)
         auto t_stat = static_cast<Kernel::CellState>(a.value(3).toInt()); // TargetState
         auto a_opnd = static_cast<Kernel::ActivityOperand>(a.value(4).toInt()); // ActivityOperand
         auto a_oper = static_cast<Kernel::ActivityOperator>(a.value(5).toInt()); // ActivityOperator
-        auto a_valu =  a.value(6).toUInt(); // ActivityValue
+        auto a_valu = a.value(6).toUInt(); // ActivityValue
+        auto a_brek = a.value(7).toBool(); // Break
         uint value; // реальное значение операнда
 
         // получение реального значения операнда
@@ -329,7 +358,7 @@ bool Field::applyRules(Cell *cell)
         value = getRulesOperandValue(a_opnd, at_cells);
 
         // применение оператора к операнду
-        bool ao_check;
+        bool ao_check = false;
         switch(a_oper)
         {
         case Kernel::ActivityOperator::EQUAL:
@@ -345,18 +374,19 @@ bool Field::applyRules(Cell *cell)
             if(value == 0 || a_valu == 0) { ao_check = false; break; }
             ao_check = (value % a_valu) == 0 ? true : false; break; }
         }
+
         if(ao_check)
         {
             setRulesActivityReaction(oi, ni, a_type);
             if(cell->isObserved())
-            {
                 Q_EMIT signalRuleMessage(QString("%1 : %2 %3").
                                          arg(QString::number(m_FieldInformation->getAge()),
                                              cell->objectName(),
                                              ActivityElementToString(a)));
-            }
-            return true;
         }
+
+        /* прерывание обработки правила, если активность сработала и выставлен Break */
+        if(ao_check && a_brek) return true;
     }
     return false;
 }
@@ -378,6 +408,11 @@ uint Field::getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell*> list
     case Kernel::ActivityOperand::GEN: // суммарное кол-во поколений соседей определённого типа
     {
         for(auto c: list) count += c->getOldInfo()->getGeneration();
+        break;
+    }
+    case Kernel::ActivityOperand::TRAIT: // суммарное кол-во ячеек определённого типа с особенностью
+    {
+        for(auto c: list) if(c->getOldInfo()->isTrait()) count++;
         break;
     }
     }
@@ -408,6 +443,10 @@ void Field::setRulesActivityReaction(CellInformation *oi, CellInformation* ni, K
             ni->setState(Kernel::CellState::ALIVE);
         break;
     }
+    case Kernel::ActivityType::TRAIT:
+    { ni->setTrait(true); break; }
+    case Kernel::ActivityType::WO_TRAIT:
+    { ni->setTrait(false); break; }
     }
 }
 

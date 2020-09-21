@@ -5,6 +5,8 @@
 
 #include <kernel/kernel.h>
 
+const QString FIELD_LOG_SEPARATOR = "------------------------------------------";
+
 class Cell;
 class CellInformation;
 class FieldRule;
