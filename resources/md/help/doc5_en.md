@@ -29,7 +29,7 @@
 
 > set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT MORE 3 }** and **BREAK**
 
-*Activities are applied one-by-one of the list. The first condition that is will be met interrupt the rule at current tick.*
+*Activities are applied one by one from the list. The first completed activity interrupts the rule on the current field tick if the BREAK condition is enabled.*
 
 *The activity checks the* **current** *state of the* [cell](doc4_en.md) *, and the result is written to the* **new** *state of the cell.* 
 
