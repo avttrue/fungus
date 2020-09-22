@@ -135,8 +135,6 @@ void Scene::applyCellsColors()
     m_AliveCellColor = QColor(alive_color);
 
     auto trait_color = config->SceneCellTraitColor();
-    if(config->CellAliveAgeIndicate() && trait_color == "#000000")
-        trait_color = "#111111"; // для цвета #000000 не работает QColor::lighter()
     m_TraitCellColor = QColor(trait_color);
 
     auto curse_color = config->SceneCellCurseColor();

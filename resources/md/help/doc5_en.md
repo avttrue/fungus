@@ -17,19 +17,19 @@
 
 *The activity structure is as follows:*
 
-> set **Activity_Type** if cell is **State** and **Activity_Target** is **{ [Target_State] [Operand] [Operator] [Value] }** and **BREAK_FLAG**
+> set **Activity_Type** if cell is **State** and **Activity_Target** is **{ [Target_State] [Operand] [Operator] [Value] }** and than **ABORT_FLAG**
 
-**BREAK_FLAG** *means - to interrupt or continue executing the rule after this activity is triggered*
+**ABORT_FLAG** *means - to interrupt or continue executing the rule after this activity is triggered*
 
 *For example the "Conway's LIFE game" rule looks like this:*
 
-> set **BIRTH** if cell is **DEAD** and **NEAR** is **{ ALIVE COUNT EQUAL 3 }** and **BREAK**
+> set **BIRTH** if cell is **DEAD** and **NEAR** is **{ ALIVE COUNT EQUAL 3 }** and than **ABORT**
 
-> set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT LESS 2 }** and **BREAK**
+> set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT LESS 2 }** and than **ABORT**
 
-> set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT MORE 3 }** and **BREAK**
+> set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT MORE 3 }** and than **ABORT**
 
-*Activities are applied one by one from the list. The first completed activity interrupts the rule on the current field tick if the BREAK condition is enabled.*
+*Activities are applied one by one from the list. The first completed activity interrupts the rule on the current field tick if the ABORT condition is enabled.*
 
 *The activity checks the* **current** *state of the* [cell](doc4_en.md) *, and the result is written to the* **new** *state of the cell.* 
 

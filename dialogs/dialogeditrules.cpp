@@ -239,6 +239,10 @@ bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
     qDebug() << __func__;
     auto atypelist = listKernelEnum("ActivityType");
     auto statelist = listKernelEnum("CellState");
+    auto atstatelist = listKernelEnum("CellState");
+    atstatelist.removeAll("ANY");
+    atstatelist.removeAll("NOT_CURSED");
+    atstatelist.removeAll("NOT_ALIVE");
     auto atargetlist = listKernelEnum("ActivityTarget");
     auto aoperand = listKernelEnum("ActivityOperand");
     auto aoperator = listKernelEnum("ActivityOperator");
@@ -248,7 +252,7 @@ bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
         tr("02#_If cell is"), "03#__",
         tr("04#_And"), "05#__",
         tr("06#_Is"), "07#__", "08#__", "09#__", tr("10#__value"),
-        tr("11#_and Break"), tr("12#__value"),
+        tr("11#_and then Abort"), tr("12#__yes / no"),
     };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -258,7 +262,7 @@ bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
      {keys.at(4), {}},
      {keys.at(5), {QVariant::StringList, QVariant::fromValue(element->at(2)), 0, atargetlist, DialogValueMode::OneFromList}},
      {keys.at(6), {}},
-     {keys.at(7), {QVariant::StringList, QVariant::fromValue(element->at(3)), 0, statelist, DialogValueMode::OneFromList}},
+     {keys.at(7), {QVariant::StringList, QVariant::fromValue(element->at(3)), 0, atstatelist, DialogValueMode::OneFromList}},
      {keys.at(8), {QVariant::StringList, QVariant::fromValue(element->at(4)), 0, aoperand, DialogValueMode::OneFromList}},
      {keys.at(9), {QVariant::StringList, QVariant::fromValue(element->at(5)), 0, aoperator, DialogValueMode::OneFromList}},
      {keys.at(10), {QVariant::Int, element->at(6).toInt(), 0, 0}},

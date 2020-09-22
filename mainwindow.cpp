@@ -1404,6 +1404,7 @@ void MainWindow::slotSetup()
         m_SceneView->getScene()->setBackgroundColor(config->SceneBgColor());
         m_SceneView->getScene()->setSelectionMarkColor(config->SceneSelectColor());
         m_SceneView->update();
+        m_SceneView->getScene()->getField()->updateScene();
     }
 }
 
@@ -1432,6 +1433,9 @@ void MainWindow::slotEditCell()
     auto multyselection =  !secondcell ? false : true;
     auto cni = firstcell->getNewInfo();
     auto statelist = listKernelEnum("CellState");
+    statelist.removeAll("ANY");
+    statelist.removeAll("NOT_CURSED");
+    statelist.removeAll("NOT_ALIVE");
 
     QVector<QString> keys =
     { tr("00#_Cell properties"),

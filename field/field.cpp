@@ -98,7 +98,7 @@ void Field::calculate()
 
                 if(m_RuleOn)
                 {
-                    auto rule_trigger = applyRules(c);
+                    auto rule_trigger = applyActivities(c);
                     if(rule_trigger) cells_to_update << c;
 
                     // cell Age
@@ -261,7 +261,7 @@ Cell *Field::addCell(QPoint index)
     return c;
 }
 
-bool Field::applyRules(Cell *cell)
+bool Field::applyActivities(Cell *cell)
 {
     auto oi = cell->getOldInfo();
     auto ni = cell->getNewInfo();
@@ -276,7 +276,10 @@ bool Field::applyRules(Cell *cell)
     for(auto a: m_Rule->getActivity())
     {
         auto s_stat = static_cast<Kernel::CellState>(a.value(1).toInt());   // SelfState
-        if(oi->getState() != s_stat) continue;
+
+        if(oi->getState() == Kernel::CellState::CURSED && s_stat == Kernel::CellState::NOT_CURSED) continue;
+        if(oi->getState() == Kernel::CellState::ALIVE && s_stat == Kernel::CellState::NOT_ALIVE) continue;
+        if(s_stat != Kernel::CellState::ANY && oi->getState() != s_stat) continue;
 
         auto a_type = static_cast<Kernel::ActivityType>(a.value(0).toInt()); // ActivityType
         auto a_targ = static_cast<Kernel::ActivityTarget>(a.value(2).toInt()); // ActivityTarget

@@ -15,9 +15,14 @@ public:
      */
     enum class CellState: int
     {
-        DEAD = 0,           // мертва
-        ALIVE,              // жива
-        CURSED,             // мертва и отравлена
+        // реальные состояния
+        DEAD = 0,               // мертва
+        ALIVE = 1,              // жива
+        CURSED = 2,             // отравлена
+        // для испрользования в правилах
+        ANY = 3,                // любая
+        NOT_CURSED = 4,         // любая кроме отравленных
+        NOT_ALIVE = 5,          // мертва и отравлена
     };
     Q_ENUM(CellState)
 
@@ -108,7 +113,7 @@ QString ActivityElementToString(const QVector<QVariant>& activity);
 
 /*!
  * \brief Activity - список активностей ячейки:
- * {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение], Break};
+ * {ActivityType, SelfState, ActivityTarget, TargetState, ActivityOperand, ActivityOperator, [значение], Abort};
  *
  * Что сделать (ActivityType)
  * если
@@ -118,7 +123,7 @@ QString ActivityElementToString(const QVector<QVariant>& activity);
  * проверяем у цели что (ActivityOperand)
  * оператор проверки (ActivityOperator)
  * значение проверки
- * Break (bool) - прервать обработку правила после отработки активности
+ * Abort (bool) - прервать обработку правила после отработки активности
  * выполняется по-очереди начиная с первого правила
  */
 typedef QVector<QVector<QVariant>> Activity;

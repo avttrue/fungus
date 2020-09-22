@@ -22,6 +22,7 @@ void Cell::clear()
     m_NewInformation->setAge(0);
     m_NewInformation->setState(Kernel::CellState::DEAD);
     m_NewInformation->setGeneration(0);
+    m_NewInformation->setTrait(false);
 
     applyInfo();
 }
@@ -41,10 +42,12 @@ void Cell::flipInfo(const QPoint &value)
     m_NewInformation->setAge(c->m_OldInformation->getAge());
     m_NewInformation->setState(c->m_OldInformation->getState());
     m_NewInformation->setGeneration(c->m_OldInformation->getGeneration());
+    m_NewInformation->setTrait(c->m_OldInformation->isTrait());
 
     c->m_NewInformation->setAge(m_OldInformation->getAge());
     c->m_NewInformation->setState(m_OldInformation->getState());
     c->m_NewInformation->setGeneration(m_OldInformation->getGeneration());
+    c->m_NewInformation->setTrait(m_OldInformation->isTrait());
 
     applyInfo();
     c->applyInfo();
@@ -56,6 +59,7 @@ void Cell::invertState()
     if(getOldInfo()->getState() == Kernel::CellState::ALIVE)
     {
         getNewInfo()->setState(Kernel::CellState::DEAD);
+        getNewInfo()->setTrait(false);
         getNewInfo()->setAge(0);
     }
     else if(getOldInfo()->getState() == Kernel::CellState::DEAD)

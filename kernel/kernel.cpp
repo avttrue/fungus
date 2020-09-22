@@ -61,7 +61,7 @@ QString ActivityElementToString(const QVector<QVariant> &activity)
      * ActivityOperand,
      * ActivityOperator,
      * ActivityValue,
-     * Break } */
+     * Abort } */
     auto activitytype = QVariant::fromValue(activity.at(0)).toString();
     auto activitysstate = QVariant::fromValue(activity.at(1)).toString();
     auto activitytarget = QVariant::fromValue(activity.at(2)).toString();
@@ -71,9 +71,9 @@ QString ActivityElementToString(const QVector<QVariant> &activity)
     auto activityoperand = QVariant::fromValue(activity.at(4)).toString();
     auto activityoperator = QVariant::fromValue(activity.at(5)).toString();
     auto activityvalue = activity.at(6).toString();
-    auto activitybreak = activity.at(7).toBool() ? "BREAK" : "CONTINUE";
+    auto activitybreak = activity.at(7).toBool() ? "ABORT" : "CONTINUE";
 
-    return QObject::tr("set %1 if cell is %2 and %3 is { %4 %5 %6 %7 } and %8").
+    return QObject::tr("set %1 if cell is %2 and %3 is { %4 %5 %6 %7 } and then %8").
             arg(activitytype,
                 activitysstate,
                 activitytarget,
