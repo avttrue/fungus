@@ -54,7 +54,6 @@ void Field::fill(int random)
         Q_EMIT signalFillingProgress(h + 1);
     }
 
-    m_FieldInformation->upAge();
     m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive - cursed);
     m_FieldInformation->setAliveCells(alive);
     m_FieldInformation->setCursedCells(cursed);

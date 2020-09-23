@@ -13,6 +13,8 @@ class FieldInformation : public QObject
     Q_PROPERTY(uint CursedCells READ getCursedCells WRITE setCursedCells NOTIFY signalCursedCellsChanged)
     Q_PROPERTY(uint CellsWithTrait READ getCellsWithTrait WRITE setCellsWithTrait NOTIFY signalCellsWithTraitChanged)
     Q_PROPERTY(qreal Density READ getDensity WRITE setDensity)
+    Q_PROPERTY(qreal MaxDensity READ getMaxDensity WRITE setMaxDensity)
+    Q_PROPERTY(uint AgeMaxDensity READ getAgeMaxDensity WRITE setAgeMaxDensity)
     Q_PROPERTY(uint ActiveCells READ getActiveCells WRITE setActiveCells NOTIFY signalActiveCellsChanged)
     Q_PROPERTY(uint LastActiveAge READ getLastActiveAge WRITE setLastActiveAge NOTIFY signalLastActiveAgeChanged)
 
@@ -31,8 +33,11 @@ public:
     uint getLastActiveAge() const;    
     qreal getDensity() const;    
     void applyDensity();
+    qreal getMaxDensity() const;
+    void applyMaxDensity();
+    uint getAgeMaxDensity() const;
     uint getCellsCount() const;
-    uint getCellsWithTrait() const;
+    uint getCellsWithTrait() const;    
 
 public Q_SLOTS:
     void setCellsWithTrait(uint value);
@@ -43,7 +48,9 @@ public Q_SLOTS:
     void setCursedCells(uint value);
     void setAliveCells(uint value);
     void setDeadCells(uint value);
-    void setAge(uint value);
+    void setAge(uint value);   
+    void setMaxDensity(qreal value);
+    void setAgeMaxDensity(uint value);
 
 private:
     uint m_CellsCount;
@@ -54,8 +61,10 @@ private:
     uint m_CursedCells;
     uint m_ActiveCells;
     uint m_LastActiveAge;
-    qreal m_Density;        
     uint m_CellsWithTrait;
+    qreal m_Density;                
+    qreal m_MaxDensity;
+    uint m_AgeMaxDensity;
 
 Q_SIGNALS:
     void signalAgeChanged(uint value);
@@ -63,6 +72,8 @@ Q_SIGNALS:
     void signalAverageCalcChangedDown(qreal value);
     void signalAverageCalcChanged(qreal value);
     void signalDensityChanged(qreal value);
+    void signalMaxDensityChanged(qreal value);
+    void signalAgeMaxDensityChanged(uint value);
     void signalDeadCellsChanged(uint value);
     void signalAliveCellsChanged(uint value);
     void signalCursedCellsChanged(uint value);

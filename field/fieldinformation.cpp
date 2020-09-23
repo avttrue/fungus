@@ -7,13 +7,17 @@
 FieldInformation::FieldInformation(QObject *parent)
     : QObject(parent),
       m_CellsCount(0),
-      m_Age(-1),
+      m_Age(0),
       m_AverageCalc(0),
-      m_DeadCells(-1),
-      m_AliveCells(-1),
-      m_CursedCells(-1),
-      m_ActiveCells(-1),
-      m_Density(0)
+      m_DeadCells(0),
+      m_AliveCells(0),
+      m_CursedCells(0),
+      m_ActiveCells(0),
+      m_LastActiveAge(0),
+      m_CellsWithTrait(0),
+      m_Density(0),
+      m_MaxDensity(0),
+      m_AgeMaxDensity(0)
 {
     setObjectName("FieldInformation");
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });
@@ -98,6 +102,30 @@ void FieldInformation::setAge(uint value)
     Q_EMIT signalAgeChanged(m_Age);
 }
 
+void FieldInformation::setMaxDensity(qreal value)
+{
+    if (m_MaxDensity == value) return;
+
+    m_MaxDensity = value;
+    Q_EMIT signalMaxDensityChanged(m_MaxDensity);
+}
+
+void FieldInformation::setAgeMaxDensity(uint value)
+{
+    if (m_AgeMaxDensity == value) return;
+
+    m_AgeMaxDensity = value;
+    Q_EMIT signalAgeMaxDensityChanged(m_AgeMaxDensity);
+}
+
+void FieldInformation::applyMaxDensity()
+{
+    if(m_Density <= m_MaxDensity) return;
+
+    setMaxDensity(m_Density);
+    setAgeMaxDensity(m_Age);
+}
+
 uint FieldInformation::upAge()
 {
     m_Age++;
@@ -110,10 +138,8 @@ void FieldInformation::applyDensity()
 {
     qreal value = static_cast<qreal>(m_AliveCells) /
             (m_DeadCells + m_CursedCells + m_AliveCells);
-    if (m_Density == value) return;
 
-    m_Density = value;
-    Q_EMIT signalDensityChanged(m_Density);
+    setDensity(value);
 }
 
 void FieldInformation::setDensity(qreal value)
@@ -122,6 +148,7 @@ void FieldInformation::setDensity(qreal value)
 
     m_Density = value;
     Q_EMIT signalDensityChanged(m_Density);
+    applyMaxDensity();
 }
 
 void FieldInformation::setAverageCalc(qreal value)
@@ -143,3 +170,5 @@ uint FieldInformation::getAliveCells() const { return m_AliveCells; }
 uint FieldInformation::getCursedCells() const { return m_CursedCells; }
 uint FieldInformation::getCellsCount() const { return m_CellsCount; }
 uint FieldInformation::getCellsWithTrait() const { return m_CellsWithTrait; }
+qreal FieldInformation::getMaxDensity() const { return m_MaxDensity; }
+uint FieldInformation::getAgeMaxDensity() const { return m_AgeMaxDensity; }

@@ -126,6 +126,10 @@ void DialogFieldInformation::loadInformation()
             QObject::connect(fi, &FieldInformation::signalLastActiveAgeChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "Density")
             QObject::connect(fi, &FieldInformation::signalDensityChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
+        else if(QString(p.name()) == "MaxDensity")
+            QObject::connect(fi, &FieldInformation::signalMaxDensityChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
+        else if(QString(p.name()) == "AgeMaxDensity")
+            QObject::connect(fi, &FieldInformation::signalAgeMaxDensityChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
         else if(QString(p.name()) == "CellsWithTrait")
             QObject::connect(fi, &FieldInformation::signalCellsWithTraitChanged, dip, &InfoPanel::setValue, Qt::QueuedConnection);
     }
