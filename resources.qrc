@@ -123,5 +123,6 @@
         <file>resources/doc/install.txt</file>
         <file>resources/img/circle_dot.svg</file>
         <file>resources/img/circle.svg</file>
+        <file>resources/md/help/example_trait_en.md</file>
     </qresource>
 </RCC>
