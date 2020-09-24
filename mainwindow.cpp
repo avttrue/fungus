@@ -1639,7 +1639,7 @@ void MainWindow::slotNewProject()
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     m_LabelSelectedCell->setText("-");
 
-    if(config->WindowShowFieldInfo()) slotInfoField();
+    if(config->WindowShowFieldInfo()) showInfoField(false);
 }
 
 void MainWindow::slotSceneZoomIn()
@@ -1848,16 +1848,19 @@ void MainWindow::slotInfoCell()
     dci->show();
 }
 
-void MainWindow::slotInfoField()
+void MainWindow::showInfoField(bool unique)
 {
     if(!m_Field) { m_ActionInfoField->setDisabled(true); return; }
 
     auto title = tr("Field");
-    if(findPreviousWindowCopy(title)) return;
+
+    if(unique && findPreviousWindowCopy(title)) return;
 
     auto dfi = new DialogFieldInformation(this, title, m_Field);
     dfi->show();
 }
+
+void MainWindow::slotInfoField() { showInfoField(); }
 
 void MainWindow::slotShowCell(Cell *cell)
 {

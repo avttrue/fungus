@@ -73,6 +73,7 @@ protected:
     bool loadProjectFromJsonObject(QJsonObject *jobject);
     bool writeCompressData(const QByteArray& data, const QString &path);
     bool readUncompressData(QByteArray* data, const QString &path);
+    void showInfoField(bool unique = true);
 
 private:
     bool m_FieldRunning;   // состояние поля
