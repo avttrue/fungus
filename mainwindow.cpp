@@ -1271,12 +1271,20 @@ bool MainWindow::readUncompressData(QByteArray *data, const QString &path)
 {
     qDebug() << __func__;
     QFile file(path);
-    if(!file.open(QIODevice::ReadOnly)) return false;
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        qCritical() << "File could not be opened:" << path;
+        return false;
+    }
 
     auto time = QDateTime::currentMSecsSinceEpoch();
     QByteArray ba = file.readAll();
     file.close();
-    if(!ba.size()) return false;
+    if(!ba.size())
+    {
+        qCritical() << "File is empty:" << path;
+        return false;
+    }
 
     *data = qUncompress(ba);
     qDebug() << "Read & uncompress data:" << ba.size() << "bytes in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
@@ -2239,22 +2247,25 @@ void MainWindow::slotLoadProject()
     if(filename.isNull() || filename.isEmpty()) return;
 
     QByteArray data;
-    bool ok;
-    if(config->ProjectFileCompression()) ok = readUncompressData(&data, filename);
-    else data = fileToText(filename, &ok).toUtf8();
+    bool ok = readUncompressData(&data, filename);
+    // если не смогли распаковать
+    if(!ok)
+    {
+        qWarning() << "Data uncompressing from file failed";
+        qDebug() << "File is not compressed? Will try to read it";
+        data = fileToText(filename, &ok).toUtf8();
+    }
     if(!ok)
     {
         qCritical() << "Error at loading data from file";
-        QMessageBox::critical(this, tr("Error"),
-                              tr("Error at loading data from file: '%1'").arg(filename));
+        QMessageBox::critical(this, tr("Error"), tr("Error at loading data from file: '%1'").arg(filename));
         return;
     }
 
     QJsonObject root_object;
     if(!getJsonRootObject(data, &root_object))
     {
-        QMessageBox::critical(this, tr("Error"),
-                              tr("Data error. Data is not Json document. \n File: '%1'").arg(filename));
+        QMessageBox::critical(this, tr("Error"), tr("Data error. Data is not Json document. \n File: '%1'").arg(filename));
         return;
     }
     if(!checkJsonDocumentVersion(&root_object)) return;

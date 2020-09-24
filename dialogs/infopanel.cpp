@@ -1,5 +1,6 @@
 #include "infopanel.h"
 #include "helper.h"
+#include "properties.h"
 #include "kernel/kernel.h"
 
 #include <QLabel>
@@ -50,7 +51,7 @@ void InfoPanel::setValue(const QVariant &value)
     if(value.type() == QVariant::Bool)
         m_LabelValue->setText(BoolToString(value.toBool()));
     else if(value.type() == QVariant::Double)
-        m_LabelValue->setText(QString::number(value.toReal(), 'f', REAL_VALUE_PRECISION));
+        m_LabelValue->setText(QString::number(value.toReal(), 'f', DENSITY_VALUE_PRECISION));
     else
         m_LabelValue->setText(value.toString());
 }

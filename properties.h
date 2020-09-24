@@ -43,6 +43,7 @@ const QString CELL_CURSE_AGE_INDIC_BRIGHTNESS =     "LIGHTER";
 const QString EXTERN_URL_RG = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]"
                               "{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
 const qreal SCENE_SCALE_STEP =                      1.0001;
+const auto DENSITY_VALUE_PRECISION =                4;
 const auto RULE_ACTIVITY_LEN =                      8;
 const auto FIELD_RULE_PROPERTY_LENGTH =             50;
 const auto SCENE_GRID_LINE_WIDTH =                  0;
