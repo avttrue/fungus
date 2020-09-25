@@ -23,7 +23,7 @@ DialogBody::DialogBody(QWidget* parent,
     setStyleSheet(WINDOW_STYLE);
 
     // основной контейнер
-    auto* formGridLayout = new QGridLayout(this);
+    auto formGridLayout = new QGridLayout(this);
     formGridLayout->setAlignment(Qt::AlignCenter);
     formGridLayout->setMargin(2);
     formGridLayout->setSpacing(0);
@@ -41,7 +41,7 @@ DialogBody::DialogBody(QWidget* parent,
 
     if(!icon.isEmpty())
     {
-        QLabel* labelIcon = new QLabel();
+        auto labelIcon = new QLabel();
         labelIcon->setPixmap(QPixmap(icon).
                              scaled(QFontMetrics(m_Caption->font()).height(),
                                     QFontMetrics(m_Caption->font()).height(),
