@@ -1,7 +1,7 @@
 ﻿#ifndef DIALOGEDITRULES_H
 #define DIALOGEDITRULES_H
 
-#include <QDialog>
+#include "dialogbody.h"
 
 #include "field/fieldrule.h"
 
@@ -11,7 +11,7 @@ class QListWidget;
 class ClickableLabel;
 class QListWidgetItem;
 
-class DialogEditRules : public QDialog
+class DialogEditRules : public DialogBody
 {
     Q_OBJECT
 public:

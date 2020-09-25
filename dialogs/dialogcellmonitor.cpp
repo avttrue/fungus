@@ -11,33 +11,10 @@
 #include <QVBoxLayout>
 
 DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scene *scene)
-    :QDialog(parent),
+    :DialogBody(parent, title, ":/resources/img/cell_monitor.svg"),
       m_Scene(scene),
       m_CurrentCellIndex(-1)
 {
-    setWindowFlags(Qt::Dialog |
-                   Qt::CustomizeWindowHint |
-                   Qt::WindowTitleHint);
-    setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(title);
-    setWindowIcon(QIcon(":/resources/img/cell_monitor.svg"));
-    setModal(false);
-
-    auto vblForm = new QVBoxLayout();
-    vblForm->setAlignment(Qt::AlignAbsolute);
-    vblForm->setMargin(2);
-    vblForm->setSpacing(2);
-    setLayout(vblForm);
-
-    auto toolBarMain = new QToolBar();
-    toolBarMain->setOrientation(Qt::Horizontal);
-    toolBarMain->setMovable(false);
-    toolBarMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-
-    auto actionClose = new QAction(QIcon(":/resources/img/no.svg"), tr("Close"));
-    QObject::connect(actionClose, &QAction::triggered, [=](){ slotClearObservationList(); close(); });
-    actionClose->setAutoRepeat(false);
-
     auto actionClear = new QAction(QIcon(":/resources/img/delete.svg"), tr("Clear observation list"));
     QObject::connect(actionClear, &QAction::triggered, this, &DialogCellMonitor::slotClearObservationList);
     actionClear->setAutoRepeat(false);
@@ -54,20 +31,19 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
 
     m_LabelCount = new QLabel("0", this);
 
-    toolBarMain->addAction(m_ActionSelectCell);
-    toolBarMain->addAction(m_ActionNextCell);
-    toolBarMain->addSeparator();
-    toolBarMain->addAction(actionClear);
-    toolBarMain->addSeparator();
-    toolBarMain->addWidget(new QLabel("Observation list: ", this));
-    toolBarMain->addWidget(m_LabelCount);
-    toolBarMain->addWidget(new WidgetSpacer());
-    toolBarMain->addAction(actionClose);
+    ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    ToolBar()->addAction(m_ActionSelectCell);
+    ToolBar()->addAction(m_ActionNextCell);
+    ToolBar()->addSeparator();
+    ToolBar()->addAction(actionClear);
+    ToolBar()->addSeparator();
+    ToolBar()->addWidget(new QLabel("Observation list: ", this));
+    ToolBar()->addWidget(m_LabelCount);
+    ToolBar()->addWidget(new WidgetSpacer());
 
     m_TextContent = new TextLog(this);
 
-    vblForm->addWidget(m_TextContent);
-    vblForm->addWidget(toolBarMain);
+    addContentWidget(m_TextContent);
 
     installEventFilter(this);
     resize(config->CellMonitorWindowWidth(), config->CellMonitorWindowHeight());

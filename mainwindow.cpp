@@ -2432,9 +2432,9 @@ void MainWindow::slotAbout()
     auto title = tr("About %1").arg(APP_NAME);
     if(findPreviousWindowCopy(title)) return;
 
-    auto dhc = new DialogInfoContent(this, title);
-    dhc->setHtmlContent(content);
-    dhc->show();
+    auto dic = new DialogInfoContent(this, title);
+    dic->setHtmlContent(content);
+    dic->show();
 }
 
 void MainWindow::slotHelp()
@@ -2442,9 +2442,9 @@ void MainWindow::slotHelp()
     auto title = tr("Help");
     if(findPreviousWindowCopy(title)) return;
 
-    auto dhc = new DialogInfoContent(this, title);
-    dhc->setMarkdownSource("qrc:/resources/md/help/doc_en.md");
-    dhc->show();
+    auto dic = new DialogInfoContent(this, title);
+    dic->setMarkdownSource("qrc:/resources/md/help/doc_en.md");
+    dic->show();
 }
 
 void MainWindow::slotCellMonitor()

@@ -1,12 +1,12 @@
 #ifndef DIALOGFIELDINFORMATION_H
 #define DIALOGFIELDINFORMATION_H
 
-#include <QDialog>
+#include "dialogbody.h"
 
 class QGridLayout;
 class Field;
 
-class DialogFieldInformation : public QDialog
+class DialogFieldInformation : public DialogBody
 {
     Q_OBJECT
 public:

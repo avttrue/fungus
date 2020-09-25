@@ -1,14 +1,14 @@
 #ifndef DIALOGCELLMONITOR_H
 #define DIALOGCELLMONITOR_H
 
-#include <QDialog>
+#include "dialogbody.h"
 
 class Cell;
 class Scene;
 class TextLog;
 class QLabel;
 
-class DialogCellMonitor : public QDialog
+class DialogCellMonitor : public DialogBody
 {
     Q_OBJECT
 public:

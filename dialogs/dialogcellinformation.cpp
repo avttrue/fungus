@@ -15,25 +15,12 @@
 
 DialogCellInformation::DialogCellInformation(QWidget *parent,
                                              Cell *cell)
-    : QDialog(parent),
+    : DialogBody(parent, tr("Cell %1").arg(cell->objectName()), ":/resources/img/cell.svg"),
       m_Cell(cell)
 {
-    setWindowFlags(Qt::Dialog |
-                   Qt::CustomizeWindowHint |
-                   Qt::WindowTitleHint);
-    setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(tr("Cell %1").arg(cell->objectName()));
-    setWindowIcon(QIcon(":/resources/img/cell.svg"));
-    setModal(false);
-
-    auto vblForm = new QVBoxLayout();
-    vblForm->setAlignment(Qt::AlignAbsolute);
-    vblForm->setMargin(1);
-    vblForm->setSpacing(1);
-    setLayout(vblForm);
-
     auto saContent = new QScrollArea();
     saContent->setAlignment(Qt::AlignTop);
+    saContent->setFrameStyle(QFrame::NoFrame);
     saContent->setWidgetResizable(true);
 
     auto wContent = new QWidget();
@@ -45,26 +32,16 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     glContent->setMargin(1);
     glContent->setSpacing(1);
 
-    auto toolBar = new QToolBar();
-    toolBar->setMovable(false);
-    toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
     auto actionShowCell = new QAction(QIcon(":/resources/img/point.svg"), tr("Show cell"));
     actionShowCell->setAutoRepeat(false);
     QObject::connect(actionShowCell, &QAction::triggered, this, &DialogCellInformation::slotShowCell);
-    toolBar->addAction(actionShowCell);
+    ToolBar()->addAction(actionShowCell);
 
-    toolBar->addSeparator();
+    ToolBar()->addWidget(new WidgetSpacer());
 
-    toolBar->addWidget(new WidgetSpacer());
-
-    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Close"));
-    actionCancel->setAutoRepeat(false);
-    QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
-    toolBar->addAction(actionCancel);
-
-    vblForm->addWidget(saContent);
-    vblForm->addWidget(toolBar);
+    addContentWidget(saContent);
 
     loadInformation();
 

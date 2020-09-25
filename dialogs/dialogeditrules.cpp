@@ -13,23 +13,9 @@
 #include <QListWidget>
 
 DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
-    : QDialog(parent),
+    : DialogBody(parent, tr("Edit rule"), ":/resources/img/rule.svg", true, true),
       m_Rule(rules)
 {
-    setWindowFlags(Qt::Dialog |
-                   Qt::CustomizeWindowHint |
-                   Qt::WindowTitleHint);
-    setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(tr("Edit rule"));
-    setWindowIcon(QIcon(":/resources/img/rule.svg"));
-    setModal(true);
-
-    auto vblForm = new QVBoxLayout();
-    vblForm->setAlignment(Qt::AlignAbsolute);
-    vblForm->setMargin(2);
-    vblForm->setSpacing(2);
-    setLayout(vblForm);
-
     auto toolBarControl = new QToolBar();
     toolBarControl->setOrientation(Qt::Horizontal);
     toolBarControl->setMovable(false);
@@ -44,11 +30,6 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     m_lwContent->setIconSize({config->ButtonSize(), config->ButtonSize()});
     QObject::connect(m_lwContent, &QListWidget::currentRowChanged, this, &DialogEditRules::slotRowChanged);
     QObject::connect(m_lwContent, &QListWidget::itemDoubleClicked, this, &DialogEditRules::slotItemDoubleClicked);
-
-    auto toolBarMain = new QToolBar();
-    toolBarMain->setOrientation(Qt::Horizontal);
-    toolBarMain->setMovable(false);
-    toolBarMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
     auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
     actionAccept->setAutoRepeat(false);
@@ -94,15 +75,14 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     toolBarControl->addAction(m_ActionDown);
     toolBarControl->addWidget(new WidgetSpacer());
 
-    toolBarMain->addAction(actionUpdate);
-    toolBarMain->addWidget(new WidgetSpacer());
-    toolBarMain->addAction(actionAccept);
-    toolBarMain->addAction(actionCancel);
+    ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    ToolBar()->addAction(actionUpdate);
+    ToolBar()->addWidget(new WidgetSpacer());
+    ToolBar()->addAction(actionAccept);
 
-    vblForm->addWidget(m_RulesProperties);
-    vblForm->addWidget(toolBarControl);
-    vblForm->addWidget(m_lwContent);
-    vblForm->addWidget(toolBarMain);
+    addContentWidget(m_RulesProperties);
+    addContentWidget(toolBarControl);
+    addContentWidget(m_lwContent);
 
     loadContent();
 

@@ -13,6 +13,7 @@ DEFINES     += BUILD_DATE='"\\\"$(shell date)\\\""'
 DEFINES     += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    dialogs/dialogbody.cpp \
     dialogs/dialogcellinformation.cpp \
     dialogs/dialogcellmonitor.cpp \
     dialogs/dialogeditrules.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
     splashscreen.cpp
 
 HEADERS += \
+    dialogs/dialogbody.h \
     dialogs/dialogcellinformation.h \
     dialogs/dialogcellmonitor.h \
     dialogs/dialogeditrules.h \

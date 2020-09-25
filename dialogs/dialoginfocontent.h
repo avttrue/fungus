@@ -1,11 +1,11 @@
 #ifndef DIALOGINFOCONTENT_H
 #define DIALOGINFOCONTENT_H
 
-#include <QDialog>
+#include "dialogbody.h"
 
 class QTextBrowser;
 
-class DialogInfoContent : public QDialog
+class DialogInfoContent : public DialogBody
 {
     Q_OBJECT
 public:

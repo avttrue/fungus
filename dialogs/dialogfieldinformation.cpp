@@ -6,34 +6,21 @@
 #include "field/fieldinformation.h"
 
 #include <QDebug>
+#include <QToolBar>
 #include <QApplication>
 #include <QIcon>
 #include <QScrollArea>
-#include <QToolBar>
 #include <QVBoxLayout>
 #include <QWindowStateChangeEvent>
 #include <QMetaProperty>
 
 DialogFieldInformation::DialogFieldInformation(QWidget *parent, const QString& title, Field* field)
-    : QDialog(parent),
+    : DialogBody(parent, title, ":/resources/img/field.svg"),
       m_Field(field)
 {
-    setWindowFlags(Qt::Dialog |
-                   Qt::CustomizeWindowHint |
-                   Qt::WindowTitleHint);
-    setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(title);
-    setWindowIcon(QIcon(":/resources/img/field.svg"));
-    setModal(false);
-
-    auto vblForm = new QVBoxLayout();
-    vblForm->setAlignment(Qt::AlignAbsolute);
-    vblForm->setMargin(1);
-    vblForm->setSpacing(1);
-    setLayout(vblForm);
-
     auto saContent = new QScrollArea();
     saContent->setAlignment(Qt::AlignTop);
+    saContent->setFrameStyle(QFrame::NoFrame);
     saContent->setWidgetResizable(true);
 
     auto wContent = new QWidget();
@@ -45,19 +32,8 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, const QString& t
     glContent->setMargin(1);
     glContent->setSpacing(1);
 
-    auto toolBar = new QToolBar();
-    toolBar->setMovable(false);
-    toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-
-    toolBar->addWidget(new WidgetSpacer());
-
-    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Close"));
-    actionCancel->setAutoRepeat(false);
-    QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
-    toolBar->addAction(actionCancel);
-
-    vblForm->addWidget(saContent);
-    vblForm->addWidget(toolBar);
+    ToolBar()->addWidget(new WidgetSpacer());
+    addContentWidget(saContent);
 
     loadInformation();
 

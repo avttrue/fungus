@@ -13,21 +13,8 @@
 #include <QDesktopServices>
 
 DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
-    : QDialog(parent)
+    : DialogBody(parent, title, ":/resources/img/info.svg")
 {
-    setWindowFlags(Qt::Dialog |
-                   Qt::CustomizeWindowHint |
-                   Qt::WindowTitleHint);
-    setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(title);
-    setWindowIcon(QIcon(":/resources/img/info.svg"));
-    setModal(false);
-
-    auto vblForm = new QVBoxLayout();
-    vblForm->setAlignment(Qt::AlignAbsolute);
-    vblForm->setMargin(1);
-    vblForm->setSpacing(1);
-    setLayout(vblForm);
 
     m_Content = new QTextBrowser(this);
     m_Content->setOpenLinks(false);
@@ -48,38 +35,30 @@ DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
             qCritical() << __func__ << ": error at QDesktopServices::openUrl" << link.toString();
     });
 
-    auto toolBar = new QToolBar();
-    toolBar->setMovable(false);
-    toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
     m_ActionBackward = new QAction(QIcon(":/resources/img/left_arrow.svg"), tr("Backward"));
     QObject::connect(m_ActionBackward, &QAction::triggered, [=](){ m_Content->backward(); });
     m_ActionBackward->setAutoRepeat(false);
     m_ActionBackward->setEnabled(false);
-    toolBar->addAction(m_ActionBackward);
+    ToolBar()->addAction(m_ActionBackward);
 
 
     m_ActionForward = new QAction(QIcon(":/resources/img/right_arrow.svg"), tr("Forward"));
     QObject::connect(m_ActionForward, &QAction::triggered, [=](){ m_Content->forward(); });
     m_ActionForward->setAutoRepeat(false);
     m_ActionForward->setEnabled(false);
-    toolBar->addAction(m_ActionForward);
+    ToolBar()->addAction(m_ActionForward);
 
 
     auto m_ActionHome = new QAction(QIcon(":/resources/img/up_arrow.svg"), tr("Main page"));
     QObject::connect(m_ActionHome, &QAction::triggered, [=](){ m_Content->home(); });
     m_ActionHome->setAutoRepeat(false);
-    toolBar->addAction(m_ActionHome);
+    ToolBar()->addAction(m_ActionHome);
 
-    toolBar->addWidget(new WidgetSpacer());
+    ToolBar()->addWidget(new WidgetSpacer());
 
-    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Close"));
-    QObject::connect(actionCancel, &QAction::triggered, [=](){ close(); });
-    actionCancel->setAutoRepeat(false);
-    toolBar->addAction(actionCancel);
-
-    vblForm->addWidget(m_Content);
-    vblForm->addWidget(toolBar);
+    addContentWidget(m_Content);
 
     installEventFilter(this);
     resize(config->InfoWindowWidth(), config->InfoWindowHeight());
