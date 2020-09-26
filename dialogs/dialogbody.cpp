@@ -115,7 +115,7 @@ void DialogCaption::mouseMoveEvent(QMouseEvent* event)
 {
     if (!(event->buttons() & Qt::LeftButton)) return;
 
-    window()->move(event->globalX() - m_MouseClick_X,
-                   event->globalY() - m_MouseClick_Y);
+    window()->move(event->globalX() - m_MouseClick_X - pos().x(),
+                   event->globalY() - m_MouseClick_Y - pos().y());
 }
 
