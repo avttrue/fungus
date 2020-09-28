@@ -41,7 +41,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     ToolBar()->addWidget(new WidgetSpacer());
 
-    addContentWidget(saContent);
+    addDialogContent(saContent);
 
     loadInformation();
 

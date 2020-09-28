@@ -1,7 +1,8 @@
 #ifndef DIALOGVALUESLIST_H
 #define DIALOGVALUESLIST_H
 
-#include <QDialog>
+#include "dialogbody.h"
+
 #include <QVariant>
 
 const QString RE_FIRST_LAST_SPACES = "^\\s+|\\s+$"; // регексп на наличие стартовых и финальных пробелов
@@ -53,7 +54,7 @@ struct DialogValue
 /*!
  * \brief DialogValuesList - универсальный диалог
  */
-class DialogValuesList : public QDialog
+class DialogValuesList : public DialogBody
 {
     Q_OBJECT
 public:

@@ -43,7 +43,7 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
 
     m_TextContent = new TextLog(this);
 
-    addContentWidget(m_TextContent);
+    addDialogContent(m_TextContent);
 
     installEventFilter(this);
     resize(config->CellMonitorWindowWidth(), config->CellMonitorWindowHeight());

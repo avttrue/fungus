@@ -37,15 +37,15 @@ DialogBody::DialogBody(QWidget* parent,
     layoutCaption->setSpacing(2);
 
     m_Caption = new DialogCaption(text);
+    auto font_height = QSize(QFontMetrics(m_Caption->font()).height(), QFontMetrics(m_Caption->font()).height());
     setWindowTitle(text);
 
     if(!icon.isEmpty())
     {
         auto labelIcon = new QLabel();
-        labelIcon->setPixmap(QPixmap(icon).
-                             scaled(QFontMetrics(m_Caption->font()).height(),
-                                    QFontMetrics(m_Caption->font()).height(),
-                                    Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        labelIcon->setStyleSheet(ICON_STYLE);
+        labelIcon->setPixmap(QPixmap(icon).scaled(font_height + QSize(4, 4),
+                                                  Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         layoutCaption->addWidget(labelIcon);
         setWindowIcon(QIcon(icon));
     }
@@ -54,12 +54,11 @@ DialogBody::DialogBody(QWidget* parent,
 
     if(closable)
     {
-        auto size = QSize(QFontMetrics(m_Caption->font()).height(), QFontMetrics(m_Caption->font()).height());
         auto buttonCaption = new QPushButton();
         buttonCaption->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-        buttonCaption->setIconSize(size);
+        buttonCaption->setIconSize(font_height);
+        buttonCaption->setFixedSize(font_height + QSize(4, 4));
         buttonCaption->setIcon(QIcon(":/resources/img/exit.svg"));
-        buttonCaption->setFixedSize(size + QSize(4, 4));
         buttonCaption->setFlat(true);
         QObject::connect(buttonCaption, &QPushButton::released, this, &QDialog::close);
         layoutCaption->addWidget(buttonCaption);
@@ -88,7 +87,7 @@ DialogBody::DialogBody(QWidget* parent,
     setLayout(formGridLayout);
 }
 
-void DialogBody::addContentWidget(QWidget *widget) { m_ContentGridLayout->addWidget(widget); }
+void DialogBody::addDialogContent(QWidget *widget) { m_ContentGridLayout->addWidget(widget); }
 QToolBar *DialogBody::ToolBar() const { return m_ToolBar; }
 
 ///////////////////////////////////////////////
@@ -102,7 +101,7 @@ DialogCaption::DialogCaption(const QString &text, QWidget* parent)
 
 void DialogCaption::setText(const QString& text)
 {
-    QLabel::setText(QString("<center><h3>%1</h3></center>").arg(text));
+    QLabel::setText(QString("<center><h3> %1 </h3></center>").arg(text));
 }
 
 void DialogCaption::mousePressEvent(QMouseEvent* event)

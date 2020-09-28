@@ -26,24 +26,10 @@ DialogValuesList::DialogValuesList(QWidget* parent,
                                    const QString& caption,
                                    QMap<QString, DialogValue> *values,
                                    const QString &focusedKey) :
-    QDialog(parent),
+    DialogBody(parent, caption, icon, true, true),
     m_Values(values),
     m_FocusedKey(focusedKey)
 {
-    setWindowFlags(Qt::Dialog |
-                   Qt::CustomizeWindowHint |
-                   Qt::WindowTitleHint);
-    setAttribute(Qt::WA_DeleteOnClose);
-    setWindowTitle(caption);
-    setWindowIcon(QIcon(icon));
-    setModal(true);
-
-    auto vblForm = new QVBoxLayout();
-    vblForm->setAlignment(Qt::AlignAbsolute);
-    vblForm->setMargin(0);
-    vblForm->setSpacing(0);
-    setLayout(vblForm);
-
     auto saContent = new QScrollArea();
     saContent->setAlignment(Qt::AlignTop);
     saContent->setWidgetResizable(true);
@@ -55,24 +41,15 @@ DialogValuesList::DialogValuesList(QWidget* parent,
     wContent->setLayout(glContent);
     glContent->setAlignment(Qt::AlignTop);
 
-    toolBar = new QToolBar();
-    toolBar->setMovable(false);
-    toolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-
-    toolBar->addWidget(new WidgetSpacer());
+    ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
+    ToolBar()->addWidget(new WidgetSpacer());
 
     auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
     actionAccept->setAutoRepeat(false);
     QObject::connect(actionAccept, &QAction::triggered, [=](){ accept(); });
-    toolBar->addAction(actionAccept);
+    ToolBar()->addAction(actionAccept);
 
-    auto actionCancel = new QAction(QIcon(":/resources/img/no.svg"), tr("Cancel"));
-    actionCancel->setAutoRepeat(false);
-    QObject::connect(actionCancel, &QAction::triggered, [=](){ reject(); });
-    toolBar->addAction(actionCancel);
-
-    vblForm->addWidget(saContent);
-    vblForm->addWidget(toolBar);
+    addDialogContent(saContent);
 
     slotLoadContent(values);
 

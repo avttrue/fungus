@@ -1293,6 +1293,7 @@ bool MainWindow::readUncompressData(QByteArray *data, const QString &path)
 
 void MainWindow::slotSetup()
 {
+    qDebug() << __func__;
     stopFieldCalculating();
     const QVector<QString> keys = {tr("00#_Common options"),
                                    tr("01#_Date and time format"),

@@ -80,9 +80,9 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     ToolBar()->addWidget(new WidgetSpacer());
     ToolBar()->addAction(actionAccept);
 
-    addContentWidget(m_RulesProperties);
-    addContentWidget(toolBarControl);
-    addContentWidget(m_lwContent);
+    addDialogContent(m_RulesProperties);
+    addDialogContent(toolBarControl);
+    addDialogContent(m_lwContent);
 
     loadContent();
 

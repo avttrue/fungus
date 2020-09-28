@@ -13,10 +13,14 @@ const QString CAPTION_STYLE = "background: qlineargradient(x1:0, y1:0, x2:0, y2:
                               "padding: 0px 1px 0px 1px; border-radius: 5px; "
                               "color: black; font-family: monospace; font: bold; ";
 
+const QString ICON_STYLE = "padding: 0px 0px 0px 0px; "
+                           "margin: 1px 1px 1px 1px; ";
+
 const QString WINDOW_STYLE = "QDialog { border-style: ridge; "
                              "border-width: 2px; "
                              "border-radius: 5px; "
                              "border-color: silver; }";
+
 class QGridLayout;
 class QToolBar;
 
@@ -55,7 +59,7 @@ public:
                bool closable = true,
                bool modal = false);
 
-    void addContentWidget(QWidget* widget);
+    void addDialogContent(QWidget* widget);
     QToolBar *ToolBar() const;
 
 private:

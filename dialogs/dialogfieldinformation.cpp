@@ -33,7 +33,7 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, const QString& t
     glContent->setSpacing(1);
 
     ToolBar()->addWidget(new WidgetSpacer());
-    addContentWidget(saContent);
+    addDialogContent(saContent);
 
     loadInformation();
 

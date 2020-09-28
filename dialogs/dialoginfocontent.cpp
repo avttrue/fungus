@@ -58,7 +58,7 @@ DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
 
     ToolBar()->addWidget(new WidgetSpacer());
 
-    addContentWidget(m_Content);
+    addDialogContent(m_Content);
 
     installEventFilter(this);
     resize(config->InfoWindowWidth(), config->InfoWindowHeight());
