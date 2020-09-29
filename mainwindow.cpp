@@ -354,10 +354,6 @@ void MainWindow::loadGui()
 
     m_TbActions->addWidget(m_BtnMenuRules);
     m_TbActions->addSeparator();
-    m_TbActions->addAction(m_ActionCutCells);
-    m_TbActions->addAction(m_ActionSaveCellsToClipbord);
-    m_TbActions->addAction(m_ActionLoadCellsFromClipbord);
-    m_TbActions->addSeparator();
     m_TbActions->addAction(m_ActionSaveCellsToPreset);
     m_TbActions->addAction(m_ActionLoadCellsFromPreset);
     m_TbActions->addSeparator();
@@ -365,6 +361,10 @@ void MainWindow::loadGui()
     m_TbActions->addAction(m_ActionSelectSnapshot);
     m_TbActions->addSeparator();
     m_TbActions->addAction(m_ActionSelectAll);
+    m_TbActions->addSeparator();
+    m_TbActions->addAction(m_ActionCutCells);
+    m_TbActions->addAction(m_ActionSaveCellsToClipbord);
+    m_TbActions->addAction(m_ActionLoadCellsFromClipbord);
     m_TbActions->addWidget(m_BtnMenuEditCells);
     addToolBar(Qt::LeftToolBarArea, m_TbActions);
 
@@ -1704,9 +1704,7 @@ void MainWindow::slotSaveCellsToClipbord()
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
 
-    auto text = CellsToJsonText(firstcell, secondcell, config->CopyToClipboardExceptDead());
-    auto clipboard = QGuiApplication::clipboard();
-    clipboard->setText(text);
+    cellsToClipboard(firstcell, secondcell);
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
@@ -1865,9 +1863,7 @@ void MainWindow::slotCutCells()
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
 
-    auto text = CellsToJsonText(firstcell, secondcell, config->CopyToClipboardExceptDead());
-    auto clipboard = QGuiApplication::clipboard();
-    clipboard->setText(text);
+    cellsToClipboard(firstcell, secondcell);
 
     clearCells(firstcell, secondcell);
 
@@ -1921,6 +1917,13 @@ void MainWindow::clearCells(Cell* firstcell, Cell* secondcell)
         }
     }
     qDebug() << "Cleared" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+}
+
+void MainWindow::cellsToClipboard(Cell *firstcell, Cell *secondcell)
+{
+    auto text = CellsToJsonText(firstcell, secondcell, config->CopyToClipboardExceptDead());
+    auto clipboard = QGuiApplication::clipboard();
+    clipboard->setText(text);
 }
 
 void MainWindow::slotInfoField() { showInfoField(); }

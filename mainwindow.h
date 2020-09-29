@@ -75,6 +75,7 @@ protected:
     bool readUncompressData(QByteArray* data, const QString &path);
     void showInfoField(bool unique = true);
     void clearCells(Cell* firstcell, Cell* secondcell);
+   void cellsToClipboard(Cell* firstcell, Cell* secondcell);
 
 private:
     bool m_FieldRunning;   // состояние поля
