@@ -20,6 +20,7 @@ class GraphicsViewZoomer : public QObject
 public:
     GraphicsViewZoomer(QGraphicsView* view);
     void Zoom(qreal factor, bool centered = false);
+    void ZoomFitToView();
     void setModifiers(Qt::KeyboardModifiers value);
     void SetZoomFactorBase(qreal value);
     qreal CurrentZoom() const;

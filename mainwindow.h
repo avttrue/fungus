@@ -74,6 +74,7 @@ protected:
     bool writeCompressData(const QByteArray& data, const QString &path);
     bool readUncompressData(QByteArray* data, const QString &path);
     void showInfoField(bool unique = true);
+    void clearCells(Cell* firstcell, Cell* secondcell);
 
 private:
     bool m_FieldRunning;   // состояние поля
@@ -89,6 +90,7 @@ private:
     QAction* m_ActionZoomInScene;
     QAction* m_ActionZoomOutScene;
     QAction* m_ActionZoomUndoScene;
+    QAction* m_ActionZoomFit;
     QAction* m_ActionStepStop;
     QAction* m_ActionNewRule;
     QAction* m_ActionImportRule;
@@ -106,6 +108,7 @@ private:
     QAction* m_ActionSaveCellsToPreset;
     QAction* m_ActionLoadCellsFromPreset;
     QAction* m_ActionClearCells;
+    QAction* m_ActionCutCells;
     QAction* m_ActionRandomFill;
     QAction* m_ActionInvert;
     QAction* m_ActionFlipHorizontal;
@@ -129,6 +132,7 @@ private Q_SLOTS:
     void slotSceneZoomIn();
     void slotSceneZoomOut();
     void slotZoomUndoScene();
+    void slotSceneZoomFit();
     void slotNewProject();
     void slotStepStop();
     void slotRun();
@@ -145,6 +149,7 @@ private Q_SLOTS:
     void slotSaveCellsToPreset();
     void slotLoadCellsFromPreset();
     void slotClearCells();
+    void slotCutCells();
     void slotInfoCell();
     void slotInfoField();
     void slotEditCell();

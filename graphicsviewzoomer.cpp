@@ -24,9 +24,11 @@ GraphicsViewZoomer::GraphicsViewZoomer(QGraphicsView* view)
 
 void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
 {
+    qDebug() << __func__;
+
     if(!m_View->scene())
     {
-        qCritical()<< __func__ << ": Scene not created";
+        qCritical() << ": Scene not created";
         return;
     }
 
@@ -55,6 +57,22 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
         m_CurrentZoom *= factor;
         qDebug() << "Scene zoom center:" << center;
     }
+
+    qDebug() << "Scene zoom:" << m_CurrentZoom;
+    Q_EMIT signalZoomed(m_CurrentZoom);
+}
+
+void GraphicsViewZoomer::ZoomFitToView()
+{
+    qDebug() << __func__;
+    auto s = m_View->scene();
+    if(!s) return;
+
+    Zoom(-1, false);
+
+    m_CurrentZoom = qMin(m_View->width() / s->width(), m_View->height() / s->height()) + 2*(1 - ZOOM_FACTOR_BASE);
+
+    m_View->scale(m_CurrentZoom, m_CurrentZoom);
 
     qDebug() << "Scene zoom:" << m_CurrentZoom;
     Q_EMIT signalZoomed(m_CurrentZoom);

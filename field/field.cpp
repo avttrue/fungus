@@ -459,10 +459,9 @@ Cell *Field::getTopCell(Cell *cell)
     if(index.y() == 0) index.setY(height() - 1);
     else index.setY(index.y() - 1);
 
-    auto c = getCell(index);
-    if(!c) c = addCell(index);
-
-    return c;
+    //auto c = getCell(index);
+    //if(!c) c = addCell(index);
+    return getCell(index);
 }
 
 Cell *Field::getRightCell(Cell *cell)
@@ -472,10 +471,7 @@ Cell *Field::getRightCell(Cell *cell)
     if(index.x() == width() - 1) index.setX(0);
     else index.setX(index.x() + 1);
 
-    auto c = getCell(index);
-    if(!c) c = addCell(index);
-
-    return c;
+    return getCell(index);
 }
 
 Cell *Field::getBottomCell(Cell *cell)
@@ -485,10 +481,7 @@ Cell *Field::getBottomCell(Cell *cell)
     if(index.y() == height() - 1) index.setY(0);
     else index.setY(index.y() + 1);
 
-    auto c = getCell(index);
-    if(!c) c = addCell(index);
-
-    return c;
+    return getCell(index);
 }
 
 Cell *Field::getLeftCell(Cell *cell)
@@ -498,10 +491,7 @@ Cell *Field::getLeftCell(Cell *cell)
     if(index.x() == 0) index.setX(width() - 1);
     else index.setX(index.x() - 1);
 
-    auto c = getCell(index);
-    if(!c) c = addCell(index);
-
-    return c;
+    return getCell(index);
 }
 
 Cell *Field::getTopLeftCell(Cell *cell)
@@ -514,10 +504,7 @@ Cell *Field::getTopLeftCell(Cell *cell)
     if(index.y() == 0) index.setY(height() - 1);
     else index.setY(index.y() - 1);
 
-    auto c = getCell(index);
-    if(!c) c = addCell(index);
-
-    return c;
+    return getCell(index);
 }
 
 Cell *Field::getTopRightCell(Cell *cell)
@@ -530,10 +517,7 @@ Cell *Field::getTopRightCell(Cell *cell)
     if(index.x() == width() - 1) index.setX(0);
     else index.setX(index.x() + 1);
 
-    auto c = getCell(index);
-    if(!c) c = addCell(index);
-
-    return c;
+    return getCell(index);
 }
 
 Cell *Field::getBottomLeftCell(Cell *cell)
@@ -546,10 +530,7 @@ Cell *Field::getBottomLeftCell(Cell *cell)
     if(index.x() == 0) index.setX(width() - 1);
     else index.setX(index.x() - 1);
 
-    auto c = getCell(index);
-    if(!c) c = addCell(index);
-
-    return c;
+    return getCell(index);
 }
 
 Cell *Field::getBottomRightCell(Cell *cell)
@@ -562,10 +543,7 @@ Cell *Field::getBottomRightCell(Cell *cell)
     if(index.x() == width() - 1) index.setX(0);
     else index.setX(index.x() + 1);
 
-    auto c = getCell(index);
-    if(!c) c = addCell(index);
-
-    return c;
+    return getCell(index);
 }
 
 QVector<Cell*> Field::getCellsAround(Cell *cell)

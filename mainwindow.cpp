@@ -129,22 +129,29 @@ void MainWindow::loadGui()
 
     m_ActionZoomInScene = new QAction(QIcon(":/resources/img/zoom_in.svg"), tr("Zoom IN"), this);
     QObject::connect(m_ActionZoomInScene, &QAction::triggered, this, &MainWindow::slotSceneZoomIn);
-    m_ActionZoomInScene->setShortcut(Qt::CTRL + Qt::Key_Plus);
+    m_ActionZoomInScene->setShortcut(Qt::CTRL + Qt::Key_Equal);
     addShortcutToToolTip(m_ActionZoomInScene);
-    m_ActionZoomInScene->setAutoRepeat(false);
     m_ActionZoomInScene->setEnabled(false);
 
     m_ActionZoomOutScene = new QAction(QIcon(":/resources/img/zoom_out.svg"), tr("Zoom OUT"), this);
     QObject::connect(m_ActionZoomOutScene, &QAction::triggered, this, &MainWindow::slotSceneZoomOut);
     m_ActionZoomOutScene->setShortcut(Qt::CTRL + Qt::Key_Minus);
     addShortcutToToolTip(m_ActionZoomOutScene);
-    m_ActionZoomOutScene->setAutoRepeat(false);
     m_ActionZoomOutScene->setEnabled(false);
 
     m_ActionZoomUndoScene = new QAction(QIcon(":/resources/img/zoom_undo.svg"), tr("Zoom UNDO"), this);
     QObject::connect(m_ActionZoomUndoScene, &QAction::triggered, this, &MainWindow::slotZoomUndoScene);
+    m_ActionZoomUndoScene->setShortcut(Qt::CTRL + Qt::Key_2);
+    addShortcutToToolTip(m_ActionZoomUndoScene);
     m_ActionZoomUndoScene->setAutoRepeat(false);
     m_ActionZoomUndoScene->setEnabled(false);
+
+    m_ActionZoomFit = new QAction(QIcon(":/resources/img/zoom_fit.svg"), tr("Fit to size"), this);
+    QObject::connect(m_ActionZoomFit, &QAction::triggered, this, &MainWindow::slotSceneZoomFit);
+    m_ActionZoomFit->setShortcut(Qt::CTRL + Qt::Key_1);
+    addShortcutToToolTip(m_ActionZoomFit);
+    m_ActionZoomFit->setAutoRepeat(false);
+    m_ActionZoomFit->setEnabled(false);
 
     auto actionSetup = new QAction(QIcon(":/resources/img/setup.svg"), tr("Settings"), this);
     QObject::connect(actionSetup, &QAction::triggered, this, &MainWindow::slotSetup);
@@ -176,20 +183,6 @@ void MainWindow::loadGui()
     m_ActionInfoCell->setAutoRepeat(false);
     m_ActionInfoCell->setEnabled(false);
 
-    m_ActionSaveCellsToClipbord = new QAction(QIcon(":/resources/img/copy.svg"), tr("Copy selected cells to clipboard"), this);
-    QObject::connect(m_ActionSaveCellsToClipbord, &QAction::triggered, this, &MainWindow::slotSaveCellsToClipbord);
-    m_ActionSaveCellsToClipbord->setShortcut(Qt::CTRL + Qt::Key_C);
-    addShortcutToToolTip(m_ActionSaveCellsToClipbord);
-    m_ActionSaveCellsToClipbord->setAutoRepeat(false);
-    m_ActionSaveCellsToClipbord->setEnabled(false);
-
-    m_ActionLoadCellsFromClipbord = new QAction(QIcon(":/resources/img/paste.svg"), tr("Paste cells from clipboard"), this);
-    QObject::connect(m_ActionLoadCellsFromClipbord, &QAction::triggered, this, &MainWindow::slotLoadCellsFromClipbord);
-    m_ActionLoadCellsFromClipbord->setShortcut(Qt::CTRL + Qt::Key_V);
-    addShortcutToToolTip(m_ActionLoadCellsFromClipbord);
-    m_ActionLoadCellsFromClipbord->setAutoRepeat(false);
-    m_ActionLoadCellsFromClipbord->setEnabled(false);
-
     m_ActionSaveCellsToPreset = new QAction(QIcon(":/resources/img/preset_save.svg"), tr("Save selected cells as preset to file"), this);
     QObject::connect(m_ActionSaveCellsToPreset, &QAction::triggered, this, &MainWindow::slotSaveCellsToPreset);
     m_ActionSaveCellsToPreset->setEnabled(false);
@@ -216,12 +209,33 @@ void MainWindow::loadGui()
     m_ActionCellMonitor->setAutoRepeat(false);
     m_ActionCellMonitor->setEnabled(false);
 
-    m_ActionClearCells = new QAction(QIcon(":/resources/img/delete.svg"), tr("Full cell clearing"), this);
+    m_ActionClearCells = new QAction(QIcon(":/resources/img/delete.svg"), tr("Clear cells"), this);
     QObject::connect(m_ActionClearCells, &QAction::triggered, this, &MainWindow::slotClearCells);
     m_ActionClearCells->setShortcut(Qt::CTRL + Qt::Key_D);
     addShortcutToToolTip(m_ActionClearCells);
     m_ActionClearCells->setAutoRepeat(false);
     m_ActionClearCells->setEnabled(false);
+
+    m_ActionSaveCellsToClipbord = new QAction(QIcon(":/resources/img/copy.svg"), tr("Copy cells to clipboard"), this);
+    QObject::connect(m_ActionSaveCellsToClipbord, &QAction::triggered, this, &MainWindow::slotSaveCellsToClipbord);
+    m_ActionSaveCellsToClipbord->setShortcut(Qt::CTRL + Qt::Key_C);
+    addShortcutToToolTip(m_ActionSaveCellsToClipbord);
+    m_ActionSaveCellsToClipbord->setAutoRepeat(false);
+    m_ActionSaveCellsToClipbord->setEnabled(false);
+
+    m_ActionLoadCellsFromClipbord = new QAction(QIcon(":/resources/img/paste.svg"), tr("Paste cells from clipboard"), this);
+    QObject::connect(m_ActionLoadCellsFromClipbord, &QAction::triggered, this, &MainWindow::slotLoadCellsFromClipbord);
+    m_ActionLoadCellsFromClipbord->setShortcut(Qt::CTRL + Qt::Key_V);
+    addShortcutToToolTip(m_ActionLoadCellsFromClipbord);
+    m_ActionLoadCellsFromClipbord->setAutoRepeat(false);
+    m_ActionLoadCellsFromClipbord->setEnabled(false);
+
+    m_ActionCutCells = new QAction(QIcon(":/resources/img/cut.svg"), tr("Copy cells to clipboard and clear"), this);
+    QObject::connect(m_ActionCutCells, &QAction::triggered, this, &MainWindow::slotCutCells);
+    m_ActionCutCells->setShortcut(Qt::CTRL + Qt::Key_X);
+    addShortcutToToolTip(m_ActionCutCells);
+    m_ActionCutCells->setAutoRepeat(false);
+    m_ActionCutCells->setEnabled(false);
 
     m_ActionRandomFill = new QAction(QIcon(":/resources/img/cells.svg"), tr("Random fill"), this);
     QObject::connect(m_ActionRandomFill, &QAction::triggered, this, &MainWindow::slotRandomFill);
@@ -310,6 +324,7 @@ void MainWindow::loadGui()
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionSaveImageToFile);
     m_TbMain->addSeparator();
+    m_TbMain->addAction(m_ActionZoomFit);
     m_TbMain->addAction(m_ActionZoomUndoScene);
     m_TbMain->addAction(m_ActionZoomInScene);
     m_TbMain->addAction(m_ActionZoomOutScene);
@@ -339,6 +354,7 @@ void MainWindow::loadGui()
 
     m_TbActions->addWidget(m_BtnMenuRules);
     m_TbActions->addSeparator();
+    m_TbActions->addAction(m_ActionCutCells);
     m_TbActions->addAction(m_ActionSaveCellsToClipbord);
     m_TbActions->addAction(m_ActionLoadCellsFromClipbord);
     m_TbActions->addSeparator();
@@ -555,6 +571,7 @@ void MainWindow::setMainActionsEnable(bool value)
     m_ActionZoomInScene->setEnabled(enable);
     m_ActionZoomOutScene->setEnabled(enable);
     m_ActionZoomUndoScene->setEnabled(enable);
+    m_ActionZoomFit->setEnabled(enable);
     m_ActionStepStop->setEnabled(enable);
     m_ActionInfoField->setEnabled(enable);
     m_ActionCellMonitor->setEnabled(enable);
@@ -585,6 +602,7 @@ void MainWindow::setCellsActionsEnable(bool value)
     m_ActionSaveCellsToClipbord->setEnabled(group_enable);
     m_ActionSaveCellsToPreset->setEnabled(group_enable);
     m_ActionClearCells->setEnabled(group_enable);
+    m_ActionCutCells->setEnabled(group_enable);
     m_ActionRandomFill->setEnabled(group_enable);
     m_ActionInvert->setEnabled(group_enable);
     m_ActionFlipHorizontal->setEnabled(group_enable);
@@ -1656,9 +1674,10 @@ void MainWindow::slotSceneZoomOut()
 }
 
 void MainWindow::slotZoomUndoScene()
-{
-    m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET);
-}
+{ m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET); }
+
+void MainWindow::slotSceneZoomFit()
+{ m_SceneView->zoomer()->ZoomFitToView(); }
 
 void MainWindow::slotSaveCellsToClipbord()
 {
@@ -1677,7 +1696,7 @@ void MainWindow::slotSaveCellsToClipbord()
     if(!firstcell || !secondcell || firstcell == secondcell)
     {
         m_ActionSaveCellsToClipbord->setDisabled(true);
-        qDebug() << "Cells for saving not selected";
+        qDebug() << "Cells not selected";
         return;
     }
 
@@ -1814,24 +1833,46 @@ void MainWindow::slotClearCells()
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
 
-    auto time = QDateTime::currentMSecsSinceEpoch();
-    auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
-    auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
-    auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
-    auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
-    auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
-
-    for(int x = xmin; x <= xmax; x++)
-    {
-        for(int y = ymin; y <= ymax; y++)
-        {
-            auto c = m_Field->getCell({x, y});
-            c->clear();
-        }
-    }
-    qDebug() << "Cleared" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
+    clearCells(firstcell, secondcell);
 
     m_Field->updateScene();
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
+}
+
+void MainWindow::slotCutCells()
+{
+    qDebug() << __func__;
+    auto scene = m_SceneView->getScene();
+    if(!scene)
+    {
+        m_ActionCutCells->setDisabled(true);
+        qCritical() << "Scene not created";
+        return;
+    }
+
+    auto firstcell = scene->getSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
+
+    if(!firstcell || !secondcell || firstcell == secondcell)
+    {
+        m_ActionCutCells->setDisabled(true);
+        qDebug() << "Cells not selected";
+        return;
+    }
+
+    stopFieldCalculating();
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+
+    auto text = CellsToJsonText(firstcell, secondcell, config->CopyToClipboardExceptDead());
+    auto clipboard = QGuiApplication::clipboard();
+    clipboard->setText(text);
+
+    clearCells(firstcell, secondcell);
+
+    m_Field->updateScene();
+
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
 }
@@ -1859,6 +1900,27 @@ void MainWindow::showInfoField(bool unique)
 
     auto dfi = new DialogFieldInformation(this, title, m_Field);
     dfi->show();
+}
+
+void MainWindow::clearCells(Cell* firstcell, Cell* secondcell)
+{
+    qDebug() << __func__;
+    auto time = QDateTime::currentMSecsSinceEpoch();
+    auto xmin = qMin(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto xmax = qMax(firstcell->getIndex().x(), secondcell->getIndex().x());
+    auto ymin = qMin(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto ymax = qMax(firstcell->getIndex().y(), secondcell->getIndex().y());
+    auto count = (xmax - xmin + 1) * (ymax - ymin + 1);
+
+    for(int x = xmin; x <= xmax; x++)
+    {
+        for(int y = ymin; y <= ymax; y++)
+        {
+            auto c = m_Field->getCell({x, y});
+            c->clear();
+        }
+    }
+    qDebug() << "Cleared" << count << "cells in" << QDateTime::currentMSecsSinceEpoch() - time << "ms";
 }
 
 void MainWindow::slotInfoField() { showInfoField(); }
@@ -2428,7 +2490,7 @@ void MainWindow::slotImportRule()
 void MainWindow::slotAbout()
 {
     auto content = getTextFromRes(":/resources/html/about_body.html").
-            arg(APP_NAME, APP_VERSION, GIT_VERS, BUILD_DATE, getSystemInfo(), QT_VERSION_STR);
+            arg(APP_NAME, APP_VERSION, FORMAT_VERSION, GIT_VERS, BUILD_DATE, getSystemInfo(), QT_VERSION_STR);
 
     auto title = tr("About %1").arg(APP_NAME);
     if(findPreviousWindowCopy(title)) return;
