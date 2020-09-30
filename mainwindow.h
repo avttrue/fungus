@@ -75,7 +75,10 @@ protected:
     bool readUncompressData(QByteArray* data, const QString &path);
     void showInfoField(bool unique = true);
     void clearCells(Cell* firstcell, Cell* secondcell);
-   void cellsToClipboard(Cell* firstcell, Cell* secondcell);
+    void cellsToClipboard(Cell* firstcell, Cell* secondcell);
+    bool validateScene();
+    bool validateSelectedCell();
+    bool validateSelectedCells();
 
 private:
     bool m_FieldRunning;   // состояние поля
@@ -118,7 +121,7 @@ private:
     QAction* m_ActionCreateSnapshot;
     QAction* m_ActionSelectSnapshot;
     QAction* m_ActionLoadFirstSnapshot;
-    QAction* m_ActionCellMonitor;    
+    QAction* m_ActionCellMonitor;
     QLabel* m_LabelFieldZoom;
     QLabel* m_LabelFieldAge;
     QLabel* m_LabelFieldPause;

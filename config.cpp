@@ -130,6 +130,10 @@ void Config::load()
         m_Settings->setValue("MainWindow/SplashTime", SPLASH_TIME);
     m_SplashTime = m_Settings->value("MainWindow/SplashTime").toInt();
 
+    if(!m_Settings->contains("MainWindow/HelpPage"))
+        m_Settings->setValue("MainWindow/HelpPage", HELP_PAGE);
+    m_HelpPage = m_Settings->value("MainWindow/HelpPage").toString();
+
     if(!m_Settings->contains("Scene/ZoomKeyModifier"))
         m_Settings->setValue("Scene/ZoomKeyModifier", SCENE_ZOOM_KEY_MODIFIER);
     m_SceneZoomKeyModifier = static_cast<Qt::KeyboardModifiers>(m_Settings->value("Scene/ZoomKeyModifier").toInt());
@@ -267,10 +271,18 @@ void Config::load()
     m_SceneLastRule = m_Settings->value("Scene/LastRule").toString();
 }
 
+void Config::setHelpPage(const QString &value)
+{
+    if(m_HelpPage == value) return;
+
+    m_HelpPage = value;
+    m_Settings->setValue("MainWindow/HelpPage", m_HelpPage);
+}
+
 void Config::setSceneFirstSnapshotClearList(bool value)
 {
     if(m_SceneFirstSnapshotClearList == value) return;
-
+    
     m_SceneFirstSnapshotClearList = value;
     m_Settings->setValue("Scene/FirstSnapshotClearList", m_SceneFirstSnapshotClearList);
 }
@@ -825,3 +837,4 @@ Qt::KeyboardModifiers Config::FieldFasteditKeyModifier() const { return m_FieldF
 QString Config::SceneLastRule() const { return m_SceneLastRule; }
 bool Config::SceneFirstSnapshotClearList() const { return m_SceneFirstSnapshotClearList; }
 QString Config::SceneCellTraitColor() const { return m_SceneCellTraitColor; }
+QString Config::HelpPage() const { return m_HelpPage; }

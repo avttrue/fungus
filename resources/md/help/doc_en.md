@@ -1,8 +1,12 @@
 <img src="qrc:/resources/img/mushrooms.svg" width="128" height="128"/>
 
-##  
+## 
 
-# "Fungus" user guide
+[select language](language.md)
+
+## 
+
+# User guide
 
 *This application is designed to study the behavior of simple* [cellular automata](https://en.wikipedia.org/wiki/Cellular_automaton).
 
@@ -13,6 +17,8 @@
 *The only difference from the classic version is the field geometry. In this application, it closed, like a sphere.*
 
 *The application architecture is designed to track the state of each field cell and collect statistics on field states.*
+
+*In addition, you can create and edit your own rules for the life of cellular automata.*
 
 ##  
 

@@ -438,11 +438,8 @@ void MainWindow::loadGui()
 void MainWindow::slotStepStop()
 {
     qDebug() << __func__;
-    if(!m_SceneView->getScene())
-    {
-        qCritical() << "Scene not created";
-        return;
-    }
+
+    if(!validateScene()) return;
 
     if(!m_Field->isCalculating())
     {
@@ -463,11 +460,8 @@ void MainWindow::slotStepStop()
 void MainWindow::slotRun()
 {
     qDebug() << __func__;
-    if(!m_SceneView->getScene())
-    {
-        qCritical() << "Scene not created";
-        return;
-    }
+
+    if(!validateScene()) return;
 
     if(!m_Field->isCalculating())
     {
@@ -814,12 +808,9 @@ QString MainWindow::CellsToJsonText(Cell *firstcell, Cell *secondcell, bool exce
 bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
 {
     qDebug() << __func__;
+
+    if(!validateScene()) return false;
     auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        qCritical() << "Scene not created";
-        return false;
-    }
 
     QJsonObject root_object;
     if(!getJsonRootObject(text.toUtf8(), &root_object)) return false;
@@ -1194,11 +1185,8 @@ bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
 void MainWindow::createSnapshot()
 {
     qDebug() << __func__;
-    if(!m_SceneView->getScene())
-    {
-        qCritical() << "Scene not created";
-        return;
-    }
+
+    if(!validateScene()) return;
 
     if(m_Field->getInformation()->getAge() == 0 &&
             config->SceneFirstSnapshotClearList())
@@ -1225,11 +1213,8 @@ void MainWindow::createSnapshot()
 void MainWindow::loadSnapshot(QJsonDocument* document)
 {
     qDebug() << __func__;
-    if(!m_SceneView->getScene())
-    {
-        qCritical() << "Scene not created";
-        return;
-    }
+
+    if(!validateScene()) return;
 
     stopFieldCalculating();
     setMainActionsEnable(false);
@@ -1440,25 +1425,14 @@ void MainWindow::slotEditCell()
     qDebug() << __func__;
     stopFieldCalculating();
 
+    if(!validateSelectedCell()) return;
+
     auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionEditCell->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
-
     auto firstcell = scene->getSelectedCell();
-    if(!firstcell)
-    {
-        m_ActionEditCell->setDisabled(true);
-        qDebug() << "Cell for editing not selected";
-        return;
-    }
-
     auto secondcell = scene->getSecondSelectedCell();
     auto multyselection =  !secondcell ? false : true;
     auto cni = firstcell->getNewInfo();
+
     auto statelist = listKernelEnum("CellState");
     statelist.removeAll("ANY");
     statelist.removeAll("NOT_CURSED");
@@ -1661,6 +1635,49 @@ void MainWindow::slotNewProject()
     if(config->WindowShowFieldInfo()) showInfoField(false);
 }
 
+bool MainWindow::validateScene()
+{
+    auto scene = m_SceneView->getScene();
+    if(!scene)
+    {
+        qCritical() << "Scene not created";
+        return false;
+    }
+    return true;
+}
+
+bool MainWindow::validateSelectedCell()
+{
+    if(!validateScene()) return false;
+
+    auto scene = m_SceneView->getScene();
+    auto cell = scene->getSelectedCell();
+
+    if(!cell)
+    {
+        qCritical() << "Target cell is empty";
+        return false;
+    }
+    return true;
+}
+
+bool MainWindow::validateSelectedCells()
+{
+   if(!validateScene()) return false;
+
+   auto scene = m_SceneView->getScene();
+   auto firstcell = scene->getSelectedCell();
+   auto secondcell = scene->getSecondSelectedCell();
+
+   if(!firstcell || !secondcell || firstcell == secondcell)
+   {
+       qCritical() << "Target cells not selected";
+       return false;
+   }
+
+   return true;
+}
+
 void MainWindow::slotSceneZoomIn()
 {
     auto factor = config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1);
@@ -1682,23 +1699,11 @@ void MainWindow::slotSceneZoomFit()
 void MainWindow::slotSaveCellsToClipbord()
 {
     qDebug() << __func__;
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionSaveCellsToClipbord->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
+    if(!validateSelectedCells()) return;
+    auto scene = m_SceneView->getScene();
     auto firstcell = scene->getSelectedCell();
     auto secondcell = scene->getSecondSelectedCell();
-
-    if(!firstcell || !secondcell || firstcell == secondcell)
-    {
-        m_ActionSaveCellsToClipbord->setDisabled(true);
-        qDebug() << "Cells not selected";
-        return;
-    }
 
     stopFieldCalculating();
     setMainActionsEnable(false);
@@ -1713,13 +1718,9 @@ void MainWindow::slotSaveCellsToClipbord()
 void MainWindow::slotLoadCellsFromClipbord()
 {
     qDebug() << __func__;
+
+    if(!validateScene()) return;
     auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionLoadCellsFromClipbord->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
     stopFieldCalculating();
     setMainActionsEnable(false);
@@ -1736,22 +1737,11 @@ void MainWindow::slotLoadCellsFromClipbord()
 void MainWindow::slotSaveCellsToPreset()
 {
     qDebug() << __func__;
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionSaveCellsToPreset->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
+    if(!validateSelectedCells()) return;
+    auto scene = m_SceneView->getScene();
     auto firstcell = scene->getSelectedCell();
     auto secondcell = scene->getSecondSelectedCell();
-    if(!firstcell || !secondcell || firstcell == secondcell)
-    {
-        m_ActionSaveCellsToPreset->setDisabled(true);
-        qDebug() << "Cells for saving not selected";
-        return;
-    }
 
     auto fileext = PRESET_FILE_EXTENSION.toLower();
     auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->PathPresetsDir(),
@@ -1776,13 +1766,9 @@ void MainWindow::slotSaveCellsToPreset()
 void MainWindow::slotLoadCellsFromPreset()
 {
     qDebug() << __func__;
+
+    if(!validateScene()) return;
     auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionLoadCellsFromPreset->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
     stopFieldCalculating();
 
@@ -1810,22 +1796,11 @@ void MainWindow::slotLoadCellsFromPreset()
 void MainWindow::slotClearCells()
 {
     qDebug() << __func__;
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionClearCells->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
+    if(!validateSelectedCells()) return;
+    auto scene = m_SceneView->getScene();
     auto firstcell = scene->getSelectedCell();
     auto secondcell = scene->getSecondSelectedCell();
-    if(!firstcell || !secondcell || firstcell == secondcell)
-    {
-        m_ActionClearCells->setDisabled(true);
-        qDebug() << "Target cell not selected";
-        return;
-    }
 
     stopFieldCalculating();
     setMainActionsEnable(false);
@@ -1841,23 +1816,11 @@ void MainWindow::slotClearCells()
 void MainWindow::slotCutCells()
 {
     qDebug() << __func__;
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionCutCells->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
+    if(!validateSelectedCells()) return;
+    auto scene = m_SceneView->getScene();
     auto firstcell = scene->getSelectedCell();
     auto secondcell = scene->getSecondSelectedCell();
-
-    if(!firstcell || !secondcell || firstcell == secondcell)
-    {
-        m_ActionCutCells->setDisabled(true);
-        qDebug() << "Cells not selected";
-        return;
-    }
 
     stopFieldCalculating();
     setMainActionsEnable(false);
@@ -1931,12 +1894,9 @@ void MainWindow::slotInfoField() { showInfoField(); }
 void MainWindow::slotShowCell(Cell *cell)
 {
     qDebug() << __func__;
+
+    if(!validateScene()) return;
     auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        qCritical() << "Scene not created";
-        return;
-    }
 
     if(!cell)
     {
@@ -1951,11 +1911,8 @@ void MainWindow::slotShowCell(Cell *cell)
 void MainWindow::slotSaveImageToFile()
 {
     qDebug() << __func__;
-    if(!m_SceneView->getScene())
-    {
-        qCritical() << "Scene not created";
-        return;
-    }
+
+    if(!validateScene()) return;
 
     auto fileext = config->ImageFileFormat().toLower();
     auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), config->LastDir(),
@@ -1984,22 +1941,11 @@ void MainWindow::slotSaveImageToFile()
 void MainWindow::slotRandomFill()
 {
     qDebug() << __func__;
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionRandomFill->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
+    if(!validateSelectedCells()) return;
+    auto scene = m_SceneView->getScene();
     auto firstcell = scene->getSelectedCell();
     auto secondcell = scene->getSecondSelectedCell();
-    if(!firstcell || !secondcell || firstcell == secondcell)
-    {
-        m_ActionRandomFill->setDisabled(true);
-        qDebug() << "Target cells not selected";
-        return;
-    }
 
     const QVector<QString> keys = {
         tr("00#_Randomisation options"),
@@ -2055,22 +2001,11 @@ void MainWindow::slotRandomFill()
 void MainWindow::slotInvert()
 {
     qDebug() << __func__;
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionInvert->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
+    if(!validateSelectedCells()) return;
+    auto scene = m_SceneView->getScene();
     auto firstcell = scene->getSelectedCell();
     auto secondcell = scene->getSecondSelectedCell();
-    if(!firstcell || !secondcell || firstcell == secondcell)
-    {
-        m_ActionInvert->setDisabled(true);
-        qDebug() << "Target cells not selected";
-        return;
-    }
 
     stopFieldCalculating();
     setMainActionsEnable(false);
@@ -2097,22 +2032,11 @@ void MainWindow::slotInvert()
 void MainWindow::slotFlipHorizontal()
 {
     qDebug() << __func__;
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionFlipHorizontal->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
+    if(!validateSelectedCells()) return;
+    auto scene = m_SceneView->getScene();
     auto firstcell = scene->getSelectedCell();
     auto secondcell = scene->getSecondSelectedCell();
-    if(!firstcell || !secondcell || firstcell == secondcell)
-    {
-        m_ActionInvert->setDisabled(true);
-        qDebug() << "Target cells not selected";
-        return;
-    }
 
     stopFieldCalculating();
     setMainActionsEnable(false);
@@ -2146,22 +2070,11 @@ void MainWindow::slotFlipHorizontal()
 void MainWindow::slotFlipVertical()
 {
     qDebug() << __func__;
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionFlipVertical->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
+    if(!validateSelectedCells()) return;
+    auto scene = m_SceneView->getScene();
     auto firstcell = scene->getSelectedCell();
     auto secondcell = scene->getSecondSelectedCell();
-    if(!firstcell || !secondcell || firstcell == secondcell)
-    {
-        m_ActionInvert->setDisabled(true);
-        qDebug() << "Target cells not selected";
-        return;
-    }
 
     stopFieldCalculating();
     setMainActionsEnable(false);
@@ -2194,13 +2107,10 @@ void MainWindow::slotFlipVertical()
 
 void MainWindow::slotSelectAll()
 {
+    qDebug() << __func__;
+
+    if(!validateScene()) return;
     auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionSelectAll->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
 
     auto firstcell = m_Field->getCell({0, 0});
     auto secondcell = m_Field->getCell({m_Field->width() - 1, m_Field->height() - 1});
@@ -2445,13 +2355,9 @@ void MainWindow::slotLoadEditRule()
 
 void MainWindow::slotInfoRule()
 {
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionInfoRule->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
+    qDebug() << __func__;
+
+    if(!validateScene()) return;
 
     auto title = tr("Information about current rule");
     if(findPreviousWindowCopy(title)) return;
@@ -2476,13 +2382,8 @@ void MainWindow::slotInfoRule()
 void MainWindow::slotImportRule()
 {
     qDebug() << __func__;
-    auto scene = m_SceneView->getScene();
-    if(!scene)
-    {
-        m_ActionImportRule->setDisabled(true);
-        qCritical() << "Scene not created";
-        return;
-    }
+
+    if(!validateScene()) return;
 
     auto rule = new FieldRule(m_Field->getRule());
     auto der = new DialogEditRules(this, rule);
@@ -2509,7 +2410,7 @@ void MainWindow::slotHelp()
     if(findPreviousWindowCopy(title)) return;
 
     auto dic = new DialogInfoContent(this, title);
-    dic->setMarkdownSource("qrc:/resources/md/help/doc_en.md");
+    dic->setMarkdownSource(config->HelpPage());
     dic->show();
 }
 

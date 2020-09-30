@@ -21,6 +21,9 @@ private:
     QTextBrowser* m_Content;
     QAction* m_ActionBackward;
     QAction* m_ActionForward;
+
+private Q_SLOTS:
+    void slotAnchorClicked(const QUrl &link);
 };
 
 #endif // DIALOGINFOCONTENT_H

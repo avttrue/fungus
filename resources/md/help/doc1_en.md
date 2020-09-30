@@ -45,8 +45,8 @@
  | [mouse left btn] | *Select the single (first) cell* | 
  | CTRL + [mouse left btn] | *Select the second cell for multiple selection* | 
  | CTRL + [mouse right btn] | *Fast cell edit (invert state)* |
- | mouse [right btn] | *Unselect the cell(s)* | 
- | mouse [dbl click left btn] | *Information about selected cell* |  
+ | [mouse right btn] | *Unselect the cell(s)* | 
+ | [mouse dbl click left btn] | *Information about selected cell* |  
  | SHIFT + [mouse hover] | *Cell index* |   
  
 ##    

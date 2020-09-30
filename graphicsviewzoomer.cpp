@@ -70,7 +70,7 @@ void GraphicsViewZoomer::ZoomFitToView()
 
     Zoom(-1, false);
 
-    m_CurrentZoom = qMin(m_View->width() / s->width(), m_View->height() / s->height()) + 2*(1 - ZOOM_FACTOR_BASE);
+    m_CurrentZoom = qMin(m_View->width() / s->width(), m_View->height() / s->height()) + 2 * (1 - ZOOM_FACTOR_BASE);
 
     m_View->scale(m_CurrentZoom, m_CurrentZoom);
 

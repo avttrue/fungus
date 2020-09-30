@@ -144,6 +144,8 @@ public:
     void setSceneFirstSnapshotClearList(bool value);
     QString SceneCellTraitColor() const;
     void setSceneCellTraitColor(const QString &value);
+    QString HelpPage() const;
+    void setHelpPage(const QString &value);
 
 protected:
     void load();
@@ -170,6 +172,7 @@ private:
     QString m_ImageFileFormat;                      // формат файлов для сохранения картинки сцены
     QString m_CellAliveAgeIndicBright;              // индикация возраста живой ячейки: ярче/темнее
     QString m_CellCurseAgeIndicBright;              // индикация возраста отравленной ячейки: ярче/темнее
+    QString m_HelpPage;                             // стартовая страница справки
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
     int m_FieldRandomisationValue;                  // параметр рандомизации 0-100
     int m_CellAliveAgeIndicFactor;                  // индикация возраста живой ячейки: максимальный фактор яркости/тёмности

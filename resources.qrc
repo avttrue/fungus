@@ -126,5 +126,14 @@
         <file>resources/md/help/example_trait_en.md</file>
         <file>resources/img/cut.svg</file>
         <file>resources/img/zoom_fit.svg</file>
+        <file>resources/md/help/language.md</file>
+        <file>resources/md/help/doc_ru.md</file>
+        <file>resources/md/help/doc1_ru.md</file>
+        <file>resources/md/help/doc2_ru.md</file>
+        <file>resources/md/help/doc3_ru.md</file>
+        <file>resources/md/help/doc4_ru.md</file>
+        <file>resources/md/help/doc5_ru.md</file>
+        <file>resources/md/help/doc6_ru.md</file>
+        <file>resources/md/help/example_trait_ru.md</file>
     </qresource>
 </RCC>
