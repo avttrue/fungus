@@ -1367,6 +1367,12 @@ void MainWindow::slotSetup()
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
+    dvl->resize(config->SetupWindowWidth(), config->SetupWindowHeight());
+    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    {
+        config->setSetupWindowWidth(size.width());
+        config->setSetupWindowHeight(size.height());
+    });
     if(!dvl->exec()) return;
 
     // common 0
@@ -1472,6 +1478,12 @@ void MainWindow::slotEditCell()
 
     auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
                                     tr("Edit cell %1").arg(firstcell->objectName()), &map);
+    dvl->resize(config->EditCellWindowWidth(), config->EditCellWindowHeight());
+    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    {
+        config->setEditCellWindowWidth(size.width());
+        config->setEditCellWindowHeight(size.height());
+    });
     if(!dvl->exec()) return;
 
     if(multyselection && map.value(keys.at(7)).value.toBool())
@@ -1586,7 +1598,12 @@ void MainWindow::slotNewProject()
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/asterisk.svg", tr("New project"), &map);
-
+    dvl->resize(config->ProjectWindowWidth(), config->ProjectWindowHeight());
+    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    {
+        config->setProjectWindowWidth(size.width());
+        config->setProjectWindowHeight(size.height());
+    });
     if(!dvl->exec())
     {
         for(auto r: ruleslist) r->deleteLater();
@@ -1957,6 +1974,12 @@ void MainWindow::slotRandomFill()
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/cells.svg", tr("Randome filling"), &map);
+    dvl->resize(config->RandomFillWindowWidth(), config->RandomFillWindowHeight());
+    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    {
+        config->setRandomFillWindowWidth(size.width());
+        config->setRandomFillWindowHeight(size.height());
+    });
     if(!dvl->exec()) return;
 
     config->setFieldRandomisationValue(map.value(keys.at(1)).value.toInt());
@@ -2197,6 +2220,12 @@ void MainWindow::slotSelectSnapshot()
 
     auto dvl = new DialogValuesList(this, ":/resources/img/next_snapshot.svg",
                                     tr("Select snapshot"), &map);
+    dvl->resize(config->SnapshotWindowWidth(), config->SnapshotWindowHeight());
+    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    {
+        config->setSnapshotWindowWidth(size.width());
+        config->setSnapshotWindowHeight(size.height());
+    });
     if(!dvl->exec()) return;
 
     auto key = map.value(keys.at(1)).value.toString();

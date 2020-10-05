@@ -97,6 +97,9 @@ private Q_SLOTS:
     void slotIntValueChanged(int value);
     void slotDoubleValueChanged(double value);
     void selectColor(const QString &value, QPushButton *btn);
+
+Q_SIGNALS:
+    void signalSizeChanged(QSize value);
 };
 
 #endif // DIALOGVALUESLIST_H

@@ -146,6 +146,34 @@ public:
     void setSceneCellTraitColor(const QString &value);
     QString HelpPage() const;
     void setHelpPage(const QString &value);
+    int SetupWindowHeight() const;
+    void setSetupWindowHeight(int value);
+    int SetupWindowWidth() const;
+    void setSetupWindowWidth(int value);
+    int SnapshotWindowHeight() const;
+    void setSnapshotWindowHeight(int value);
+    int SnapshotWindowWidth() const;
+    void setSnapshotWindowWidth(int value);
+    int RandomFillWindowHeight() const;
+    void setRandomFillWindowHeight(int value);
+    int RandomFillWindowWidth() const;
+    void setRandomFillWindowWidth(int value);
+    int ProjectWindowHeight() const;
+    void setProjectWindowHeight(int value);
+    int ProjectWindowWidth() const;
+    void setProjectWindowWidth(int value);
+    int EditCellWindowHeight() const;
+    void setEditCellWindowHeight(int value);
+    int EditCellWindowWidth() const;
+    void setEditCellWindowWidth(int value);
+    int EditActivityWindowHeight() const;
+    void setEditActivityWindowHeight(int value);
+    int EditActivityWindowWidth() const;
+    void setEditActivityWindowWidth(int value);
+    int RulePropertyWindowHeight() const;
+    void setRulePropertyWindowHeight(int value);
+    int RulePropertyWindowWidth() const;
+    void setRulePropertyWindowWidth(int value);
 
 protected:
     void load();
@@ -186,6 +214,18 @@ private:
     int m_ButtonSize;                               // размеры кнопок интерфейса
     int m_SceneCellSize;                            // размер объекта сцены
     int m_SceneFieldSize;                           // размер сцены при создании
+    int m_EditActivityWindowHeight;                 // размеры окна EditActivity
+    int m_EditActivityWindowWidth;                  // размеры окна EditActivity
+    int m_EditCellWindowHeight;                     // размеры окна EditCell
+    int m_EditCellWindowWidth;                      // размеры окна EditCell
+    int m_ProjectWindowHeight;                      // размеры окна Project
+    int m_ProjectWindowWidth;                       // размеры окна Project
+    int m_SetupWindowHeight;                        // размеры окна Setup
+    int m_SetupWindowWidth;                         // размеры окна Setup
+    int m_SnapshotWindowHeight;                     // размеры окна Snapshot
+    int m_SnapshotWindowWidth;                      // размеры окна Snapshot
+    int m_RandomFillWindowHeight;                   // размеры окна RandomFill
+    int m_RandomFillWindowWidth;                    // размеры окна RandomFill
     int m_CellInfoWindowHeight;                     // размеры окна информации о Cell
     int m_CellInfoWindowWidth;                      // размеры окна информации о Cell
     int m_CellMonitorWindowHeight;                  // размеры окна мониторинга Cell
@@ -196,6 +236,8 @@ private:
     int m_InfoWindowWidth;                          // размеры справочного окна
     int m_EditRulesWindowHeight;                    // размеры окна редактирования правил
     int m_EditRulesWindowWidth;                     // размеры окна редактирования правил
+    int m_RulePropertyWindowHeight;             // размеры окна редактирования RuleProperty
+    int m_RulePropertyWindowWidth;              // размеры окна редактирования RuleProperty
     int m_SplashTime;                               // время отображения сплеш-заставки
     int m_SplashSize;                               // размеры сплеш-заставки
     int m_ProjectFileCompressionLevel;              // уровень сжатия данных при сохранении проекта: -1 - поумолчанию, 0-9

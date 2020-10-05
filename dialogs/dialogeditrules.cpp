@@ -251,6 +251,12 @@ bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/edit.svg", tr("Activity element"), &map);
+    dvl->resize(config->EditActivityWindowWidth(), config->EditActivityWindowHeight());
+    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    {
+        config->setEditActivityWindowWidth(size.width());
+        config->setEditActivityWindowHeight(size.height());
+    });
     if(!dvl->exec()) return false;
 
     element->data()[0].setValue(static_cast<Kernel::ActivityType>(atypelist.indexOf(map.value(keys.at(1)).value.toString())));
@@ -378,6 +384,12 @@ void DialogEditRules::slotEditRules()
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/edit.svg", tr("Rule property"), &map);
+    dvl->resize(config->RulePropertyWindowWidth(), config->RulePropertyWindowHeight());
+    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    {
+        config->setRulePropertyWindowWidth(size.width());
+        config->setRulePropertyWindowHeight(size.height());
+    });
     if(!dvl->exec()) return;
 
     m_Rule->setObjectName(map.value(keys.at(1)).value.toString().simplified());

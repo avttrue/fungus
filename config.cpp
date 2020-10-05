@@ -118,6 +118,62 @@ void Config::load()
         m_Settings->setValue("MainWindow/EditRulesWindowHeight", EDIT_RULES_WINDOW_HEIGHT);
     m_EditRulesWindowHeight = m_Settings->value("MainWindow/EditRulesWindowHeight").toInt();
 
+    if(!m_Settings->contains("MainWindow/SetupWindowWidth"))
+        m_Settings->setValue("MainWindow/SetupWindowWidth", SETUP_WINDOW_WIDTH);
+    m_SetupWindowWidth = m_Settings->value("MainWindow/SetupWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/SetupWindowHeight"))
+        m_Settings->setValue("MainWindow/SetupWindowHeight", SETUP_WINDOW_HEIGHT);
+    m_SetupWindowHeight = m_Settings->value("MainWindow/SetupWindowHeight").toInt();
+
+    if(!m_Settings->contains("MainWindow/RandomFillWindowWidth"))
+        m_Settings->setValue("MainWindow/RandomFillWindowWidth", RANDOMFILL_WINDOW_WIDTH);
+    m_RandomFillWindowWidth = m_Settings->value("MainWindow/RandomFillWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/RandomFillWindowHeight"))
+        m_Settings->setValue("MainWindow/RandomFillWindowHeight", RANDOMFILL_WINDOW_HEIGHT);
+    m_RandomFillWindowHeight = m_Settings->value("MainWindow/RandomFillWindowHeight").toInt();
+
+    if(!m_Settings->contains("MainWindow/ProjectWindowWidth"))
+        m_Settings->setValue("MainWindow/ProjectWindowWidth", PROJECT_WINDOW_WIDTH);
+    m_ProjectWindowWidth = m_Settings->value("MainWindow/ProjectWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/ProjectWindowHeight"))
+        m_Settings->setValue("MainWindow/ProjectWindowHeight", PROJECT_WINDOW_HEIGHT);
+    m_ProjectWindowHeight = m_Settings->value("MainWindow/ProjectWindowHeight").toInt();
+
+    if(!m_Settings->contains("MainWindow/SnapshotWindowWidth"))
+        m_Settings->setValue("MainWindow/SnapshotWindowWidth", SNAPSHOT_WINDOW_WIDTH);
+    m_SnapshotWindowWidth = m_Settings->value("MainWindow/SnapshotWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/SnapshotWindowHeight"))
+        m_Settings->setValue("MainWindow/SnapshotWindowHeight", SNAPSHOT_WINDOW_HEIGHT);
+    m_SnapshotWindowHeight = m_Settings->value("MainWindow/SnapshotWindowHeight").toInt();
+
+    if(!m_Settings->contains("MainWindow/EditCellWindowWidth"))
+        m_Settings->setValue("MainWindow/EditCellWindowWidth", EDITCELL_WINDOW_WIDTH);
+    m_EditCellWindowWidth = m_Settings->value("MainWindow/EditCellWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/EditCellWindowHeight"))
+        m_Settings->setValue("MainWindow/EditCellWindowHeight", EDITCELL_WINDOW_HEIGHT);
+    m_EditCellWindowHeight = m_Settings->value("MainWindow/EditCellWindowHeight").toInt();
+
+    if(!m_Settings->contains("MainWindow/EditActivityWindowWidth"))
+        m_Settings->setValue("MainWindow/EditActivityWindowWidth", EDITACTIVITY_WINDOW_WIDTH);
+    m_EditActivityWindowWidth = m_Settings->value("MainWindow/EditActivityWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/EditActivityWindowHeight"))
+        m_Settings->setValue("MainWindow/EditActivityWindowHeight", EDITACTIVITY_WINDOW_HEIGHT);
+    m_EditActivityWindowHeight = m_Settings->value("MainWindow/EditActivityWindowHeight").toInt();
+
+    if(!m_Settings->contains("MainWindow/RulePropertyWindowWidth"))
+        m_Settings->setValue("MainWindow/RulePropertyWindowWidth", RULEPROPERTY_WINDOW_WIDTH);
+    m_RulePropertyWindowWidth = m_Settings->value("MainWindow/RulePropertyWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/RulePropertyWindowHeight"))
+        m_Settings->setValue("MainWindow/RulePropertyWindowHeight", RULEPROPERTY_WINDOW_HEIGHT);
+    m_RulePropertyWindowHeight = m_Settings->value("MainWindow/RulePropertyWindowHeight").toInt();
+
     if(!m_Settings->contains("MainWindow/ShowFieldInformation"))
         m_Settings->setValue("MainWindow/ShowFieldInformation", WINDOW_SHOW_FIELD_INFO);
     m_WindowShowFieldInfo = m_Settings->value("MainWindow/ShowFieldInformation").toBool();
@@ -271,10 +327,122 @@ void Config::load()
     m_SceneLastRule = m_Settings->value("Scene/LastRule").toString();
 }
 
+void Config::setRulePropertyWindowWidth(int value)
+{
+    if(m_RulePropertyWindowWidth == value) return;
+
+    m_RulePropertyWindowWidth = value;
+    m_Settings->setValue("MainWindow/RulePropertyWindowWidth", m_RulePropertyWindowWidth);
+}
+
+void Config::setRulePropertyWindowHeight(int value)
+{
+    if(m_RulePropertyWindowHeight == value) return;
+
+    m_RulePropertyWindowHeight = value;
+    m_Settings->setValue("MainWindow/RulePropertyWindowHeight", m_RulePropertyWindowHeight);
+}
+
+void Config::setEditActivityWindowWidth(int value)
+{
+    if(m_EditActivityWindowWidth == value) return;
+
+    m_EditActivityWindowWidth = value;
+    m_Settings->setValue("MainWindow/EditActivityWindowWidth", m_EditActivityWindowWidth);
+}
+
+void Config::setEditActivityWindowHeight(int value)
+{
+    if(m_EditActivityWindowHeight == value) return;
+
+    m_EditActivityWindowHeight = value;
+    m_Settings->setValue("MainWindow/EditActivityWindowHeight", m_EditActivityWindowHeight);
+}
+
+void Config::setEditCellWindowWidth(int value)
+{
+    if(m_EditCellWindowWidth == value) return;
+
+    m_EditCellWindowWidth = value;
+    m_Settings->setValue("MainWindow/EditCellWindowWidth", m_EditCellWindowWidth);
+}
+
+void Config::setEditCellWindowHeight(int value)
+{
+    if(m_EditCellWindowHeight == value) return;
+
+    m_EditCellWindowHeight = value;
+    m_Settings->setValue("MainWindow/EditCellWindowHeight", m_EditCellWindowHeight);
+}
+
+void Config::setProjectWindowWidth(int value)
+{
+    if(m_ProjectWindowWidth == value) return;
+
+    m_ProjectWindowWidth = value;
+    m_Settings->setValue("MainWindow/ProjectWindowWidth", m_ProjectWindowWidth);
+}
+
+void Config::setProjectWindowHeight(int value)
+{
+    if(m_ProjectWindowHeight == value) return;
+
+    m_ProjectWindowHeight = value;
+    m_Settings->setValue("MainWindow/ProjectWindowHeight", m_ProjectWindowHeight);
+}
+
+void Config::setRandomFillWindowWidth(int value)
+{
+    if(m_RandomFillWindowWidth == value) return;
+
+    m_RandomFillWindowWidth = value;
+    m_Settings->setValue("MainWindow/RandomFillWindowWidth", m_RandomFillWindowWidth);
+}
+
+void Config::setRandomFillWindowHeight(int value)
+{
+    if(m_RandomFillWindowHeight == value) return;
+
+    m_RandomFillWindowHeight = value;
+    m_Settings->setValue("MainWindow/RandomFillWindowHeight", m_RandomFillWindowHeight);
+}
+
+void Config::setSnapshotWindowWidth(int value)
+{
+    if(m_SnapshotWindowWidth == value) return;
+
+    m_SnapshotWindowWidth = value;
+    m_Settings->setValue("MainWindow/SnapshotWindowWidth", m_SnapshotWindowWidth);
+}
+
+void Config::setSnapshotWindowHeight(int value)
+{
+    if(m_SnapshotWindowHeight == value) return;
+
+    m_SnapshotWindowHeight = value;
+    m_Settings->setValue("MainWindow/SnapshotWindowHeight", m_SnapshotWindowHeight);
+}
+
+void Config::setSetupWindowWidth(int value)
+{
+    if(m_SetupWindowWidth == value) return;
+
+    m_SetupWindowWidth = value;
+    m_Settings->setValue("MainWindow/SetupWindowWidth", m_SetupWindowWidth);
+}
+
+void Config::setSetupWindowHeight(int value)
+{
+    if(m_SetupWindowHeight == value) return;
+
+    m_SetupWindowHeight = value;
+    m_Settings->setValue("MainWindow/SetupWindowHeight", m_SetupWindowHeight);
+}
+
 void Config::setHelpPage(const QString &value)
 {
     if(m_HelpPage == value) return;
-
+    
     m_HelpPage = value;
     m_Settings->setValue("MainWindow/HelpPage", m_HelpPage);
 }
@@ -838,3 +1006,17 @@ QString Config::SceneLastRule() const { return m_SceneLastRule; }
 bool Config::SceneFirstSnapshotClearList() const { return m_SceneFirstSnapshotClearList; }
 QString Config::SceneCellTraitColor() const { return m_SceneCellTraitColor; }
 QString Config::HelpPage() const { return m_HelpPage; }
+int Config::SetupWindowWidth() const { return m_SetupWindowWidth; }
+int Config::SetupWindowHeight() const { return m_SetupWindowHeight; }
+int Config::SnapshotWindowWidth() const { return m_SnapshotWindowWidth; }
+int Config::SnapshotWindowHeight() const { return m_SnapshotWindowHeight; }
+int Config::RandomFillWindowWidth() const { return m_RandomFillWindowWidth; }
+int Config::RandomFillWindowHeight() const { return m_RandomFillWindowHeight; }
+int Config::ProjectWindowWidth() const { return m_ProjectWindowWidth; }
+int Config::ProjectWindowHeight() const { return m_ProjectWindowHeight; }
+int Config::EditCellWindowWidth() const { return m_EditCellWindowWidth; }
+int Config::EditCellWindowHeight() const { return m_EditCellWindowHeight; }
+int Config::EditActivityWindowWidth() const { return m_EditActivityWindowWidth; }
+int Config::EditActivityWindowHeight() const { return m_EditActivityWindowHeight; }
+int Config::RulePropertyWindowWidth() const { return m_RulePropertyWindowWidth; }
+int Config::RulePropertyWindowHeight() const { return m_RulePropertyWindowHeight; }

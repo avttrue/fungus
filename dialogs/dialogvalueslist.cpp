@@ -405,7 +405,7 @@ bool DialogValuesList::eventFilter(QObject* object, QEvent *event)
         case QEvent::Close:
         {
             if(object != this || isMinimized() || isMaximized()) return false;
-            // сохранение размеров окна
+            Q_EMIT signalSizeChanged(size());
             return true;
         }
         default: { return false; }
