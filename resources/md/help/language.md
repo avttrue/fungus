@@ -6,7 +6,7 @@
 
 [English](doc_en.md)
 
-[Russian](doc_ru.md)
+[Русский](doc_ru.md)
 
 ##    
 

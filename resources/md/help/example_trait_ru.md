@@ -4,11 +4,11 @@
 
 ## 
 
-*Add the following action to the rule in the top row:*
+*Добавьте следующую активность в своё правило для жизни поля и разместите её в первой строке правила:*
 
 **set TRAIT if cell is ALIVE and NEAR is { ALIVE TRAIT MORE 0 } and than CONTINUE**
 
-*You will see the dissemination of trait amongst the alive cells.*
+*Вы будете наблюдать распространение флага TRAIT (особенности) среди живых клеток.*
 
 ##  
 

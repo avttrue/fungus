@@ -2,14 +2,14 @@
 
 ##  
 
-*To save into the clipboard or into a preset file, select a group of cells and use the* [appropriate interface](doc1_en.md).
+*Для сохранения группы клеток в буфер обмена или в качестве шаблона, выберите группу клеток и воспользуйтесь* [соответствующим интерфейсом](doc1_ru.md).
 
-*The data is presented as plain text in* [json](https://en.wikipedia.org/wiki/JSON) *format.*
+*Данные сохраняются в виде простого текста в* [json](https://en.wikipedia.org/wiki/JSON) *формате.*
 
-*By default, cells other than DEAD cells are saved. In the application settings* <img src="qrc:/resources/img/setup.svg" height="24"/> *, you can enable full saving.*
+*По-умолчанию сохраняются только клетки в состоянии отличном от DEAD (мёртвого). В настройках приложения* <img src="qrc:/resources/img/setup.svg" height="24"/> *, вы можете изменить режим сохранения.*
 
-*To upload data to a specific location, select a target cell in the field. If you do not select the target cell, the data will be inserted in the center of the field.*
-
+*Для импорта данных в конкретное место, выберите нужную клетку на поле.*
+*Если клетка выбрана не будет, то данные из буфера обмена или шаблона разместятся по возможности в центрое поля.*
 
 ##  
 

@@ -76,6 +76,7 @@ bool DialogInfoContent::eventFilter(QObject *object, QEvent *event)
         
         config->setInfoWindowWidth(width());
         config->setInfoWindowHeight(height());
+        Q_EMIT signalSizeChanged(size()); // пока не используется
         return true;
     }
     default: { return false; }

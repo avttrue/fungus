@@ -19,8 +19,6 @@
 
 > set **Activity_Type** if cell is **State** and **Activity_Target** is **{ [Target_State] [Operand] [Operator] [Value] }** and than **ABORT_FLAG**
 
-**ABORT_FLAG** *means - to interrupt or continue executing the rule after this activity is triggered*
-
 *For example the "Conway's LIFE game" rule looks like this:*
 
 > set **BIRTH** if cell is **DEAD** and **NEAR** is **{ ALIVE COUNT EQUAL 3 }** and than **ABORT**
@@ -49,13 +47,13 @@
 
 * **UP_AGE** - *to increase age of cell by* **1** 
 
-* **UP_DOWN** - *to decrease age of cell by* **1** *, but not less than to* **0**
+* **DOWN_AGE** - *to decrease age of cell by* **1** *, but not less than to* **0**
 
 * **INVERT** - *to invert cell state (* **experimental** *)*
 
 * **TRAIT** - *set TRAIT to the cell*
 
-* **WO_TRAIT** - *reset TRAIT at the cell (without trait)* 
+* **WO_TRAIT** - *reset TRAIT at the cell (***w***ith***o***ut trait)* 
 
 ### State and Target state
 
@@ -87,7 +85,7 @@
 
 ### Activity operand
 
-* **COUNT** - *cells count(NEAR and GROUP targets)*
+* **COUNT** - *cells count(NEAR and GROUP targets, for SELF - always* **1***)*
 
 * **AGE** - *cell age or total age of cells (SELF, NEAR, GROUP targets)* 
 
@@ -105,11 +103,16 @@
 
 * **NOT** - *this is* **!=** *operator* 
 
-* **IS_DIV** - *if* **operand** *or* **value** *is equal to* **0** *will be returned* **FALSE** *, else will be returned* **operand** *divisibility by* **value**
+* **IS_DIV** - *if* **Operand** *or* **Value** *is equal to* **0** *will be returned* **FALSE** *, else will be returned* **operand** *divisibility by* **value**.
 
 ### Activity value
 
-*This is just integer value for comparison*
+*This is just integer value for apply an* **Operator** *to an* **Operand**.
+
+### Abort flag
+
+*This flag means - to interrupt or continue executing the rule after this activity is triggered.*
+
 
 ##  
 

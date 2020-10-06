@@ -2,36 +2,39 @@
 
 ##  
 
-## Field    
+## Поле    
 
 ##  
 
 <img src="qrc:/resources/img/field.svg" height="32"/>
 
- *The field consists of cells, field geometry is closed, like a sphere. Also, the field has a rule of life.*
+ *Поле состоит из клеток, клеточное поле замкнуто, подобно поверхности сферы. Так же, поле содержит правило для жизни клеток.*
 
-## Cells    
+## Клетки    
 
 ##  
 
 <img src="qrc:/resources/img/cell.svg" height="32"/> 
 
- *A cell can have the following states:*
+ *Клетки могут иметь следующие состояния:*
 
-* **DEAD** - *empty cell*
-* **ALIVE** - *occupied, live cell*
-* **CURSED** - *this cell cannot accept the alive state during the time specified by the rule;*
-*when cell switch to this state, the GENERATION property receive the value* **0**
+* **DEAD** - *пустая, мёртвая клетка; индикация по-умолчанию - белым цветом;*
+*когда клетка принимает это состояние, флаг TRAIT снимается* 
+* **ALIVE** - *занятая, живая клетка; индикация по-умолчанию - чёрным цветом*
+* **CURSED** - *эта ячейка не может стать ALIVE (живой), пока не истечёт количество тиков поля, указанных в правиле жизни;*
+*индикация по-умолчанию - красным цветом;*
+*когда клетка принимает это состояние, свойство GENERATION (поколение) принимет значение* **0** *и флаг TRAIT снимается* 
 
 ##  
 
- *A cell has the following properties:*
+ *Клетки имеют следующие свойства:*
 
-* **TRAIT** - *just a flag, a mark on the cell; you can use it in the rules; resets if the cell becomes DEAD or CURSED*
-`[`[example](example_trait_en.md)`]`
-* **AGE** - *age of a alive cell; when switching from the ALIVE state to the DEAD state, the AGE property receive the value* **0**
-* **GENERATION** - *count of generations; when cell switch from DEAD state to ALIVE state, the GENERATION property increases by* **1**
-*; when cell switch to CURSED state, the GENERATION property receive the value* **0**
+* **TRAIT** - *(особенность) это просто флаг, метка клитки; вы можете использовать это в своих правилах;*
+*индикация по-умолчанию - зелёным цветом; сбрасывается, когда клетка становится DEAD или CURSED*
+`[`[пример](example_trait_ru.md)`]`
+* **AGE** - *возраст живой клетки; когда клетка меняет своё состояние из ALIVE в состояние DEAD, свойство AGE принимает значение* **0**
+* **GENERATION** - *количество поколений; когда клетка меняет своё состояние из DEAD в состояние ALIVE, свойство GENERATION увеличивается на* **1**
+*; когда клетка принимает состояние CURSED, свойство GENERATION принимает значение* **0**
 
 ##  
 

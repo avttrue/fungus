@@ -24,6 +24,9 @@ private:
 
 private Q_SLOTS:
     void slotAnchorClicked(const QUrl &link);
+
+Q_SIGNALS:
+    void signalSizeChanged(QSize value);
 };
 
 #endif // DIALOGINFOCONTENT_H

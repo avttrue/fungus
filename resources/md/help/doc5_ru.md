@@ -4,24 +4,22 @@
 
 <img src="qrc:/resources/img/rule.svg" height="32"/>
 
-*The field life rule has properties and activities list.*
+*Правило жизни поля имеет свойства и список активностей.*
 
-## Properties
+## Свойства
 
-* **Name** - *just the name of the rule, should not be empty*
-* **CurseTime** - *the time during which the cell will remain cursed (always:* **-1** *)*
+* **Name** - *(имя) - это просто название правила, не должно быть пустым*
+* **CurseTime** - *время, количество тиков поля, за которые клетка утратит свойство CURSED (никогда не утратит:* **-1** *)*
 
-## Activity
+## Активность
 
-*Activities list is the main part of the rule.*
+*Список активностей - это основная часть правила.*
 
-*The activity structure is as follows:*
+*Активность имеет следующую структуру:*
 
 > set **Activity_Type** if cell is **State** and **Activity_Target** is **{ [Target_State] [Operand] [Operator] [Value] }** and than **ABORT_FLAG**
 
-**ABORT_FLAG** *means - to interrupt or continue executing the rule after this activity is triggered*
-
-*For example the "Conway's LIFE game" rule looks like this:*
+*Для примера, так выглядит правило для ЖИЗНИ Конуэя:*
 
 > set **BIRTH** if cell is **DEAD** and **NEAR** is **{ ALIVE COUNT EQUAL 3 }** and than **ABORT**
 
@@ -29,87 +27,92 @@
 
 > set **DEATH** if cell is **ALIVE** and **NEAR** is **{ ALIVE COUNT MORE 3 }** and than **ABORT**
 
-*Activities are applied one by one from the list. The first completed activity interrupts the rule on the current field tick if the ABORT condition is enabled.*
+*Активности выполняются по очереди из списка. Первая выполненная активность прерывает выполнение правила в текущем тике поля, если у активности выставлен флаг ABORT.*
 
-*The activity checks the* **current** *state of the cell, and the result is written to the* **new** *state of the cell.* 
+*Активность проверяет* **текущее** *состояние клетки, и записавает результат в* **новое** *состояние клетки.* 
 
-*When the entire rule is completed for all cells, the* **new** *cell states become* **current**. 
+*Когда правило будет применено ко всем клеткам поля,* **новые** *состояния клеток станут* **текущими**. 
 
-*This completes one tick of the field.*
+*Так завершается тик жизни поля.*
 
-### Activity type
+### Тип активности (Activity_Type)
 
-* **BIRTH** - *sets cell state to* **ALIVE**
+* **BIRTH** - *(рожденье) установить состояние клетки в (живая)* **ALIVE**
 
-* **DEATH** - *sets cell state to* **DEAD**
+* **DEATH** - *(смерть) установить состояние клетки в (мёртвая)* **DEAD**
 
-* **CURCE** - *sets cell state to* **CURSED**
+* **CURCE** - *(проклятье) установить состояние клетки в (проклятая)* **CURSED**
 
-* **NOTHING** - *do nothing (* **experimental** *)*
+* **NOTHING** - *ничего не делать (* **эксперимент** *)*
 
-* **UP_AGE** - *to increase age of cell by* **1** 
+* **UP_AGE** - *увеличить возраст клетки на* **1** 
 
-* **UP_DOWN** - *to decrease age of cell by* **1** *, but not less than to* **0**
+* **DOWN_AGE** - *уменьшить возраст клетки на* **1** *, но не меньше* **0**
 
-* **INVERT** - *to invert cell state (* **experimental** *)*
+* **INVERT** - *инвертировать состояние клетки (* **эксперимент** *)*
 
-* **TRAIT** - *set TRAIT to the cell*
+* **TRAIT** - *выставить флаг TRAIT (особенность) для клетки*
 
-* **WO_TRAIT** - *reset TRAIT at the cell (without trait)* 
+* **WO_TRAIT** - *сбросить флаг TRAIT (особенность) для клетки (***w***ith***o***ut trait)* 
 
-### State and Target state
+### Состояние и состояние цели (State, Target_State)
 
-*This is just cell's own state or target cell(s) state.*
+*В этих параметрах активности просто указываются для проверки собственное состояние клетки и состояние целевой клетки.*
 
-### Activity target
+### Цель активности (Activity_Target)
 
-* **SELF** - *the cell's own properties, the* **Target_State** *will be ignored*
+* **SELF** - *собственные параметры клетки,* **Target_State** *проверяться не будет*
 
-* **NEAR** - *properties of neighboring cells*
+* **NEAR** - *параметры клеток вокруг*
 
-* **GROUP** - *the cell's own properties and properties of neighboring cells*
+* **GROUP** - *параметры клеток вокруг и собственные параметры клетки*
 
-* **TOP** - *properties of top cell*
+* **TOP** - *параметры клетки сверху*
 
-* **TOPRIGHT** - *properties of top-right cell*
+* **TOPRIGHT** - *параметры клетки сверху-справа (по диагонали)*
 
-* **RIGHT** - *properties of right cell*
+* **RIGHT** - *параметры клетки справа*
 
-* **BOTTOMRIGHT** - *properties of bottom-right cell*
+* **BOTTOMRIGHT** - *параметры клетки снизу-справа (по диагонали)*
 
-* **BOTTOM** - *properties of bottom cell*
+* **BOTTOM** - *параметры клетки снизу*
 
-* **BOTTOMLEFT** - *properties of bottom-left cell*
+* **BOTTOMLEFT** - *параметры клетки снизу-слева (по диагонали)*
 
-* **LEFT** - *properties of left cell*
+* **LEFT** - *параметры клетки слева*
 
-* **TOPLEFT** - *properties of top-left cell*
+* **TOPLEFT** - *параметры клетки сверху-слева (по диагонали)*
 
-### Activity operand
+### Операнд активности (Operand)
 
-* **COUNT** - *cells count(NEAR and GROUP targets)*
+* **COUNT** - *количество клеток (NEAR, GROUP, для SELF - всегда* **1***)*
 
-* **AGE** - *cell age or total age of cells (SELF, NEAR, GROUP targets)* 
+* **AGE** - *возраст клетки или суммарный возраст клеток (SELF, NEAR, GROUP)* 
 
-* **GEN** - *value of cell generation or total generations of cells (SELF, NEAR, GROUP targets)*
+* **GEN** - *значение поколения клетки или сумма поколений клеток (SELF, NEAR, GROUP)*
 
-* **TRAIT** - *total cells with TRAIT (SELF, NEAR, GROUP targets)*
+* **TRAIT** - *количество клеток с флагом TRAIT (SELF, NEAR, GROUP)*
 
-### Activity operator
+### Оператор активности (Operator)
 
-* **EQUAL** - *this is* **==** *operator* 
+* **EQUAL** - *это оператор эквивалентный* **==**
 
-* **MORE** - *this is* **>** *operator* 
+* **MORE** - *это оператор эквивалентный* **>**
 
-* **LESS** - *this is* **<** *operator* 
+* **LESS** - *это оператор эквивалентный* **<**
 
-* **NOT** - *this is* **!=** *operator* 
+* **NOT** - *это оператор эквивалентный* **!=**
 
-* **IS_DIV** - *if* **operand** *or* **value** *is equal to* **0** *will be returned* **FALSE** *, else will be returned* **operand** *divisibility by* **value**
+* **IS_DIV** - *если* **Operand** *или* **Value** *имеют значение* **0** *будет возвращено* **ЛОЖЬ** *, в остальных случаях - делимость* **Operand** *на* **Value**.
 
-### Activity value
+### Параметр (Value)
 
-*This is just integer value for comparison*
+*Это просто числовой параметр для применения оператора к операнду (***Operator** *к* **Operand***).*
+
+### Флаг прерывания (ABORT_FLAG) 
+
+*Этот флаг предназначен для прерывания выполнения правила после срабатывания активности, если флаг имеет значение ABORT.*
+
 
 ##  
 
