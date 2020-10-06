@@ -85,7 +85,7 @@
 
 ### Activity operand
 
-* **COUNT** - *cells count(NEAR and GROUP targets, for SELF - always* **1***)*
+* **COUNT** - *cells count (NEAR and GROUP targets, for SELF - always* **1** *)*
 
 * **AGE** - *cell age or total age of cells (SELF, NEAR, GROUP targets)* 
 
