@@ -27,5 +27,5 @@ void TextLog::contextMenuEvent(QContextMenuEvent *event)
 
 void TextLog::addTextSeparator()
 {
-    appendHtml(QString("<p>%1</p>").arg(LINE_SEPARATOR));
+    appendHtml(QString("<p>%1</p>").arg(TL_LINE_SEPARATOR));
 }

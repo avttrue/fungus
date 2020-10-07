@@ -3,7 +3,7 @@
 
 #include <QPlainTextEdit>
 
-const QString LINE_SEPARATOR = "------------------------------------------";
+const QString TL_LINE_SEPARATOR = "------------------------------------------";
 
 class TextLog : public QPlainTextEdit
 {

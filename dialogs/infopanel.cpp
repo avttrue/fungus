@@ -17,7 +17,7 @@ InfoPanel::InfoPanel(QWidget *parent, const QString &caption, const QVariant &va
     setLayout(hbox);
 
     auto labelCaption = new QLabel(caption);
-    labelCaption->setStyleSheet(DCI_LABEL_STYLE);
+    labelCaption->setStyleSheet(IP_LABEL_STYLE);
 
     if(value.isValid())
     {
@@ -30,7 +30,7 @@ InfoPanel::InfoPanel(QWidget *parent, const QString &caption, const QVariant &va
         m_LabelValue = new QLabel();
         m_LabelValue->setFrameStyle(QFrame::Panel | QFrame::Sunken);
         m_LabelValue->setLineWidth(1);
-        m_LabelValue->setStyleSheet(DCI_LABEL_STYLE);
+        m_LabelValue->setStyleSheet(IP_LABEL_STYLE);
         setValue(value);
         hbox->addWidget(m_LabelValue, 1);
     }
@@ -43,7 +43,7 @@ InfoPanel::InfoPanel(QWidget *parent, const QString &caption, const QVariant &va
         hbox->addWidget(labelCaption, 0);
     }
 
-    setProperty(DCI_INFOPANEL_KEY_PROPERTY, caption);
+    setProperty(IP_INFOPANEL_KEY_PROPERTY, caption);
 }
 
 void InfoPanel::setValue(const QVariant &value)

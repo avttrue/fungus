@@ -45,7 +45,7 @@ DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
     
     addDialogContent(m_Content);
     
-    resize(DB_WINDOW_SIZE);
+    resize(DIC_WINDOW_SIZE);
     
     QObject::connect(this, &QObject::destroyed, [=]()
     { qDebug() << "DialogInfoContent" << windowTitle() << "destroyed"; });

@@ -3,7 +3,7 @@
 
 #include "dialogbody.h"
 
-const QSize DB_WINDOW_SIZE(500, 500);
+const QSize DIC_WINDOW_SIZE(500, 500);
 
 class QTextBrowser;
 

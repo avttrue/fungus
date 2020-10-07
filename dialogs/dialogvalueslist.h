@@ -11,10 +11,10 @@ const QString DVL_SUBITEM_MARK = "_"; // метка в начале текста
 const int DVL_SUBITEM_SIZE = 30; //  отступ виджета в пикселях
 const QString DVL_IMG_STYLE = "border: 1px solid darkgray; border-radius: 9px; padding: %1px;";
 const QString DVL_BTN_COLOR_STYLE = "border: 1px solid darkgray; border-radius: 9px; background-color: %1; font: bold monospace; color: %2";
-const QSize DVL_WINDOW_SIZE(400, 500);
 const int DVL_DOUBLE_SPINBOX_DECIMALS = 4;
 const qreal DVL_CAPTION_FONT_UP = 3.0;
 const qreal DVL_CAPTION_EFFECT_OFFSET = -1.5;
+const QSize DVL_WINDOW_SIZE(400, 500);
 
 class QGridLayout;
 class QToolBar;
