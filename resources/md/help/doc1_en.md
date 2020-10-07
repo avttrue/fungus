@@ -20,7 +20,7 @@
  | CTRL + I | *Information about selected* [cell](doc4_en.md) | <img src="qrc:/resources/img/cell.svg" height="32"/> | 
  | CTRL + E | *Edit cell* | <img src="qrc:/resources/img/edit.svg" height="32"/> | 
  | CTRL + W | *Create* [snapshot](doc2_en.md) | <img src="qrc:/resources/img/check.svg" height="32"/> |
- | ALT + W | *Restore first (by field age) snapshot* |   |
+ | ALT + W | *Restore first (by field age) snapshot* | <img src="qrc:/resources/img/next_snapshot.svg" height="32"/>  |
  | CTRL + A | *Select all cells* | <img src="qrc:/resources/img/select_all.svg" height="32"/> | 
  | CTRL + C | *Copy selected cells to clipboard* | <img src="qrc:/resources/img/copy.svg" height="32"/> |
  | CTRL + V | *Paste cells from clipboard* | <img src="qrc:/resources/img/paste.svg" height="32"/> |

@@ -4,22 +4,22 @@
 #include <QDialog>
 #include <QLabel>
 
-const QString CAPTION_STYLE = "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-                              "stop: 0 transparent, "
-                              "stop: 0.5 silver, "
-                              "stop: 0.5 silver, "
-                              "stop: 1 transparent); "
-                              "border: 1px solid silver; "
-                              "padding: 0px 1px 0px 1px; border-radius: 5px; "
-                              "color: black; font-family: monospace; font: bold; ";
+const QString DB_CAPTION_STYLE = "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+                                 "stop: 0 transparent, "
+                                 "stop: 0.5 silver, "
+                                 "stop: 0.5 silver, "
+                                 "stop: 1 transparent); "
+                                 "border: 1px solid silver; "
+                                 "padding: 0px 1px 0px 1px; border-radius: 5px; "
+                                 "color: black; font-family: monospace; font: bold; ";
 
-const QString ICON_STYLE = "padding: 0px 0px 0px 0px; "
-                           "margin: 1px 1px 1px 1px; ";
+const QString DB_ICON_STYLE = "padding: 0px 0px 0px 0px; "
+                              "margin: 1px 1px 1px 1px; ";
 
-const QString WINDOW_STYLE = "QDialog { border-style: ridge; "
-                             "border-width: 2px; "
-                             "border-radius: 5px; "
-                             "border-color: silver; }";
+const QString DB_WINDOW_STYLE = "QDialog { border-style: ridge; "
+                                "border-width: 2px; "
+                                "border-radius: 5px; "
+                                "border-color: silver; }";
 
 class QGridLayout;
 class QToolBar;

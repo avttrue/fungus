@@ -20,7 +20,7 @@ DialogBody::DialogBody(QWidget* parent,
 
     setAttribute(Qt::WA_DeleteOnClose, true);
     setModal(modal);
-    setStyleSheet(WINDOW_STYLE);
+    setStyleSheet(DB_WINDOW_STYLE);
 
     // основной контейнер
     auto formGridLayout = new QGridLayout(this);
@@ -43,7 +43,7 @@ DialogBody::DialogBody(QWidget* parent,
     if(!icon.isEmpty())
     {
         auto labelIcon = new QLabel();
-        labelIcon->setStyleSheet(ICON_STYLE);
+        labelIcon->setStyleSheet(DB_ICON_STYLE);
         labelIcon->setPixmap(QPixmap(icon).scaled(font_height + QSize(4, 4),
                                                   Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         layoutCaption->addWidget(labelIcon);
@@ -135,7 +135,7 @@ QToolBar *DialogBody::ToolBar() const { return m_ToolBar; }
 DialogCaption::DialogCaption(const QString &text, QWidget* parent)
     : QLabel(text, parent)
 {
-    setStyleSheet(CAPTION_STYLE);
+    setStyleSheet(DB_CAPTION_STYLE);
     setText(text);
 }
 

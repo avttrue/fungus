@@ -20,7 +20,7 @@
  | CTRL + I | *Информация о выбранной* [клетке](doc4_ru.md) | <img src="qrc:/resources/img/cell.svg" height="32"/> | 
  | CTRL + E | *Редактировать клетку* | <img src="qrc:/resources/img/edit.svg" height="32"/> | 
  | CTRL + W | *Создать* [снимок](doc2_ru.md) | <img src="qrc:/resources/img/check.svg" height="32"/> |
- | ALT + W | *Восстановить поле из первого (по возрасту) снимка* |   |
+ | ALT + W | *Восстановить поле из первого (по возрасту) снимка* | <img src="qrc:/resources/img/next_snapshot.svg" height="32"/> |
  | CTRL + A | *Выбрать все клетки* | <img src="qrc:/resources/img/select_all.svg" height="32"/> | 
  | CTRL + C | *Скопировать выбранные клетки в буфер обмена* | <img src="qrc:/resources/img/copy.svg" height="32"/> |
  | CTRL + V | *Вставить клетки из буфера обмена* | <img src="qrc:/resources/img/paste.svg" height="32"/> |
