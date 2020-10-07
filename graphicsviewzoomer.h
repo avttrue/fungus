@@ -22,7 +22,7 @@ public:
     void Zoom(qreal factor, bool centered = false);
     void ZoomFitToView();
     void setModifiers(Qt::KeyboardModifiers value);
-    void SetZoomFactorBase(qreal value);
+    void setZoomFactorBase(qreal value);
     qreal CurrentZoom() const;
 
 private:

@@ -27,7 +27,7 @@ SceneView::SceneView(QWidget *parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     m_Zoomer = new GraphicsViewZoomer(this);
-    m_Zoomer->SetZoomFactorBase(config->SceneScaleStep());
+    m_Zoomer->setZoomFactorBase(config->SceneScaleStep());
     m_Zoomer->setModifiers(config->SceneZoomModifier());
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << objectName() << "destroyed"; });

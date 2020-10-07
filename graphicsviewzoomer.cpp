@@ -109,5 +109,5 @@ bool GraphicsViewZoomer::eventFilter(QObject *object, QEvent *event)
 }
 
 void GraphicsViewZoomer::setModifiers(Qt::KeyboardModifiers value) { m_Modifiers = value; }
-void GraphicsViewZoomer::SetZoomFactorBase(qreal value) { m_ZoomFactorBase = value; }
+void GraphicsViewZoomer::setZoomFactorBase(qreal value) { m_ZoomFactorBase = value; }
 qreal GraphicsViewZoomer::CurrentZoom() const { return m_CurrentZoom; }
