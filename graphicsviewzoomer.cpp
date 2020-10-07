@@ -9,8 +9,8 @@
 GraphicsViewZoomer::GraphicsViewZoomer(QGraphicsView* view)
     : QObject(view),
       m_View(view),
-      m_Modifiers(MODIFIER),
-      m_ZoomFactorBase(ZOOM_FACTOR_BASE),
+      m_Modifiers(GVZ_MODIFIER),
+      m_ZoomFactorBase(GVZ_ZOOM_FACTOR_BASE),
       m_CurrentZoom(1.0)
 {
     setObjectName("GraphicsViewZoomer");
@@ -32,7 +32,7 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
         return;
     }
 
-    if(factor - ZOOM_FACTOR_RESET == 0.0) // reset
+    if(factor - GVZ_ZOOM_FACTOR_RESET == 0.0) // reset
     {
         m_View->resetTransform();
         m_CurrentZoom = 1.0;
@@ -70,7 +70,8 @@ void GraphicsViewZoomer::ZoomFitToView()
 
     Zoom(-1, false);
 
-    m_CurrentZoom = qMin(m_View->width() / s->width(), m_View->height() / s->height()) + 2 * (1 - ZOOM_FACTOR_BASE);
+    m_CurrentZoom = qMin(m_View->width() / s->width(), m_View->height() / s->height()) +
+            2 * (1 - GVZ_ZOOM_FACTOR_BASE);
 
     m_View->scale(m_CurrentZoom, m_CurrentZoom);
 

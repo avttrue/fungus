@@ -4,9 +4,9 @@
 #include <QObject>
 #include <QPointF>
 
-const auto ZOOM_FACTOR_BASE = 1.001;
-const auto ZOOM_FACTOR_RESET = -1;
-const auto MODIFIER = Qt::ControlModifier;
+const auto GVZ_ZOOM_FACTOR_BASE = 1.001;
+const auto GVZ_ZOOM_FACTOR_RESET = -1;
+const auto GVZ_MODIFIER = Qt::ControlModifier;
 
 class QGraphicsView;
 

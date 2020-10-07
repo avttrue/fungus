@@ -1708,7 +1708,7 @@ void MainWindow::slotSceneZoomOut()
 }
 
 void MainWindow::slotZoomUndoScene()
-{ m_SceneView->zoomer()->Zoom(ZOOM_FACTOR_RESET); }
+{ m_SceneView->zoomer()->Zoom(GVZ_ZOOM_FACTOR_RESET); }
 
 void MainWindow::slotSceneZoomFit()
 { m_SceneView->zoomer()->ZoomFitToView(); }
