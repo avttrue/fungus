@@ -110,6 +110,22 @@ void Config::load()
         m_Settings->setValue("MainWindow/InfoWindowHeight", INFO_WINDOW_HEIGHT);
     m_InfoWindowHeight = m_Settings->value("MainWindow/InfoWindowHeight").toInt();
 
+    if(!m_Settings->contains("MainWindow/InfoRuleWindowWidth"))
+        m_Settings->setValue("MainWindow/InfoRuleWindowWidth", INFORULE_WINDOW_WIDTH);
+    m_InfoRuleWindowWidth = m_Settings->value("MainWindow/InfoRuleWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/InfoRuleWindowHeight"))
+        m_Settings->setValue("MainWindow/InfoRuleWindowHeight", INFORULE_WINDOW_HEIGHT);
+    m_InfoRuleWindowHeight = m_Settings->value("MainWindow/InfoRuleWindowHeight").toInt();
+
+    if(!m_Settings->contains("MainWindow/HelpWindowWidth"))
+        m_Settings->setValue("MainWindow/HelpWindowWidth", HELP_WINDOW_WIDTH);
+    m_HelpWindowWidth = m_Settings->value("MainWindow/HelpWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/HelpWindowHeight"))
+        m_Settings->setValue("MainWindow/HelpWindowHeight", HELP_WINDOW_HEIGHT);
+    m_HelpWindowHeight = m_Settings->value("MainWindow/HelpWindowHeight").toInt();
+
     if(!m_Settings->contains("MainWindow/EditRulesWindowWidth"))
         m_Settings->setValue("MainWindow/EditRulesWindowWidth", EDIT_RULES_WINDOW_WIDTH);
     m_EditRulesWindowWidth = m_Settings->value("MainWindow/EditRulesWindowWidth").toInt();
@@ -325,6 +341,38 @@ void Config::load()
     if(!m_Settings->contains("Scene/LastRule"))
         m_Settings->setValue("Scene/LastRule", "");
     m_SceneLastRule = m_Settings->value("Scene/LastRule").toString();
+}
+
+void Config::setInfoRuleWindowWidth(int value)
+{
+    if(m_InfoRuleWindowWidth == value) return;
+
+    m_InfoRuleWindowWidth = value;
+    m_Settings->setValue("MainWindow/InfoRuleWindowWidth", m_InfoRuleWindowWidth);
+}
+
+void Config::setInfoRuleWindowHeight(int value)
+{
+    if(m_InfoRuleWindowHeight == value) return;
+
+    m_InfoRuleWindowHeight = value;
+    m_Settings->setValue("MainWindow/InfoRuleWindowHeight", m_InfoRuleWindowHeight);
+}
+
+void Config::setHelpWindowWidth(int value)
+{
+    if(m_HelpWindowWidth == value) return;
+
+    m_HelpWindowWidth = value;
+    m_Settings->setValue("MainWindow/HelpWindowWidth", m_HelpWindowWidth);
+}
+
+void Config::setHelpWindowHeight(int value)
+{
+    if(m_HelpWindowHeight == value) return;
+
+    m_HelpWindowHeight = value;
+    m_Settings->setValue("MainWindow/HelpWindowHeight", m_HelpWindowHeight);
 }
 
 void Config::setRulePropertyWindowWidth(int value)
@@ -1020,3 +1068,7 @@ int Config::EditActivityWindowWidth() const { return m_EditActivityWindowWidth; 
 int Config::EditActivityWindowHeight() const { return m_EditActivityWindowHeight; }
 int Config::RulePropertyWindowWidth() const { return m_RulePropertyWindowWidth; }
 int Config::RulePropertyWindowHeight() const { return m_RulePropertyWindowHeight; }
+int Config::HelpWindowWidth() const { return m_HelpWindowWidth; }
+int Config::HelpWindowHeight() const { return m_HelpWindowHeight; }
+int Config::InfoRuleWindowWidth() const { return m_InfoRuleWindowWidth; }
+int Config::InfoRuleWindowHeight() const { return m_InfoRuleWindowHeight; }

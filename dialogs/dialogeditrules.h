@@ -18,7 +18,6 @@ public:
     DialogEditRules(QWidget *parent, FieldRule* rules);
 
 protected:
-    bool eventFilter(QObject *object, QEvent *event);
     void addContentItem(const QString& text, Kernel::ActivityType type);
     void loadContent();
     void slotRowChanged(int value);

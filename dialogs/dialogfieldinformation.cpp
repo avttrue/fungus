@@ -11,7 +11,6 @@
 #include <QIcon>
 #include <QScrollArea>
 #include <QVBoxLayout>
-#include <QWindowStateChangeEvent>
 #include <QMetaProperty>
 
 DialogFieldInformation::DialogFieldInformation(QWidget *parent, const QString& title, Field* field)
@@ -37,39 +36,11 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, const QString& t
 
     loadInformation();
 
-    installEventFilter(this);
     resize(config->FieldInfoWindowWidth(), config->FieldInfoWindowHeight());
 
     QObject::connect(field, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection);
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogFieldInformation" << windowTitle() << "destroyed"; });
     qDebug() << "DialogFieldInformation" << windowTitle() << "created";
-}
-
-bool DialogFieldInformation::eventFilter(QObject *object, QEvent *event)
-{
-    switch (event->type())
-    {
-    case QEvent::WindowStateChange:
-    {
-        if(windowState() == Qt::WindowMinimized ||
-                windowState() == Qt::WindowMaximized)
-        {
-            setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
-            return true;
-        }
-        return false;
-    }
-    case QEvent::Hide:
-    case QEvent::Close:
-    {
-        if(object != this || isMinimized() || isMaximized()) return false;
-
-        config->setFieldInfoWindowWidth(width());
-        config->setFieldInfoWindowHeight(height());
-        return true;
-    }
-    default: { return false; }
-    }
 }
 
 void DialogFieldInformation::loadInformation()

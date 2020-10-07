@@ -45,7 +45,6 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
 
     addDialogContent(m_TextContent);
 
-    installEventFilter(this);
     resize(config->CellMonitorWindowWidth(), config->CellMonitorWindowHeight());
 
     slotSelectedCellChanged(m_Scene->getSelectedCell());
@@ -59,34 +58,6 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
     else slotAddText(tr("Select a cell and push selection button"));
 
     qDebug() << "DialogCellMonitor" << windowTitle() << "created";
-}
-
-bool DialogCellMonitor::eventFilter(QObject *object, QEvent *event)
-{
-    switch (event->type())
-    {
-    case QEvent::WindowStateChange:
-    {
-        if(windowState() == Qt::WindowMinimized ||
-                windowState() == Qt::WindowMaximized)
-        {
-            setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
-            return true;
-        }
-        return false;
-    }
-    case QEvent::Hide:
-    case QEvent::Close:
-    {
-        if(object != this || isMinimized() || isMaximized()) return false;
-
-        config->setCellMonitorWindowWidth(width());
-        config->setCellMonitorWindowHeight(height());
-
-        return true;
-    }
-    default: { return false; }
-    }
 }
 
 void DialogCellMonitor::addStartText()

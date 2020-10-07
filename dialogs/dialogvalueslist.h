@@ -5,16 +5,16 @@
 
 #include <QVariant>
 
-const QString RE_FIRST_LAST_SPACES = "^\\s+|\\s+$"; // регексп на наличие стартовых и финальных пробелов
-const QString RE_NUM_MARK = "(^.*)(#_)"; // регексп удаления символов до строки '#_' включительно
-const QString SUBITEM_MARK = "_"; // метка в начале текста о том, что вставлять виджет с отступом
-const int SUBITEM_SIZE = 30; //  отступ виджета в пикселях
-const QString IMG_STYLE = "border: 1px solid darkgray; border-radius: 9px; padding: %1px;";
-const QString BTN_COLOR_STYLE = "border: 1px solid darkgray; border-radius: 9px; background-color: %1; font: bold monospace; color: %2";
-const QSize WINDOW_SIZE(400, 500);
-const int DOUBLE_SPINBOX_DECIMALS = 4;
-const qreal CAPTION_FONT_UP = 3.0;
-const qreal CAPTION_EFFECT_OFFSET = -1.5;
+const QString DVL_RE_FIRST_LAST_SPACES = "^\\s+|\\s+$"; // регексп на наличие стартовых и финальных пробелов
+const QString DVL_RE_NUM_MARK = "(^.*)(#_)"; // регексп удаления символов до строки '#_' включительно
+const QString DVL_SUBITEM_MARK = "_"; // метка в начале текста о том, что вставлять виджет с отступом
+const int DVL_SUBITEM_SIZE = 30; //  отступ виджета в пикселях
+const QString DVL_IMG_STYLE = "border: 1px solid darkgray; border-radius: 9px; padding: %1px;";
+const QString DVL_BTN_COLOR_STYLE = "border: 1px solid darkgray; border-radius: 9px; background-color: %1; font: bold monospace; color: %2";
+const QSize DVL_WINDOW_SIZE(400, 500);
+const int DVL_DOUBLE_SPINBOX_DECIMALS = 4;
+const qreal DVL_CAPTION_FONT_UP = 3.0;
+const qreal DVL_CAPTION_EFFECT_OFFSET = -1.5;
 
 class QGridLayout;
 class QToolBar;
@@ -74,7 +74,6 @@ public:
 
 protected:
     void addWidgetContent(QWidget* widget, bool sub_item = false);
-    bool eventFilter(QObject *object, QEvent *event);
     void saveImage(QPixmap pixmap);
 
 private:    
@@ -98,8 +97,6 @@ private Q_SLOTS:
     void slotDoubleValueChanged(double value);
     void selectColor(const QString &value, QPushButton *btn);
 
-Q_SIGNALS:
-    void signalSizeChanged(QSize value);
 };
 
 #endif // DIALOGVALUESLIST_H

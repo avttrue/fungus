@@ -8,7 +8,6 @@
 #include <QDebug>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <QWindowStateChangeEvent>
 #include <QApplication>
 #include <QScrollArea>
 #include <QMetaProperty>
@@ -45,41 +44,12 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     loadInformation();
 
-    installEventFilter(this);
     resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());
 
     QObject::connect(cell, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection);
     QObject::connect(this, &QObject::destroyed,
                      [=]() { qDebug() << "DialogCellInformation" << windowTitle() << "destroyed"; });
     qDebug() << "DialogCellInformation" << windowTitle() << "created";
-}
-
-bool DialogCellInformation::eventFilter(QObject *object, QEvent *event)
-{
-    switch (event->type())
-    {
-    case QEvent::WindowStateChange:
-    {
-        if(windowState() == Qt::WindowMinimized ||
-                windowState() == Qt::WindowMaximized)
-        {
-            setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
-            return true;
-        }
-        return false;
-    }
-    case QEvent::Hide:
-    case QEvent::Close:
-    {
-        if(object != this || isMinimized() || isMaximized()) return false;
-
-        config->setCellInfoWindowWidth(width());
-        config->setCellInfoWindowHeight(height());
-
-        return true;
-    }
-    default: { return false; }
-    }
 }
 
 void DialogCellInformation::loadInformation()

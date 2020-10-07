@@ -66,6 +66,13 @@ private:
     QGridLayout* m_ContentGridLayout;
     DialogCaption* m_Caption;
     QToolBar* m_ToolBar;
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
+
+Q_SIGNALS:
+    void signalSizeChanged(QSize value);
+
 };
 
 

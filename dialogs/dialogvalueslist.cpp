@@ -19,7 +19,6 @@
 #include <QGraphicsDropShadowEffect>
 #include <QPushButton>
 #include <QColorDialog>
-#include <QWindowStateChangeEvent>
 
 DialogValuesList::DialogValuesList(QWidget* parent,
                                    const QString& icon,
@@ -53,9 +52,7 @@ DialogValuesList::DialogValuesList(QWidget* parent,
 
     slotLoadContent(values);
 
-    resize(WINDOW_SIZE);
-
-    installEventFilter(this);
+    resize(DVL_WINDOW_SIZE);
 
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogValuesList" << windowTitle() << "destroyed"; });
     qDebug() << "DialogValuesList" << windowTitle() << "created";
@@ -67,7 +64,7 @@ void DialogValuesList::addWidgetContent(QWidget *widget, bool sub_item)
     {
         auto w = new QWidget();
         auto hb = new QHBoxLayout();
-        hb->setContentsMargins(SUBITEM_SIZE, 0, 0, 0);
+        hb->setContentsMargins(DVL_SUBITEM_SIZE, 0, 0, 0);
         w->setLayout(hb);
         hb->addWidget(widget, Qt::AlignLeft);
         glContent->addWidget(w, glContent->count(), 0, 1, 1, Qt::AlignTop);
@@ -94,11 +91,11 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
         QVariant v = values->value(key).value;
         QVariant minv = values->value(key).minValue;
         QVariant maxv = values->value(key).maxValue;
-        QString text = key; text.remove(QRegExp(RE_NUM_MARK));
+        QString text = key; text.remove(QRegExp(DVL_RE_NUM_MARK));
         bool sub_item = false;
-        if(text.startsWith(SUBITEM_MARK))
+        if(text.startsWith(DVL_SUBITEM_MARK))
         {
-            text.remove(0, SUBITEM_MARK.length());
+            text.remove(0, DVL_SUBITEM_MARK.length());
             sub_item = true;
         }
 
@@ -115,12 +112,12 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
             label->setWordWrap(true);
 
             auto effect = new QGraphicsDropShadowEffect(widget);
-            effect->setOffset(CAPTION_EFFECT_OFFSET, CAPTION_EFFECT_OFFSET);
+            effect->setOffset(DVL_CAPTION_EFFECT_OFFSET, DVL_CAPTION_EFFECT_OFFSET);
             effect->setColor(widget->palette().color(QPalette::Base));
             label->setGraphicsEffect(effect);
 
             QFont font = label->font();
-            font.setPointSizeF(font.pointSizeF() + CAPTION_FONT_UP);
+            font.setPointSizeF(font.pointSizeF() + DVL_CAPTION_FONT_UP);
             //font.setUnderline(true);
             label->setFont(font);
 
@@ -168,7 +165,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
             btn->setFixedHeight(config->ButtonSize());
             btn->setAutoFillBackground(true);
             btn->setProperty("ValueName", key);
-            btn->setStyleSheet(BTN_COLOR_STYLE.arg(v.toString(), GetContrastColor(QColor(v.toString())).name()));
+            btn->setStyleSheet(DVL_BTN_COLOR_STYLE.arg(v.toString(), GetContrastColor(QColor(v.toString())).name()));
             QObject::connect(btn, &QPushButton::pressed, [=]() { selectColor(btn->text(), btn); });
             bl->addWidget(btn, 1);
 
@@ -198,7 +195,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
                 int border = 5;
                 QPixmap p(pixmap);
                 limg->setBackgroundRole(QPalette::Base);
-                limg->setStyleSheet(IMG_STYLE.arg(QString::number(border)));
+                limg->setStyleSheet(DVL_IMG_STYLE.arg(QString::number(border)));
 
                 auto w = minv.toInt();
                 auto h = maxv.toInt();
@@ -290,7 +287,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
                               maxv.toDouble() - minv.toDouble() == 0.0
                               ? std::numeric_limits<double>::max()
                               : maxv.toDouble());
-            spinbox->setDecimals(DOUBLE_SPINBOX_DECIMALS);
+            spinbox->setDecimals(DVL_DOUBLE_SPINBOX_DECIMALS);
             spinbox->setSingleStep(0.1);
             spinbox->setStepType(QAbstractSpinBox::AdaptiveDecimalStepType);
             spinbox->setValue(v.toDouble());
@@ -384,44 +381,6 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
     }
 }
 
-bool DialogValuesList::eventFilter(QObject* object, QEvent *event)
-{    
-    auto o = qobject_cast<DialogValuesList*>(object);
-    if(o)
-    {
-        switch (event->type())
-        {
-        case QEvent::WindowStateChange:
-        {
-            if(windowState() == Qt::WindowMinimized ||
-                    windowState() == Qt::WindowMaximized)
-            {
-                setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
-                return true;
-            }
-            return false;
-        }
-        case QEvent::Hide:
-        case QEvent::Close:
-        {
-            if(object != this || isMinimized() || isMaximized()) return false;
-            Q_EMIT signalSizeChanged(size());
-            return true;
-        }
-        default: { return false; }
-        }
-    }
-    else
-    {
-        switch (event->type())
-        {
-        case QEvent::Wheel:
-        { return true; }
-        default: { return false; }
-        }
-    }
-}
-
 void DialogValuesList::saveImage(QPixmap pixmap)
 {
     auto filename = QFileDialog::getSaveFileName(this, "Save image", config->LastDir(), "PNG files (*.png)");
@@ -455,7 +414,7 @@ void DialogValuesList::slotStringListValueChanged()
     auto ledit = qobject_cast<QLineEdit*>(sender());
     if(!ledit) { qCritical() << __func__ << ": Signal sender not found."; return; }
     auto key = ledit->property("ValueName").toString();
-    setMapValue(key, ledit->text().split(',', Qt::SkipEmptyParts).replaceInStrings(QRegExp(RE_FIRST_LAST_SPACES), ""));
+    setMapValue(key, ledit->text().split(',', Qt::SkipEmptyParts).replaceInStrings(QRegExp(DVL_RE_FIRST_LAST_SPACES), ""));
 }
 
 void DialogValuesList::slotOneOfStringListValueChanged()
@@ -508,7 +467,7 @@ void DialogValuesList::selectColor(const QString &value, QPushButton* btn)
     {
         auto colortxt = color.name().toUpper();
         btn->setText(colortxt);
-        btn->setStyleSheet(BTN_COLOR_STYLE.arg(colortxt, GetContrastColor(QColor(colortxt)).name()));
+        btn->setStyleSheet(DVL_BTN_COLOR_STYLE.arg(colortxt, GetContrastColor(QColor(colortxt)).name()));
         auto key = btn->property("ValueName").toString();
         setMapValue(key, colortxt);
     }

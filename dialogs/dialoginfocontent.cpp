@@ -9,13 +9,11 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QTextBrowser>
-#include <QWindowStateChangeEvent>
 #include <QDesktopServices>
 
 DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
     : DialogBody(parent, title, ":/resources/img/info.svg")
-{
-    
+{    
     m_Content = new QTextBrowser(this);
     m_Content->setOpenLinks(false);
     QObject::connect(m_Content, &QTextBrowser::forwardAvailable, [=](bool value)
@@ -47,40 +45,11 @@ DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
     
     addDialogContent(m_Content);
     
-    installEventFilter(this);
-    resize(config->InfoWindowWidth(), config->InfoWindowHeight());
+    resize(DB_WINDOW_SIZE);
     
     QObject::connect(this, &QObject::destroyed, [=]()
     { qDebug() << "DialogInfoContent" << windowTitle() << "destroyed"; });
     qDebug() << "DialogInfoContent" << windowTitle() << "created";
-}
-
-bool DialogInfoContent::eventFilter(QObject *object, QEvent *event)
-{
-    switch (event->type())
-    {
-    case QEvent::WindowStateChange:
-    {
-        if(windowState() == Qt::WindowMinimized ||
-                windowState() == Qt::WindowMaximized)
-        {
-            setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
-            return true;
-        }
-        return false;
-    }
-    case QEvent::Hide:
-    case QEvent::Close:
-    {
-        if(object != this || isMinimized() || isMaximized()) return false;
-        
-        config->setInfoWindowWidth(width());
-        config->setInfoWindowHeight(height());
-        Q_EMIT signalSizeChanged(size()); // пока не используется
-        return true;
-    }
-    default: { return false; }
-    }
 }
 
 void DialogInfoContent::slotAnchorClicked(const QUrl &link)

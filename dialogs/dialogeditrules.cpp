@@ -9,7 +9,6 @@
 #include <QIcon>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <QWindowStateChangeEvent>
 #include <QListWidget>
 
 DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
@@ -88,50 +87,8 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
 
     resize(config->EditRulesWindowWidth(), config->EditRulesWindowHeight());
 
-    installEventFilter(this);
-
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogEditRules" << windowTitle() << "destroyed"; });
     qDebug() << "DialogEditRules" << windowTitle() << "created";
-}
-
-bool DialogEditRules::eventFilter(QObject *object, QEvent *event)
-{
-    auto o = qobject_cast<DialogEditRules*>(object);
-    if(o)
-    {
-        switch (event->type())
-        {
-        case QEvent::WindowStateChange:
-        {
-            if(windowState() == Qt::WindowMinimized ||
-                    windowState() == Qt::WindowMaximized)
-            {
-                setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
-                return true;
-            }
-            return false;
-        }
-        case QEvent::Hide:
-        case QEvent::Close:
-        {
-            if(object != this || isMinimized() || isMaximized()) return false;
-
-            config->setEditRulesWindowWidth(width());
-            config->setEditRulesWindowHeight(height());
-            return true;
-        }
-        default: { return false; }
-        }
-    }
-    else
-    {
-        switch (event->type())
-        {
-        case QEvent::Wheel:
-        { return true; }
-        default: { return false; }
-        }
-    }
 }
 
 void DialogEditRules::addContentItem(const QString &text, Kernel::ActivityType type)
@@ -252,7 +209,7 @@ bool DialogEditRules::editActivityElement(QVector<QVariant> *element)
 
     auto dvl = new DialogValuesList(this, ":/resources/img/edit.svg", tr("Activity element"), &map);
     dvl->resize(config->EditActivityWindowWidth(), config->EditActivityWindowHeight());
-    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    QObject::connect(dvl, &DialogBody::signalSizeChanged, [=](QSize size)
     {
         config->setEditActivityWindowWidth(size.width());
         config->setEditActivityWindowHeight(size.height());
@@ -385,7 +342,7 @@ void DialogEditRules::slotEditRules()
 
     auto dvl = new DialogValuesList(this, ":/resources/img/edit.svg", tr("Rule property"), &map);
     dvl->resize(config->RulePropertyWindowWidth(), config->RulePropertyWindowHeight());
-    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    QObject::connect(dvl, &DialogBody::signalSizeChanged, [=](QSize size)
     {
         config->setRulePropertyWindowWidth(size.width());
         config->setRulePropertyWindowHeight(size.height());

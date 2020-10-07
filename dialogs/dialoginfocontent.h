@@ -3,6 +3,8 @@
 
 #include "dialogbody.h"
 
+const QSize DB_WINDOW_SIZE(500, 500);
+
 class QTextBrowser;
 
 class DialogInfoContent : public DialogBody
@@ -14,9 +16,6 @@ public:
     void setMarkdownSource(const QString& source);
     void setMarkdownContent(const QString& content);
 
-protected:
-    bool eventFilter(QObject *object, QEvent *event);
-
 private:
     QTextBrowser* m_Content;
     QAction* m_ActionBackward;
@@ -25,8 +24,6 @@ private:
 private Q_SLOTS:
     void slotAnchorClicked(const QUrl &link);
 
-Q_SIGNALS:
-    void signalSizeChanged(QSize value);
 };
 
 #endif // DIALOGINFOCONTENT_H

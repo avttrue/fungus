@@ -85,6 +85,46 @@ DialogBody::DialogBody(QWidget* parent,
     formGridLayout->addWidget(m_ToolBar, 2, 0, 1, 1);
     formGridLayout->addWidget(new QSizeGrip(this), 2, 1, 1, -1, Qt::AlignBottom | Qt::AlignRight);
     setLayout(formGridLayout);
+
+    installEventFilter(this);
+}
+
+bool DialogBody::eventFilter(QObject* object, QEvent *event)
+{
+    auto o = qobject_cast<DialogBody*>(object);
+    if(o)
+    {
+        switch (event->type())
+        {
+        case QEvent::WindowStateChange:
+        {
+            if(windowState() == Qt::WindowMinimized ||
+                    windowState() == Qt::WindowMaximized)
+            {
+                setWindowState(static_cast<QWindowStateChangeEvent *>(event)->oldState());
+                return true;
+            }
+            return false;
+        }
+        case QEvent::Hide:
+        case QEvent::Close:
+        {
+            if(object != this || isMinimized() || isMaximized()) return false;
+            Q_EMIT signalSizeChanged(size());
+            return true;
+        }
+        default: { return false; }
+        }
+    }
+    else
+    {
+        switch (event->type())
+        {
+        case QEvent::Wheel:
+        { return true; }
+        default: { return false; }
+        }
+    }
 }
 
 void DialogBody::addDialogContent(QWidget *widget) { m_ContentGridLayout->addWidget(widget); }

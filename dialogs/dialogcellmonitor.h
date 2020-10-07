@@ -24,7 +24,6 @@ private:
     int m_CurrentCellIndex;
 
 protected:
-    bool eventFilter(QObject *object, QEvent *event);
     void addStartText();
 
 private Q_SLOTS:

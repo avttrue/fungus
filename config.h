@@ -174,6 +174,14 @@ public:
     void setRulePropertyWindowHeight(int value);
     int RulePropertyWindowWidth() const;
     void setRulePropertyWindowWidth(int value);
+    int HelpWindowHeight() const;
+    void setHelpWindowHeight(int value);
+    int HelpWindowWidth() const;
+    void setHelpWindowWidth(int value);
+    int InfoRuleWindowHeight() const;
+    void setInfoRuleWindowHeight(int value);
+    int InfoRuleWindowWidth() const;
+    void setInfoRuleWindowWidth(int value);
 
 protected:
     void load();
@@ -232,12 +240,16 @@ private:
     int m_CellMonitorWindowWidth;                   // размеры окна мониторинга Cell
     int m_FieldInfoWindowHeight;                    // размеры окна информации о Field
     int m_FieldInfoWindowWidth;                     // размеры окна информации о Field
-    int m_InfoWindowHeight;                         // размеры справочного окна
-    int m_InfoWindowWidth;                          // размеры справочного окна
+    int m_HelpWindowHeight;                         // размеры справочного окна
+    int m_HelpWindowWidth;                          // размеры справочного окна
+    int m_InfoWindowHeight;                         // размеры информационного окна
+    int m_InfoWindowWidth;                          // размеры информационного окна
+    int m_InfoRuleWindowHeight;                     // размеры информационного окна о правилах
+    int m_InfoRuleWindowWidth;                      // размеры информационного окна о правилах
     int m_EditRulesWindowHeight;                    // размеры окна редактирования правил
     int m_EditRulesWindowWidth;                     // размеры окна редактирования правил
-    int m_RulePropertyWindowHeight;             // размеры окна редактирования RuleProperty
-    int m_RulePropertyWindowWidth;              // размеры окна редактирования RuleProperty
+    int m_RulePropertyWindowHeight;                 // размеры окна редактирования RuleProperty
+    int m_RulePropertyWindowWidth;                  // размеры окна редактирования RuleProperty
     int m_SplashTime;                               // время отображения сплеш-заставки
     int m_SplashSize;                               // размеры сплеш-заставки
     int m_ProjectFileCompressionLevel;              // уровень сжатия данных при сохранении проекта: -1 - поумолчанию, 0-9

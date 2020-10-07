@@ -1368,7 +1368,7 @@ void MainWindow::slotSetup()
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
     dvl->resize(config->SetupWindowWidth(), config->SetupWindowHeight());
-    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    QObject::connect(dvl, &DialogBody::signalSizeChanged, [=](QSize size)
     {
         config->setSetupWindowWidth(size.width());
         config->setSetupWindowHeight(size.height());
@@ -1479,7 +1479,7 @@ void MainWindow::slotEditCell()
     auto dvl = new DialogValuesList(this, ":/resources/img/point.svg",
                                     tr("Edit cell %1").arg(firstcell->objectName()), &map);
     dvl->resize(config->EditCellWindowWidth(), config->EditCellWindowHeight());
-    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    QObject::connect(dvl, &DialogBody::signalSizeChanged, [=](QSize size)
     {
         config->setEditCellWindowWidth(size.width());
         config->setEditCellWindowHeight(size.height());
@@ -1599,7 +1599,7 @@ void MainWindow::slotNewProject()
 
     auto dvl = new DialogValuesList(this, ":/resources/img/asterisk.svg", tr("New project"), &map);
     dvl->resize(config->ProjectWindowWidth(), config->ProjectWindowHeight());
-    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    QObject::connect(dvl, &DialogBody::signalSizeChanged, [=](QSize size)
     {
         config->setProjectWindowWidth(size.width());
         config->setProjectWindowHeight(size.height());
@@ -1975,7 +1975,7 @@ void MainWindow::slotRandomFill()
 
     auto dvl = new DialogValuesList(this, ":/resources/img/cells.svg", tr("Randome filling"), &map);
     dvl->resize(config->RandomFillWindowWidth(), config->RandomFillWindowHeight());
-    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    QObject::connect(dvl, &DialogBody::signalSizeChanged, [=](QSize size)
     {
         config->setRandomFillWindowWidth(size.width());
         config->setRandomFillWindowHeight(size.height());
@@ -2221,7 +2221,7 @@ void MainWindow::slotSelectSnapshot()
     auto dvl = new DialogValuesList(this, ":/resources/img/next_snapshot.svg",
                                     tr("Select snapshot"), &map);
     dvl->resize(config->SnapshotWindowWidth(), config->SnapshotWindowHeight());
-    QObject::connect(dvl, &DialogValuesList::signalSizeChanged, [=](QSize size)
+    QObject::connect(dvl, &DialogBody::signalSizeChanged, [=](QSize size)
     {
         config->setSnapshotWindowWidth(size.width());
         config->setSnapshotWindowHeight(size.height());
@@ -2391,7 +2391,13 @@ void MainWindow::slotInfoRule()
     auto title = tr("Information about current rule");
     if(findPreviousWindowCopy(title)) return;
 
-    auto dhc = new DialogInfoContent(this, title);
+    auto dic = new DialogInfoContent(this, title);
+    dic->resize(config->InfoRuleWindowWidth(), config->InfoRuleWindowHeight());
+    QObject::connect(dic, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setInfoRuleWindowWidth(size.width());
+        config->setInfoRuleWindowHeight(size.height());
+    });
 
     QString content = "## Properties\n";
     for(auto s: m_Field->getRule()->PropertiesToString().split('\n'))
@@ -2404,8 +2410,8 @@ void MainWindow::slotInfoRule()
         content.append(QString(" - <pre><b>%1</b></pre>\n").
                        arg(ActivityElementToString(a)));
 
-    dhc->setMarkdownContent(content);
-    dhc->show();
+    dic->setMarkdownContent(content);
+    dic->show();
 }
 
 void MainWindow::slotImportRule()
@@ -2429,6 +2435,12 @@ void MainWindow::slotAbout()
     if(findPreviousWindowCopy(title)) return;
 
     auto dic = new DialogInfoContent(this, title);
+    dic->resize(config->InfoWindowWidth(), config->InfoWindowHeight());
+    QObject::connect(dic, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setInfoWindowWidth(size.width());
+        config->setInfoWindowHeight(size.height());
+    });
     dic->setHtmlContent(content);
     dic->show();
 }
@@ -2439,6 +2451,12 @@ void MainWindow::slotHelp()
     if(findPreviousWindowCopy(title)) return;
 
     auto dic = new DialogInfoContent(this, title);
+    dic->resize(config->HelpWindowWidth(), config->HelpWindowHeight());
+    QObject::connect(dic, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setHelpWindowWidth(size.width());
+        config->setHelpWindowHeight(size.height());
+    });
     dic->setMarkdownSource(config->HelpPage());
     dic->show();
 }
