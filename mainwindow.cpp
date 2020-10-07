@@ -1861,7 +1861,12 @@ void MainWindow::slotInfoCell()
     if(DialogCellInformation::FindPreviousCopy(cell)) return;
 
     auto dci = new DialogCellInformation(this, cell);
-
+    dci->resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());
+    QObject::connect(dci, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setCellInfoWindowWidth(size.width());
+        config->setCellInfoWindowHeight(size.height());
+    });
     QObject::connect(dci, &DialogCellInformation::signalShowCell, this, &MainWindow::slotShowCell);
     dci->show();
 }
@@ -1875,6 +1880,12 @@ void MainWindow::showInfoField(bool unique)
     if(unique && findPreviousWindowCopy(title)) return;
 
     auto dfi = new DialogFieldInformation(this, title, m_Field);
+    dfi->resize(config->FieldInfoWindowWidth(), config->FieldInfoWindowHeight());
+    QObject::connect(dfi, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setFieldInfoWindowWidth(size.width());
+        config->setFieldInfoWindowHeight(size.height());
+    });
     dfi->show();
 }
 
@@ -2467,6 +2478,12 @@ void MainWindow::slotCellMonitor()
     if(findPreviousWindowCopy(title)) return;
 
     auto dcm = new DialogCellMonitor(this, title, m_SceneView->getScene());
+    dcm->resize(config->CellMonitorWindowWidth(), config->CellMonitorWindowHeight());
+    QObject::connect(dcm, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setCellMonitorWindowWidth(size.width());
+        config->setCellMonitorWindowHeight(size.height());
+    });
     dcm->show();
 }
 

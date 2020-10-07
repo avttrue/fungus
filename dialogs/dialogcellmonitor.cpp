@@ -45,8 +45,6 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
 
     addDialogContent(m_TextContent);
 
-    resize(config->CellMonitorWindowWidth(), config->CellMonitorWindowHeight());
-
     slotSelectedCellChanged(m_Scene->getSelectedCell());
     QObject::connect(m_Scene, &Scene::signalSelectedCellChanged, this, &DialogCellMonitor::slotSelectedCellChanged);
     QObject::connect(m_Scene->getField(), &Field::signalRuleMessage, this, &DialogCellMonitor::slotAddText);

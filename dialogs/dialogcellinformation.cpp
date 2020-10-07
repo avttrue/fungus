@@ -44,8 +44,6 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
 
     loadInformation();
 
-    resize(config->CellInfoWindowWidth(), config->CellInfoWindowHeight());
-
     QObject::connect(cell, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection);
     QObject::connect(this, &QObject::destroyed,
                      [=]() { qDebug() << "DialogCellInformation" << windowTitle() << "destroyed"; });

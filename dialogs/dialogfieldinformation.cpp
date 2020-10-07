@@ -36,8 +36,6 @@ DialogFieldInformation::DialogFieldInformation(QWidget *parent, const QString& t
 
     loadInformation();
 
-    resize(config->FieldInfoWindowWidth(), config->FieldInfoWindowHeight());
-
     QObject::connect(field, &QObject::destroyed, this, &QDialog::close, Qt::DirectConnection);
     QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogFieldInformation" << windowTitle() << "destroyed"; });
     qDebug() << "DialogFieldInformation" << windowTitle() << "created";
