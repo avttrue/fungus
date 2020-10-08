@@ -29,39 +29,41 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
     qDebug() << __func__;
 
     if(!m_View->scene())
-    {
-        qCritical() << ": Scene not created";
-        return;
-    }
+    { qCritical() << ": Scene not created"; return; }
 
     QPointF center;
-    if(factor - GVZ_ZOOM_FACTOR_RESET == 0.0) // reset
-    {
-        m_View->resetTransform();
-        m_CurrentZoom = 1.0;
+    m_View->scale(factor, factor);
+
+    if(centered)
         center = QPointF(m_View->scene()->width(), m_View->scene()->height()) / 2.0;
-        qDebug() << "Scene zoom resetted";
-    }
     else
     {
-        m_View->scale(factor, factor);
-
-        if(centered)
-            center = QPointF(m_View->scene()->width(), m_View->scene()->height()) / 2.0;
-        else
-        {
-            m_View->centerOn(m_TargetScenePos);
-            auto delta = QPointF(m_View->viewport()->width(), m_View->viewport()->height()) / 2.0;
-            center = m_View->mapFromScene(m_TargetScenePos) - m_TargetViewportPos + delta;
-            center = m_View->mapToScene(center.toPoint());
-        }
-
-        m_CurrentZoom *= factor;
-        qDebug() << "Scene zoom center:" << center;
+        m_View->centerOn(m_TargetScenePos);
+        auto delta = QPointF(m_View->viewport()->width(), m_View->viewport()->height()) / 2.0;
+        center = m_View->mapFromScene(m_TargetScenePos) - m_TargetViewportPos + delta;
+        center = m_View->mapToScene(center.toPoint());
     }
 
+    m_CurrentZoom *= factor;
     m_View->centerOn(center);
-    qDebug() << "Scene zoom:" << m_CurrentZoom;
+
+    qDebug() << "Scene zoom:" << m_CurrentZoom << "; center:" << center;
+    Q_EMIT signalZoomed(m_CurrentZoom);
+}
+
+void GraphicsViewZoomer::resetZoom()
+{
+    qDebug() << __func__;
+
+    if(!m_View->scene())
+    { qCritical() << ": Scene not created"; return; }
+
+    m_View->resetTransform();
+    m_CurrentZoom = 1.0;
+    auto center = QPointF(m_View->scene()->width(), m_View->scene()->height()) / 2.0;
+    m_View->centerOn(center);
+
+    qDebug() << "Scene zoom resetted:" << m_CurrentZoom;
     Q_EMIT signalZoomed(m_CurrentZoom);
 }
 
@@ -71,7 +73,7 @@ void GraphicsViewZoomer::ZoomFitToView()
     auto s = m_View->scene();
     if(!s) return;
 
-    Zoom(-1);
+    resetZoom();
 
     auto factor = 1 / (m_ZoomFactorBase + 100 * (m_ZoomFactorBase - 1));
     m_CurrentZoom = (qMin(m_View->width() / s->width(), m_View->height() / s->height())) * factor;

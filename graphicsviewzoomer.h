@@ -4,8 +4,6 @@
 #include <QObject>
 #include <QPointF>
 
-const auto GVZ_ZOOM_FACTOR_RESET = -1;
-
 class QGraphicsView;
 
 /*!
@@ -20,6 +18,7 @@ public:
                        Qt::KeyboardModifiers key_modifier,
                        qreal zoom_factor_base);
     void Zoom(qreal factor, bool centered = false);
+    void resetZoom();
     void ZoomFitToView();
     void setKeyModifier(Qt::KeyboardModifiers value);
     void setZoomFactorBase(qreal value);
