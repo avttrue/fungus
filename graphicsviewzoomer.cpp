@@ -6,11 +6,13 @@
 #include <QMouseEvent>
 #include <qmath.h>
 
-GraphicsViewZoomer::GraphicsViewZoomer(QGraphicsView* view)
+GraphicsViewZoomer::GraphicsViewZoomer(QGraphicsView* view,
+                                       Qt::KeyboardModifiers key_modifier,
+                                       qreal zoom_factor_base)
     : QObject(view),
       m_View(view),
-      m_Modifiers(GVZ_MODIFIER),
-      m_ZoomFactorBase(GVZ_ZOOM_FACTOR_BASE),
+      m_KeyModifier(key_modifier),
+      m_ZoomFactorBase(zoom_factor_base),
       m_CurrentZoom(1.0)
 {
     setObjectName("GraphicsViewZoomer");
@@ -32,16 +34,17 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
         return;
     }
 
+    QPointF center;
     if(factor - GVZ_ZOOM_FACTOR_RESET == 0.0) // reset
     {
         m_View->resetTransform();
         m_CurrentZoom = 1.0;
+        center = QPointF(m_View->scene()->width(), m_View->scene()->height()) / 2.0;
         qDebug() << "Scene zoom resetted";
     }
     else
     {
         m_View->scale(factor, factor);
-        QPointF center;
 
         if(centered)
             center = QPointF(m_View->scene()->width(), m_View->scene()->height()) / 2.0;
@@ -53,11 +56,11 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
             center = m_View->mapToScene(center.toPoint());
         }
 
-        m_View->centerOn(center);
         m_CurrentZoom *= factor;
         qDebug() << "Scene zoom center:" << center;
     }
 
+    m_View->centerOn(center);
     qDebug() << "Scene zoom:" << m_CurrentZoom;
     Q_EMIT signalZoomed(m_CurrentZoom);
 }
@@ -68,10 +71,10 @@ void GraphicsViewZoomer::ZoomFitToView()
     auto s = m_View->scene();
     if(!s) return;
 
-    Zoom(-1, false);
+    Zoom(-1);
 
-    m_CurrentZoom = qMin(m_View->width() / s->width(), m_View->height() / s->height()) +
-            2 * (1 - GVZ_ZOOM_FACTOR_BASE);
+    auto factor = 1 / (m_ZoomFactorBase + 100 * (m_ZoomFactorBase - 1));
+    m_CurrentZoom = (qMin(m_View->width() / s->width(), m_View->height() / s->height())) * factor;
 
     m_View->scale(m_CurrentZoom, m_CurrentZoom);
 
@@ -98,7 +101,7 @@ bool GraphicsViewZoomer::eventFilter(QObject *object, QEvent *event)
     else if(event->type() == QEvent::Wheel)
     {
         auto wheelevent = static_cast<QWheelEvent*>(event);
-        if (QApplication::keyboardModifiers() == m_Modifiers)
+        if (QApplication::keyboardModifiers() == m_KeyModifier)
         {
             auto angle = wheelevent->angleDelta().y();
             auto factor = qPow(m_ZoomFactorBase, angle);
@@ -109,6 +112,6 @@ bool GraphicsViewZoomer::eventFilter(QObject *object, QEvent *event)
     return false;
 }
 
-void GraphicsViewZoomer::setModifiers(Qt::KeyboardModifiers value) { m_Modifiers = value; }
+void GraphicsViewZoomer::setKeyModifier(Qt::KeyboardModifiers value) { m_KeyModifier = value; }
 void GraphicsViewZoomer::setZoomFactorBase(qreal value) { m_ZoomFactorBase = value; }
 qreal GraphicsViewZoomer::CurrentZoom() const { return m_CurrentZoom; }

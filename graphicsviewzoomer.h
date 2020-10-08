@@ -4,9 +4,7 @@
 #include <QObject>
 #include <QPointF>
 
-const auto GVZ_ZOOM_FACTOR_BASE = 1.001;
 const auto GVZ_ZOOM_FACTOR_RESET = -1;
-const auto GVZ_MODIFIER = Qt::ControlModifier;
 
 class QGraphicsView;
 
@@ -18,16 +16,18 @@ class GraphicsViewZoomer : public QObject
 {
     Q_OBJECT
 public:
-    GraphicsViewZoomer(QGraphicsView* view);
+    GraphicsViewZoomer(QGraphicsView* view,
+                       Qt::KeyboardModifiers key_modifier,
+                       qreal zoom_factor_base);
     void Zoom(qreal factor, bool centered = false);
     void ZoomFitToView();
-    void setModifiers(Qt::KeyboardModifiers value);
+    void setKeyModifier(Qt::KeyboardModifiers value);
     void setZoomFactorBase(qreal value);
     qreal CurrentZoom() const;
 
 private:
     QGraphicsView* m_View;
-    Qt::KeyboardModifiers m_Modifiers;
+    Qt::KeyboardModifiers m_KeyModifier;
     qreal m_ZoomFactorBase;
     QPointF m_TargetScenePos;
     QPointF m_TargetViewportPos;

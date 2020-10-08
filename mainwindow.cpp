@@ -1423,6 +1423,8 @@ void MainWindow::slotSetup()
         m_SceneView->getScene()->setSelectionMarkColor(config->SceneSelectColor());
         m_SceneView->update();
         m_SceneView->getScene()->getField()->updateScene();
+        m_SceneView->zoomer()->setKeyModifier(config->SceneZoomModifier());
+        m_SceneView->zoomer()->setZoomFactorBase(config->SceneScaleStep());
     }
 }
 
@@ -1644,7 +1646,7 @@ void MainWindow::slotNewProject()
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
 
-    m_SceneView->zoomer()->Zoom(-1.0);
+    m_SceneView->zoomer()->Zoom(GVZ_ZOOM_FACTOR_RESET);
     m_LabelFieldAvCalc->setText("0 ms");
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     m_LabelSelectedCell->setText("-");
@@ -2304,7 +2306,7 @@ void MainWindow::slotLoadProject()
                        QString::number(m_Field->height()),
                        QString::number(config->SceneCellSize())));
 
-    m_SceneView->zoomer()->Zoom(-1.0);
+    m_SceneView->zoomer()->Zoom(GVZ_ZOOM_FACTOR_RESET);
     m_LabelFieldAvCalc->setText("0 ms");
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     m_LabelSelectedCell->setText("-");
