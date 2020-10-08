@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "properties.h"
-#include "helper.h"
+#include "helpers/helper.h"
 #include "splashscreen.h"
 
 #include <QApplication>

@@ -1,6 +1,6 @@
 #include "dialoginfocontent.h"
 #include "properties.h"
-#include "helper.h"
+#include "helpers/helper.h"
 #include "controls.h"
 
 #include <QDebug>

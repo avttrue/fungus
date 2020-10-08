@@ -1,5 +1,5 @@
 #include "infopanel.h"
-#include "helper.h"
+#include "helpers/helper.h"
 #include "properties.h"
 #include "kernel/kernel.h"
 

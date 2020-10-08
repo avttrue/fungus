@@ -2,7 +2,7 @@
 #include "properties.h"
 #include "sceneitem.h"
 #include "sceneview.h"
-#include "helper.h"
+#include "helpers/helper.h"
 #include "field/field.h"
 #include "field/cell.h"
 #include "field/fieldrule.h"

@@ -55,22 +55,4 @@ public:
     explicit MenuCaption(QObject* parent, const QString& caption);
 };
 
-/*!
- * поместить виджет по центру экрана
- */
-void setWidgetToScreenCenter(QWidget* w);
-
-/*!
- * поместить виджет по центру предка
- */
-void setWidgetToParentCenter(QWidget* w);
-
-bool findPreviousWindowCopy(const QString& caption);
-
-QString strippedActionText(QString text);
-
-void removeShortcutFromToolTip(QAction *action);
-
-void addShortcutToToolTip(QAction *action);
-
 #endif // CONTROLS_H

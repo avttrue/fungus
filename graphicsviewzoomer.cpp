@@ -63,7 +63,7 @@ void GraphicsViewZoomer::resetZoom()
     auto center = QPointF(m_View->scene()->width(), m_View->scene()->height()) / 2.0;
     m_View->centerOn(center);
 
-    qDebug() << "Scene zoom resetted:" << m_CurrentZoom;
+    qDebug() << "Scene zoom resetted:" << m_CurrentZoom << "; center:" << center;
     Q_EMIT signalZoomed(m_CurrentZoom);
 }
 

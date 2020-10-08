@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "properties.h"
-#include "helper.h"
 #include "controls.h"
 #include "jdocumentlist.h"
+#include "helpers/helper.h"
+#include "helpers/tooltipshortcut.h"
+#include "helpers/widgethelper.h"
 #include "scene/scene.h"
 #include "scene/sceneitem.h"
 #include "scene/sceneview.h"
@@ -1576,7 +1578,7 @@ void MainWindow::slotNewProject()
 
     const QVector<QString> keys = {
         tr("00#_Field properties"),
-        tr("01#_Size"),
+        tr("01#_Size (w X h)"),
         tr("02#_Rule [%1]:").arg(QString::number(ruleslist.count())),
         tr("03#_View"),
         tr("04#_Cell size"),

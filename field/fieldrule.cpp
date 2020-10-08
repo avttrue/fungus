@@ -1,6 +1,6 @@
 #include "field.h"
 #include "fieldrule.h"
-#include "helper.h"
+#include "helpers/helper.h"
 #include "properties.h"
 
 #include <QDebug>

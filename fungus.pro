@@ -28,6 +28,9 @@ SOURCES += \
     field/field.cpp \
     field/fieldinformation.cpp \
     field/fieldrule.cpp \
+    helpers/helper.cpp \
+    helpers/tooltipshortcut.cpp \
+    helpers/widgethelper.cpp \
     kernel/kernel.cpp \
     scene/scene.cpp \
     scene/sceneitem.cpp \
@@ -35,11 +38,10 @@ SOURCES += \
     graphicsviewzoomer.cpp \
     config.cpp \
     controls.cpp \
-    helper.cpp \
     jdocumentlist.cpp \
     main.cpp \
     mainwindow.cpp \
-    properties.cpp \    
+    properties.cpp \
     splashscreen.cpp
 
 HEADERS += \
@@ -58,6 +60,9 @@ HEADERS += \
     field/fieldinformation.h \
     field/fieldrule.h \
     field/cell.h \
+    helpers/helper.h \
+    helpers/tooltipshortcut.h \
+    helpers/widgethelper.h \
     kernel/kernel.h \
     scene/scene.h \
     scene/sceneitem.h \
@@ -65,7 +70,6 @@ HEADERS += \
     graphicsviewzoomer.h \
     config.h \
     controls.h \
-    helper.h \
     jdocumentlist.h \   
     mainwindow.h \
     properties.h \    

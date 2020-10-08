@@ -4,7 +4,7 @@
 #include "fieldrule.h"
 #include "fieldinformation.h"
 #include "properties.h"
-#include "helper.h"
+#include "helpers/helper.h"
 
 #include <QCoreApplication>
 #include <QDateTime>

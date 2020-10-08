@@ -1,7 +1,7 @@
 #include "cell.h"
 #include "cellinformation.h"
 #include "field.h"
-#include "helper.h"
+#include "helpers/helper.h"
 #include "properties.h"
 
 #include <QDebug>
