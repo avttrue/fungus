@@ -22,7 +22,7 @@ public:
     void ZoomFitToView();
     void setKeyModifier(Qt::KeyboardModifiers value);
     void setZoomFactorBase(qreal value);
-    qreal CurrentZoom() const;
+    qreal currentZoom() const;
 
 private:
     QGraphicsView* m_View;
