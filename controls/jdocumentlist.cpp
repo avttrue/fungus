@@ -18,13 +18,14 @@ void JDocumentList::clearList()
 
 void JDocumentList::addDocument(const QString& key, QJsonDocument document)
 {
+    qDebug() << __func__;
     int pos = -1;
     for(int i = 0; i < m_List.count(); i++)
     {
         if(m_List.at(i).first == key)
         {
             pos = i;
-            qDebug() << __func__ << "Document already in list, rewriting";
+            qDebug() << "Document already in list, rewriting";
             break;
         }
     }
@@ -35,24 +36,26 @@ void JDocumentList::addDocument(const QString& key, QJsonDocument document)
 
 QJsonDocument JDocumentList::getDocument(const QString &key)
 {
+    qDebug() << __func__;
     if(m_List.isEmpty())
     {
-        qDebug() << __func__ << "List is empty";
+        qDebug() << "List is empty";
         return QJsonDocument();
     }
 
     for(auto value: m_List)
         if(value.first == key) return value.second;
 
-    qCritical()<< __func__ << "Key not found:" << key;
+    qCritical() << "Key not found:" << key;
     return QJsonDocument();
 }
 
 QJsonDocument JDocumentList::getFirstDocument()
 {
+    qDebug() << __func__;
     if(m_List.isEmpty())
     {
-        qDebug() << __func__ << "List is empty";
+        qDebug() << "List is empty";
         return QJsonDocument();
     }
 

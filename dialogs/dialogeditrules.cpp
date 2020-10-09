@@ -1,6 +1,7 @@
 #include "dialogeditrules.h"
 #include "properties.h"
-#include "controls.h"
+#include "controls/separators.h"
+#include "controls/clickablelabel.h"
 #include "dialogvalueslist.h"
 
 #include <QDebug>

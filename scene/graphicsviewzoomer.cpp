@@ -26,7 +26,7 @@ GraphicsViewZoomer::GraphicsViewZoomer(QGraphicsView* view,
 
 void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
 {
-    qDebug() << __func__;
+    //qDebug() << __func__;
 
     if(!m_View->scene())
     { qCritical() << ": Scene not created"; return; }
@@ -47,7 +47,7 @@ void GraphicsViewZoomer::Zoom(qreal factor, bool centered)
     m_CurrentZoom *= factor;
     m_View->centerOn(center);
 
-    qDebug() << "Scene zoom:" << m_CurrentZoom << "; center:" << center;
+    //qDebug() << "Scene zoom:" << m_CurrentZoom << "; center:" << center;
     Q_EMIT signalZoomed(m_CurrentZoom);
 }
 
@@ -103,7 +103,7 @@ bool GraphicsViewZoomer::eventFilter(QObject *object, QEvent *event)
     else if(event->type() == QEvent::Wheel)
     {
         auto wheelevent = static_cast<QWheelEvent*>(event);
-        if (QApplication::keyboardModifiers() == m_KeyModifier)
+        if(QApplication::keyboardModifiers() == m_KeyModifier)
         {
             auto angle = wheelevent->angleDelta().y();
             auto factor = qPow(m_ZoomFactorBase, angle);

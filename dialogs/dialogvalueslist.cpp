@@ -1,5 +1,5 @@
 #include "dialogvalueslist.h"
-#include "controls.h"
+#include "controls/separators.h"
 #include "properties.h"
 #include "helpergraphics.h"
 

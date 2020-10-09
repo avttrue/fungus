@@ -1,7 +1,7 @@
 #include "dialogfieldinformation.h"
-#include "infopanel.h"
 #include "properties.h"
-#include "controls.h"
+#include "controls/infopanel.h"
+#include "controls/separators.h"
 #include "field/field.h"
 #include "field/fieldinformation.h"
 

@@ -13,6 +13,12 @@ DEFINES     += BUILD_DATE='"\\\"$(shell date)\\\""'
 DEFINES     += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    controls/clickablelabel.cpp \
+    controls/infopanel.cpp \
+    controls/jdocumentlist.cpp \
+    controls/menucaption.cpp \
+    controls/separators.cpp \
+    controls/textlog.cpp \
     dialogs/dialogbody.cpp \
     dialogs/dialogcellinformation.cpp \
     dialogs/dialogcellmonitor.cpp \
@@ -21,8 +27,6 @@ SOURCES += \
     dialogs/dialoginfocontent.cpp \
     dialogs/dialogvalueslist.cpp \
     dialogs/helpergraphics.cpp \
-    dialogs/infopanel.cpp \
-    dialogs/textlog.cpp \
     field/cellinformation.cpp \
     field/cell.cpp \
     field/field.cpp \
@@ -32,19 +36,23 @@ SOURCES += \
     helpers/tooltipshortcut.cpp \
     helpers/widgethelper.cpp \
     kernel/kernel.cpp \
+    scene/graphicsviewzoomer.cpp \
     scene/scene.cpp \
     scene/sceneitem.cpp \
     scene/sceneview.cpp \
-    graphicsviewzoomer.cpp \
     config.cpp \
-    controls.cpp \
-    jdocumentlist.cpp \
     main.cpp \
     mainwindow.cpp \
     properties.cpp \
     splashscreen.cpp
 
 HEADERS += \
+    controls/clickablelabel.h \
+    controls/infopanel.h \
+    controls/jdocumentlist.h \
+    controls/menucaption.h \
+    controls/separators.h \
+    controls/textlog.h \
     dialogs/dialogbody.h \
     dialogs/dialogcellinformation.h \
     dialogs/dialogcellmonitor.h \
@@ -53,8 +61,6 @@ HEADERS += \
     dialogs/dialoginfocontent.h \
     dialogs/dialogvalueslist.h \
     dialogs/helpergraphics.h \
-    dialogs/infopanel.h \
-    dialogs/textlog.h \
     field/cellinformation.h \
     field/field.h \
     field/fieldinformation.h \
@@ -64,13 +70,11 @@ HEADERS += \
     helpers/tooltipshortcut.h \
     helpers/widgethelper.h \
     kernel/kernel.h \
+    scene/graphicsviewzoomer.h \
     scene/scene.h \
     scene/sceneitem.h \
     scene/sceneview.h \
-    graphicsviewzoomer.h \
     config.h \
-    controls.h \
-    jdocumentlist.h \   
     mainwindow.h \
     properties.h \    
     splashscreen.h
