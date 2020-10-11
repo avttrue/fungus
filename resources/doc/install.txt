@@ -1,3 +1,12 @@
+Qt
+
+https://stackoverflow.com/questions/47810466/could-not-start-process-make-qmake-all/48627285#48627285
+
+sudo apt-get install build-essential
+udo apt-get install libgl1-mesa-dev
+----------------------------------------------------
+CQtDeployer
+
 https://github.com/QuasarApp/CQtDeployer 
 
 LINUX
@@ -5,6 +14,7 @@ sudo snap install cqtdeployer
 sudo snap connect cqtdeployer:process-control
 sudo snap connect cqtdeployer:removable-media
 sudo snap connect cqtdeployer:system-backup
-cqtdeployer -bin fungus deploySystem noTranslations
+
+cqtdeployer -bin [APP] deploySystem noTranslations
 ----------------------------------------------------
 
