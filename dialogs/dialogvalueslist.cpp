@@ -16,7 +16,6 @@
 #include <QToolBar>
 #include <QStandardItemModel>
 #include <QFileDialog>
-#include <QGraphicsDropShadowEffect>
 #include <QPushButton>
 #include <QColorDialog>
 
@@ -102,28 +101,17 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
         if(t == QVariant::Invalid ||
                 values->value(key).mode == DialogValueMode::Caption)
         {
-            auto widget = new QFrame();
-            widget->setFrameStyle(QFrame::Raised | QFrame::Panel);
-            auto bl = new QHBoxLayout();
-            bl->setMargin(0);
-
-            auto label = new QLabel(widget);
-            label->setText(QString("<b>%1</b>").arg(text));
+            auto label = new QLabel();
+            label->setStyleSheet(DVL_CAPTION_STYLE);
+            label->setText(QString("<center>%1</center>").arg(text));
             label->setWordWrap(true);
-
-            auto effect = new QGraphicsDropShadowEffect(widget);
-            effect->setOffset(DVL_CAPTION_EFFECT_OFFSET, DVL_CAPTION_EFFECT_OFFSET);
-            effect->setColor(widget->palette().color(QPalette::Base));
-            label->setGraphicsEffect(effect);
 
             QFont font = label->font();
             font.setPointSizeF(font.pointSizeF() + DVL_CAPTION_FONT_UP);
             //font.setUnderline(true);
             label->setFont(font);
 
-            bl->addWidget(label, 0);
-            widget->setLayout(bl);
-            addWidgetContent(widget);
+            addWidgetContent(label);
             continue;
         }
 

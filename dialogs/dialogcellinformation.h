@@ -12,7 +12,11 @@ class DialogCellInformation : public DialogBody
 public:
     DialogCellInformation(QWidget *parent, Cell* cell);
     Cell *getCell() const;
-    static bool FindPreviousCopy(Cell* cell); // найти предыдущую копию окна, если найдена, то возвращается TRUE и делает его активным
+    /*!
+     * \brief FindPreviousCopy - найти предыдущую копию окна по клетке, если найдена,
+     * то возвращается TRUE и делает его активным
+     */
+    static bool FindPreviousCopy(Cell* cell);
 
 protected:
     void loadInformation();
