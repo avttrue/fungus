@@ -59,6 +59,7 @@ DialogBody::DialogBody(QWidget* parent,
         buttonCaption->setIconSize(font_height);
         buttonCaption->setFixedSize(font_height + QSize(4, 4));
         buttonCaption->setIcon(QIcon(":/resources/img/exit.svg"));
+        buttonCaption->setToolTip(tr("Close"));
         buttonCaption->setFlat(true);
         QObject::connect(buttonCaption, &QPushButton::released, this, &QDialog::close);
         layoutCaption->addWidget(buttonCaption);

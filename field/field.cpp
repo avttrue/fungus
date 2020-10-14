@@ -248,6 +248,14 @@ void Field::calculate()
     Q_EMIT signalCalculatingDone();
 }
 
+void Field::updateScene()
+{
+    setRuleOn(false);
+    setCalculatingNonstop(false);
+    slotStartCalculating();
+    calculate();
+}
+
 Cell *Field::addCell(QPoint index)
 {
     auto c = new Cell(this);
@@ -657,13 +665,5 @@ bool Field::isCalculating() { return m_Calculating; }
 FieldInformation *Field::getInformation() const { return m_FieldInformation; }
 void Field::slotSceneReady() { m_WaitScene = false; }
 bool Field::isWaitScene() const { return m_WaitScene; }
-
-void Field::updateScene()
-{
-    setRuleOn(false);
-    setCalculatingNonstop(false);
-    slotStartCalculating();
-    calculate();
-}
 
 

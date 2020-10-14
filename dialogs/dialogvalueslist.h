@@ -18,10 +18,10 @@ const QString DVL_BTN_COLOR_STYLE = "border: 1px solid darkgray; "
                                     "font: bold monospace; "
                                     "color: %2";
 const QString DVL_CAPTION_STYLE = "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-                                 "stop: 0 transparent, "
+                                 "stop: 0 white, "
                                  "stop: 0.5 silver, "
                                  "stop: 0.5 silver, "
-                                 "stop: 1 transparent); "
+                                 "stop: 1 white); "
                                  "border: 1px solid silver; "
                                  "padding: 0px 1px 0px 1px; border-radius: 9px; "
                                  "color: black; font-family: monospace; font: bold; ";

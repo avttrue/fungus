@@ -5,11 +5,9 @@
 #include <QLabel>
 
 const QString DB_CAPTION_STYLE = "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-                                 "stop: 0 silver, "
-                                 "stop: 0.5 transparent, "
-                                 "stop: 0.5 transparent, "
-                                 "stop: 1 silver); "
-                                 "border: 1px solid silver; "
+                                 "stop: 0 Silver, stop: 0.5 PowderBlue, "
+                                 "stop: 0.5 PowderBlue, stop: 1 silver); "
+                                 "border: 1px solid Silver; "
                                  "padding: 0px 1px 0px 1px; border-radius: 5px; "
                                  "color: black; font-family: monospace; font: bold; ";
 
