@@ -12,7 +12,7 @@
    version="1.1"
    id="svg4"
    sodipodi:docname="preset_save.svg"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
   <metadata
      id="metadata10">
     <rdf:RDF>
@@ -21,7 +21,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -37,7 +37,7 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1007"
+     inkscape:window-height="1001"
      id="namedview6"
      showgrid="false"
      inkscape:zoom="6.5833339"
@@ -47,6 +47,13 @@
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg4" />
+  <rect
+     style="opacity:1;fill:#e6e6e6;stroke:none;stroke-width:1.00213349"
+     id="rect3710"
+     width="64"
+     height="64.00016"
+     x="0"
+     y="-0.00016021729" />
   <g
      id="g25"
      style="fill:#000000">

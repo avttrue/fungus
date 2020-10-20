@@ -3,7 +3,7 @@
 #include "controls/separators.h"
 #include "controls/menucaption.h"
 #include "controls/clickablelabel.h"
-#include "controls/jdocumentlist.h"
+#include "controls/snapshotlist.h"
 #include "helpers/helper.h"
 #include "helpers/tooltipshortcut.h"
 #include "helpers/widgethelper.h"
@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setWindowIcon(QIcon(":/resources/img/mushroom.svg"));
     setWindowTitle(QString("%1 %2").arg(APP_NAME, APP_VERSION));
-    m_Snapshots = new JDocumentList(this);
+    m_Snapshots = new SnapshotList(this);
     loadGui();
     setWidgetToScreenCenter(this);
 }
@@ -392,6 +392,14 @@ void MainWindow::loadGui()
     QObject::connect(m_SceneView->zoomer(), &GraphicsViewZoomer::signalZoomed,
                      [=](qreal value){ m_LabelFieldZoom->setText(QString::number(value, 'f', 2)); });
     statusBar->addWidget(m_LabelFieldZoom);
+
+    statusBar->addWidget(new SeparatorV(this));
+
+    statusBar->addWidget(new QLabel(tr("Snapshots:"), this));
+    m_LabelSnapshotsCount = new QLabel("0", this);
+    QObject::connect(m_Snapshots, &SnapshotList::signalCountChanged,
+                     [=](int value){ m_LabelSnapshotsCount->setText(QString::number(value)); });
+    statusBar->addWidget(m_LabelSnapshotsCount);
 
     statusBar->addWidget(new SeparatorV(this));
 
@@ -1194,7 +1202,7 @@ void MainWindow::createSnapshot()
 
     if(m_Field->getInformation()->getAge() == 0 &&
             config->SceneFirstSnapshotClearList())
-        m_Snapshots->clearList();
+        m_Snapshots->clear();
 
     auto name = QString("Age: %1").arg(QString::number(m_Field->getInformation()->getAge()));
     auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
@@ -1211,7 +1219,8 @@ void MainWindow::createSnapshot()
     CellsToJsonObject(&obj_root, firstcell, secondcell, false);
 
     document.setObject(obj_root);
-    m_Snapshots->addDocument(name, document);
+    auto pixmap = m_SceneView->getScene()->getSceneItem()->getPixmap();
+    m_Snapshots->addItem(name, {document, QPixmap(*pixmap)});
 }
 
 void MainWindow::loadSnapshot(QJsonDocument* document)
@@ -1637,7 +1646,7 @@ void MainWindow::slotNewProject()
     m_Field->setRule(ruleslist.value(currentrule));
     for(auto r: ruleslist) if(!r->parent()) r->deleteLater();
 
-    m_Snapshots->clearList();
+    m_Snapshots->clear();
     createScene();
     if(random) m_Field->updateScene();
 
@@ -1686,19 +1695,19 @@ bool MainWindow::validateSelectedCell()
 
 bool MainWindow::validateSelectedCells()
 {
-   if(!validateScene()) return false;
+    if(!validateScene()) return false;
 
-   auto scene = m_SceneView->getScene();
-   auto firstcell = scene->getSelectedCell();
-   auto secondcell = scene->getSecondSelectedCell();
+    auto scene = m_SceneView->getScene();
+    auto firstcell = scene->getSelectedCell();
+    auto secondcell = scene->getSecondSelectedCell();
 
-   if(!firstcell || !secondcell || firstcell == secondcell)
-   {
-       qCritical() << "Target cells not selected";
-       return false;
-   }
+    if(!firstcell || !secondcell || firstcell == secondcell)
+    {
+        qCritical() << "Target cells not selected";
+        return false;
+    }
 
-   return true;
+    return true;
 }
 
 void MainWindow::slotSceneZoomIn()
@@ -2227,13 +2236,15 @@ void MainWindow::slotSelectSnapshot()
 
     QVector<QString> keys =
     { tr("00#_Available snapshots: %1").arg(QString::number(m_Snapshots->count())),
-      "01#_" };
+      "01#_",
+      tr("02#_Delete snapshots after the selected") };
 
     QMap<QString, DialogValue> map =
     { {keys.at(0), {}},
       {keys.at(1), {QVariant::StringList, m_Snapshots->keys().at(0), 0,
-                    m_Snapshots->keys(),
-                    DialogValueMode::OneFromList}} };
+                    m_Snapshots->keys(), DialogValueMode::OneFromList}},
+      {keys.at(2), {QVariant::Bool, false}},
+    };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/next_snapshot.svg",
                                     tr("Select snapshot"), &map);
@@ -2246,8 +2257,10 @@ void MainWindow::slotSelectSnapshot()
     if(!dvl->exec()) return;
 
     auto key = map.value(keys.at(1)).value.toString();
-    auto jdoc = m_Snapshots->getDocument(key);
+    auto jdoc = m_Snapshots->getSnapshot(key).document;
     loadSnapshot(&jdoc);
+
+    if(map.value(keys.at(2)).value.toBool()) m_Snapshots->clearAfter(key);
 }
 
 void MainWindow::slotLoadFirstSnapshot()
@@ -2256,7 +2269,7 @@ void MainWindow::slotLoadFirstSnapshot()
 
     if(!m_Snapshots->count()) return;
 
-    auto jdoc = m_Snapshots->getFirstDocument();
+    auto jdoc = m_Snapshots->getFirst().document;
     loadSnapshot(&jdoc);
 }
 
@@ -2315,7 +2328,7 @@ void MainWindow::slotLoadProject()
     m_LabelSceneAvDraw->setText(tr("0 ms"));
     m_LabelSelectedCell->setText("-");
 
-    m_Snapshots->clearList();
+    m_Snapshots->clear();
     createScene();
     m_Field->updateScene();
 
@@ -2373,7 +2386,15 @@ void MainWindow::slotNewRule()
 {
     qDebug() << __func__;
     auto rule = new FieldRule();
+
     auto der = new DialogEditRules(this, rule);
+    der->resize(config->EditRulesWindowWidth(), config->EditRulesWindowHeight());
+    QObject::connect(der, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setEditRulesWindowWidth(size.width());
+        config->setEditRulesWindowHeight(size.height());
+    });
+
     if(der->exec()) saveRuleToFile(rule);
     rule->deleteLater();
 }
@@ -2395,6 +2416,13 @@ void MainWindow::slotLoadEditRule()
     }
 
     auto der = new DialogEditRules(this, rule);
+    der->resize(config->EditRulesWindowWidth(), config->EditRulesWindowHeight());
+    QObject::connect(der, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setEditRulesWindowWidth(size.width());
+        config->setEditRulesWindowHeight(size.height());
+    });
+
     if(der->exec()) saveRuleToFile(rule);
     rule->deleteLater();
 }

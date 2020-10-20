@@ -7,7 +7,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:version="1.0 (6e3e5246a0, 2020-05-07)"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    sodipodi:docname="info.svg"
    zoomAndPan="magnify"
    xml:space="preserve"
@@ -33,7 +33,7 @@
      inkscape:zoom="5.2149125"
      showgrid="false"
      id="namedview5"
-     inkscape:window-height="1137"
+     inkscape:window-height="1001"
      inkscape:window-width="1920"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
@@ -42,7 +42,13 @@
      objecttolerance="10"
      borderopacity="1"
      bordercolor="#666666"
-     pagecolor="#ffffff" /><g
+     pagecolor="#ffffff" /><rect
+     style="opacity:1;fill:#e6e6e6;stroke:none;stroke-width:1.00213349"
+     id="rect3710"
+     width="64"
+     height="64.00016"
+     x="0"
+     y="-0.00016021729" /><g
      id="g13"><circle
        r="32"
        style="fill:#000000"

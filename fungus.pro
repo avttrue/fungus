@@ -15,9 +15,9 @@ DEFINES     += QT_DEPRECATED_WARNINGS
 SOURCES += \
     controls/clickablelabel.cpp \
     controls/infopanel.cpp \
-    controls/jdocumentlist.cpp \
     controls/menucaption.cpp \
     controls/separators.cpp \
+    controls/snapshotlist.cpp \
     controls/textlog.cpp \
     dialogs/dialogbody.cpp \
     dialogs/dialogcellinformation.cpp \
@@ -49,9 +49,9 @@ SOURCES += \
 HEADERS += \
     controls/clickablelabel.h \
     controls/infopanel.h \
-    controls/jdocumentlist.h \
     controls/menucaption.h \
     controls/separators.h \
+    controls/snapshotlist.h \
     controls/textlog.h \
     dialogs/dialogbody.h \
     dialogs/dialogcellinformation.h \

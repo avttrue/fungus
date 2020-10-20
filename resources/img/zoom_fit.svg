@@ -12,7 +12,7 @@
    version="1.1"
    id="svg4"
    sodipodi:docname="zoom_fit.svg"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
   <metadata
      id="metadata10">
     <rdf:RDF>
@@ -37,17 +37,24 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1137"
+     inkscape:window-height="1001"
      id="namedview6"
      showgrid="false"
      inkscape:zoom="3.6203867"
-     inkscape:cx="2.8209631"
+     inkscape:cx="-45.654522"
      inkscape:cy="31.902762"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg4"
      inkscape:document-rotation="0" />
+  <rect
+     style="opacity:1;fill:#e6e6e6;stroke:none;stroke-width:1.00213349"
+     id="rect3710"
+     width="64"
+     height="64.00016"
+     x="0"
+     y="-0.00016021729" />
   <g
      id="g10">
     <path

@@ -7,7 +7,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:version="1.0 (1.0+r73+1)"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    sodipodi:docname="sel_unsel.svg"
    id="svg4"
    version="1.1"
@@ -34,11 +34,11 @@
      inkscape:window-y="0"
      inkscape:window-x="0"
      inkscape:cy="40.875723"
-     inkscape:cx="29.424722"
+     inkscape:cx="-12.219346"
      inkscape:zoom="4.2142857"
      showgrid="false"
      id="namedview6"
-     inkscape:window-height="1007"
+     inkscape:window-height="1001"
      inkscape:window-width="1920"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
@@ -48,6 +48,13 @@
      borderopacity="1"
      bordercolor="#666666"
      pagecolor="#ffffff" />
+  <rect
+     style="opacity:1;fill:#e6e6e6;stroke:none;stroke-width:1.00213349"
+     id="rect3710"
+     width="64"
+     height="64.00016"
+     x="0"
+     y="-0.00016021729" />
   <path
      style="stroke-width:0.0390625;fill:#000000"
      inkscape:connector-curvature="0"

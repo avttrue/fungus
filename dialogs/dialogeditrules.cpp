@@ -329,7 +329,7 @@ void DialogEditRules::slotEditRules()
     const QVector<QString> keys = {
         tr("00#_Rule name"), "01#_",
         tr("02#_Rule description"), tr("03#_"),
-        tr("04#_The time during which the cell will remain cursed (always: -1)"), tr("05#_value"),
+        tr("04#_The time the cell will stay cursed (always: -1)"), tr("05#_value"),
     };
 
     QMap<QString, DialogValue> map =

@@ -32,7 +32,7 @@ class QLabel;
 class ClickableLabel;
 class QProgressBar;
 class QThread;
-class JDocumentList;
+class SnapshotList;
 class QToolButton;
 
 class MainWindow : public QMainWindow
@@ -85,7 +85,7 @@ private:
     QThread* m_ThreadField;
     Field* m_Field;
     SceneView* m_SceneView;
-    JDocumentList* m_Snapshots;
+    SnapshotList* m_Snapshots;
     QToolBar* m_TbMain;
     QToolBar* m_TbActions;
     QToolButton* m_BtnMenuRules;
@@ -127,6 +127,7 @@ private:
     QLabel* m_LabelFieldPause;
     QLabel* m_LabelFieldAvCalc;
     QLabel* m_LabelSceneAvDraw;
+    QLabel* m_LabelSnapshotsCount;
     ClickableLabel* m_LabelSelectedCell;
     QLabel* m_LabelRunningStatus;
     QProgressBar* m_ProgressBar;

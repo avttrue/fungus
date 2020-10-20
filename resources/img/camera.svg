@@ -7,7 +7,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:version="1.0 (6e3e5246a0, 2020-05-07)"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    sodipodi:docname="camera.svg"
    id="svg4"
    version="1.1"
@@ -36,7 +36,7 @@
      inkscape:zoom="5.6071428"
      showgrid="false"
      id="namedview6"
-     inkscape:window-height="1137"
+     inkscape:window-height="1001"
      inkscape:window-width="1920"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
@@ -46,6 +46,13 @@
      borderopacity="1"
      bordercolor="#666666"
      pagecolor="#ffffff" />
+  <rect
+     style="opacity:1;fill:#e6e6e6;stroke:none;stroke-width:1.00213349"
+     id="rect3710"
+     width="64"
+     height="64.00016"
+     x="0"
+     y="-0.00016021729" />
   <path
      style="fill:#000000;stroke-width:0.0306432"
      id="path2"

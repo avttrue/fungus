@@ -7,7 +7,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:version="1.0 (6e3e5246a0, 2020-05-07)"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    sodipodi:docname="qt_logo.svg"
    xml:space="preserve"
    width="64"
@@ -27,7 +27,7 @@
      inkscape:zoom="7.375"
      showgrid="false"
      id="namedview7"
-     inkscape:window-height="1137"
+     inkscape:window-height="1001"
      inkscape:window-width="1920"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
@@ -37,7 +37,13 @@
      borderopacity="1"
      bordercolor="#666666"
      pagecolor="#ffffff" /><defs
-     id="defs7" /><g
+     id="defs7" /><rect
+     style="opacity:1;fill:#e6e6e6;stroke:none;stroke-width:1.00213349"
+     id="rect3710"
+     width="64"
+     height="64.00016"
+     x="0"
+     y="-0.00016021729" /><g
      transform="matrix(0.12499999,0,0,0.12499999,17.022324,13.531252)"
      id="g6664"><path
        inkscape:connector-curvature="0"

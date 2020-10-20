@@ -16,8 +16,8 @@
    width="64"
    xml:space="preserve"
    zoomAndPan="magnify"
-   sodipodi:docname="revert_h.svg"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"><metadata
+   sodipodi:docname="flip_h.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"><metadata
      id="metadata9"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
@@ -31,7 +31,7 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1137"
+     inkscape:window-height="1001"
      id="namedview5"
      showgrid="false"
      inkscape:zoom="4.90625"
@@ -40,7 +40,13 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="Layer_1" /><g
+     inkscape:current-layer="Layer_1" /><rect
+     style="opacity:1;fill:#e6e6e6;stroke:none;stroke-width:1.00213349"
+     id="rect3710"
+     width="64"
+     height="64.00016"
+     x="0"
+     y="-0.00016021729" /><g
      id="g43"
      transform="rotate(90,32,32)"><path
        d="m 31.99999,16 v 32 c 0,4.44448 -0.02651,8.22216 -0.07954,11.33328 C 31.86742,62.44448 31.803026,64 31.727268,64 H 28.272722 C 28.196962,64 28.132571,62.44448 28.07954,59.33328 28.02651,56.22216 28,52.44448 28,48 V 16 C 28,11.55552 28.02651,7.77784 28.07954,4.66672 28.13257,1.55552 28.196963,0 28.272722,0 h 3.454546 c 0.07576,0 0.14015,1.55552 0.193182,4.66672 0.05303,3.11112 0.07954,6.8888 0.07954,11.33328 z"
