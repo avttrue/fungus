@@ -2466,7 +2466,15 @@ void MainWindow::slotImportRule()
     if(!validateScene()) return;
 
     auto rule = new FieldRule(m_Field->getRule());
+
     auto der = new DialogEditRules(this, rule);
+    der->resize(config->EditRulesWindowWidth(), config->EditRulesWindowHeight());
+    QObject::connect(der, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setEditRulesWindowWidth(size.width());
+        config->setEditRulesWindowHeight(size.height());
+    });
+
     if(der->exec()) saveRuleToFile(rule);
     rule->deleteLater();
 }
