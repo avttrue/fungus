@@ -103,6 +103,13 @@ int main(int argc, char *argv[])
         m_logFile.data()->open(QFile::Append | QFile::Text);
         qInstallMessageHandler(consoleOut);
     }
+
+    qInfo() << "App version:" << APP_VERSION;
+    qInfo() << "Format version:" << FORMAT_VERSION;
+    qInfo() << "Git, build date:" << GIT_VERS << BUILD_DATE;
+    qInfo() << "System info:" << getSystemInfo();
+    qInfo() << "Qt version:" << QT_VERSION_STR;
+
     qInfo() << "PathAppDirectory:" << config->PathAppDir();
     qInfo() << "PathAppConfig:" << config->PathAppConfig();
     qInfo() << "PathPresetDirectory:" << config->PathPresetsDir();

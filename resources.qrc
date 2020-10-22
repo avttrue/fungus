@@ -135,5 +135,6 @@
         <file>resources/md/help/doc5_ru.md</file>
         <file>resources/md/help/doc6_ru.md</file>
         <file>resources/md/help/example_trait_ru.md</file>
+        <file>resources/img/text.svg</file>
     </qresource>
 </RCC>

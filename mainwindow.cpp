@@ -208,7 +208,7 @@ void MainWindow::loadGui()
     m_ActionInfoField->setAutoRepeat(false);
     m_ActionInfoField->setEnabled(false);
 
-    m_ActionCellMonitor = new QAction(QIcon(":/resources/img/cell_monitor.svg"), tr("Cells minitor"), this);
+    m_ActionCellMonitor = new QAction(QIcon(":/resources/img/cell_monitor.svg"), tr("Cells monitor"), this);
     QObject::connect(m_ActionCellMonitor, &QAction::triggered, this, &MainWindow::slotCellMonitor);
     m_ActionCellMonitor->setAutoRepeat(false);
     m_ActionCellMonitor->setEnabled(false);
@@ -265,6 +265,11 @@ void MainWindow::loadGui()
     QObject::connect(m_ActionSaveImageToFile, &QAction::triggered, this, &MainWindow::slotSaveImageToFile);
     m_ActionSaveImageToFile->setAutoRepeat(false);
     m_ActionSaveImageToFile->setEnabled(false);
+
+    m_ActionReport = new QAction(QIcon(":/resources/img/text.svg"), tr("SCreate report"), this);
+    QObject::connect(m_ActionReport, &QAction::triggered, this, &MainWindow::slotReport);
+    m_ActionReport->setAutoRepeat(false);
+    m_ActionReport->setEnabled(false);
 
     m_ActionSelectAll = new QAction(QIcon(":/resources/img/select_all.svg"), tr("Select all cells"), this);
     QObject::connect(m_ActionSelectAll, &QAction::triggered, this, &MainWindow::slotSelectAll);
@@ -327,6 +332,7 @@ void MainWindow::loadGui()
     m_TbMain->addAction(m_ActionSaveProject);
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionSaveImageToFile);
+    m_TbMain->addAction(m_ActionReport);
     m_TbMain->addSeparator();
     m_TbMain->addAction(m_ActionZoomFit);
     m_TbMain->addAction(m_ActionZoomUndoScene);
@@ -582,6 +588,7 @@ void MainWindow::setMainActionsEnable(bool value)
     m_ActionInfoField->setEnabled(enable);
     m_ActionCellMonitor->setEnabled(enable);
     m_ActionSaveImageToFile->setEnabled(enable);
+    m_ActionReport->setEnabled(enable);
     m_ActionRun->setEnabled(enable);
     m_ActionSelectAll->setEnabled(enable);
     m_ActionCreateSnapshot->setEnabled(enable);
@@ -1976,6 +1983,37 @@ void MainWindow::slotSaveImageToFile()
     if(!pixmap->save(filename, fileext.toUpper().toLatin1().constData()))
         QMessageBox::critical(this, tr("Error"),
                               tr("Error at file saving. Path: '%1'").arg(filename));
+
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
+}
+
+void MainWindow::slotReport()
+{
+    QMessageBox::information(this, tr("info"), "Not ready yet");  return;
+
+    qDebug() << __func__;
+
+    if(!validateScene()) return;
+
+    auto fileext = config->ReportFileFormat().toLower();
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save report"), config->LastDir(),
+                                                 tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
+
+    if(filename.isNull() || filename.isEmpty()) return;
+
+    config->setLastDir(QFileInfo(filename).dir().path());
+
+    auto dot_fileformat = QString(".%1").arg(fileext);
+    if(!filename.endsWith(dot_fileformat, Qt::CaseInsensitive)) filename.append(dot_fileformat);
+
+    // TODO: dialog slotReport
+
+    stopFieldCalculating();
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+
+    // TODO: slotReport
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);

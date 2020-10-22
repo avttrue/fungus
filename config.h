@@ -182,6 +182,12 @@ public:
     void setInfoRuleWindowHeight(int value);
     int InfoRuleWindowWidth() const;
     void setInfoRuleWindowWidth(int value);
+    QString ReportFileFormat() const;
+    void setReportFileFormat(const QString &value);
+    int ReportWindowHeight() const;
+    void setReportWindowHeight(int value);
+    int ReportWindowWidth() const;
+    void setReportWindowWidth(int value);
 
 protected:
     void load();
@@ -206,6 +212,7 @@ private:
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
     QString m_SceneLastRule;                        // последнее правило
     QString m_ImageFileFormat;                      // формат файлов для сохранения картинки сцены
+    QString m_ReportFileFormat;                     // формат файлов для сохранения отчёто по сцены
     QString m_CellAliveAgeIndicBright;              // индикация возраста живой ячейки: ярче/темнее
     QString m_CellCurseAgeIndicBright;              // индикация возраста отравленной ячейки: ярче/темнее
     QString m_HelpPage;                             // стартовая страница справки
@@ -228,6 +235,8 @@ private:
     int m_EditCellWindowWidth;                      // размеры окна EditCell
     int m_ProjectWindowHeight;                      // размеры окна Project
     int m_ProjectWindowWidth;                       // размеры окна Project
+    int m_ReportWindowHeight;                       // размеры окна Report
+    int m_ReportWindowWidth;                        // размеры окна Report
     int m_SetupWindowHeight;                        // размеры окна Setup
     int m_SetupWindowWidth;                         // размеры окна Setup
     int m_SnapshotWindowHeight;                     // размеры окна Snapshot

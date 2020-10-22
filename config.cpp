@@ -70,6 +70,10 @@ void Config::load()
         m_Settings->setValue("ImageFileFormat", IMAGE_FILE_FORMAT);
     m_ImageFileFormat = m_Settings->value("ImageFileFormat").toString();
 
+    if(!m_Settings->contains("ReportFileFormat"))
+        m_Settings->setValue("ReportFileFormat", REPORT_FILE_FORMAT);
+    m_ReportFileFormat = m_Settings->value("ReportFileFormat").toString();
+
     if(!m_Settings->contains("ProjectFileCompression"))
         m_Settings->setValue("ProjectFileCompression", PROJECT_FILE_COMPRESSION);
     m_ProjectFileCompression = m_Settings->value("ProjectFileCompression").toBool();
@@ -117,6 +121,14 @@ void Config::load()
     if(!m_Settings->contains("MainWindow/InfoRuleWindowHeight"))
         m_Settings->setValue("MainWindow/InfoRuleWindowHeight", INFORULE_WINDOW_HEIGHT);
     m_InfoRuleWindowHeight = m_Settings->value("MainWindow/InfoRuleWindowHeight").toInt();
+
+    if(!m_Settings->contains("MainWindow/ReportWindowWidth"))
+        m_Settings->setValue("MainWindow/ReportWindowWidth", REPORT_WINDOW_WIDTH);
+    m_ReportWindowWidth = m_Settings->value("MainWindow/ReportWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/ReportWindowHeight"))
+        m_Settings->setValue("MainWindow/ReportWindowHeight", REPORT_WINDOW_HEIGHT);
+    m_ReportWindowHeight = m_Settings->value("MainWindow/ReportWindowHeight").toInt();
 
     if(!m_Settings->contains("MainWindow/HelpWindowWidth"))
         m_Settings->setValue("MainWindow/HelpWindowWidth", HELP_WINDOW_WIDTH);
@@ -341,6 +353,30 @@ void Config::load()
     if(!m_Settings->contains("Scene/LastRule"))
         m_Settings->setValue("Scene/LastRule", "");
     m_SceneLastRule = m_Settings->value("Scene/LastRule").toString();
+}
+
+void Config::setReportWindowWidth(int value)
+{
+    if(m_ReportWindowWidth == value) return;
+
+    m_ReportWindowWidth = value;
+    m_Settings->setValue("MainWindow/ReportWindowWidth", m_ReportWindowWidth);
+}
+
+void Config::setReportWindowHeight(int value)
+{
+    if(m_ReportWindowHeight == value) return;
+
+    m_ReportWindowHeight = value;
+    m_Settings->setValue("MainWindow/ReportWindowHeight", m_ReportWindowHeight);
+}
+
+void Config::setReportFileFormat(const QString &value)
+{
+    if(m_ReportFileFormat == value) return;
+
+    m_ReportFileFormat = value;
+    m_Settings->setValue("ReportFileFormat", m_ReportFileFormat);
 }
 
 void Config::setInfoRuleWindowWidth(int value)
@@ -804,7 +840,6 @@ void Config::setImageFileFormat(const QString &value)
     m_Settings->setValue("ImageFileFormat", m_ImageFileFormat);
 }
 
-
 void Config::setFieldInfoWindowWidth(int value)
 {
     if(m_FieldInfoWindowWidth == value) return;
@@ -1072,3 +1107,6 @@ int Config::HelpWindowWidth() const { return m_HelpWindowWidth; }
 int Config::HelpWindowHeight() const { return m_HelpWindowHeight; }
 int Config::InfoRuleWindowWidth() const { return m_InfoRuleWindowWidth; }
 int Config::InfoRuleWindowHeight() const { return m_InfoRuleWindowHeight; }
+int Config::ReportWindowWidth() const { return m_ReportWindowWidth; }
+int Config::ReportWindowHeight() const { return m_ReportWindowHeight; }
+QString Config::ReportFileFormat() const { return m_ReportFileFormat; }
