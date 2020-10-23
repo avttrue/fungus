@@ -187,3 +187,24 @@ void copyResources(const QString& outPath, const QString& inPath, bool rewrite, 
 }
 
 QString BoolToString(bool value) { return value ? "[+]" : "[-]"; }
+
+bool CreateDir(const QString &path)
+{
+    if(!QDir().exists(path) && !QDir().mkpath(path))
+    {
+        qCritical() << "Directory not exist and cannot be created:" << path;
+        return false;
+    }
+
+    auto p = QFile(path).permissions();
+    if(!QFile::setPermissions(path, p |
+                              QFileDevice::ReadOwner |
+                              QFileDevice::WriteOwner))
+    {
+        qCritical() << "Cannot set permissions to directory:" << path;
+        return false;
+    }
+
+    qInfo() << "Directory" << path << "ready";
+    return true;
+}

@@ -188,6 +188,8 @@ public:
     void setReportWindowHeight(int value);
     int ReportWindowWidth() const;
     void setReportWindowWidth(int value);
+    QString PathReportsDir() const;
+    void setPathReportsDir(const QString &value);
 
 protected:
     void load();
@@ -200,6 +202,7 @@ private:
     QString m_PathPojectsDir;                       // путь до каталога с проектами
     QString m_PathRulesDir;                         // путь до каталога с правилами
     QString m_PathLogsDir;                          // путь до каталога с логами
+    QString m_PathReportsDir;                       // путь до каталога с отчётами
     QString m_PathAppDir;                           // путь до каталога приложения
     QString m_LastDir;                              // путь до последнего каталога
     QString m_SceneSelectColor;                     // цвет выбранного объекта сцены

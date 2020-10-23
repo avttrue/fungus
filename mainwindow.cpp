@@ -1965,12 +1965,10 @@ void MainWindow::slotSaveImageToFile()
     if(!validateScene()) return;
 
     auto fileext = config->ImageFileFormat().toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), config->LastDir(),
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), config->PathReportsDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
-
-    config->setLastDir(QFileInfo(filename).dir().path());
 
     auto dot_fileformat = QString(".%1").arg(fileext);
     if(!filename.endsWith(dot_fileformat, Qt::CaseInsensitive)) filename.append(dot_fileformat);
@@ -1990,24 +1988,54 @@ void MainWindow::slotSaveImageToFile()
 
 void MainWindow::slotReport()
 {
-    QMessageBox::information(this, tr("info"), "Not ready yet");  return;
+    QMessageBox::information(this, tr("info"), "Not ready yet");
 
     qDebug() << __func__;
 
     if(!validateScene()) return;
 
+    const QVector<QString> keys = {
+        tr("00#_Report options"),
+        tr("01#_Field rule"),
+        tr("02#_Field statistics"),
+        tr("03#_Snapshots images"),
+        tr("04#_Snapshots statistics"),
+    };
+    QMap<QString, DialogValue> map = {
+        {keys.at(0), {}},
+        {keys.at(1), {QVariant::Bool, true}},
+        {keys.at(2), {QVariant::Bool, true}},
+        {keys.at(3), {QVariant::Bool, true}},
+        {keys.at(4), {QVariant::Bool, true}},
+    };
+
+    auto dvl = new DialogValuesList(this, ":/resources/img/text.svg", tr("Report"), &map);
+    dvl->resize(config->ReportWindowWidth(), config->ReportWindowHeight());
+    QObject::connect(dvl, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setReportWindowWidth(size.width());
+        config->setReportWindowHeight(size.height());
+    });
+    if(!dvl->exec()) return;
+
     auto fileext = config->ReportFileFormat().toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save report"), config->LastDir(),
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save report"), config->PathReportsDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
 
-    config->setLastDir(QFileInfo(filename).dir().path());
-
     auto dot_fileformat = QString(".%1").arg(fileext);
     if(!filename.endsWith(dot_fileformat, Qt::CaseInsensitive)) filename.append(dot_fileformat);
 
-    // TODO: dialog slotReport
+    QFileInfo fileinfo(filename);
+    auto dirname = fileinfo.dir().absolutePath() + QDir::separator() +
+            fileinfo.fileName().remove(dot_fileformat).replace(' ', '_');
+
+    if(!CreateDir(dirname))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Directory cannot be created:/n'%1'").arg(dirname));
+        return;
+    }
 
     stopFieldCalculating();
     setMainActionsEnable(false);

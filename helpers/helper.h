@@ -42,4 +42,6 @@ void copyResources(const QString& outPath, const QString& inPath, bool rewrite, 
 
 QString BoolToString(bool value);
 
+bool CreateDir(const QString& path);
+
 #endif // HELPER_H

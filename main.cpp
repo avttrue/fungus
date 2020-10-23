@@ -19,71 +19,29 @@ void createDirectories()
 {
     // каталог пресетов
     config->setPathPresetsDir(config->PathAppDir() + QDir::separator() + PRESET_DIRECTORY);
-    if(!QDir().exists(config->PathPresetsDir()) && !QDir().mkpath(config->PathPresetsDir()))
-    {
-        qCritical() << "Directory not exist and cannot be created:" << config->PathPresetsDir();
+
+    if(!CreateDir(config->PathPresetsDir()))
         config->setPathPresetsDir(config->PathAppDir());
-    }
-    else
-    {
-        auto p = QFile(config->PathPresetsDir()).permissions();
-        if(!QFile::setPermissions(config->PathPresetsDir(), p |
-                                  QFileDevice::ReadOwner |
-                                  QFileDevice::WriteOwner))
-            qCritical() << "Cannot set permissions to directory:" << config->PathPresetsDir();
-        else qInfo() << "Directory" << config->PathPresetsDir() << "ready";
-    }
 
     // каталог проектов
     config->setPathPojectsDir(config->PathAppDir() + QDir::separator() + PROJECTS_DIRECTORY);
-    if(!QDir().exists(config->PathPojectsDir()) && !QDir().mkpath(config->PathPojectsDir()))
-    {
-        qCritical() << "Directory not exist and cannot be created:" << config->PathPojectsDir();
+    if(!CreateDir(config->PathPojectsDir()))
         config->setPathPojectsDir(config->PathAppDir());
-    }
-    else
-    {
-        auto p = QFile(config->PathPojectsDir()).permissions();
-        if(!QFile::setPermissions(config->PathPojectsDir(), p |
-                                  QFileDevice::ReadOwner |
-                                  QFileDevice::WriteOwner))
-            qCritical() << "Cannot set permissions to directory:" << config->PathPojectsDir();
-        else qInfo() << "Directory" << config->PathPojectsDir() << "ready";
-    }
 
     // каталог правил
     config->setPathRulesDir(config->PathAppDir() + QDir::separator() + RULES_DIRECTORY);
-    if(!QDir().exists(config->PathRulesDir()) && !QDir().mkpath(config->PathRulesDir()))
-    {
-        qCritical() << "Directory not exist and cannot be created:" << config->PathRulesDir();
-        config->setPathRulesDir(config->PathAppDir());
-    }
-    else
-    {
-        auto p = QFile(config->PathRulesDir()).permissions();
-        if(!QFile::setPermissions(config->PathRulesDir(), p |
-                                  QFileDevice::ReadOwner |
-                                  QFileDevice::WriteOwner))
-            qCritical() << "Cannot set permissions to directory:" << config->PathRulesDir();
-        else qInfo() << "Directory" << config->PathRulesDir() << "ready";
-    }
+    if(!CreateDir(config->PathRulesDir()))
+        config->setPathPojectsDir(config->PathRulesDir());
 
     // каталог логов
     config->setPathLogsDir(config->PathAppDir() + QDir::separator() + LOG_DIRECTORY);
-    if(!QDir().exists(config->PathLogsDir()) && !QDir().mkpath(config->PathLogsDir()))
-    {
-        qCritical() << "Directory not exist and cannot be created:" << config->PathLogsDir();
-        config->setPathLogsDir(config->PathAppDir());
-    }
-    else
-    {
-        auto p = QFile(config->PathLogsDir()).permissions();
-        if(!QFile::setPermissions(config->PathLogsDir(), p |
-                                  QFileDevice::ReadOwner |
-                                  QFileDevice::WriteOwner))
-            qCritical() << "Cannot set permissions to directory:" << config->PathLogsDir();
-        else qInfo() << "Directory" << config->PathLogsDir() << "ready";
-    }
+    if(!CreateDir(config->PathLogsDir()))
+        config->setPathPojectsDir(config->PathLogsDir());
+
+    // каталог отчётов
+    config->setPathReportsDir(config->PathAppDir() + QDir::separator() + REPORTS_DIRECTORY);
+    if(!CreateDir(config->PathReportsDir()))
+        config->setPathPojectsDir(config->PathReportsDir());
 }
 
 int main(int argc, char *argv[])
@@ -117,15 +75,15 @@ int main(int argc, char *argv[])
 
     // копируются пресеты
     {
-    bool ok = true;
-    copyResources(":/resources/presets", config->PathPresetsDir(), config->RewriteResource(), &ok);
-    if(!ok) qCritical() << "Error at presets coping to" << config->PathPresetsDir();
+        bool ok = true;
+        copyResources(":/resources/presets", config->PathPresetsDir(), config->RewriteResource(), &ok);
+        if(!ok) qCritical() << "Error at presets coping to" << config->PathPresetsDir();
     }
     // копируются правила
     {
-    bool ok = true;
-    copyResources(":/resources/rules", config->PathRulesDir(), config->RewriteResource(), &ok);
-    if(!ok) qCritical() << "Error at rules coping to" << config->PathRulesDir();
+        bool ok = true;
+        copyResources(":/resources/rules", config->PathRulesDir(), config->RewriteResource(), &ok);
+        if(!ok) qCritical() << "Error at rules coping to" << config->PathRulesDir();
     }
 
     SplashScreen splash;

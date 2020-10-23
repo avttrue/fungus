@@ -664,6 +664,11 @@ void Config::setPathPojectsDir(const QString &value)
     m_PathPojectsDir = value;
 }
 
+void Config::setPathReportsDir(const QString &value)
+{
+    m_PathReportsDir = value;
+}
+
 void Config::setCellCurseAgeIndicDiapason(int value)
 {
     if(m_CellCurseAgeIndicDiapason == value) return;
@@ -1075,6 +1080,7 @@ int Config::CellCurseAgeIndicFactor() const { return m_CellCurseAgeIndicFactor; 
 int Config::CellCurseAgeIndicDiapason() const { return m_CellCurseAgeIndicDiapason; }
 QString Config::PathRulesDir() const { return m_PathRulesDir; }
 QString Config::PathPojectsDir() const { return m_PathPojectsDir; }
+QString Config::PathReportsDir() const { return m_PathReportsDir; }
 int Config::EditRulesWindowWidth() const { return m_EditRulesWindowWidth; }
 int Config::EditRulesWindowHeight() const { return m_EditRulesWindowHeight; }
 bool Config::SceneCreateDefaultRule() const { return m_SceneCreateDefaultRule; }
