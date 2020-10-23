@@ -1991,6 +1991,8 @@ void MainWindow::slotReport()
     QMessageBox::information(this, tr("info"), "Not ready yet");
 
     qDebug() << __func__;
+    QString filename; // файл отчёта
+    QString dirname;  // каталог доп.файлов отчёта
 
     if(!validateScene()) return;
 
@@ -2019,7 +2021,7 @@ void MainWindow::slotReport()
     if(!dvl->exec()) return;
 
     auto fileext = config->ReportFileFormat().toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save report"), config->PathReportsDir(),
+    filename = QFileDialog::getSaveFileName(this, tr("Save report"), config->PathReportsDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
@@ -2028,7 +2030,7 @@ void MainWindow::slotReport()
     if(!filename.endsWith(dot_fileformat, Qt::CaseInsensitive)) filename.append(dot_fileformat);
 
     QFileInfo fileinfo(filename);
-    auto dirname = fileinfo.dir().absolutePath() + QDir::separator() +
+    dirname = fileinfo.dir().absolutePath() + QDir::separator() +
             fileinfo.fileName().remove(dot_fileformat).replace(' ', '_');
 
     if(!CreateDir(dirname))
