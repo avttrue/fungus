@@ -353,12 +353,36 @@ void Config::load()
     if(!m_Settings->contains("Scene/LastRule"))
         m_Settings->setValue("Scene/LastRule", "");
     m_SceneLastRule = m_Settings->value("Scene/LastRule").toString();
+
+    if(!m_Settings->contains("ImageAutoopen"))
+        m_Settings->setValue("ImageAutoopen", IMAGE_AUTOOPEN);
+    m_ImageAutoopen = m_Settings->value("ImageAutoopen").toBool();
+
+    if(!m_Settings->contains("ReportAutoopen"))
+        m_Settings->setValue("ReportAutoopen", REPORT_AUTOOPEN);
+    m_ReportAutoopen = m_Settings->value("ReportAutoopen").toBool();
+}
+
+void Config::setImageAutoopen(bool value)
+{
+    if(m_ImageAutoopen == value) return;
+
+    m_ImageAutoopen = value;
+    m_Settings->setValue("ImageAutoopen", m_ImageAutoopen);
+}
+
+void Config::setReportAutoopen(bool value)
+{
+    if(m_ReportAutoopen == value) return;
+
+    m_ReportAutoopen = value;
+    m_Settings->setValue("ReportAutoopen", m_ReportAutoopen);
 }
 
 void Config::setReportWindowWidth(int value)
 {
     if(m_ReportWindowWidth == value) return;
-
+    
     m_ReportWindowWidth = value;
     m_Settings->setValue("MainWindow/ReportWindowWidth", m_ReportWindowWidth);
 }
@@ -1116,3 +1140,5 @@ int Config::InfoRuleWindowHeight() const { return m_InfoRuleWindowHeight; }
 int Config::ReportWindowWidth() const { return m_ReportWindowWidth; }
 int Config::ReportWindowHeight() const { return m_ReportWindowHeight; }
 QString Config::ReportFileFormat() const { return m_ReportFileFormat; }
+bool Config::ImageAutoopen() const { return m_ImageAutoopen; }
+bool Config::ReportAutoopen() const { return m_ReportAutoopen; }

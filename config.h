@@ -190,6 +190,10 @@ public:
     void setReportWindowWidth(int value);
     QString PathReportsDir() const;
     void setPathReportsDir(const QString &value);
+    bool ReportAutoopen() const;
+    void setReportAutoopen(bool value);
+    bool ImageAutoopen() const;
+    void setImageAutoopen(bool value);
 
 protected:
     void load();
@@ -270,6 +274,8 @@ private:
     Qt::KeyboardModifiers m_SceneTooltipKeyModifier;// модификатор отображения координат Field
     Qt::KeyboardModifiers m_SceneMultiselKeyModifier;// модификатор выбора группы Cell
     Qt::KeyboardModifiers m_FieldFasteditKeyModifier;// модификатор быстрого редактирования ячейки
+    bool m_ReportAutoopen;                          // открывать отчёт при сохранении
+    bool m_ImageAutoopen;                           // открывать картинку при сохранении
     bool m_CellAliveAgeIndicate;                    // индикация возраста живой ячейки
     bool m_CellCurseAgeIndicate;                    // индикация возраста отравленной ячейки
     bool m_WriteLogsToFile;                         // писать логи в файл

@@ -45,6 +45,7 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QSaveFile>
+#include <QDesktopServices>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -1324,32 +1325,34 @@ void MainWindow::slotSetup()
                                    tr("03#_Buttons size"),
                                    tr("04#_Rewrite resources at start"),
                                    tr("05#_Compress data in project files"),
-                                   tr("06#_Scene options"),
-                                   tr("07#_Antialiasing"),
-                                   tr("08#_Update mode"),
-                                   tr("09#_Background color"),
-                                   tr("10#_Selection color"),
-                                   tr("11#_Zoom factor"),
-                                   tr("12#_Cells options"),
-                                   tr("13#_Alive cell color"),
-                                   tr("14#_Trait cell color"),
-                                   tr("15#_Dead cell color"),
-                                   tr("16#_Cursed cell color"),
-                                   tr("17#_Indicate value alive cell age"),
-                                   tr("18#__Brightness"),
-                                   tr("19#__Maximal factor"),
-                                   tr("20#__Age diapason"),
-                                   tr("21#_Indicate value cursed cell age"),
-                                   tr("22#__Brightness"),
-                                   tr("23#__Maximal factor"),
-                                   tr("24#__Age diapason"),
-                                   tr("25#_Field options"),
-                                   tr("26#_Create first snapshot"),
-                                   tr("27#_Clear snapshot list at first snapshot"),
-                                   tr("28#_Minimum pause at calculating (ms)"),
-                                   tr("29#_Copy to clipboard except dead cells"),
-                                   tr("30#_Save to preset except dead cells"),
-                                   tr("31#_Field thread priority"),
+                                   tr("06#_Open reports at saving"),
+                                   tr("07#_Open images at saving"),
+                                   tr("08#_Scene options"),
+                                   tr("09#_Antialiasing"),
+                                   tr("10#_Update mode"),
+                                   tr("11#_Background color"),
+                                   tr("12#_Selection color"),
+                                   tr("13#_Zoom factor"),
+                                   tr("14#_Cells options"),
+                                   tr("15#_Alive cell color"),
+                                   tr("16#_Trait cell color"),
+                                   tr("17#_Dead cell color"),
+                                   tr("18#_Cursed cell color"),
+                                   tr("19#_Indicate value alive cell age"),
+                                   tr("20#__Brightness"),
+                                   tr("21#__Maximal factor"),
+                                   tr("22#__Age diapason"),
+                                   tr("23#_Indicate value cursed cell age"),
+                                   tr("24#__Brightness"),
+                                   tr("25#__Maximal factor"),
+                                   tr("26#__Age diapason"),
+                                   tr("27#_Field options"),
+                                   tr("28#_Create first snapshot"),
+                                   tr("29#_Clear snapshot list at first snapshot"),
+                                   tr("30#_Minimum pause at calculating (ms)"),
+                                   tr("31#_Copy to clipboard except dead cells"),
+                                   tr("32#_Save to preset except dead cells"),
+                                   tr("33#_Field thread priority"),
                                   };
     QMap<QString, DialogValue> map =
     {{keys.at(0), {}},
@@ -1358,32 +1361,34 @@ void MainWindow::slotSetup()
      {keys.at(3), {QVariant::Int, config->ButtonSize(), 16, 100}},
      {keys.at(4), {QVariant::Bool, config->RewriteResource()}},
      {keys.at(5), {QVariant::Bool, config->ProjectFileCompression()}},
-     {keys.at(6), {}},
-     {keys.at(7), {QVariant::Bool, config->SceneViewAntialiasing()}},
-     {keys.at(8), {QVariant::StringList, config->SceneViewUpdateMode(), 0, SCENE_VIEW_UPDATE_MODES, DialogValueMode::OneFromList}},
-     {keys.at(9), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(10), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(11), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
-     {keys.at(12), {}},
-     {keys.at(13), {QVariant::String, config->SceneCellAliveColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(14), {QVariant::String, config->SceneCellTraitColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(15), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(16), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
-     {keys.at(17), {QVariant::Bool, config->CellAliveAgeIndicate()}},
-     {keys.at(18), {QVariant::StringList, config->CellAliveAgeIndicBright(), 0, SCENE_CELL_BRIGHTNESS_VALUES, DialogValueMode::OneFromList}},
-     {keys.at(19), {QVariant::Int, config->CellAliveAgeIndicFactor(), 150, 1000}},
-     {keys.at(20), {QVariant::Int, config->CellAliveAgeIndicDiapason(), 2, 50}},
-     {keys.at(21), {QVariant::Bool, config->CellCurseAgeIndicate()}},
-     {keys.at(22), {QVariant::StringList, config->CellCurseAgeIndicBright(), 0, SCENE_CELL_BRIGHTNESS_VALUES, DialogValueMode::OneFromList}},
-     {keys.at(23), {QVariant::Int, config->CellCurseAgeIndicFactor(), 150, 1000}},
-     {keys.at(24), {QVariant::Int, config->CellCurseAgeIndicDiapason(), 2, 50}},
-     {keys.at(25), {}},
-     {keys.at(26), {QVariant::Bool, config->SceneFirstSnapshot()}},
-     {keys.at(27), {QVariant::Bool, config->SceneFirstSnapshotClearList()}},
-     {keys.at(28), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
-     {keys.at(29), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
-     {keys.at(30), {QVariant::Bool, config->SaveToPresetExceptDead()}},
-     {keys.at(31), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
+     {keys.at(6), {QVariant::Bool, config->ReportAutoopen()}},
+     {keys.at(7), {QVariant::Bool, config->ImageAutoopen()}},
+     {keys.at(8), {}},
+     {keys.at(9), {QVariant::Bool, config->SceneViewAntialiasing()}},
+     {keys.at(10), {QVariant::StringList, config->SceneViewUpdateMode(), 0, SCENE_VIEW_UPDATE_MODES, DialogValueMode::OneFromList}},
+     {keys.at(11), {QVariant::String, config->SceneBgColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(12), {QVariant::String, config->SceneSelectColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(13), {QVariant::Double, config->SceneScaleStep(), 1.0, 10.0}},
+     {keys.at(14), {}},
+     {keys.at(15), {QVariant::String, config->SceneCellAliveColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(16), {QVariant::String, config->SceneCellTraitColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(17), {QVariant::String, config->SceneCellDeadColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(18), {QVariant::String, config->SceneCellCurseColor(), 0, 0, DialogValueMode::Color}},
+     {keys.at(19), {QVariant::Bool, config->CellAliveAgeIndicate()}},
+     {keys.at(20), {QVariant::StringList, config->CellAliveAgeIndicBright(), 0, SCENE_CELL_BRIGHTNESS_VALUES, DialogValueMode::OneFromList}},
+     {keys.at(21), {QVariant::Int, config->CellAliveAgeIndicFactor(), 150, 1000}},
+     {keys.at(22), {QVariant::Int, config->CellAliveAgeIndicDiapason(), 2, 50}},
+     {keys.at(23), {QVariant::Bool, config->CellCurseAgeIndicate()}},
+     {keys.at(24), {QVariant::StringList, config->CellCurseAgeIndicBright(), 0, SCENE_CELL_BRIGHTNESS_VALUES, DialogValueMode::OneFromList}},
+     {keys.at(25), {QVariant::Int, config->CellCurseAgeIndicFactor(), 150, 1000}},
+     {keys.at(26), {QVariant::Int, config->CellCurseAgeIndicDiapason(), 2, 50}},
+     {keys.at(27), {}},
+     {keys.at(28), {QVariant::Bool, config->SceneFirstSnapshot()}},
+     {keys.at(29), {QVariant::Bool, config->SceneFirstSnapshotClearList()}},
+     {keys.at(30), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
+     {keys.at(31), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
+     {keys.at(32), {QVariant::Bool, config->SaveToPresetExceptDead()}},
+     {keys.at(33), {QVariant::StringList, config->SceneFieldThreadPriority(), 0, SCENE_FIELD_THREAD_PRIORITIES, DialogValueMode::OneFromList}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/setup.svg", tr("Settings"), &map);
@@ -1401,32 +1406,34 @@ void MainWindow::slotSetup()
     config->setButtonSize(map.value(keys.at(3)).value.toInt());
     config->setRewriteResource(map.value(keys.at(4)).value.toInt());
     config->setProjectFileCompression(map.value(keys.at(5)).value.toBool());
-    // scene 6
-    config->setSceneViewAntialiasing(map.value(keys.at(7)).value.toBool());
-    config->setSceneViewUpdateMode(map.value(keys.at(8)).value.toString());
-    config->setSceneBgColor(map.value(keys.at(9)).value.toString());
-    config->setSceneSelectColor(map.value(keys.at(10)).value.toString());
-    config->setSceneScaleStep(map.value(keys.at(11)).value.toDouble());
-    // cell 12
-    config->setSceneCellAliveColor(map.value(keys.at(13)).value.toString());
-    config->setSceneCellTraitColor(map.value(keys.at(14)).value.toString());
-    config->setSceneCellDeadColor(map.value(keys.at(15)).value.toString());
-    config->setSceneCellCurseColor(map.value(keys.at(16)).value.toString());
-    config->setCellAliveAgeIndicate(map.value(keys.at(17)).value.toBool());
-    config->setCellAliveAgeIndicBright(map.value(keys.at(18)).value.toString());
-    config->setCellAliveAgeIndicFactor(map.value(keys.at(19)).value.toInt());
-    config->setCellAliveAgeIndicDiapason(map.value(keys.at(20)).value.toInt());
-    config->setCellCurseAgeIndicate(map.value(keys.at(21)).value.toBool());
-    config->setCellCurseAgeIndicBright(map.value(keys.at(22)).value.toString());
-    config->setCellCurseAgeIndicFactor(map.value(keys.at(23)).value.toInt());
-    config->setCellCurseAgeIndicDiapason(map.value(keys.at(24)).value.toInt());
-    // field 25
-    config->setSceneFirstSnapshot(map.value(keys.at(26)).value.toBool());
-    config->setSceneFirstSnapshotClearList(map.value(keys.at(27)).value.toBool());
-    config->setSceneCalculatingMinPause(map.value(keys.at(28)).value.toInt());
-    config->setCopyToClipboardExceptDead(map.value(keys.at(29)).value.toBool());
-    config->setSaveToPresetExceptDead(map.value(keys.at(30)).value.toBool());
-    config->setSceneFieldThreadPriority(map.value(keys.at(31)).value.toString());
+    config->setReportAutoopen(map.value(keys.at(6)).value.toBool());
+    config->setImageAutoopen(map.value(keys.at(7)).value.toBool());
+    // scene 8
+    config->setSceneViewAntialiasing(map.value(keys.at(9)).value.toBool());
+    config->setSceneViewUpdateMode(map.value(keys.at(10)).value.toString());
+    config->setSceneBgColor(map.value(keys.at(11)).value.toString());
+    config->setSceneSelectColor(map.value(keys.at(12)).value.toString());
+    config->setSceneScaleStep(map.value(keys.at(13)).value.toDouble());
+    // cell 14
+    config->setSceneCellAliveColor(map.value(keys.at(15)).value.toString());
+    config->setSceneCellTraitColor(map.value(keys.at(16)).value.toString());
+    config->setSceneCellDeadColor(map.value(keys.at(17)).value.toString());
+    config->setSceneCellCurseColor(map.value(keys.at(18)).value.toString());
+    config->setCellAliveAgeIndicate(map.value(keys.at(19)).value.toBool());
+    config->setCellAliveAgeIndicBright(map.value(keys.at(20)).value.toString());
+    config->setCellAliveAgeIndicFactor(map.value(keys.at(21)).value.toInt());
+    config->setCellAliveAgeIndicDiapason(map.value(keys.at(22)).value.toInt());
+    config->setCellCurseAgeIndicate(map.value(keys.at(23)).value.toBool());
+    config->setCellCurseAgeIndicBright(map.value(keys.at(24)).value.toString());
+    config->setCellCurseAgeIndicFactor(map.value(keys.at(25)).value.toInt());
+    config->setCellCurseAgeIndicDiapason(map.value(keys.at(26)).value.toInt());
+    // field 27
+    config->setSceneFirstSnapshot(map.value(keys.at(28)).value.toBool());
+    config->setSceneFirstSnapshotClearList(map.value(keys.at(29)).value.toBool());
+    config->setSceneCalculatingMinPause(map.value(keys.at(30)).value.toInt());
+    config->setCopyToClipboardExceptDead(map.value(keys.at(31)).value.toBool());
+    config->setSaveToPresetExceptDead(map.value(keys.at(32)).value.toBool());
+    config->setSceneFieldThreadPriority(map.value(keys.at(33)).value.toString());
 
     // применение настроек
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
@@ -1978,9 +1985,21 @@ void MainWindow::slotSaveImageToFile()
     setCellsActionsEnable(false);
 
     auto pixmap = m_SceneView->getScene()->getSceneItem()->getPixmap();
-    if(!pixmap->save(filename, fileext.toUpper().toLatin1().constData()))
+    auto success_saving = pixmap->save(filename, fileext.toUpper().toLatin1().constData());
+
+    if(!success_saving)
         QMessageBox::critical(this, tr("Error"),
                               tr("Error at file saving. Path: '%1'").arg(filename));
+
+    if(config->ImageAutoopen() && success_saving)
+    {
+        if (!QDesktopServices::openUrl(QUrl::fromLocalFile(filename)))
+        {
+            qCritical() << "Error at QDesktopServices::openUrl:" << filename;
+            QMessageBox::critical(this, tr("Error"),
+                                  tr("Error at QDesktopServices::openUrl:/n'%1'").arg(filename));
+        }
+    }
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
@@ -2002,6 +2021,8 @@ void MainWindow::slotReport()
         tr("02#_Field statistics"),
         tr("03#_Snapshots images"),
         tr("04#_Snapshots statistics"),
+        tr("05#_Rule file"),
+        tr("06#_Save file"),
     };
     QMap<QString, DialogValue> map = {
         {keys.at(0), {}},
@@ -2009,6 +2030,8 @@ void MainWindow::slotReport()
         {keys.at(2), {QVariant::Bool, true}},
         {keys.at(3), {QVariant::Bool, true}},
         {keys.at(4), {QVariant::Bool, true}},
+        {keys.at(5), {QVariant::Bool, true}},
+        {keys.at(6), {QVariant::Bool, true}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/text.svg", tr("Report"), &map);
@@ -2022,7 +2045,7 @@ void MainWindow::slotReport()
 
     auto fileext = config->ReportFileFormat().toLower();
     filename = QFileDialog::getSaveFileName(this, tr("Save report"), config->PathReportsDir(),
-                                                 tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
+                                            tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
 
@@ -2032,6 +2055,13 @@ void MainWindow::slotReport()
     QFileInfo fileinfo(filename);
     dirname = fileinfo.dir().absolutePath() + QDir::separator() +
             fileinfo.fileName().remove(dot_fileformat).replace(' ', '_');
+
+    QDir dir(dirname);
+    if(dir.exists(dirname) && !dir.removeRecursively())
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Directory exists not be deleted:/n'%1'").arg(dirname));
+        return;
+    }
 
     if(!CreateDir(dirname))
     {
@@ -2043,7 +2073,51 @@ void MainWindow::slotReport()
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
 
+    QString caption(tr("Report"));
+    QString reportcontent;
+    reportcontent.append(QString("<h2>%1</h2>\n").arg(caption));
+    reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
+
+    if(map.value(keys.at(1)).value.toBool()) // rule
+    {
+        reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Rule")));
+        reportcontent.append(QString("<h3>%1</h3><ul>\n").arg(tr("Properties")));
+        for(auto s: m_Field->getRule()->PropertiesToString().split('\n'))
+            reportcontent.append(QString("<li>%1</li>\n").arg(s));
+        reportcontent.append("</ul>");
+
+        reportcontent.append(QString("<h3>%1</h3><ul>\n").arg(tr("Activities")));
+        for(auto a: m_Field->getRule()->getActivity())
+            reportcontent.append(QString("<li>%1</li>\n").arg(ActivityElementToString(a)));
+        reportcontent.append("</ul><hr>\n");
+    }
+
+    reportcontent.append("</div><hr>\n"); // CONTENTDIV
+
+    reportcontent.append("<div class = 'CONTENTDIV'>\n");
+    reportcontent.append(QString("%1 %2, format version: %3\n").arg(APP_NAME, APP_VERSION, FORMAT_VERSION));
+    reportcontent.append("</div><hr>"); // CONTENTDIV
+
+    QString report = getTextFromRes(":/resources/html/report_body.html").
+            arg(caption, reportcontent);
+
     // TODO: slotReport
+
+    auto success_saving = textToFile(report, filename);
+
+    if(!success_saving)
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Error at file saving. Path: '%1'").arg(filename));
+
+    if(config->ImageAutoopen() && success_saving)
+    {
+        if (!QDesktopServices::openUrl(QUrl::fromLocalFile(filename)))
+        {
+            qCritical() << "Error at QDesktopServices::openUrl:" << filename;
+            QMessageBox::critical(this, tr("Error"),
+                                  tr("Error at QDesktopServices::openUrl:/n'%1'").arg(filename));
+        }
+    }
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
@@ -2512,13 +2586,13 @@ void MainWindow::slotInfoRule()
         config->setInfoRuleWindowHeight(size.height());
     });
 
-    QString content = "## Properties\n";
+    QString content = tr("## Properties\n");
     for(auto s: m_Field->getRule()->PropertiesToString().split('\n'))
         content.append(QString(" - <pre><b>%1</b></pre>\n").arg(s));
 
     content.append("\n --- \n");
 
-    content.append("## Activities\n");
+    content.append(tr("## Activities\n"));
     for(auto a: m_Field->getRule()->getActivity())
         content.append(QString(" - <pre><b>%1</b></pre>\n").
                        arg(ActivityElementToString(a)));
