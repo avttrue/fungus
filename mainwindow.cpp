@@ -2037,12 +2037,13 @@ void MainWindow::slotReport()
 
     const QVector<QString> keys = {
         tr("00#_Report options"),
-        tr("01#_Field rule"),
-        tr("02#_Field statistics"),
-        tr("03#_Field image"),
-        tr("04#_Snapshots data"),
-        tr("05#_Rule file"),
-        tr("06#_Project file"),
+        tr("01#_Field size"),
+        tr("02#_Field rule"),
+        tr("03#_Field statistics"),
+        tr("04#_Field image"),
+        tr("05#_Snapshots data"),
+        tr("06#_Rule file"),
+        tr("07#_Project file"),
     };
     QMap<QString, DialogValue> map = {
         {keys.at(0), {}},
@@ -2052,6 +2053,7 @@ void MainWindow::slotReport()
         {keys.at(4), {QVariant::Bool, true}},
         {keys.at(5), {QVariant::Bool, true}},
         {keys.at(6), {QVariant::Bool, true}},
+        {keys.at(7), {QVariant::Bool, true}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/text.svg", tr("Report"), &map);
@@ -2100,7 +2102,18 @@ void MainWindow::slotReport()
     QString reportcontent;
     reportcontent.append(QString("<h2>%1</h2>\n").arg(caption));
 
-    if(map.value(keys.at(1)).value.toBool()) // rule
+    if(map.value(keys.at(1)).value.toBool()) // size
+    {
+        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
+        reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Size")));
+        reportcontent.append(QString("%1&nbsp;X&nbsp;%2&nbsp;X&nbsp;%3\n").
+                             arg(QString::number(m_Field->width()),
+                                 QString::number(m_Field->height()),
+                                 QString::number(config->SceneCellSize())));
+        reportcontent.append("</div>\n");
+    }
+
+    if(map.value(keys.at(2)).value.toBool()) // rule
     {
         reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
         reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Rule")));
@@ -2113,10 +2126,20 @@ void MainWindow::slotReport()
         for(auto a: m_Field->getRule()->getActivity())
             reportcontent.append(QString("<li>%1</li>\n").arg(ActivityElementToString(a).replace(' ', "&nbsp;")));
         reportcontent.append("</ul>\n");
-        reportcontent.append("</div>\n"); // CONTENTDIV
+        reportcontent.append("</div>\n");
     }
 
-    if(map.value(keys.at(2)).value.toBool()) // statistics
+    if(map.value(keys.at(5)).value.toBool()) // Snapshots data
+    {
+        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
+        reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Snapshots")));
+
+        // TODO: slotReport Snapshots
+
+        reportcontent.append("</div>\n");
+    }
+
+    if(map.value(keys.at(3)).value.toBool()) // statistics
     {
         reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
         reportcontent.append(QString("<h2>%1</h2>\n").arg(statcaption));
@@ -2134,7 +2157,7 @@ void MainWindow::slotReport()
         reportcontent.append("</div>\n");
     }
 
-    if(map.value(keys.at(3)).value.toBool()) // image
+    if(map.value(keys.at(4)).value.toBool()) // image
     {
         auto imgname = QString::number(m_Field->getInformation()->getAge()) +
                 "." + config->ImageFileFormat().toLower();
@@ -2155,23 +2178,11 @@ void MainWindow::slotReport()
         reportcontent.append("</div>\n");
     }
 
-    if(map.value(keys.at(4)).value.toBool()) // Snapshots data
-    {
-        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
-        reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Snapshots")));
-
-        // TODO: slotReport Snapshots
-
-        reportcontent.append("</div>\n");
-    }
-
-    // rule, save file
-    if(map.value(keys.at(5)).value.toBool() || map.value(keys.at(6)).value.toBool())
-    {
+    // rule, project files
+    if(map.value(keys.at(6)).value.toBool() || map.value(keys.at(7)).value.toBool())
         reportcontent.append("<hr><div class = 'CONTENTDIV'>\n<ul>\n");
-    }
 
-    if(map.value(keys.at(5)).value.toBool())
+    if(map.value(keys.at(6)).value.toBool()) // rule
     {
         auto rulename = "rule." + RULE_FILE_EXTENSION.toLower();
         auto rulefile = dirname + QDir::separator() + rulename;
@@ -2179,13 +2190,11 @@ void MainWindow::slotReport()
                 QFileInfo(dirname).baseName() + QDir::separator() + rulename;
 
         if(saveRuleToFile(m_Field->getRule(), rulefile))
-        {
             reportcontent.append(QString("<li>%1:&nbsp;<a href = '%2'>%3</a></li>\n").
                                  arg(tr("Rule file"), rulebasefile, rulename));
-        }
     }
 
-    if(map.value(keys.at(6)).value.toBool())
+    if(map.value(keys.at(7)).value.toBool()) // project
     {
         auto savename = "project." + PROJECT_FILE_EXTENSION.toLower();
         auto savefile = dirname + QDir::separator() + savename;
@@ -2193,16 +2202,12 @@ void MainWindow::slotReport()
                 QFileInfo(dirname).baseName() + QDir::separator() + savename;
 
         if(saveProjectToFile(savefile))
-        {
             reportcontent.append(QString("<li>%1:&nbsp;<a href = '%2'>%3</a></li>\n").
                                  arg(tr("Project file"), savebasefile, savename));
-        }
     }
 
-    if(map.value(keys.at(5)).value.toBool() || map.value(keys.at(6)).value.toBool())
-    {
+    if(map.value(keys.at(6)).value.toBool() || map.value(keys.at(7)).value.toBool())
         reportcontent.append("</ul>\n</div>\n");
-    }
 
     reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
     reportcontent.append(QString("%1&nbsp;%2,&nbsp;format&nbsp;version:&nbsp;%3\n").
@@ -2210,7 +2215,7 @@ void MainWindow::slotReport()
     reportcontent.append("</div><hr>");
 
     QString report = getTextFromRes(":/resources/html/report_body.html").
-            arg(caption, reportcontent);
+            arg(config->SceneBgColor(), caption, reportcontent);
 
     auto success_saving = textToFile(report, filename);
 
