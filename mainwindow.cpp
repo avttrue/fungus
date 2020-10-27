@@ -1123,7 +1123,7 @@ bool MainWindow::RuleFromFilePath(FieldRule *rule, const QString &path)
     return true;
 }
 
-void MainWindow::saveRuleToFile(FieldRule *rule)
+void MainWindow::saveRule(FieldRule *rule)
 {
     qDebug() << __func__;
     auto fileext = RULE_FILE_EXTENSION.toLower();
@@ -1135,6 +1135,12 @@ void MainWindow::saveRuleToFile(FieldRule *rule)
     auto dot_fileext = QString(".%1").arg(fileext);
     if(!filename.endsWith(dot_fileext, Qt::CaseInsensitive)) filename.append(dot_fileext);
 
+    saveRuleToFile(rule, filename);
+}
+
+bool MainWindow::saveRuleToFile(FieldRule *rule, const QString &path)
+{
+    qDebug() << __func__;
     auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
     QJsonDocument document;
     QJsonObject obj_root {{"DateTime", datetime},
@@ -1145,8 +1151,13 @@ void MainWindow::saveRuleToFile(FieldRule *rule)
 
     auto json_mode = config->JsonCompactMode() ? QJsonDocument::Compact : QJsonDocument::Indented;
     auto text = document.toJson(json_mode);
-    if(!textToFile(text, filename))
-        QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(filename));
+    if(!textToFile(text, path))
+    {
+        qCritical() << "Data writing error:" << path;
+        QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(path));
+        return false;
+    }
+    return true;
 }
 
 void MainWindow::FieldToJsonObject(QJsonObject *jobject)
@@ -1724,6 +1735,19 @@ bool MainWindow::validateSelectedCells()
     return true;
 }
 
+bool MainWindow::savePixmapToFile(QPixmap *pixmap, const QString &file)
+{
+    qDebug() << __func__;
+    auto imgext = config->ImageFileFormat();
+    auto success_saving = pixmap->save(file, imgext.toUpper().toLatin1().constData());
+    if(!success_saving)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Error at file saving. Path: '%1'").arg(file));
+        qCritical() << "Error at file saving: " << file;
+    }
+    return success_saving;
+}
+
 void MainWindow::slotSceneZoomIn()
 {
     auto factor = config->SceneScaleStep() + 100 * (config->SceneScaleStep() - 1);
@@ -1985,11 +2009,7 @@ void MainWindow::slotSaveImageToFile()
     setCellsActionsEnable(false);
 
     auto pixmap = m_SceneView->getScene()->getSceneItem()->getPixmap();
-    auto success_saving = pixmap->save(filename, fileext.toUpper().toLatin1().constData());
-
-    if(!success_saving)
-        QMessageBox::critical(this, tr("Error"),
-                              tr("Error at file saving. Path: '%1'").arg(filename));
+    auto success_saving = savePixmapToFile(pixmap, filename);
 
     if(config->ImageAutoopen() && success_saving)
     {
@@ -2019,10 +2039,10 @@ void MainWindow::slotReport()
         tr("00#_Report options"),
         tr("01#_Field rule"),
         tr("02#_Field statistics"),
-        tr("03#_Snapshots images"),
-        tr("04#_Snapshots statistics"),
+        tr("03#_Field image"),
+        tr("04#_Snapshots data"),
         tr("05#_Rule file"),
-        tr("06#_Save file"),
+        tr("06#_Project file"),
     };
     QMap<QString, DialogValue> map = {
         {keys.at(0), {}},
@@ -2054,7 +2074,7 @@ void MainWindow::slotReport()
 
     QFileInfo fileinfo(filename);
     dirname = fileinfo.dir().absolutePath() + QDir::separator() +
-            fileinfo.fileName().remove(dot_fileformat).replace(' ', '_');
+            fileinfo.fileName().remove(dot_fileformat).replace(' ', '_') + "_files";
 
     QDir dir(dirname);
     if(dir.exists(dirname) && !dir.removeRecursively())
@@ -2074,12 +2094,15 @@ void MainWindow::slotReport()
     setCellsActionsEnable(false);
 
     QString caption(tr("Report"));
+    QString statcaption(tr("Statistics"));
+    QString imgcaption(tr("Image"));
+
     QString reportcontent;
     reportcontent.append(QString("<h2>%1</h2>\n").arg(caption));
-    reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
 
     if(map.value(keys.at(1)).value.toBool()) // rule
     {
+        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
         reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Rule")));
         reportcontent.append(QString("<h3>%1</h3><ul>\n").arg(tr("Properties")));
         for(auto s: m_Field->getRule()->PropertiesToString().split('\n'))
@@ -2088,20 +2111,106 @@ void MainWindow::slotReport()
 
         reportcontent.append(QString("<h3>%1</h3><ul>\n").arg(tr("Activities")));
         for(auto a: m_Field->getRule()->getActivity())
-            reportcontent.append(QString("<li>%1</li>\n").arg(ActivityElementToString(a)));
-        reportcontent.append("</ul><hr>\n");
+            reportcontent.append(QString("<li>%1</li>\n").arg(ActivityElementToString(a).replace(' ', "&nbsp;")));
+        reportcontent.append("</ul>\n");
+        reportcontent.append("</div>\n"); // CONTENTDIV
     }
 
-    reportcontent.append("</div><hr>\n"); // CONTENTDIV
+    if(map.value(keys.at(2)).value.toBool()) // statistics
+    {
+        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
+        reportcontent.append(QString("<h2>%1</h2>\n").arg(statcaption));
+        reportcontent.append("<ul>\n");
 
-    reportcontent.append("<div class = 'CONTENTDIV'>\n");
-    reportcontent.append(QString("%1 %2, format version: %3\n").arg(APP_NAME, APP_VERSION, FORMAT_VERSION));
-    reportcontent.append("</div><hr>"); // CONTENTDIV
+        auto fi = m_Field->getInformation();
+        auto fi_mo = fi->metaObject();
+        for(int i = fi_mo->propertyOffset(); i < fi_mo->propertyCount(); ++i)
+        {
+            auto p = fi_mo->property(i);
+            auto value = fi->property(p.name());
+            reportcontent.append(QString("<li>%1:&nbsp;%2</li>\n").arg(p.name(), value.toString()));
+        }
+        reportcontent.append("</ul>\n");
+        reportcontent.append("</div>\n");
+    }
+
+    if(map.value(keys.at(3)).value.toBool()) // image
+    {
+        auto imgname = QString::number(m_Field->getInformation()->getAge()) +
+                "." + config->ImageFileFormat().toLower();
+        auto imgfile = dirname + QDir::separator() + imgname;
+        auto imgbasefile =  QString(".") + QDir::separator() +
+                QFileInfo(dirname).baseName() + QDir::separator() + imgname;
+        auto pixmap = m_SceneView->getScene()->getSceneItem()->getPixmap();
+
+        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
+        reportcontent.append(QString("<h2>%1</h2>\n").arg(imgcaption));
+
+        if(QFile(imgfile).exists() || savePixmapToFile(pixmap, imgfile))
+        {
+            // проверка на exists - для совместимости картинок снапшотов и текущего поля
+            reportcontent.append(QString("<img src = '%1' alt='%2' width = '90%' height = '90%'>\n").
+                                 arg(imgbasefile, imgname));
+        }
+        reportcontent.append("</div>\n");
+    }
+
+    if(map.value(keys.at(4)).value.toBool()) // Snapshots data
+    {
+        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
+        reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Snapshots")));
+
+        // TODO: slotReport Snapshots
+
+        reportcontent.append("</div>\n");
+    }
+
+    // rule, save file
+    if(map.value(keys.at(5)).value.toBool() || map.value(keys.at(6)).value.toBool())
+    {
+        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n<ul>\n");
+    }
+
+    if(map.value(keys.at(5)).value.toBool())
+    {
+        auto rulename = "rule." + RULE_FILE_EXTENSION.toLower();
+        auto rulefile = dirname + QDir::separator() + rulename;
+        auto rulebasefile =  QString(".") + QDir::separator() +
+                QFileInfo(dirname).baseName() + QDir::separator() + rulename;
+
+        if(saveRuleToFile(m_Field->getRule(), rulefile))
+        {
+            reportcontent.append(QString("<li>%1:&nbsp;<a href = '%2'>%3</a></li>\n").
+                                 arg(tr("Rule file"), rulebasefile, rulename));
+        }
+    }
+
+    if(map.value(keys.at(6)).value.toBool())
+    {
+        auto savename = "project." + PROJECT_FILE_EXTENSION.toLower();
+        auto savefile = dirname + QDir::separator() + savename;
+        auto savebasefile =  QString(".") + QDir::separator() +
+                QFileInfo(dirname).baseName() + QDir::separator() + savename;
+
+        if(saveProjectToFile(savefile))
+        {
+            reportcontent.append(QString("<li>%1:&nbsp;<a href = '%2'>%3</a></li>\n").
+                                 arg(tr("Project file"), savebasefile, savename));
+        }
+    }
+
+    if(map.value(keys.at(5)).value.toBool() || map.value(keys.at(6)).value.toBool())
+    {
+        reportcontent.append("</ul>\n</div>\n");
+    }
+
+    reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
+    reportcontent.append(QString("%1&nbsp;%2,&nbsp;format&nbsp;version:&nbsp;%3\n").
+                         arg(APP_NAME, APP_VERSION, FORMAT_VERSION));
+    reportcontent.append("</div><hr>");
 
     QString report = getTextFromRes(":/resources/html/report_body.html").
             arg(caption, reportcontent);
-
-    // TODO: slotReport
 
     auto success_saving = textToFile(report, filename);
 
@@ -2109,7 +2218,7 @@ void MainWindow::slotReport()
         QMessageBox::critical(this, tr("Error"),
                               tr("Error at file saving. Path: '%1'").arg(filename));
 
-    if(config->ImageAutoopen() && success_saving)
+    if(config->ReportAutoopen() && success_saving)
     {
         if (!QDesktopServices::openUrl(QUrl::fromLocalFile(filename)))
         {
@@ -2494,6 +2603,15 @@ void MainWindow::slotSaveProject()
     auto dot_fileext = QString(".%1").arg(fileext);
     if(!filename.endsWith(dot_fileext, Qt::CaseInsensitive)) filename.append(dot_fileext);
 
+    saveProjectToFile(filename);
+
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
+}
+
+bool MainWindow::saveProjectToFile(const QString& path)
+{
+    qDebug() << __func__;
     auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
     QJsonDocument document;
     QJsonObject obj_root {{"DateTime", datetime},
@@ -2512,16 +2630,15 @@ void MainWindow::slotSaveProject()
     auto text = document.toJson(json_mode);
 
     bool ok;
-    if(config->ProjectFileCompression()) ok = writeCompressData(text, filename);
-    else ok = textToFile(text, filename);
+    if(config->ProjectFileCompression()) ok = writeCompressData(text, path);
+    else ok = textToFile(text, path);
     if(!ok)
     {
-        qCritical() << "Data writing error";
-        QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(filename));
+        qCritical() << "Data writing error:" << path;
+        QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(path));
+        return false;
     }
-
-    setMainActionsEnable(true);
-    setCellsActionsEnable(true);
+    return true;
 }
 
 void MainWindow::slotNewRule()
@@ -2537,7 +2654,7 @@ void MainWindow::slotNewRule()
         config->setEditRulesWindowHeight(size.height());
     });
 
-    if(der->exec()) saveRuleToFile(rule);
+    if(der->exec()) saveRule(rule);
     rule->deleteLater();
 }
 
@@ -2565,7 +2682,7 @@ void MainWindow::slotLoadEditRule()
         config->setEditRulesWindowHeight(size.height());
     });
 
-    if(der->exec()) saveRuleToFile(rule);
+    if(der->exec()) saveRule(rule);
     rule->deleteLater();
 }
 
@@ -2617,7 +2734,7 @@ void MainWindow::slotImportRule()
         config->setEditRulesWindowHeight(size.height());
     });
 
-    if(der->exec()) saveRuleToFile(rule);
+    if(der->exec()) saveRule(rule);
     rule->deleteLater();
 }
 

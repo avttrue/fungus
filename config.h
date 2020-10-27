@@ -219,7 +219,7 @@ private:
     QString m_SceneFieldThreadPriority;             // приоритет потока Field
     QString m_SceneLastRule;                        // последнее правило
     QString m_ImageFileFormat;                      // формат файлов для сохранения картинки сцены
-    QString m_ReportFileFormat;                     // формат файлов для сохранения отчёто по сцены
+    QString m_ReportFileFormat;                     // формат файлов для сохранения отчётов по сцены
     QString m_CellAliveAgeIndicBright;              // индикация возраста живой ячейки: ярче/темнее
     QString m_CellCurseAgeIndicBright;              // индикация возраста отравленной ячейки: ярче/темнее
     QString m_HelpPage;                             // стартовая страница справки

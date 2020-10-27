@@ -65,12 +65,14 @@ protected:
     bool RuleFromJsonObject(FieldRule *rule, QJsonObject *jobject);
     bool RuleFromJsonText(FieldRule *rule, const QString &text);
     bool RuleFromFilePath(FieldRule *rule, const QString &path);
-    void saveRuleToFile(FieldRule *rule);
+    void saveRule(FieldRule *rule);
+    bool saveRuleToFile(FieldRule *rule, const QString &path);
     void FieldToJsonObject(QJsonObject *jobject);
     bool FieldFromJsonObject(QJsonObject *jobject);
     void createSnapshot();
     void loadSnapshot(QJsonDocument* document);
     bool loadProjectFromJsonObject(QJsonObject *jobject);
+    bool saveProjectToFile(const QString& path);
     bool writeCompressData(const QByteArray& data, const QString &path);
     bool readUncompressData(QByteArray* data, const QString &path);
     void showInfoField(bool unique = true);
@@ -79,6 +81,7 @@ protected:
     bool validateScene();
     bool validateSelectedCell();
     bool validateSelectedCells();
+    bool savePixmapToFile(QPixmap* pixmap, const QString& file);
 
 private:
     bool m_FieldRunning;   // состояние поля
