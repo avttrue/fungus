@@ -1223,7 +1223,7 @@ void MainWindow::createSnapshot()
             config->SceneFirstSnapshotClearList())
         m_Snapshots->clear();
 
-    auto name = QString("Age: %1").arg(QString::number(m_Field->getInformation()->getAge()));
+    auto name = QString::number(m_Field->getInformation()->getAge());
     auto datetime = QDateTime::currentDateTime().toString(config->DateTimeFormat());
 
     QJsonDocument document;
@@ -2027,17 +2027,13 @@ void MainWindow::slotSaveImageToFile()
 
 void MainWindow::slotReport()
 {
-    QMessageBox::information(this, tr("info"), "Not ready yet");
-
     qDebug() << __func__;
-    QString filename; // файл отчёта
-    QString dirname;  // каталог доп.файлов отчёта
 
     if(!validateScene()) return;
 
     const QVector<QString> keys = {
         tr("00#_Report options"),
-        tr("01#_Field size"),
+        tr("01#_Field properties"),
         tr("02#_Field rule"),
         tr("03#_Field statistics"),
         tr("04#_Field image"),
@@ -2064,6 +2060,9 @@ void MainWindow::slotReport()
         config->setReportWindowHeight(size.height());
     });
     if(!dvl->exec()) return;
+
+    QString filename; // файл отчёта
+    QString dirname;  // каталог доп.файлов отчёта
 
     auto fileext = config->ReportFileFormat().toLower();
     filename = QFileDialog::getSaveFileName(this, tr("Save report"), config->PathReportsDir(),
@@ -2098,26 +2097,28 @@ void MainWindow::slotReport()
     QString caption(tr("Report"));
     QString statcaption(tr("Statistics"));
     QString imgcaption(tr("Image"));
+    QString propcaption(tr("Properties"));
 
     QString reportcontent;
     reportcontent.append(QString("<h2>%1</h2>\n").arg(caption));
 
-    if(map.value(keys.at(1)).value.toBool()) // size
+    if(map.value(keys.at(1)).value.toBool()) // properties
     {
         reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
-        reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Size")));
-        reportcontent.append(QString("%1&nbsp;X&nbsp;%2&nbsp;X&nbsp;%3\n").
-                             arg(QString::number(m_Field->width()),
+        reportcontent.append(QString("<h2>%1</h2><ul>\n").arg(propcaption));
+        reportcontent.append(QString("<li>%1:&nbsp;%2&nbsp;X&nbsp;%3&nbsp;X&nbsp;%4</li>\n").
+                             arg(tr("Size"),
+                                 QString::number(m_Field->width()),
                                  QString::number(m_Field->height()),
                                  QString::number(config->SceneCellSize())));
-        reportcontent.append("</div>\n");
+        reportcontent.append("</ul></div>\n");
     }
 
     if(map.value(keys.at(2)).value.toBool()) // rule
     {
         reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
         reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Rule")));
-        reportcontent.append(QString("<h3>%1</h3><ul>\n").arg(tr("Properties")));
+        reportcontent.append(QString("<h3>%1</h3><ul>\n").arg(propcaption));
         for(auto s: m_Field->getRule()->PropertiesToString().split('\n'))
             reportcontent.append(QString("<li>%1</li>\n").arg(s));
         reportcontent.append("</ul>");
@@ -2134,27 +2135,75 @@ void MainWindow::slotReport()
         reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
         reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Snapshots")));
 
-        // TODO: slotReport Snapshots
+        for(auto key: m_Snapshots->keys())
+        {
+            if(map.value(keys.at(3)).value.toBool()) // statistics
+            {
+                reportcontent.append(QString("<h3>%1</h3>\n").arg(statcaption));
 
+                auto jdoc = m_Snapshots->getSnapshot(key).document;
+                auto root_object = jdoc.object();
+
+                auto obj_field = root_object.value("Field").toObject();
+                if(obj_field.isEmpty()) { qCritical() << "JsonObject 'Field' is empty"; continue; }
+
+                auto obj_prop = obj_field.value("Properties").toObject();
+                if(obj_prop.isEmpty()) { qCritical() << "JsonObject 'Properties' is empty"; continue; }
+
+                reportcontent.append("<ul>\n");
+                for(auto propkey : obj_prop.keys())
+                {
+                    auto v = obj_prop.value(propkey).toVariant();
+                    reportcontent.append(QString("<li>%1:&nbsp;%2</li>\n").arg(propkey, v.toString()));
+                }
+                reportcontent.append("</ul>\n");
+            }
+
+            if(map.value(keys.at(4)).value.toBool()) // image
+            {
+                reportcontent.append(QString("<h3>%1</h3>\n").arg(imgcaption));
+                auto imgname = key + "." + config->ImageFileFormat().toLower();
+                auto imgfile = dirname + QDir::separator() + imgname;
+                auto imgbasefile =  QString(".") + QDir::separator() +
+                        QFileInfo(dirname).baseName() + QDir::separator() + imgname;
+                auto pixmap = m_Snapshots->getSnapshot(key).pixmap;
+
+                if(QFile(imgfile).exists() || savePixmapToFile(&pixmap, imgfile))
+                {
+                    // проверка на exists - для совместимости картинок снапшотов и текущего поля
+                    reportcontent.append(QString("<img src = '%1' alt = '%2'>\n").
+                                         arg(imgbasefile, imgname));
+                }
+            }
+            reportcontent.append("<div class = 'SEPARATORDIV'>\n&diams;&nbsp;&diams;&nbsp;&diams;\n</div>\n");
+        }
         reportcontent.append("</div>\n");
+    }
+
+    // current statistics and image
+    if(map.value(keys.at(3)).value.toBool() || map.value(keys.at(4)).value.toBool())
+    {
+        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
+        reportcontent.append(QString("<h2>%1</h2>\n").arg(tr("Current state")));
     }
 
     if(map.value(keys.at(3)).value.toBool()) // statistics
     {
-        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
-        reportcontent.append(QString("<h2>%1</h2>\n").arg(statcaption));
+        reportcontent.append(QString("<h3>%1</h3>\n").arg(statcaption));
         reportcontent.append("<ul>\n");
 
         auto fi = m_Field->getInformation();
         auto fi_mo = fi->metaObject();
+        QStringList sl;
         for(int i = fi_mo->propertyOffset(); i < fi_mo->propertyCount(); ++i)
         {
             auto p = fi_mo->property(i);
             auto value = fi->property(p.name());
-            reportcontent.append(QString("<li>%1:&nbsp;%2</li>\n").arg(p.name(), value.toString()));
+            sl.append(QString("<li>%1:&nbsp;%2</li>\n").arg(p.name(), value.toString()));
         }
+        sl.sort();
+        for(auto s: sl) reportcontent.append(s);
         reportcontent.append("</ul>\n");
-        reportcontent.append("</div>\n");
     }
 
     if(map.value(keys.at(4)).value.toBool()) // image
@@ -2166,17 +2215,18 @@ void MainWindow::slotReport()
                 QFileInfo(dirname).baseName() + QDir::separator() + imgname;
         auto pixmap = m_SceneView->getScene()->getSceneItem()->getPixmap();
 
-        reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
-        reportcontent.append(QString("<h2>%1</h2>\n").arg(imgcaption));
+        reportcontent.append(QString("<h3>%1</h3>\n").arg(imgcaption));
 
         if(QFile(imgfile).exists() || savePixmapToFile(pixmap, imgfile))
         {
             // проверка на exists - для совместимости картинок снапшотов и текущего поля
-            reportcontent.append(QString("<img src = '%1' alt='%2' width = '90%' height = '90%'>\n").
+            reportcontent.append(QString("<img src = '%1' alt = '%2'>\n").
                                  arg(imgbasefile, imgname));
         }
-        reportcontent.append("</div>\n");
     }
+
+    if(map.value(keys.at(3)).value.toBool() || map.value(keys.at(4)).value.toBool())
+        reportcontent.append("</div>\n");
 
     // rule, project files
     if(map.value(keys.at(6)).value.toBool() || map.value(keys.at(7)).value.toBool())
@@ -2220,8 +2270,11 @@ void MainWindow::slotReport()
     auto success_saving = textToFile(report, filename);
 
     if(!success_saving)
+    {
+        qCritical() << "Error at file saving:" << filename;
         QMessageBox::critical(this, tr("Error"),
                               tr("Error at file saving. Path: '%1'").arg(filename));
+    }
 
     if(config->ReportAutoopen() && success_saving)
     {
@@ -2232,6 +2285,9 @@ void MainWindow::slotReport()
                                   tr("Error at QDesktopServices::openUrl:/n'%1'").arg(filename));
         }
     }
+    else if(success_saving)
+        QMessageBox::information(this, tr("Report"), tr("Report completed: /n '%1' /n '%2'").
+                                 arg(filename, dirname));
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
@@ -2492,7 +2548,7 @@ void MainWindow::slotSelectSnapshot()
 
     QVector<QString> keys =
     { tr("00#_Available snapshots: %1").arg(QString::number(m_Snapshots->count())),
-      "01#_",
+      tr("01#_Age: "),
       tr("02#_Delete snapshots after the selected") };
 
     QMap<QString, DialogValue> map =
