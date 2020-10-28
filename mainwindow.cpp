@@ -267,7 +267,7 @@ void MainWindow::loadGui()
     m_ActionSaveImageToFile->setAutoRepeat(false);
     m_ActionSaveImageToFile->setEnabled(false);
 
-    m_ActionReport = new QAction(QIcon(":/resources/img/text.svg"), tr("SCreate report"), this);
+    m_ActionReport = new QAction(QIcon(":/resources/img/text.svg"), tr("Create report"), this);
     QObject::connect(m_ActionReport, &QAction::triggered, this, &MainWindow::slotReport);
     m_ActionReport->setAutoRepeat(false);
     m_ActionReport->setEnabled(false);
@@ -2080,6 +2080,7 @@ void MainWindow::slotReport()
     QDir dir(dirname);
     if(dir.exists(dirname) && !dir.removeRecursively())
     {
+        qCritical() << "Directory exists and not be deleted:" << dirname;
         QMessageBox::critical(this, tr("Error"), tr("Directory exists and not be deleted:\n'%1'").arg(dirname));
         return;
     }
