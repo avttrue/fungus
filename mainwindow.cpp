@@ -2017,7 +2017,7 @@ void MainWindow::slotSaveImageToFile()
         {
             qCritical() << "Error at QDesktopServices::openUrl:" << filename;
             QMessageBox::critical(this, tr("Error"),
-                                  tr("Error at QDesktopServices::openUrl:/n'%1'").arg(filename));
+                                  tr("Error at QDesktopServices::openUrl:\n'%1'").arg(filename));
         }
     }
 
@@ -2080,13 +2080,13 @@ void MainWindow::slotReport()
     QDir dir(dirname);
     if(dir.exists(dirname) && !dir.removeRecursively())
     {
-        QMessageBox::critical(this, tr("Error"), tr("Directory exists not be deleted:/n'%1'").arg(dirname));
+        QMessageBox::critical(this, tr("Error"), tr("Directory exists and not be deleted:\n'%1'").arg(dirname));
         return;
     }
 
     if(!CreateDir(dirname))
     {
-        QMessageBox::critical(this, tr("Error"), tr("Directory cannot be created:/n'%1'").arg(dirname));
+        QMessageBox::critical(this, tr("Error"), tr("Directory cannot be created:\n'%1'").arg(dirname));
         return;
     }
 
@@ -2105,12 +2105,18 @@ void MainWindow::slotReport()
     if(map.value(keys.at(1)).value.toBool()) // properties
     {
         reportcontent.append("<hr><div class = 'CONTENTDIV'>\n");
+
         reportcontent.append(QString("<h2>%1</h2><ul>\n").arg(propcaption));
         reportcontent.append(QString("<li>%1:&nbsp;%2&nbsp;X&nbsp;%3&nbsp;X&nbsp;%4</li>\n").
-                             arg(tr("Size"),
+                             arg(tr("Size (Widtn X Height X Cell size)"),
                                  QString::number(m_Field->width()),
                                  QString::number(m_Field->height()),
                                  QString::number(config->SceneCellSize())));
+
+        reportcontent.append(QString("<li>%1:&nbsp;%2</li>\n").
+                             arg(tr("Cells count"),
+                                 m_Field->getInformation()->property("CellsCount").toString()));
+
         reportcontent.append("</ul></div>\n");
     }
 
@@ -2282,11 +2288,13 @@ void MainWindow::slotReport()
         {
             qCritical() << "Error at QDesktopServices::openUrl:" << filename;
             QMessageBox::critical(this, tr("Error"),
-                                  tr("Error at QDesktopServices::openUrl:/n'%1'").arg(filename));
+                                  tr("Error at QDesktopServices::openUrl:\n'%1'").arg(filename));
         }
     }
     else if(success_saving)
-        QMessageBox::information(this, tr("Report"), tr("Report completed: /n '%1' /n '%2'").
+        QMessageBox::information(this, tr("Report"), tr("Report completed. \n"
+                                                        "Report file: '%1' \n"
+                                                        "Additional report files: '%2'").
                                  arg(filename, dirname));
 
     setMainActionsEnable(true);
