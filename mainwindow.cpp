@@ -2013,7 +2013,7 @@ void MainWindow::slotSaveImageToFile()
     if(config->ImageAutoopen() && success_saving)
     {
         if(!OpenUrl(filename))
-            QMessageBox::critical(this, tr("Error"), tr("Error at open file:\n'%1'").arg(filename));
+            QMessageBox::critical(this, tr("Error"), tr("Error at open URL:\n'%1'").arg(filename));
     }
 
     setMainActionsEnable(true);
@@ -2282,7 +2282,7 @@ void MainWindow::slotReport()
     if(config->ReportAutoopen() && success_saving)
     {
         if(!OpenUrl(filename))
-            QMessageBox::critical(this, tr("Error"), tr("Error at open file:\n'%1'").arg(filename));
+            QMessageBox::critical(this, tr("Error"), tr("Error at open URL:\n'%1'").arg(filename));
     }
     else if(success_saving)
         QMessageBox::information(this, tr("Report"), tr("Report completed. \n"
