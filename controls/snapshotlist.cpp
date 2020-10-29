@@ -69,6 +69,7 @@ void SnapshotList::addItem(const QString& key, Snapshot snapshot)
 Snapshot SnapshotList::getSnapshot(const QString &key)
 {
     qDebug() << __func__;
+    qDebug() << "key:" << key;
     if(m_Snapshots.isEmpty())
     {
         qDebug() << "List is empty";
