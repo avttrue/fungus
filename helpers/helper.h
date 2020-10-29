@@ -44,4 +44,6 @@ QString BoolToString(bool value);
 
 bool CreateDir(const QString& path);
 
+bool OpenUrl(const QString& path);
+
 #endif // HELPER_H

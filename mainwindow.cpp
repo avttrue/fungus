@@ -45,7 +45,6 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QSaveFile>
-#include <QDesktopServices>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -2013,12 +2012,8 @@ void MainWindow::slotSaveImageToFile()
 
     if(config->ImageAutoopen() && success_saving)
     {
-        if (!QDesktopServices::openUrl(QUrl::fromLocalFile(filename)))
-        {
-            qCritical() << "Error at QDesktopServices::openUrl:" << filename;
-            QMessageBox::critical(this, tr("Error"),
-                                  tr("Error at QDesktopServices::openUrl:\n'%1'").arg(filename));
-        }
+        if(!OpenUrl(filename))
+            QMessageBox::critical(this, tr("Error"), tr("Error at open file:\n'%1'").arg(filename));
     }
 
     setMainActionsEnable(true);
@@ -2182,7 +2177,8 @@ void MainWindow::slotReport()
                                          arg(imgbasefile, imgname));
                 }
             }
-            reportcontent.append("<div class = 'SEPARATORDIV'>\n&diams;&nbsp;&diams;&nbsp;&diams;\n</div>\n");
+
+            reportcontent.append("<div class = 'SEPARATORDIV'></div>\n");
         }
         reportcontent.append("</div>\n");
     }
@@ -2285,12 +2281,8 @@ void MainWindow::slotReport()
 
     if(config->ReportAutoopen() && success_saving)
     {
-        if (!QDesktopServices::openUrl(QUrl::fromLocalFile(filename)))
-        {
-            qCritical() << "Error at QDesktopServices::openUrl:" << filename;
-            QMessageBox::critical(this, tr("Error"),
-                                  tr("Error at QDesktopServices::openUrl:\n'%1'").arg(filename));
-        }
+        if(!OpenUrl(filename))
+            QMessageBox::critical(this, tr("Error"), tr("Error at open file:\n'%1'").arg(filename));
     }
     else if(success_saving)
         QMessageBox::information(this, tr("Report"), tr("Report completed. \n"

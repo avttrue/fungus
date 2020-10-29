@@ -7,6 +7,8 @@
 #include <QtMath>
 #include <QMetaProperty>
 #include <QDir>
+#include <QUrl>
+#include <QDesktopServices>
 
 QString getTextFromRes(const QString& path)
 {
@@ -206,5 +208,15 @@ bool CreateDir(const QString &path)
     }
 
     qInfo() << "Directory" << path << "ready";
+    return true;
+}
+
+bool OpenUrl(const QString &path)
+{
+    if (!QDesktopServices::openUrl(QUrl::fromLocalFile(path)))
+    {
+        qCritical() << "Error at QDesktopServices::openUrl:" << path;
+        return false;
+    }
     return true;
 }
