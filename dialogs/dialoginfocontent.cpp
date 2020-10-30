@@ -9,7 +9,6 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QTextBrowser>
-#include <QDesktopServices>
 
 DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
     : DialogBody(parent, title, ":/resources/img/info.svg")
@@ -73,8 +72,7 @@ void DialogInfoContent::slotAnchorClicked(const QUrl &link)
         return;
     }
     
-    if(!QDesktopServices::openUrl(link))
-        qCritical() << "Error at QDesktopServices::openUrl" << link.toString();
+    OpenUrl(link);
 }
 
 void DialogInfoContent::setHtmlContent(const QString& content)

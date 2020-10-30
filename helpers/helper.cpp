@@ -220,3 +220,13 @@ bool OpenUrl(const QString &path)
     }
     return true;
 }
+
+bool OpenUrl(const QUrl &url)
+{
+    if (!QDesktopServices::openUrl(url))
+    {
+        qCritical() << "Error at QDesktopServices::openUrl:" << url.toString();
+        return false;
+    }
+    return true;
+}
