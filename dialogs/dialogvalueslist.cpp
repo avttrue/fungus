@@ -1,4 +1,5 @@
 #include "dialogvalueslist.h"
+#include "helpers/widgethelper.h"
 #include "controls/separators.h"
 #include "properties.h"
 #include "helpergraphics.h"
@@ -45,7 +46,7 @@ DialogValuesList::DialogValuesList(QWidget* parent,
     auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
     actionAccept->setAutoRepeat(false);
     QObject::connect(actionAccept, &QAction::triggered, [=](){ accept(); });
-    ToolBar()->addAction(actionAccept);
+    addToolBarAction(ToolBar(), actionAccept, TOOLBUTTON_NAME);
 
     addDialogContent(saContent);
 
@@ -202,7 +203,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
             auto actionSave = new QAction(QIcon(":/resources/img/save.svg"), tr("Save image"), widget);
             actionSave->setAutoRepeat(false);
             QObject::connect(actionSave, &QAction::triggered, [=](){ saveImage(pixmap); });
-            tbimginfo->addAction(actionSave);
+            addToolBarAction(tbimginfo, actionSave, TOOLBUTTON_NAME);
 
             auto limgsize = new QLabel(QString("Size: %1X%2 px").
                                        arg(QString::number(realw), QString::number(realh)), widget);

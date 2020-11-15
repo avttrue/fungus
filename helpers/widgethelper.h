@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class QToolBar;
+
 /*!
  * поместить виджет по центру экрана
  */
@@ -17,5 +19,7 @@ void setWidgetToParentCenter(QWidget* w);
  * найти окно по заголовку, если уже есть такое, то восстановить его
  */
 bool findPreviousWindowCopy(const QString& caption);
+
+void addToolBarAction(QToolBar *bar, QAction* action, const QString& name = "");
 
 #endif // WIDGETHELPER_H

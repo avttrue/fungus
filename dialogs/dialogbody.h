@@ -11,8 +11,11 @@ const QString DB_CAPTION_STYLE = "background: qlineargradient(x1:0, y1:0, x2:0, 
                                  "padding: 0px 1px 0px 1px; border-radius: 5px; "
                                  "color: black; font-family: monospace; font: bold; ";
 
-const QString DB_ICON_STYLE = "padding: 0px 0px 0px 0px; "
-                              "margin: 1px 1px 1px 1px; ";
+const QString DB_ICON_STYLE = "background: qradialgradient(cx:0.5, cy:0.5, radius: 1, "
+                              "fx:0.5, fy:0.5, stop:0 white, stop:1 silver); "
+                              "border-radius: 5px; "
+                              "padding: 1px; "
+                              "margin: 1px; ";
 
 const QString DB_WINDOW_STYLE = "QDialog { border-style: ridge; "
                                 "border-width: 2px; "

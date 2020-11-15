@@ -14,8 +14,9 @@ extern Config* config; // интерфейс над QSettings
 const QStringList SCENE_VIEW_UPDATE_MODES =         {"SMART", "MINIMAL", "FULL"};
 const QStringList SCENE_FIELD_THREAD_PRIORITIES =   {"LOW", "NORMAL", "HIGH", "HIGHEST"};
 const QStringList SCENE_CELL_BRIGHTNESS_VALUES =    {"LIGHTER", "DARKER"};
+const QString TOOLBUTTON_NAME =                     "FungusToolButton"; // see main.css
 const QString APP_NAME =                            "Fungus";
-const QString APP_VERSION =                         "1.2.1";
+const QString APP_VERSION =                         "1.2.2";
 const QString APP_CFG =                             "config.cfg";
 const QString FORMAT_VERSION =                      "3";
 const QString IMAGE_FILE_FORMAT =                   "PNG";

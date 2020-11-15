@@ -1,4 +1,5 @@
 #include "dialogbody.h"
+#include "properties.h"
 
 #include <QCoreApplication>
 #include <QGridLayout>

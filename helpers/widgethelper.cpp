@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QToolBar>
 
 
 void setWidgetToScreenCenter(QWidget* w)
@@ -42,4 +43,13 @@ bool findPreviousWindowCopy(const QString& caption)
         }
     }
     return false;
+}
+
+void addToolBarAction(QToolBar* bar, QAction *action, const QString& name)
+{
+    if(!bar || !action) return;
+    bar->addAction(action);
+
+    if(name.isEmpty()) return;
+    bar->widgetForAction(action)->setObjectName(name);
 }

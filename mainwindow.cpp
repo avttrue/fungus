@@ -292,6 +292,7 @@ void MainWindow::loadGui()
 
     // меню кнопки редактирования правил
     m_BtnMenuRules = new QToolButton(this);
+    m_BtnMenuRules->setObjectName(TOOLBUTTON_NAME);
     m_BtnMenuRules->setToolTip(tr("Rules"));
     m_BtnMenuRules->setIcon(QIcon(":/resources/img/rule.svg"));
     m_BtnMenuRules->setPopupMode(QToolButton::InstantPopup);
@@ -307,6 +308,7 @@ void MainWindow::loadGui()
 
     // меню кнопки редактирования ячеек
     m_BtnMenuEditCells = new QToolButton(this);
+    m_BtnMenuEditCells->setObjectName(TOOLBUTTON_NAME);
     m_BtnMenuEditCells->setToolTip(tr("Edit cells"));
     m_BtnMenuEditCells->setIcon(QIcon(":/resources/img/edit.svg"));
     m_BtnMenuEditCells->setPopupMode(QToolButton::InstantPopup);
@@ -326,34 +328,34 @@ void MainWindow::loadGui()
     m_TbMain->setMovable(false);
     m_TbMain->setOrientation(Qt::Horizontal);
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-    m_TbMain->addAction(m_ActionNewProject);
+    addToolBarAction(m_TbMain, m_ActionNewProject, TOOLBUTTON_NAME);
     m_TbMain->addSeparator();
-    m_TbMain->addAction(m_ActionLoadProject);
-    m_TbMain->addAction(m_ActionSaveProject);
+    addToolBarAction(m_TbMain, m_ActionLoadProject, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionSaveProject, TOOLBUTTON_NAME);
     m_TbMain->addSeparator();
-    m_TbMain->addAction(m_ActionSaveImageToFile);
-    m_TbMain->addAction(m_ActionReport);
+    addToolBarAction(m_TbMain, m_ActionSaveImageToFile, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionReport, TOOLBUTTON_NAME);
     m_TbMain->addSeparator();
-    m_TbMain->addAction(m_ActionZoomFit);
-    m_TbMain->addAction(m_ActionZoomUndoScene);
-    m_TbMain->addAction(m_ActionZoomInScene);
-    m_TbMain->addAction(m_ActionZoomOutScene);
+    addToolBarAction(m_TbMain, m_ActionZoomFit, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionZoomUndoScene, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionSaveProject, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionZoomOutScene, TOOLBUTTON_NAME);
     m_TbMain->addSeparator();
-    m_TbMain->addAction(m_ActionEditCell);
-    m_TbMain->addAction(m_ActionInfoCell);
-    m_TbMain->addAction(m_ActionCellMonitor);
+    addToolBarAction(m_TbMain, m_ActionEditCell, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionInfoCell, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionCellMonitor, TOOLBUTTON_NAME);
     m_TbMain->addSeparator();
-    m_TbMain->addAction(m_ActionInfoField);
+    addToolBarAction(m_TbMain, m_ActionInfoField, TOOLBUTTON_NAME);
     m_TbMain->addSeparator();
-    m_TbMain->addAction(m_ActionStepStop);
-    m_TbMain->addAction(m_ActionRun);
+    addToolBarAction(m_TbMain, m_ActionStepStop, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionRun, TOOLBUTTON_NAME);
     m_TbMain->addWidget(new WidgetSpacer(this));
-    m_TbMain->addAction(actionSetup);
+    addToolBarAction(m_TbMain, actionSetup, TOOLBUTTON_NAME);
     m_TbMain->addSeparator();
-    m_TbMain->addAction(actionHelp);
-    m_TbMain->addAction(actionAbout);
-    m_TbMain->addAction(actionQt);
-    m_TbMain->addAction(actionExit);
+    addToolBarAction(m_TbMain, actionHelp, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, actionAbout, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, actionQt, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, actionExit, TOOLBUTTON_NAME);
     addToolBar(Qt::TopToolBarArea, m_TbMain);
 
     // тулбар дополнительный
@@ -364,17 +366,17 @@ void MainWindow::loadGui()
 
     m_TbActions->addWidget(m_BtnMenuRules);
     m_TbActions->addSeparator();
-    m_TbActions->addAction(m_ActionSaveCellsToPreset);
-    m_TbActions->addAction(m_ActionLoadCellsFromPreset);
+    addToolBarAction(m_TbActions, m_ActionSaveCellsToPreset, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbActions, m_ActionLoadCellsFromPreset, TOOLBUTTON_NAME);
     m_TbActions->addSeparator();
-    m_TbActions->addAction(m_ActionCreateSnapshot);
-    m_TbActions->addAction(m_ActionSelectSnapshot);
+    addToolBarAction(m_TbActions, m_ActionCreateSnapshot, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbActions, m_ActionSelectSnapshot, TOOLBUTTON_NAME);
     m_TbActions->addSeparator();
-    m_TbActions->addAction(m_ActionSelectAll);
+    addToolBarAction(m_TbActions, m_ActionSelectAll, TOOLBUTTON_NAME);
     m_TbActions->addSeparator();
-    m_TbActions->addAction(m_ActionCutCells);
-    m_TbActions->addAction(m_ActionSaveCellsToClipbord);
-    m_TbActions->addAction(m_ActionLoadCellsFromClipbord);
+    addToolBarAction(m_TbActions, m_ActionCutCells, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbActions, m_ActionSaveCellsToClipbord, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbActions, m_ActionLoadCellsFromClipbord, TOOLBUTTON_NAME);
     m_TbActions->addWidget(m_BtnMenuEditCells);
     addToolBar(Qt::LeftToolBarArea, m_TbActions);
 

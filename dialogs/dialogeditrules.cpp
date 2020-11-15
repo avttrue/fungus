@@ -1,5 +1,6 @@
 #include "dialogeditrules.h"
 #include "properties.h"
+#include "helpers/widgethelper.h"
 #include "controls/separators.h"
 #include "controls/clickablelabel.h"
 #include "dialogvalueslist.h"
@@ -78,7 +79,7 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     ToolBar()->addAction(actionUpdate);
     ToolBar()->addWidget(new WidgetSpacer());
-    ToolBar()->addAction(actionAccept);
+    addToolBarAction(ToolBar(), actionAccept, TOOLBUTTON_NAME);
 
     addDialogContent(m_RulesProperties);
     addDialogContent(toolBarControl);

@@ -1,5 +1,6 @@
 #include "dialogcellinformation.h"
 #include "properties.h"
+#include "helpers/widgethelper.h"
 #include "controls/infopanel.h"
 #include "controls/separators.h"
 #include "field/cell.h"
@@ -36,7 +37,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     auto actionShowCell = new QAction(QIcon(":/resources/img/point.svg"), tr("Show cell"));
     actionShowCell->setAutoRepeat(false);
     QObject::connect(actionShowCell, &QAction::triggered, this, &DialogCellInformation::slotShowCell);
-    ToolBar()->addAction(actionShowCell);
+    addToolBarAction(ToolBar(), actionShowCell, TOOLBUTTON_NAME);
 
     ToolBar()->addWidget(new WidgetSpacer());
 

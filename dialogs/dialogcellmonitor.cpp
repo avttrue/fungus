@@ -1,5 +1,6 @@
 #include "dialogcellmonitor.h"
 #include "properties.h"
+#include "helpers/widgethelper.h"
 #include "controls/separators.h"
 #include "controls/textlog.h"
 #include "scene/scene.h"
@@ -32,10 +33,10 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
     m_LabelCount = new QLabel("0", this);
 
     ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-    ToolBar()->addAction(m_ActionSelectCell);
-    ToolBar()->addAction(m_ActionNextCell);
+    addToolBarAction(ToolBar(), m_ActionSelectCell, TOOLBUTTON_NAME);
+    addToolBarAction(ToolBar(), m_ActionNextCell, TOOLBUTTON_NAME);
     ToolBar()->addSeparator();
-    ToolBar()->addAction(actionClear);
+    addToolBarAction(ToolBar(), actionClear, TOOLBUTTON_NAME);
     ToolBar()->addSeparator();
     ToolBar()->addWidget(new QLabel("Observation list: ", this));
     ToolBar()->addWidget(m_LabelCount);
