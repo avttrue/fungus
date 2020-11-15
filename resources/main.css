@@ -10,8 +10,8 @@ QScrollBar:vertical:hover {
 
 QScrollBar::handle:vertical {
 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-stop: 0.5 white, stop: 0 silver,
-stop: 1 silver, stop: 0.5 white);
+stop: 0.5 white, stop: 0 #C0C0C0,
+stop: 1 #C0C0C0, stop: 0.5 white);
 border-radius: 5px;
 min-height: 32px;
 border: 1px outset grey; }
@@ -32,8 +32,8 @@ QScrollBar:horizontal:hover {
 
 QScrollBar::handle:horizontal {
 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-stop: 0 silver, stop: 0.5 white,
-stop: 0.5 white, stop: 1 silver);
+stop: 0 #C0C0C0, stop: 0.5 white,
+stop: 0.5 white, stop: 1 #C0C0C0);
 border-radius: 5px;
 min-width: 32px;
 border: 1px outset grey; }
@@ -57,8 +57,8 @@ width: 0px; }
 
 QSplitter::handle:horizontal {
 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-stop: 0.5 silver, stop: 0 white,
-stop: 1 white, stop: 0.5 silver);
+stop: 0.5 #C0C0C0, stop: 0 white,
+stop: 1 white, stop: 0.5 #C0C0C0);
 border: 1px solid gray;
 width: 4px;
 margin: 0px 2px 0px 2px; }
@@ -70,8 +70,8 @@ stop: 1 white, stop: 0.5 darkgray); }
 
 QSplitter::handle:vertical {
 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-stop: 0 silver, stop: 0.5 white,
-stop: 0.5 white, stop: 1 silver);
+stop: 0 #C0C0C0, stop: 0.5 white,
+stop: 0.5 white, stop: 1 #C0C0C0);
 border: 1px solid gray;
 height: 4px;
 margin: 2px 0px 2px 0px; }
@@ -149,15 +149,15 @@ image: url(:/resources/img/branch-open.svg); }
 
 QToolButton#FungusToolButton {
 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-stop: 0 silver, stop: 0.5 white,
-stop: 0.5 white, stop: 1 silver);
+stop: 0 #C0C0C0, stop: 0.5 white,
+stop: 0.5 white, stop: 1 #C0C0C0);
 border-radius: 5px;
 margin: 1px; }
 
 QToolButton#FungusToolButton:hover {
 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-stop: 0 silver, stop: 0.5 white,
-stop: 0.5 white, stop: 1 silver);
+stop: 0 #C0C0C0, stop: 0.5 white,
+stop: 0.5 white, stop: 1 #C0C0C0);
 border: 1px inset grey; }
 
 QToolButton#FungusToolButton:pressed {
