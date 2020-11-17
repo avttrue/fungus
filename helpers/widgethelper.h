@@ -20,6 +20,9 @@ void setWidgetToParentCenter(QWidget* w);
  */
 bool findPreviousWindowCopy(const QString& caption);
 
+/*!
+ * \brief addToolBarAction - добавить Action на ToolBar с присвоением имени для стилизации через css
+ */
 void addToolBarAction(QToolBar *bar, QAction* action, const QString& name = "");
 
 #endif // WIDGETHELPER_H
