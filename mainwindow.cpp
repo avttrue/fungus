@@ -292,7 +292,7 @@ void MainWindow::loadGui()
 
     // меню кнопки редактирования правил
     m_BtnMenuRules = new QToolButton(this);
-    m_BtnMenuRules->setObjectName(TOOLBUTTON_NAME);
+    m_BtnMenuRules->setObjectName(CSS_TOOLBUTTON);
     m_BtnMenuRules->setToolTip(tr("Rules"));
     m_BtnMenuRules->setIcon(QIcon(":/resources/img/rule.svg"));
     m_BtnMenuRules->setPopupMode(QToolButton::InstantPopup);
@@ -308,7 +308,7 @@ void MainWindow::loadGui()
 
     // меню кнопки редактирования ячеек
     m_BtnMenuEditCells = new QToolButton(this);
-    m_BtnMenuEditCells->setObjectName(TOOLBUTTON_NAME);
+    m_BtnMenuEditCells->setObjectName(CSS_TOOLBUTTON);
     m_BtnMenuEditCells->setToolTip(tr("Edit cells"));
     m_BtnMenuEditCells->setIcon(QIcon(":/resources/img/edit.svg"));
     m_BtnMenuEditCells->setPopupMode(QToolButton::InstantPopup);
@@ -328,34 +328,34 @@ void MainWindow::loadGui()
     m_TbMain->setMovable(false);
     m_TbMain->setOrientation(Qt::Horizontal);
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-    addToolBarAction(m_TbMain, m_ActionNewProject, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionNewProject, CSS_TOOLBUTTON);
     m_TbMain->addSeparator();
-    addToolBarAction(m_TbMain, m_ActionLoadProject, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, m_ActionSaveProject, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionLoadProject, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionSaveProject, CSS_TOOLBUTTON);
     m_TbMain->addSeparator();
-    addToolBarAction(m_TbMain, m_ActionSaveImageToFile, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, m_ActionReport, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionSaveImageToFile, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionReport, CSS_TOOLBUTTON);
     m_TbMain->addSeparator();
-    addToolBarAction(m_TbMain, m_ActionZoomFit, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, m_ActionZoomUndoScene, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, m_ActionSaveProject, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, m_ActionZoomOutScene, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionZoomFit, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionZoomUndoScene, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionSaveProject, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionZoomOutScene, CSS_TOOLBUTTON);
     m_TbMain->addSeparator();
-    addToolBarAction(m_TbMain, m_ActionEditCell, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, m_ActionInfoCell, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, m_ActionCellMonitor, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionEditCell, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionInfoCell, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionCellMonitor, CSS_TOOLBUTTON);
     m_TbMain->addSeparator();
-    addToolBarAction(m_TbMain, m_ActionInfoField, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionInfoField, CSS_TOOLBUTTON);
     m_TbMain->addSeparator();
-    addToolBarAction(m_TbMain, m_ActionStepStop, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, m_ActionRun, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, m_ActionStepStop, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionRun, CSS_TOOLBUTTON);
     m_TbMain->addWidget(new WidgetSpacer(this));
-    addToolBarAction(m_TbMain, actionSetup, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, actionSetup, CSS_TOOLBUTTON);
     m_TbMain->addSeparator();
-    addToolBarAction(m_TbMain, actionHelp, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, actionAbout, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, actionQt, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbMain, actionExit, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbMain, actionHelp, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, actionAbout, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, actionQt, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, actionExit, CSS_TOOLBUTTON);
     addToolBar(Qt::TopToolBarArea, m_TbMain);
 
     // тулбар дополнительный
@@ -366,17 +366,17 @@ void MainWindow::loadGui()
 
     m_TbActions->addWidget(m_BtnMenuRules);
     m_TbActions->addSeparator();
-    addToolBarAction(m_TbActions, m_ActionSaveCellsToPreset, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbActions, m_ActionLoadCellsFromPreset, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbActions, m_ActionSaveCellsToPreset, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbActions, m_ActionLoadCellsFromPreset, CSS_TOOLBUTTON);
     m_TbActions->addSeparator();
-    addToolBarAction(m_TbActions, m_ActionCreateSnapshot, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbActions, m_ActionSelectSnapshot, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbActions, m_ActionCreateSnapshot, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbActions, m_ActionSelectSnapshot, CSS_TOOLBUTTON);
     m_TbActions->addSeparator();
-    addToolBarAction(m_TbActions, m_ActionSelectAll, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbActions, m_ActionSelectAll, CSS_TOOLBUTTON);
     m_TbActions->addSeparator();
-    addToolBarAction(m_TbActions, m_ActionCutCells, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbActions, m_ActionSaveCellsToClipbord, TOOLBUTTON_NAME);
-    addToolBarAction(m_TbActions, m_ActionLoadCellsFromClipbord, TOOLBUTTON_NAME);
+    addToolBarAction(m_TbActions, m_ActionCutCells, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbActions, m_ActionSaveCellsToClipbord, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbActions, m_ActionLoadCellsFromClipbord, CSS_TOOLBUTTON);
     m_TbActions->addWidget(m_BtnMenuEditCells);
     addToolBar(Qt::LeftToolBarArea, m_TbActions);
 
@@ -463,7 +463,7 @@ void MainWindow::slotStepStop()
 
     if(!m_Field->isCalculating())
     {
-        if(config->SceneFirstSnapshot() && !m_Snapshots->count())
+        if(config->FieldFirstSnapshot() && !m_Snapshots->count())
             createSnapshot();
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
@@ -485,7 +485,7 @@ void MainWindow::slotRun()
 
     if(!m_Field->isCalculating())
     {
-        if(config->SceneFirstSnapshot() && !m_Field->getInformation()->getAge())
+        if(config->FieldFirstSnapshot() && !m_Field->getInformation()->getAge())
             createSnapshot();
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
@@ -1221,7 +1221,7 @@ void MainWindow::createSnapshot()
     if(!validateScene()) return;
 
     if(m_Field->getInformation()->getAge() == 0 &&
-            config->SceneFirstSnapshotClearList())
+            config->FieldFirstSnapshotClearList())
         m_Snapshots->clear();
 
     auto name = QString::number(m_Field->getInformation()->getAge());
@@ -1359,7 +1359,7 @@ void MainWindow::slotSetup()
                                    tr("25#__Maximal factor"),
                                    tr("26#__Age diapason"),
                                    tr("27#_Field options"),
-                                   tr("28#_Create first snapshot"),
+                                   tr("28#_Create first snapshot always"),
                                    tr("29#_Clear snapshot list at first snapshot"),
                                    tr("30#_Minimum pause at calculating (ms)"),
                                    tr("31#_Copy to clipboard except dead cells"),
@@ -1395,8 +1395,8 @@ void MainWindow::slotSetup()
      {keys.at(25), {QVariant::Int, config->CellCurseAgeIndicFactor(), 150, 1000}},
      {keys.at(26), {QVariant::Int, config->CellCurseAgeIndicDiapason(), 2, 50}},
      {keys.at(27), {}},
-     {keys.at(28), {QVariant::Bool, config->SceneFirstSnapshot()}},
-     {keys.at(29), {QVariant::Bool, config->SceneFirstSnapshotClearList()}},
+     {keys.at(28), {QVariant::Bool, config->FieldFirstSnapshot()}},
+     {keys.at(29), {QVariant::Bool, config->FieldFirstSnapshotClearList()}},
      {keys.at(30), {QVariant::Int, config->SceneCalculatingMinPause(), 0, 10000}},
      {keys.at(31), {QVariant::Bool, config->CopyToClipboardExceptDead()}},
      {keys.at(32), {QVariant::Bool, config->SaveToPresetExceptDead()}},
@@ -1440,8 +1440,8 @@ void MainWindow::slotSetup()
     config->setCellCurseAgeIndicFactor(map.value(keys.at(25)).value.toInt());
     config->setCellCurseAgeIndicDiapason(map.value(keys.at(26)).value.toInt());
     // field 27
-    config->setSceneFirstSnapshot(map.value(keys.at(28)).value.toBool());
-    config->setSceneFirstSnapshotClearList(map.value(keys.at(29)).value.toBool());
+    config->setFieldFirstSnapshot(map.value(keys.at(28)).value.toBool());
+    config->setFieldFirstSnapshotClearList(map.value(keys.at(29)).value.toBool());
     config->setSceneCalculatingMinPause(map.value(keys.at(30)).value.toInt());
     config->setCopyToClipboardExceptDead(map.value(keys.at(31)).value.toBool());
     config->setSaveToPresetExceptDead(map.value(keys.at(32)).value.toBool());

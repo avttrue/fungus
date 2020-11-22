@@ -92,8 +92,8 @@ public:
     void setRewriteResource(bool value);
     int SceneSelAlfa() const;
     void setSceneSelAlfa(int value);
-    bool SceneFirstSnapshot() const;
-    void setSceneFirstSnapshot(bool value);
+    bool FieldFirstSnapshot() const;
+    void setFieldFirstSnapshot(bool value);
     QString PathLogsDir() const;
     void setPathLogsDir(const QString &value);
     int SplashTime() const;
@@ -140,8 +140,8 @@ public:
     void setCellMonitorWindowWidth(int value);
     QString SceneLastRule() const;
     void setSceneLastRule(const QString &value);
-    bool SceneFirstSnapshotClearList() const;
-    void setSceneFirstSnapshotClearList(bool value);
+    bool FieldFirstSnapshotClearList() const;
+    void setFieldFirstSnapshotClearList(bool value);
     QString SceneCellTraitColor() const;
     void setSceneCellTraitColor(const QString &value);
     QString HelpPage() const;
@@ -194,6 +194,8 @@ public:
     void setReportAutoopen(bool value);
     bool ImageAutoopen() const;
     void setImageAutoopen(bool value);
+    int FieldPauseAfterTicks() const;
+    void setFieldPauseAfterTicks(int value);
 
 protected:
     void load();
@@ -224,6 +226,7 @@ private:
     QString m_CellCurseAgeIndicBright;              // индикация возраста отравленной ячейки: ярче/темнее
     QString m_HelpPage;                             // стартовая страница справки
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
+    int m_FieldPauseAfterTicks;                     // останавливаться поле указанного количества тиков
     int m_FieldRandomisationValue;                  // параметр рандомизации 0-100
     int m_CellAliveAgeIndicFactor;                  // индикация возраста живой ячейки: максимальный фактор яркости/тёмности
     int m_CellAliveAgeIndicDiapason;                // индикация возраста живой ячейки: диапазон по возрасту
@@ -286,8 +289,8 @@ private:
     bool m_CopyToClipboardExceptDead;               // при копировании в буфер обмена исключать мёртвые
     bool m_SaveToPresetExceptDead;                  // при сохранении в пресет исключать мёртвые
     bool m_RewriteResource;                         // переписывать ресурсы при старте
-    bool m_SceneFirstSnapshot;                      // создавать снапшот при первом запуске поля
-    bool m_SceneFirstSnapshotClearList;             // очищать список снапшотов при первом снапшоте
+    bool m_FieldFirstSnapshot;                      // создавать снапшот при первом запуске поля
+    bool m_FieldFirstSnapshotClearList;             // очищать список снапшотов при первом снапшоте
     bool m_SceneCreateDefaultRule;                  // создавать правило по-умолчанию
     bool m_ProjectFileCompression;                  // сжимать данные при сохранении проекта
 };

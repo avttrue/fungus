@@ -37,7 +37,7 @@ DialogCellInformation::DialogCellInformation(QWidget *parent,
     auto actionShowCell = new QAction(QIcon(":/resources/img/point.svg"), tr("Show cell"));
     actionShowCell->setAutoRepeat(false);
     QObject::connect(actionShowCell, &QAction::triggered, this, &DialogCellInformation::slotShowCell);
-    addToolBarAction(ToolBar(), actionShowCell, TOOLBUTTON_NAME);
+    addToolBarAction(ToolBar(), actionShowCell, CSS_TOOLBUTTON);
 
     ToolBar()->addWidget(new WidgetSpacer());
 

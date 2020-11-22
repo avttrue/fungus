@@ -246,9 +246,9 @@ void Config::load()
         m_Settings->setValue("Scene/CellSize", SCENE_CELL_SIZE);
     m_SceneCellSize = m_Settings->value("Scene/CellSize").toInt();
 
-    if(!m_Settings->contains("Scene/FieldSize"))
-        m_Settings->setValue("Scene/FieldSize", SCENE_FIELD_SIZE);
-    m_SceneFieldSize = m_Settings->value("Scene/FieldSize").toInt();
+    if(!m_Settings->contains("Field/Size"))
+        m_Settings->setValue("Field/Size", SCENE_FIELD_SIZE);
+    m_SceneFieldSize = m_Settings->value("Field/Size").toInt();
 
     if(!m_Settings->contains("Scene/ViewAntialiasing"))
         m_Settings->setValue("Scene/ViewAntialiasing", SCENE_VIEW_ANTIALIASING);
@@ -262,13 +262,13 @@ void Config::load()
         m_Settings->setValue("Scene/CellCurseAgeIndicate", SCENE_CURSE_CELL_AGE_INDICATE);
     m_CellCurseAgeIndicate = m_Settings->value("Scene/CellCurseAgeIndicate").toBool();
 
-    if(!m_Settings->contains("Scene/FirstSnapshot"))
-        m_Settings->setValue("Scene/FirstSnapshot", SCENE_FIRST_SNAPSHOT);
-    m_SceneFirstSnapshot = m_Settings->value("Scene/FirstSnapshot").toBool();
+    if(!m_Settings->contains("Field/FirstSnapshot"))
+        m_Settings->setValue("Field/FirstSnapshot", FIELD_FIRST_SNAPSHOT);
+    m_FieldFirstSnapshot = m_Settings->value("Field/FirstSnapshot").toBool();
 
-    if(!m_Settings->contains("Scene/FirstSnapshotClearList"))
-        m_Settings->setValue("Scene/FirstSnapshotClearList", SCENE_FIRST_SNAPSHOT_CLEAR_LIST);
-    m_SceneFirstSnapshotClearList = m_Settings->value("Scene/FirstSnapshotClearList").toBool();
+    if(!m_Settings->contains("Field/FirstSnapshotClearList"))
+        m_Settings->setValue("Field/FirstSnapshotClearList", FIELD_FIRST_SNAPSHOT_CLEAR_LIST);
+    m_FieldFirstSnapshotClearList = m_Settings->value("Field/FirstSnapshotClearList").toBool();
 
     if(!m_Settings->contains("Scene/CellDeadColor"))
         m_Settings->setValue("Scene/CellDeadColor", SCENE_CELL_DEAD_COLOR);
@@ -342,13 +342,17 @@ void Config::load()
         m_Settings->setValue("Scene/CreateDefaultRule", SCENE_CREATE_DEFAULT_RULE);
     m_SceneCreateDefaultRule = m_Settings->value("Scene/CreateDefaultRule").toBool();
 
-    if(!m_Settings->contains("Scene/FieldRandomisationValue"))
-        m_Settings->setValue("Scene/FieldRandomisationValue", FIELD_RANDOMISATION_VALUE);
-    m_FieldRandomisationValue = m_Settings->value("Scene/FieldRandomisationValue").toInt();
+    if(!m_Settings->contains("Field/RandomisationValue"))
+        m_Settings->setValue("Field/RandomisationValue", FIELD_RANDOMISATION_VALUE);
+    m_FieldRandomisationValue = m_Settings->value("Field/RandomisationValue").toInt();
 
     if(!m_Settings->contains("Scene/GridLineWidth"))
         m_Settings->setValue("Scene/GridLineWidth", SCENE_GRID_LINE_WIDTH);
     m_SceneGridLineWidth = m_Settings->value("Scene/GridLineWidth").toInt();
+
+    if(!m_Settings->contains("Field/PauseAfterTicks"))
+        m_Settings->setValue("Field/PauseAfterTicks", FIELD_PAUSE_AFTER_TICKS);
+    m_FieldPauseAfterTicks = m_Settings->value("Field/PauseAfterTicks").toInt();
 
     if(!m_Settings->contains("Scene/LastRule"))
         m_Settings->setValue("Scene/LastRule", "");
@@ -363,10 +367,18 @@ void Config::load()
     m_ReportAutoopen = m_Settings->value("ReportAutoopen").toBool();
 }
 
+void Config::setFieldPauseAfterTicks(int value)
+{
+    if(m_FieldPauseAfterTicks == value) return;
+
+    m_FieldPauseAfterTicks = value;
+    m_Settings->setValue("Field/PauseAfterTicks", m_FieldPauseAfterTicks);
+}
+
 void Config::setImageAutoopen(bool value)
 {
     if(m_ImageAutoopen == value) return;
-
+    
     m_ImageAutoopen = value;
     m_Settings->setValue("ImageAutoopen", m_ImageAutoopen);
 }
@@ -555,12 +567,12 @@ void Config::setHelpPage(const QString &value)
     m_Settings->setValue("MainWindow/HelpPage", m_HelpPage);
 }
 
-void Config::setSceneFirstSnapshotClearList(bool value)
+void Config::setFieldFirstSnapshotClearList(bool value)
 {
-    if(m_SceneFirstSnapshotClearList == value) return;
+    if(m_FieldFirstSnapshotClearList == value) return;
     
-    m_SceneFirstSnapshotClearList = value;
-    m_Settings->setValue("Scene/FirstSnapshotClearList", m_SceneFirstSnapshotClearList);
+    m_FieldFirstSnapshotClearList = value;
+    m_Settings->setValue("Field/FirstSnapshotClearList", m_FieldFirstSnapshotClearList);
 }
 
 void Config::setSceneLastRule(const QString &value)
@@ -609,7 +621,7 @@ void Config::setFieldRandomisationValue(int value)
     if(m_FieldRandomisationValue == value) return;
 
     m_FieldRandomisationValue = value;
-    m_Settings->setValue("Scene/FieldRandomisationValue", m_FieldRandomisationValue);
+    m_Settings->setValue("Field/RandomisationValue", m_FieldRandomisationValue);
 }
 
 void Config::setInfoWindowWidth(int value)
@@ -781,12 +793,12 @@ void Config::setSplashTime(int value)
     m_Settings->setValue("MainWindow/SplashTime", m_SplashTime);
 }
 
-void Config::setSceneFirstSnapshot(bool value)
+void Config::setFieldFirstSnapshot(bool value)
 {
-    if(m_SceneFirstSnapshot == value) return;
+    if(m_FieldFirstSnapshot == value) return;
 
-    m_SceneFirstSnapshot = value;
-    m_Settings->setValue("Scene/FirstSnapshot", m_SceneFirstSnapshot);
+    m_FieldFirstSnapshot = value;
+    m_Settings->setValue("Field/FirstSnapshot", m_FieldFirstSnapshot);
 }
 
 void Config::setSceneSelAlfa(int value)
@@ -978,7 +990,7 @@ void Config::setSceneFieldSize(int value)
     if(m_SceneFieldSize == value) return;
     
     m_SceneFieldSize = value;
-    m_Settings->setValue("Scene/FieldSize", m_SceneFieldSize);
+    m_Settings->setValue("Field/Size", m_SceneFieldSize);
 }
 
 void Config::setSceneZoomModifier(const Qt::KeyboardModifiers &value)
@@ -1091,7 +1103,7 @@ QString Config::PathPresetsDir() const { return m_PathPresetsDir; }
 QString Config::PathLogsDir() const { return m_PathLogsDir; }
 bool Config::RewriteResource() const { return m_RewriteResource; }
 int Config::SceneSelAlfa() const { return m_SceneSelAlfa; }
-bool Config::SceneFirstSnapshot() const { return m_SceneFirstSnapshot; }
+bool Config::FieldFirstSnapshot() const { return m_FieldFirstSnapshot; }
 int Config::SplashSize() const { return m_SplashSize; }
 int Config::SplashTime() const { return m_SplashTime; }
 QString Config::SceneCellAliveColor() const { return m_SceneCellAliveColor; }
@@ -1116,7 +1128,7 @@ int Config::CellMonitorWindowHeight() const { return m_CellMonitorWindowHeight; 
 int Config::CellMonitorWindowWidth() const { return m_CellMonitorWindowWidth; }
 Qt::KeyboardModifiers Config::FieldFasteditKeyModifier() const { return m_FieldFasteditKeyModifier; }
 QString Config::SceneLastRule() const { return m_SceneLastRule; }
-bool Config::SceneFirstSnapshotClearList() const { return m_SceneFirstSnapshotClearList; }
+bool Config::FieldFirstSnapshotClearList() const { return m_FieldFirstSnapshotClearList; }
 QString Config::SceneCellTraitColor() const { return m_SceneCellTraitColor; }
 QString Config::HelpPage() const { return m_HelpPage; }
 int Config::SetupWindowWidth() const { return m_SetupWindowWidth; }
@@ -1142,3 +1154,4 @@ int Config::ReportWindowHeight() const { return m_ReportWindowHeight; }
 QString Config::ReportFileFormat() const { return m_ReportFileFormat; }
 bool Config::ImageAutoopen() const { return m_ImageAutoopen; }
 bool Config::ReportAutoopen() const { return m_ReportAutoopen; }
+int Config::FieldPauseAfterTicks() const { return m_FieldPauseAfterTicks; }

@@ -79,7 +79,7 @@ DialogEditRules::DialogEditRules(QWidget *parent, FieldRule* rules)
     ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     ToolBar()->addAction(actionUpdate);
     ToolBar()->addWidget(new WidgetSpacer());
-    addToolBarAction(ToolBar(), actionAccept, TOOLBUTTON_NAME);
+    addToolBarAction(ToolBar(), actionAccept, CSS_TOOLBUTTON);
 
     addDialogContent(m_RulesProperties);
     addDialogContent(toolBarControl);

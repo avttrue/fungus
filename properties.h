@@ -14,9 +14,9 @@ extern Config* config; // интерфейс над QSettings
 const QStringList SCENE_VIEW_UPDATE_MODES =         {"SMART", "MINIMAL", "FULL"};
 const QStringList SCENE_FIELD_THREAD_PRIORITIES =   {"LOW", "NORMAL", "HIGH", "HIGHEST"};
 const QStringList SCENE_CELL_BRIGHTNESS_VALUES =    {"LIGHTER", "DARKER"};
-const QString TOOLBUTTON_NAME =                     "FungusToolButton"; // see main.css
+const QString CSS_TOOLBUTTON =                      "FungusToolButton"; // see main.css
 const QString APP_NAME =                            "Fungus";
-const QString APP_VERSION =                         "1.2.2";
+const QString APP_VERSION =                         "1.2.3";
 const QString APP_CFG =                             "config.cfg";
 const QString FORMAT_VERSION =                      "3";
 const QString IMAGE_FILE_FORMAT =                   "PNG";
@@ -104,6 +104,7 @@ const auto SPLASH_SIZE =                            640;
 const auto SPLASH_TIME =                            500;
 const auto PROJECT_FILE_COMPRESSION_LEVEL =         -1; // -1 - default, 0-9
 const auto FIELD_RANDOMISATION_VALUE =              50; // 1-100
+const auto FIELD_PAUSE_AFTER_TICKS =                0; // 0 - switch off /// pause after specified ticks count
 const auto REPORT_AUTOOPEN =                        true;
 const auto IMAGE_AUTOOPEN =                         false;
 const auto PROJECT_FILE_COMPRESSION =               true;
@@ -116,8 +117,8 @@ const auto JSON_IGNORE_DATA_VERSION =               false;
 const auto COPY_TO_CLIPBOARD_EXCEPT_DEAD =          true;
 const auto SAVE_TO_PRESET_EXCEPT_DEAD =             true;
 const auto REWITE_RESOURCES =                       true;
-const auto SCENE_FIRST_SNAPSHOT =                   true;
-const auto SCENE_FIRST_SNAPSHOT_CLEAR_LIST =        true;
+const auto FIELD_FIRST_SNAPSHOT =                   true;
+const auto FIELD_FIRST_SNAPSHOT_CLEAR_LIST =        true;
 const auto WRITE_LOGS_TO_FILE =                     false;
 
 #endif // PROPERTIES_H

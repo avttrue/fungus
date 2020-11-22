@@ -33,10 +33,10 @@ DialogCellMonitor::DialogCellMonitor(QWidget *parent, const QString& title, Scen
     m_LabelCount = new QLabel("0", this);
 
     ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
-    addToolBarAction(ToolBar(), m_ActionSelectCell, TOOLBUTTON_NAME);
-    addToolBarAction(ToolBar(), m_ActionNextCell, TOOLBUTTON_NAME);
+    addToolBarAction(ToolBar(), m_ActionSelectCell, CSS_TOOLBUTTON);
+    addToolBarAction(ToolBar(), m_ActionNextCell, CSS_TOOLBUTTON);
     ToolBar()->addSeparator();
-    addToolBarAction(ToolBar(), actionClear, TOOLBUTTON_NAME);
+    addToolBarAction(ToolBar(), actionClear, CSS_TOOLBUTTON);
     ToolBar()->addSeparator();
     ToolBar()->addWidget(new QLabel("Observation list: ", this));
     ToolBar()->addWidget(m_LabelCount);

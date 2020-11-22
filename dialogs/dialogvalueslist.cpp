@@ -46,7 +46,7 @@ DialogValuesList::DialogValuesList(QWidget* parent,
     auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
     actionAccept->setAutoRepeat(false);
     QObject::connect(actionAccept, &QAction::triggered, [=](){ accept(); });
-    addToolBarAction(ToolBar(), actionAccept, TOOLBUTTON_NAME);
+    addToolBarAction(ToolBar(), actionAccept, CSS_TOOLBUTTON);
 
     addDialogContent(saContent);
 
@@ -203,7 +203,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
             auto actionSave = new QAction(QIcon(":/resources/img/save.svg"), tr("Save image"), widget);
             actionSave->setAutoRepeat(false);
             QObject::connect(actionSave, &QAction::triggered, [=](){ saveImage(pixmap); });
-            addToolBarAction(tbimginfo, actionSave, TOOLBUTTON_NAME);
+            addToolBarAction(tbimginfo, actionSave, CSS_TOOLBUTTON);
 
             auto limgsize = new QLabel(QString("Size: %1X%2 px").
                                        arg(QString::number(realw), QString::number(realh)), widget);

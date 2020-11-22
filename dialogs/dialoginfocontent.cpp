@@ -28,18 +28,18 @@ DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
     QObject::connect(m_ActionBackward, &QAction::triggered, [=](){ m_Content->backward(); });
     m_ActionBackward->setAutoRepeat(false);
     m_ActionBackward->setEnabled(false);
-    addToolBarAction(ToolBar(), m_ActionBackward, TOOLBUTTON_NAME);
+    addToolBarAction(ToolBar(), m_ActionBackward, CSS_TOOLBUTTON);
     
     m_ActionForward = new QAction(QIcon(":/resources/img/right_arrow.svg"), tr("Forward"));
     QObject::connect(m_ActionForward, &QAction::triggered, [=](){ m_Content->forward(); });
     m_ActionForward->setAutoRepeat(false);
     m_ActionForward->setEnabled(false);
-    addToolBarAction(ToolBar(), m_ActionForward, TOOLBUTTON_NAME);
+    addToolBarAction(ToolBar(), m_ActionForward, CSS_TOOLBUTTON);
     
     auto m_ActionHome = new QAction(QIcon(":/resources/img/up_arrow.svg"), tr("Main page"));
     QObject::connect(m_ActionHome, &QAction::triggered, [=](){ m_Content->home(); });
     m_ActionHome->setAutoRepeat(false);
-    addToolBarAction(ToolBar(), m_ActionHome, TOOLBUTTON_NAME);
+    addToolBarAction(ToolBar(), m_ActionHome, CSS_TOOLBUTTON);
     
     ToolBar()->addWidget(new WidgetSpacer());
     
