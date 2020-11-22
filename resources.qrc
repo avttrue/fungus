@@ -137,5 +137,6 @@
         <file>resources/md/help/example_trait_ru.md</file>
         <file>resources/img/text.svg</file>
         <file>resources/html/report_body.html</file>
+        <file>resources/img/tasks.svg</file>
     </qresource>
 </RCC>

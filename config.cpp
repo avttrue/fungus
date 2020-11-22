@@ -6,7 +6,8 @@
 #include <QTextCodec>
 
 Config::Config(const QString& in_AppDirectory):
-    m_Settings(nullptr)
+    m_Settings(nullptr),
+    m_UnsavedTasksEnabled(false)
 {
     setObjectName("Config");
 
@@ -202,6 +203,14 @@ void Config::load()
         m_Settings->setValue("MainWindow/RulePropertyWindowHeight", RULEPROPERTY_WINDOW_HEIGHT);
     m_RulePropertyWindowHeight = m_Settings->value("MainWindow/RulePropertyWindowHeight").toInt();
 
+    if(!m_Settings->contains("MainWindow/TasksWindowWidth"))
+        m_Settings->setValue("MainWindow/TasksWindowWidth", TASKS_WINDOW_WIDTH);
+    m_TasksWindowWidth = m_Settings->value("MainWindow/TasksWindowWidth").toInt();
+
+    if(!m_Settings->contains("MainWindow/TasksWindowHeight"))
+        m_Settings->setValue("MainWindow/TasksWindowHeight", TASKS_WINDOW_HEIGHT);
+    m_TasksWindowHeight = m_Settings->value("MainWindow/TasksWindowHeight").toInt();
+
     if(!m_Settings->contains("MainWindow/ShowFieldInformation"))
         m_Settings->setValue("MainWindow/ShowFieldInformation", WINDOW_SHOW_FIELD_INFO);
     m_WindowShowFieldInfo = m_Settings->value("MainWindow/ShowFieldInformation").toBool();
@@ -350,9 +359,9 @@ void Config::load()
         m_Settings->setValue("Scene/GridLineWidth", SCENE_GRID_LINE_WIDTH);
     m_SceneGridLineWidth = m_Settings->value("Scene/GridLineWidth").toInt();
 
-    if(!m_Settings->contains("Field/PauseAfterTicks"))
-        m_Settings->setValue("Field/PauseAfterTicks", FIELD_PAUSE_AFTER_TICKS);
-    m_FieldPauseAfterTicks = m_Settings->value("Field/PauseAfterTicks").toInt();
+    if(!m_Settings->contains("Field/PauseAtAge"))
+        m_Settings->setValue("Field/PauseAtAge", FIELD_PAUSE_AT_AGE);
+    m_FieldPauseAtAge = m_Settings->value("Field/PauseAtAge").toInt();
 
     if(!m_Settings->contains("Scene/LastRule"))
         m_Settings->setValue("Scene/LastRule", "");
@@ -367,12 +376,28 @@ void Config::load()
     m_ReportAutoopen = m_Settings->value("ReportAutoopen").toBool();
 }
 
-void Config::setFieldPauseAfterTicks(int value)
+void Config::setTasksWindowWidth(int value)
 {
-    if(m_FieldPauseAfterTicks == value) return;
+    if(m_TasksWindowWidth == value) return;
 
-    m_FieldPauseAfterTicks = value;
-    m_Settings->setValue("Field/PauseAfterTicks", m_FieldPauseAfterTicks);
+    m_TasksWindowWidth = value;
+    m_Settings->setValue("MainWindow/TasksWindowWidth", m_TasksWindowWidth);
+}
+
+void Config::setTasksWindowHeight(int value)
+{
+    if(m_TasksWindowHeight == value) return;
+
+    m_TasksWindowHeight = value;
+    m_Settings->setValue("MainWindow/TasksWindowHeight", m_TasksWindowHeight);
+}
+
+void Config::setFieldPauseAtAge(uint value)
+{
+    if(m_FieldPauseAtAge == value) return;
+
+    m_FieldPauseAtAge = value;
+    m_Settings->setValue("Field/PauseAtAge", m_FieldPauseAtAge);
 }
 
 void Config::setImageAutoopen(bool value)
@@ -1154,4 +1179,9 @@ int Config::ReportWindowHeight() const { return m_ReportWindowHeight; }
 QString Config::ReportFileFormat() const { return m_ReportFileFormat; }
 bool Config::ImageAutoopen() const { return m_ImageAutoopen; }
 bool Config::ReportAutoopen() const { return m_ReportAutoopen; }
-int Config::FieldPauseAfterTicks() const { return m_FieldPauseAfterTicks; }
+uint Config::FieldPauseAtAge() const { return m_FieldPauseAtAge; }
+int Config::TasksWindowWidth() const { return m_TasksWindowWidth; }
+int Config::TasksWindowHeight() const { return m_TasksWindowHeight; }
+// Unsaved
+bool Config::UnsavedTasksEnabled() const { return m_UnsavedTasksEnabled; }
+void Config::setUnsavedTasksEnabled(bool value) { m_UnsavedTasksEnabled = value; }

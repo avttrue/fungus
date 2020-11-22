@@ -194,8 +194,14 @@ public:
     void setReportAutoopen(bool value);
     bool ImageAutoopen() const;
     void setImageAutoopen(bool value);
-    int FieldPauseAfterTicks() const;
-    void setFieldPauseAfterTicks(int value);
+    uint FieldPauseAtAge() const;
+    void setFieldPauseAtAge(uint value);
+    int TasksWindowHeight() const;
+    void setTasksWindowHeight(int value);
+    int TasksWindowWidth() const;
+    void setTasksWindowWidth(int value);
+    bool UnsavedTasksEnabled() const;
+    void setUnsavedTasksEnabled(bool value);
 
 protected:
     void load();
@@ -226,7 +232,7 @@ private:
     QString m_CellCurseAgeIndicBright;              // индикация возраста отравленной ячейки: ярче/темнее
     QString m_HelpPage;                             // стартовая страница справки
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
-    int m_FieldPauseAfterTicks;                     // останавливаться поле указанного количества тиков
+    uint m_FieldPauseAtAge;                         // останавливаться поле при достижении возраста
     int m_FieldRandomisationValue;                  // параметр рандомизации 0-100
     int m_CellAliveAgeIndicFactor;                  // индикация возраста живой ячейки: максимальный фактор яркости/тёмности
     int m_CellAliveAgeIndicDiapason;                // индикация возраста живой ячейки: диапазон по возрасту
@@ -238,7 +244,9 @@ private:
     int m_SceneCalculatingMinPause;                 // минимальная допустимая пауза при обсчёте Field
     int m_ButtonSize;                               // размеры кнопок интерфейса
     int m_SceneCellSize;                            // размер объекта сцены
-    int m_SceneFieldSize;                           // размер сцены при создании
+    int m_SceneFieldSize;                           // размер сцены при создании    
+    int m_TasksWindowHeight;                        // размеры окна Tasks
+    int m_TasksWindowWidth;                         // размеры окна Tasks
     int m_EditActivityWindowHeight;                 // размеры окна EditActivity
     int m_EditActivityWindowWidth;                  // размеры окна EditActivity
     int m_EditCellWindowHeight;                     // размеры окна EditCell
@@ -293,6 +301,7 @@ private:
     bool m_FieldFirstSnapshotClearList;             // очищать список снапшотов при первом снапшоте
     bool m_SceneCreateDefaultRule;                  // создавать правило по-умолчанию
     bool m_ProjectFileCompression;                  // сжимать данные при сохранении проекта
+    bool m_UnsavedTasksEnabled;                            // несохраняемый флаг заданий
 };
 
 #endif // CONFIG_H

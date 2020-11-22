@@ -98,6 +98,11 @@ void MainWindow::loadGui()
     addShortcutToToolTip(m_ActionNewProject);
     m_ActionNewProject->setAutoRepeat(false);
 
+    m_ActionTasks = new QAction(QIcon(":/resources/img/tasks.svg"), tr("Set project tasks"), this);
+    QObject::connect(m_ActionTasks, &QAction::triggered, this, &MainWindow::slotTasks);
+    m_ActionTasks->setEnabled(false);
+    m_ActionTasks->setAutoRepeat(false);
+
     m_ActionLoadProject = new QAction(QIcon(":/resources/img/open_folder.svg"), tr("Load project"), this);
     QObject::connect(m_ActionLoadProject, &QAction::triggered, this, &MainWindow::slotLoadProject);
     m_ActionLoadProject->setShortcut(Qt::CTRL + Qt::Key_O);
@@ -329,6 +334,7 @@ void MainWindow::loadGui()
     m_TbMain->setOrientation(Qt::Horizontal);
     m_TbMain->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     addToolBarAction(m_TbMain, m_ActionNewProject, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionTasks, CSS_TOOLBUTTON);
     m_TbMain->addSeparator();
     addToolBarAction(m_TbMain, m_ActionLoadProject, CSS_TOOLBUTTON);
     addToolBarAction(m_TbMain, m_ActionSaveProject, CSS_TOOLBUTTON);
@@ -338,7 +344,7 @@ void MainWindow::loadGui()
     m_TbMain->addSeparator();
     addToolBarAction(m_TbMain, m_ActionZoomFit, CSS_TOOLBUTTON);
     addToolBarAction(m_TbMain, m_ActionZoomUndoScene, CSS_TOOLBUTTON);
-    addToolBarAction(m_TbMain, m_ActionSaveProject, CSS_TOOLBUTTON);
+    addToolBarAction(m_TbMain, m_ActionZoomInScene, CSS_TOOLBUTTON);
     addToolBarAction(m_TbMain, m_ActionZoomOutScene, CSS_TOOLBUTTON);
     m_TbMain->addSeparator();
     addToolBarAction(m_TbMain, m_ActionEditCell, CSS_TOOLBUTTON);
@@ -582,6 +588,7 @@ void MainWindow::setMainActionsEnable(bool value)
     m_ActionInfoRule->setEnabled(enable);
     m_ActionImportRule->setEnabled(enable);
     m_ActionSaveProject->setEnabled(enable);
+    m_ActionTasks->setEnabled(enable);
     m_ActionZoomInScene->setEnabled(enable);
     m_ActionZoomOutScene->setEnabled(enable);
     m_ActionZoomUndoScene->setEnabled(enable);
@@ -859,7 +866,8 @@ bool MainWindow::CellsFromJsonText(Cell *cell, const QString &text)
                                                                      "\n To try placing it in the center of the field?"
                                                                      "\n New target cell: [%1 X %2]").
                                             arg(QString::number(x), QString::number(y)));
-        if (!answer) return false;
+
+        if (answer == QMessageBox::No) return false;
 
         cell = m_Field->getCell({x, y});
         scene->selectCell(cell, false);
@@ -1691,6 +1699,7 @@ void MainWindow::slotNewProject()
     m_LabelSelectedCell->setText("-");
 
     if(config->WindowShowFieldInfo()) showInfoField(false);
+    config->setUnsavedTasksEnabled(false);
 }
 
 bool MainWindow::validateScene()
@@ -2294,6 +2303,41 @@ void MainWindow::slotReport()
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
+}
+
+void MainWindow::slotTasks()
+{
+    qDebug() << __func__;
+
+    if(!validateScene()) return;
+
+    const QVector<QString> keys = {
+        tr("00#_Tasks"),
+        "01#_", tr("02#__Value:"),
+        tr("03#_Activation"),
+        tr("04#_Switch ON"),
+    };
+    QMap<QString, DialogValue> map = {
+        {keys.at(0), {}},
+        {keys.at(1), { QVariant::String,
+                       tr("Pause at specified age (0 - never):"), "", "", DialogValueMode::Disabled}},
+        {keys.at(2), {QVariant::Int, config->FieldPauseAtAge(), 0, 0}},
+        {keys.at(3), {}},
+        {keys.at(4), {QVariant::Bool, config->UnsavedTasksEnabled()}},
+    };
+
+    auto dvl = new DialogValuesList(this, ":/resources/img/tasks.svg", tr("Project tasks"), &map);
+    dvl->resize(config->TasksWindowWidth(), config->TasksWindowHeight());
+    QObject::connect(dvl, &DialogBody::signalSizeChanged, [=](QSize size)
+    {
+        config->setTasksWindowWidth(size.width());
+        config->setTasksWindowHeight(size.height());
+    });
+    if(!dvl->exec()) return;
+
+    config->setFieldPauseAtAge(map.value(keys.at(2)).value.toInt());
+
+    config->setUnsavedTasksEnabled(4);
 }
 
 void MainWindow::slotRandomFill()

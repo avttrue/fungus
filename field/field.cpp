@@ -229,9 +229,24 @@ void Field::calculate()
 
         Q_EMIT signalCalculated(cells_to_redraw);
 
-        if(!alive_count && (!cursed_count || (cursed_count && m_Rule->getCurseTime() < 0)))
+        if(!alive_count &&
+                (!cursed_count || (cursed_count && m_Rule->getCurseTime() < 0)))
+        {
+            qDebug() << "Internal task: alive_count =" << alive_count <<
+                        "; cursed_count =" << cursed_count;
             m_CalculatingNonstop = false;
+        }
 
+        // tasks
+        if(config->UnsavedTasksEnabled())
+        {
+            if(config->FieldPauseAtAge() > 0 &&
+                    m_FieldInformation->getAge() == config->FieldPauseAtAge())
+            {
+                qDebug() << "Tasks: FieldPauseAtAge =" << config->FieldPauseAtAge();
+                m_CalculatingNonstop = false;
+            }
+        }
 
         if(!m_CalculatingNonstop) slotStopCalculating();
 
