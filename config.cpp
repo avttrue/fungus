@@ -53,15 +53,13 @@ void Config::load()
         m_Settings->setValue("DateTimeFormat", FORMAT_DT);
     m_DateTimeFormat = m_Settings->value("DateTimeFormat").toString();
 
-    if(!m_Settings->contains("MainWindow/Height"))
-        m_Settings->setValue("MainWindow/Height", WINDOW_HEIGHT);
+    if(!m_Settings->contains("ImageAutoopen"))
+        m_Settings->setValue("ImageAutoopen", IMAGE_AUTOOPEN);
+    m_ImageAutoopen = m_Settings->value("ImageAutoopen").toBool();
 
-    if(!m_Settings->contains("MainWindow/Width"))
-        m_Settings->setValue("MainWindow/Width", WINDOW_WIDTH);
-
-    if(!m_Settings->contains("MainWindow/ButtonSize"))
-        m_Settings->setValue("MainWindow/ButtonSize", BUTTON_SIZE);
-    m_ButtonSize = m_Settings->value("MainWindow/ButtonSize").toInt();
+    if(!m_Settings->contains("ReportAutoopen"))
+        m_Settings->setValue("ReportAutoopen", REPORT_AUTOOPEN);
+    m_ReportAutoopen = m_Settings->value("ReportAutoopen").toBool();
 
     if(!m_Settings->contains("RewriteResource"))
         m_Settings->setValue("RewriteResource", REWITE_RESOURCES);
@@ -82,6 +80,16 @@ void Config::load()
     if(!m_Settings->contains("ProjectFileCompressionLevel"))
         m_Settings->setValue("ProjectFileCompressionLevel", PROJECT_FILE_COMPRESSION_LEVEL);
     m_ProjectFileCompressionLevel = m_Settings->value("ProjectFileCompressionLevel").toInt();
+
+    if(!m_Settings->contains("MainWindow/Height"))
+        m_Settings->setValue("MainWindow/Height", WINDOW_HEIGHT);
+
+    if(!m_Settings->contains("MainWindow/Width"))
+        m_Settings->setValue("MainWindow/Width", WINDOW_WIDTH);
+
+    if(!m_Settings->contains("MainWindow/ButtonSize"))
+        m_Settings->setValue("MainWindow/ButtonSize", BUTTON_SIZE);
+    m_ButtonSize = m_Settings->value("MainWindow/ButtonSize").toInt();
 
     if(!m_Settings->contains("MainWindow/CellInfoWindowHeight"))
         m_Settings->setValue("MainWindow/CellInfoWindowHeight", CELL_INFO_WINDOW_HEIGHT);
@@ -255,10 +263,6 @@ void Config::load()
         m_Settings->setValue("Scene/CellSize", SCENE_CELL_SIZE);
     m_SceneCellSize = m_Settings->value("Scene/CellSize").toInt();
 
-    if(!m_Settings->contains("Field/Size"))
-        m_Settings->setValue("Field/Size", SCENE_FIELD_SIZE);
-    m_SceneFieldSize = m_Settings->value("Field/Size").toInt();
-
     if(!m_Settings->contains("Scene/ViewAntialiasing"))
         m_Settings->setValue("Scene/ViewAntialiasing", SCENE_VIEW_ANTIALIASING);
     m_SceneViewAntialiasing = m_Settings->value("Scene/ViewAntialiasing").toBool();
@@ -270,14 +274,6 @@ void Config::load()
     if(!m_Settings->contains("Scene/CellCurseAgeIndicate"))
         m_Settings->setValue("Scene/CellCurseAgeIndicate", SCENE_CURSE_CELL_AGE_INDICATE);
     m_CellCurseAgeIndicate = m_Settings->value("Scene/CellCurseAgeIndicate").toBool();
-
-    if(!m_Settings->contains("Field/FirstSnapshot"))
-        m_Settings->setValue("Field/FirstSnapshot", FIELD_FIRST_SNAPSHOT);
-    m_FieldFirstSnapshot = m_Settings->value("Field/FirstSnapshot").toBool();
-
-    if(!m_Settings->contains("Field/FirstSnapshotClearList"))
-        m_Settings->setValue("Field/FirstSnapshotClearList", FIELD_FIRST_SNAPSHOT_CLEAR_LIST);
-    m_FieldFirstSnapshotClearList = m_Settings->value("Field/FirstSnapshotClearList").toBool();
 
     if(!m_Settings->contains("Scene/CellDeadColor"))
         m_Settings->setValue("Scene/CellDeadColor", SCENE_CELL_DEAD_COLOR);
@@ -351,35 +347,51 @@ void Config::load()
         m_Settings->setValue("Scene/CreateDefaultRule", SCENE_CREATE_DEFAULT_RULE);
     m_SceneCreateDefaultRule = m_Settings->value("Scene/CreateDefaultRule").toBool();
 
-    if(!m_Settings->contains("Field/RandomisationValue"))
-        m_Settings->setValue("Field/RandomisationValue", FIELD_RANDOMISATION_VALUE);
-    m_FieldRandomisationValue = m_Settings->value("Field/RandomisationValue").toInt();
+    if(!m_Settings->contains("Scene/LastRule"))
+        m_Settings->setValue("Scene/LastRule", "");
+    m_SceneLastRule = m_Settings->value("Scene/LastRule").toString();
 
     if(!m_Settings->contains("Scene/GridLineWidth"))
         m_Settings->setValue("Scene/GridLineWidth", SCENE_GRID_LINE_WIDTH);
     m_SceneGridLineWidth = m_Settings->value("Scene/GridLineWidth").toInt();
 
+    if(!m_Settings->contains("Field/Size"))
+        m_Settings->setValue("Field/Size", SCENE_FIELD_SIZE);
+    m_SceneFieldSize = m_Settings->value("Field/Size").toInt();
+
     if(!m_Settings->contains("Field/PauseAtAge"))
         m_Settings->setValue("Field/PauseAtAge", FIELD_PAUSE_AT_AGE);
-    m_FieldPauseAtAge = m_Settings->value("Field/PauseAtAge").toInt();
+    m_FieldPauseAtAge = m_Settings->value("Field/PauseAtAge").toUInt();
 
-    if(!m_Settings->contains("Scene/LastRule"))
-        m_Settings->setValue("Scene/LastRule", "");
-    m_SceneLastRule = m_Settings->value("Scene/LastRule").toString();
+    if(!m_Settings->contains("Field/RandomisationValue"))
+        m_Settings->setValue("Field/RandomisationValue", FIELD_RANDOMISATION_VALUE);
+    m_FieldRandomisationValue = m_Settings->value("Field/RandomisationValue").toInt();
 
-    if(!m_Settings->contains("ImageAutoopen"))
-        m_Settings->setValue("ImageAutoopen", IMAGE_AUTOOPEN);
-    m_ImageAutoopen = m_Settings->value("ImageAutoopen").toBool();
+    if(!m_Settings->contains("Field/FirstSnapshot"))
+        m_Settings->setValue("Field/FirstSnapshot", FIELD_FIRST_SNAPSHOT);
+    m_FieldFirstSnapshot = m_Settings->value("Field/FirstSnapshot").toBool();
 
-    if(!m_Settings->contains("ReportAutoopen"))
-        m_Settings->setValue("ReportAutoopen", REPORT_AUTOOPEN);
-    m_ReportAutoopen = m_Settings->value("ReportAutoopen").toBool();
+    if(!m_Settings->contains("Field/FirstSnapshotClearList"))
+        m_Settings->setValue("Field/FirstSnapshotClearList", FIELD_FIRST_SNAPSHOT_CLEAR_LIST);
+    m_FieldFirstSnapshotClearList = m_Settings->value("Field/FirstSnapshotClearList").toBool();
+
+    if(!m_Settings->contains("Field/SnapshotAtEveryTime"))
+        m_Settings->setValue("Field/SnapshotAtEveryTime", FIELD_SNAPSHOT_AT_EVERY_TIME);
+    m_FieldSnapshotAtEveryTime = m_Settings->value("Field/SnapshotAtEveryTime").toUInt();
+}
+
+void Config::setFieldSnapshotAtEveryTime(uint value)
+{
+    if(m_FieldSnapshotAtEveryTime == value) return;
+
+    m_FieldSnapshotAtEveryTime = value;
+    m_Settings->setValue("Field/SnapshotAtEveryTime", m_FieldSnapshotAtEveryTime);
 }
 
 void Config::setTasksWindowWidth(int value)
 {
     if(m_TasksWindowWidth == value) return;
-
+    
     m_TasksWindowWidth = value;
     m_Settings->setValue("MainWindow/TasksWindowWidth", m_TasksWindowWidth);
 }
@@ -1182,6 +1194,7 @@ bool Config::ReportAutoopen() const { return m_ReportAutoopen; }
 uint Config::FieldPauseAtAge() const { return m_FieldPauseAtAge; }
 int Config::TasksWindowWidth() const { return m_TasksWindowWidth; }
 int Config::TasksWindowHeight() const { return m_TasksWindowHeight; }
+uint Config::FieldSnapshotAtEveryTime() const { return m_FieldSnapshotAtEveryTime; }
 // Unsaved
 bool Config::UnsavedTasksEnabled() const { return m_UnsavedTasksEnabled; }
 void Config::setUnsavedTasksEnabled(bool value) { m_UnsavedTasksEnabled = value; }

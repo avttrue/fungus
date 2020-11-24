@@ -69,6 +69,7 @@ protected:
     bool saveRuleToFile(FieldRule *rule, const QString &path);
     void FieldToJsonObject(QJsonObject *jobject);
     bool FieldFromJsonObject(QJsonObject *jobject);
+    void writeSnapshot();
     void createSnapshot();
     void loadSnapshot(QJsonDocument* document);
     bool loadProjectFromJsonObject(QJsonObject *jobject);

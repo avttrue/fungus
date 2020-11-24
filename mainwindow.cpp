@@ -470,7 +470,7 @@ void MainWindow::slotStepStop()
     if(!m_Field->isCalculating())
     {
         if(config->FieldFirstSnapshot() && !m_Snapshots->count())
-            createSnapshot();
+            writeSnapshot();
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
         m_Field->setCalculatingNonstop(false);
@@ -492,7 +492,7 @@ void MainWindow::slotRun()
     if(!m_Field->isCalculating())
     {
         if(config->FieldFirstSnapshot() && !m_Field->getInformation()->getAge())
-            createSnapshot();
+            writeSnapshot();
         m_SceneView->getScene()->clearMultiSelection();
         m_Field->setRuleOn(true);
         m_Field->setCalculatingNonstop(true);
@@ -1223,6 +1223,18 @@ bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
 }
 
 void MainWindow::createSnapshot()
+{
+    qDebug() << __func__;
+
+    stopFieldCalculating();
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+    writeSnapshot();
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
+}
+
+void MainWindow::writeSnapshot()
 {
     qDebug() << __func__;
 
@@ -2314,16 +2326,22 @@ void MainWindow::slotTasks()
     const QVector<QString> keys = {
         tr("00#_Tasks"),
         "01#_", tr("02#__Value:"),
-        tr("03#_Activation"),
-        tr("04#_Switch ON"),
+        "03#_", tr("04#__Value:"),
+
+        tr("05#_Activation"),
+        tr("06#_Switch ON"),
     };
     QMap<QString, DialogValue> map = {
         {keys.at(0), {}},
         {keys.at(1), { QVariant::String,
                        tr("Pause at specified age (0 - never):"), "", "", DialogValueMode::Disabled}},
         {keys.at(2), {QVariant::Int, config->FieldPauseAtAge(), 0, 0}},
-        {keys.at(3), {}},
-        {keys.at(4), {QVariant::Bool, config->UnsavedTasksEnabled()}},
+        {keys.at(3), { QVariant::String,
+                       tr("Snapshot at every age (0 - never):"), "", "", DialogValueMode::Disabled}},
+        {keys.at(4), {QVariant::Int, config->FieldSnapshotAtEveryTime(), 0, 0}},
+
+        {keys.at(5), {}},
+        {keys.at(6), {QVariant::Bool, config->UnsavedTasksEnabled()}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/tasks.svg", tr("Project tasks"), &map);
@@ -2336,8 +2354,9 @@ void MainWindow::slotTasks()
     if(!dvl->exec()) return;
 
     config->setFieldPauseAtAge(map.value(keys.at(2)).value.toInt());
+    config->setFieldSnapshotAtEveryTime(map.value(keys.at(4)).value.toInt());
 
-    config->setUnsavedTasksEnabled(4);
+    config->setUnsavedTasksEnabled(map.value(keys.at(6)).value.toBool());
 }
 
 void MainWindow::slotRandomFill()
@@ -2572,12 +2591,7 @@ void MainWindow::slotLabelSelectedCellClick()
 void MainWindow::slotCreateSnapshot()
 {
     qDebug() << __func__;
-    stopFieldCalculating();
-    setMainActionsEnable(false);
-    setCellsActionsEnable(false);
     createSnapshot();
-    setMainActionsEnable(true);
-    setCellsActionsEnable(true);
 
     QMessageBox::information(this, tr("Snapshot"),
                              tr("Snapshot of the field was created for %1 age.").

@@ -202,6 +202,8 @@ public:
     void setTasksWindowWidth(int value);
     bool UnsavedTasksEnabled() const;
     void setUnsavedTasksEnabled(bool value);
+    uint FieldSnapshotAtEveryTime() const;
+    void setFieldSnapshotAtEveryTime(uint value);
 
 protected:
     void load();
@@ -232,7 +234,8 @@ private:
     QString m_CellCurseAgeIndicBright;              // индикация возраста отравленной ячейки: ярче/темнее
     QString m_HelpPage;                             // стартовая страница справки
     qreal m_SceneScaleStep;                         // шаг масштабирования сцены
-    uint m_FieldPauseAtAge;                         // останавливаться поле при достижении возраста
+    uint m_FieldPauseAtAge;                         // останавливать поле при достижении возраста
+    uint m_FieldSnapshotAtEveryTime;                // создавать снапшоты каждые N тиков
     int m_FieldRandomisationValue;                  // параметр рандомизации 0-100
     int m_CellAliveAgeIndicFactor;                  // индикация возраста живой ячейки: максимальный фактор яркости/тёмности
     int m_CellAliveAgeIndicDiapason;                // индикация возраста живой ячейки: диапазон по возрасту
@@ -301,7 +304,8 @@ private:
     bool m_FieldFirstSnapshotClearList;             // очищать список снапшотов при первом снапшоте
     bool m_SceneCreateDefaultRule;                  // создавать правило по-умолчанию
     bool m_ProjectFileCompression;                  // сжимать данные при сохранении проекта
-    bool m_UnsavedTasksEnabled;                            // несохраняемый флаг заданий
+
+    bool m_UnsavedTasksEnabled;                     // несохраняемый флаг заданий
 };
 
 #endif // CONFIG_H
