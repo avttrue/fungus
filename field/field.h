@@ -12,6 +12,13 @@ class CellInformation;
 class FieldRule;
 class FieldInformation;
 
+enum CalculatingDoneReason {
+    None = 0,       // нет
+    FieldEmpty = 1, // не осталось ячеек
+    FieldAge = 2,   // по заданию на возраст поля
+    DoSnapshot = 3, // по заданию для создания снапшота
+};
+
 class Field : public QObject
 {
     Q_OBJECT
@@ -72,13 +79,8 @@ public Q_SLOTS:
 Q_SIGNALS:
     void signalRuleChanged(FieldRule* rule);        // правила изменены
     void signalCalculating(bool value);             // состояние вкл/выкл цикла calculate
-    void signalCalculatingDone(int stop_reason = 0);// calculate остановлен/завершён;
-    /* signalCalculatingDone: stop_reason - причина остановки:
-     * 0 - нет
-     * 1 - не осталось ячеек
-     * 2 - по заданию на возраст поля
-     * 3 - по заданию для создания снапшота
-     */
+    void signalCalculatingDone
+    (CalculatingDoneReason reason = CalculatingDoneReason::None);// calculate остановлен/завершён;
     void signalCalculated(QVector<Cell*> cells);    // завершена итерация calculate
     void signalFillingProgress(int step);           // для индикации создания
     void signalRuleMessage(const QString& text);    // сообщение из обработчика правил
