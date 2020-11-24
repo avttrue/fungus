@@ -1222,18 +1222,6 @@ bool MainWindow::FieldFromJsonObject(QJsonObject *jobject)
     return true;
 }
 
-void MainWindow::createSnapshot()
-{
-    qDebug() << __func__;
-
-    stopFieldCalculating();
-    setMainActionsEnable(false);
-    setCellsActionsEnable(false);
-    writeSnapshot();
-    setMainActionsEnable(true);
-    setCellsActionsEnable(true);
-}
-
 void MainWindow::writeSnapshot()
 {
     qDebug() << __func__;
@@ -2591,7 +2579,13 @@ void MainWindow::slotLabelSelectedCellClick()
 void MainWindow::slotCreateSnapshot()
 {
     qDebug() << __func__;
-    createSnapshot();
+
+    stopFieldCalculating();
+    setMainActionsEnable(false);
+    setCellsActionsEnable(false);
+    writeSnapshot();
+    setMainActionsEnable(true);
+    setCellsActionsEnable(true);
 
     QMessageBox::information(this, tr("Snapshot"),
                              tr("Snapshot of the field was created for %1 age.").

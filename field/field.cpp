@@ -247,7 +247,7 @@ void Field::calculate()
                     config->FieldPauseAtAge() == m_FieldInformation->getAge())
             {
                 qDebug() << "Tasks: FieldPauseAtAge =" << config->FieldPauseAtAge();
-                reason = CalculatingDoneReason::FieldAge;
+                reason = CalculatingDoneReason::TaskFieldAge;
                 m_CalculatingNonstop = false;
             }
 
@@ -255,8 +255,8 @@ void Field::calculate()
                     m_FieldInformation->getAge() >= config->FieldSnapshotAtEveryTime()  &&
                     (m_FieldInformation->getAge() % config->FieldSnapshotAtEveryTime()) == 0)
             {
-                qDebug() << "Tasks: FieldSnapshotAtAnyTime =" << config->FieldSnapshotAtEveryTime();
-                reason = CalculatingDoneReason::DoSnapshot;
+                qDebug() << "Tasks: FieldSnapshotAtEveryTime =" << config->FieldSnapshotAtEveryTime();
+                reason = CalculatingDoneReason::TaskDoSnapshot;
                 m_CalculatingNonstop = false;
             }
         }

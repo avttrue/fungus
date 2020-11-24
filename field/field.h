@@ -12,11 +12,12 @@ class CellInformation;
 class FieldRule;
 class FieldInformation;
 
-enum CalculatingDoneReason {
-    None = 0,       // нет
-    FieldEmpty = 1, // не осталось ячеек
-    FieldAge = 2,   // по заданию на возраст поля
-    DoSnapshot = 3, // по заданию для создания снапшота
+enum CalculatingDoneReason: int
+{
+    None =           0, // нет
+    FieldEmpty =     1, // поле пустое
+    TaskFieldAge =   2, // по заданию на возраст поля
+    TaskDoSnapshot = 3, // по заданию для создания снапшота
 };
 
 class Field : public QObject
