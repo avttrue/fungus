@@ -359,10 +359,6 @@ void Config::load()
         m_Settings->setValue("Field/Size", SCENE_FIELD_SIZE);
     m_SceneFieldSize = m_Settings->value("Field/Size").toInt();
 
-    if(!m_Settings->contains("Field/PauseAtAge"))
-        m_Settings->setValue("Field/PauseAtAge", FIELD_PAUSE_AT_AGE);
-    m_FieldPauseAtAge = m_Settings->value("Field/PauseAtAge").toUInt();
-
     if(!m_Settings->contains("Field/RandomisationValue"))
         m_Settings->setValue("Field/RandomisationValue", FIELD_RANDOMISATION_VALUE);
     m_FieldRandomisationValue = m_Settings->value("Field/RandomisationValue").toInt();
@@ -375,17 +371,17 @@ void Config::load()
         m_Settings->setValue("Field/FirstSnapshotClearList", FIELD_FIRST_SNAPSHOT_CLEAR_LIST);
     m_FieldFirstSnapshotClearList = m_Settings->value("Field/FirstSnapshotClearList").toBool();
 
-    if(!m_Settings->contains("Field/SnapshotAtEveryTime"))
-        m_Settings->setValue("Field/SnapshotAtEveryTime", FIELD_SNAPSHOT_AT_EVERY_TIME);
-    m_FieldSnapshotAtEveryTime = m_Settings->value("Field/SnapshotAtEveryTime").toUInt();
+    if(!m_Settings->contains("Field/StopAtEveryTime"))
+        m_Settings->setValue("Field/StopAtEveryTime", FIELD_STOP_AT_EVERY_TIME);
+    m_FieldStopAtEveryTime = m_Settings->value("Field/StopAtEveryTime").toUInt();
 }
 
-void Config::setFieldSnapshotAtEveryTime(uint value)
+void Config::setFieldStopAtEveryTime(uint value)
 {
-    if(m_FieldSnapshotAtEveryTime == value) return;
+    if(m_FieldStopAtEveryTime == value) return;
 
-    m_FieldSnapshotAtEveryTime = value;
-    m_Settings->setValue("Field/SnapshotAtEveryTime", m_FieldSnapshotAtEveryTime);
+    m_FieldStopAtEveryTime = value;
+    m_Settings->setValue("Field/StopAtEveryTime", m_FieldStopAtEveryTime);
 }
 
 void Config::setTasksWindowWidth(int value)
@@ -402,14 +398,6 @@ void Config::setTasksWindowHeight(int value)
 
     m_TasksWindowHeight = value;
     m_Settings->setValue("MainWindow/TasksWindowHeight", m_TasksWindowHeight);
-}
-
-void Config::setFieldPauseAtAge(uint value)
-{
-    if(m_FieldPauseAtAge == value) return;
-
-    m_FieldPauseAtAge = value;
-    m_Settings->setValue("Field/PauseAtAge", m_FieldPauseAtAge);
 }
 
 void Config::setImageAutoopen(bool value)
@@ -1191,10 +1179,9 @@ int Config::ReportWindowHeight() const { return m_ReportWindowHeight; }
 QString Config::ReportFileFormat() const { return m_ReportFileFormat; }
 bool Config::ImageAutoopen() const { return m_ImageAutoopen; }
 bool Config::ReportAutoopen() const { return m_ReportAutoopen; }
-uint Config::FieldPauseAtAge() const { return m_FieldPauseAtAge; }
 int Config::TasksWindowWidth() const { return m_TasksWindowWidth; }
 int Config::TasksWindowHeight() const { return m_TasksWindowHeight; }
-uint Config::FieldSnapshotAtEveryTime() const { return m_FieldSnapshotAtEveryTime; }
+uint Config::FieldStopAtEveryTime() const { return m_FieldStopAtEveryTime; }
 // Unsaved
 bool Config::UnsavedTasksEnabled() const { return m_UnsavedTasksEnabled; }
 void Config::setUnsavedTasksEnabled(bool value) { m_UnsavedTasksEnabled = value; }

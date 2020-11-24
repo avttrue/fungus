@@ -67,7 +67,6 @@ void Field::calculate()
 {
     qDebug() << "Field calculating begin";
 
-    CalculatingDoneReason reason = CalculatingDoneReason::None;
     while(m_Calculating)
     {
         if(m_WaitScene)
@@ -236,27 +235,17 @@ void Field::calculate()
         {
             qDebug() << "Internal task: alive_count =" << alive_count <<
                         "; cursed_count =" << cursed_count;
-            reason = CalculatingDoneReason::FieldEmpty;
             m_CalculatingNonstop = false;
         }
 
         // tasks
         if(config->UnsavedTasksEnabled())
         {
-            if(config->FieldPauseAtAge() > 0 &&
-                    config->FieldPauseAtAge() == m_FieldInformation->getAge())
+            if(config->FieldStopAtEveryTime() > 0 &&
+                    m_FieldInformation->getAge() >= config->FieldStopAtEveryTime()  &&
+                    (m_FieldInformation->getAge() % config->FieldStopAtEveryTime()) == 0)
             {
-                qDebug() << "Tasks: FieldPauseAtAge =" << config->FieldPauseAtAge();
-                reason = CalculatingDoneReason::TaskFieldAge;
-                m_CalculatingNonstop = false;
-            }
-
-            if(config->FieldSnapshotAtEveryTime() > 0 &&
-                    m_FieldInformation->getAge() >= config->FieldSnapshotAtEveryTime()  &&
-                    (m_FieldInformation->getAge() % config->FieldSnapshotAtEveryTime()) == 0)
-            {
-                qDebug() << "Tasks: FieldSnapshotAtEveryTime =" << config->FieldSnapshotAtEveryTime();
-                reason = CalculatingDoneReason::TaskDoSnapshot;
+                qDebug() << "Tasks: FieldStopAtEveryTime =" << config->FieldStopAtEveryTime();
                 m_CalculatingNonstop = false;
             }
         }
@@ -273,7 +262,7 @@ void Field::calculate()
     }
 
     qDebug() << "Field calculating end";
-    Q_EMIT signalCalculatingDone(reason);
+    Q_EMIT signalCalculatingDone();
 }
 
 void Field::updateScene()

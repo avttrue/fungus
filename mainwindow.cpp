@@ -2311,25 +2311,23 @@ void MainWindow::slotTasks()
 
     if(!validateScene()) return;
 
+    stopFieldCalculating();
+
     const QVector<QString> keys = {
         tr("00#_Tasks"),
-        "01#_", tr("02#__Value:"),
-        "03#_", tr("04#__Value:"),
+        "01#_", tr("02#__Value"),
 
-        tr("05#_Activation"),
-        tr("06#_Switch ON"),
+        tr("03#_Activation"),
+        tr("04#_Switch ON"),
     };
     QMap<QString, DialogValue> map = {
         {keys.at(0), {}},
         {keys.at(1), { QVariant::String,
-                       tr("Pause at specified age (0 - never):"), "", "", DialogValueMode::Disabled}},
-        {keys.at(2), {QVariant::Int, config->FieldPauseAtAge(), 0, 0}},
-        {keys.at(3), { QVariant::String,
-                       tr("Snapshot at every age (0 - never):"), "", "", DialogValueMode::Disabled}},
-        {keys.at(4), {QVariant::Int, config->FieldSnapshotAtEveryTime(), 0, 0}},
+                       tr("Stop the field every specified age (0 - never):"), "", "", DialogValueMode::Disabled}},
+        {keys.at(2), {QVariant::Int, config->FieldStopAtEveryTime(), 0, 0}},
 
-        {keys.at(5), {}},
-        {keys.at(6), {QVariant::Bool, config->UnsavedTasksEnabled()}},
+        {keys.at(3), {}},
+        {keys.at(4), {QVariant::Bool, config->UnsavedTasksEnabled()}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/tasks.svg", tr("Project tasks"), &map);
@@ -2341,10 +2339,9 @@ void MainWindow::slotTasks()
     });
     if(!dvl->exec()) return;
 
-    config->setFieldPauseAtAge(map.value(keys.at(2)).value.toInt());
-    config->setFieldSnapshotAtEveryTime(map.value(keys.at(4)).value.toInt());
+    config->setFieldStopAtEveryTime(map.value(keys.at(2)).value.toInt());
 
-    config->setUnsavedTasksEnabled(map.value(keys.at(6)).value.toBool());
+    config->setUnsavedTasksEnabled(map.value(keys.at(4)).value.toBool());
 }
 
 void MainWindow::slotRandomFill()
@@ -2581,6 +2578,7 @@ void MainWindow::slotCreateSnapshot()
     qDebug() << __func__;
 
     stopFieldCalculating();
+
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
     writeSnapshot();
