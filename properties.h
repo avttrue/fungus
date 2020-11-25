@@ -16,7 +16,7 @@ const QStringList SCENE_FIELD_THREAD_PRIORITIES =   {"LOW", "NORMAL", "HIGH", "H
 const QStringList SCENE_CELL_BRIGHTNESS_VALUES =    {"LIGHTER", "DARKER"};
 const QString CSS_TOOLBUTTON =                      "FungusToolButton"; // see main.css
 const QString APP_NAME =                            "Fungus";
-const QString APP_VERSION =                         "1.2.4";
+const QString APP_VERSION =                         "1.2.5";
 const QString APP_CFG =                             "config.cfg";
 const QString FORMAT_VERSION =                      "3";
 const QString IMAGE_FILE_FORMAT =                   "PNG";
@@ -47,6 +47,7 @@ const QString CELL_ALIVE_AGE_INDIC_BRIGHTNESS =     "LIGHTER";
 const QString CELL_CURSE_AGE_INDIC_BRIGHTNESS =     "LIGHTER";
 const QString EXTERN_URL_RG = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]"
                               "{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
+const QString FILENAME_VALID_RG =                   "[^a-zA-Z0-9_-]";
 const qreal SCENE_SCALE_STEP =                      1.0001;
 const auto DENSITY_VALUE_PRECISION =                4;
 const auto RULE_ACTIVITY_LEN =                      8;

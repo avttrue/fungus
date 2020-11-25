@@ -1136,7 +1136,10 @@ void MainWindow::saveRule(FieldRule *rule)
 {
     qDebug() << __func__;
     auto fileext = RULE_FILE_EXTENSION.toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save rule"), config->PathRulesDir(),
+    auto def_filename = rule->objectName().
+            replace(' ', '_').replace(QRegExp(FILENAME_VALID_RG), "");
+    auto dir_name = config->PathRulesDir() + QDir::separator() + def_filename + "." + fileext;
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save rule"), dir_name,
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
@@ -2006,7 +2009,11 @@ void MainWindow::slotSaveImageToFile()
     if(!validateScene()) return;
 
     auto fileext = config->ImageFileFormat().toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), config->PathReportsDir(),
+    auto def_filename = m_Field->getRule()->objectName().
+            replace(' ', '_').replace(QRegExp(FILENAME_VALID_RG), "") +
+            QString("_age%1").arg(QString::number(m_Field->getInformation()->getAge()));
+    auto dir_name = config->PathReportsDir() + QDir::separator() + def_filename + "." + fileext;
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), dir_name,
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
@@ -2071,7 +2078,11 @@ void MainWindow::slotReport()
     QString dirname;  // каталог доп.файлов отчёта
 
     auto fileext = config->ReportFileFormat().toLower();
-    filename = QFileDialog::getSaveFileName(this, tr("Save report"), config->PathReportsDir(),
+    auto def_filename = m_Field->getRule()->objectName().
+            replace(' ', '_').replace(QRegExp(FILENAME_VALID_RG), "") +
+            QString("_age%1").arg(QString::number(m_Field->getInformation()->getAge()));
+    auto dir_name = config->PathReportsDir() + QDir::separator() + def_filename + "." + fileext;
+    filename = QFileDialog::getSaveFileName(this, tr("Save report"), dir_name,
                                             tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
@@ -2705,7 +2716,11 @@ void MainWindow::slotSaveProject()
 {
     qDebug() << __func__;
     auto fileext = PROJECT_FILE_EXTENSION.toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save project"), config->PathPojectsDir(),
+    auto def_filename = m_Field->getRule()->objectName().
+            replace(' ', '_').replace(QRegExp(FILENAME_VALID_RG), "") +
+            QString("_age%1").arg(QString::number(m_Field->getInformation()->getAge()));
+    auto dir_name = config->PathPojectsDir() + QDir::separator() + def_filename + "." + fileext;
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save project"), dir_name,
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
     if(filename.isNull() || filename.isEmpty()) return;
