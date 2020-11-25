@@ -1136,18 +1136,16 @@ void MainWindow::saveRule(FieldRule *rule)
 {
     qDebug() << __func__;
     auto fileext = RULE_FILE_EXTENSION.toLower();
-    auto def_filename = rule->objectName().
-            replace(' ', '_').replace(QRegExp(FILENAME_VALID_RG), "");
-    auto dir_name = config->PathRulesDir() + QDir::separator() + def_filename + "." + fileext;
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save rule"), dir_name,
+    auto filename = GenerateFilePath(fileext, config->PathRulesDir(), rule->objectName(), FILENAME_VALID_RG);
+    auto filepath = QFileDialog::getSaveFileName(this, tr("Save rule"), filename,
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
-    if(filename.isNull() || filename.isEmpty()) return;
+    if(filepath.isNull() || filepath.isEmpty()) return;
 
     auto dot_fileext = QString(".%1").arg(fileext);
-    if(!filename.endsWith(dot_fileext, Qt::CaseInsensitive)) filename.append(dot_fileext);
+    if(!filepath.endsWith(dot_fileext, Qt::CaseInsensitive)) filepath.append(dot_fileext);
 
-    saveRuleToFile(rule, filename);
+    saveRuleToFile(rule, filepath);
 }
 
 bool MainWindow::saveRuleToFile(FieldRule *rule, const QString &path)
@@ -1827,20 +1825,20 @@ void MainWindow::slotSaveCellsToPreset()
     auto secondcell = scene->getSecondSelectedCell();
 
     auto fileext = PRESET_FILE_EXTENSION.toLower();
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save preset"), config->PathPresetsDir(),
+    auto filepath = QFileDialog::getSaveFileName(this, tr("Save preset"), config->PathPresetsDir(),
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
-    if(filename.isNull() || filename.isEmpty()) return;
+    if(filepath.isNull() || filepath.isEmpty()) return;
 
     auto dot_fileext = QString(".%1").arg(fileext);
-    if(!filename.endsWith(dot_fileext, Qt::CaseInsensitive)) filename.append(dot_fileext);
+    if(!filepath.endsWith(dot_fileext, Qt::CaseInsensitive)) filepath.append(dot_fileext);
 
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
 
     auto text = CellsToJsonText(firstcell, secondcell, config->SaveToPresetExceptDead());
-    if(!textToFile(text, filename))
-        QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(filename));
+    if(!textToFile(text, filepath))
+        QMessageBox::critical(this, tr("Error"), tr("Data writing error. \n File: '%1'").arg(filepath));
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
@@ -2009,29 +2007,30 @@ void MainWindow::slotSaveImageToFile()
     if(!validateScene()) return;
 
     auto fileext = config->ImageFileFormat().toLower();
-    auto def_filename = m_Field->getRule()->objectName().
-            replace(' ', '_').replace(QRegExp(FILENAME_VALID_RG), "") +
-            QString("_age%1").arg(QString::number(m_Field->getInformation()->getAge()));
-    auto dir_name = config->PathReportsDir() + QDir::separator() + def_filename + "." + fileext;
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), dir_name,
+    auto filename = GenerateFilePath(fileext, config->PathReportsDir(),
+                                     m_Field->getRule()->objectName(), FILENAME_VALID_RG,
+                                     QString("_age%1").
+                                     arg(QString::number(m_Field->getInformation()->getAge())));
+
+    auto filepath = QFileDialog::getSaveFileName(this, tr("Save image"), filename,
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
-    if(filename.isNull() || filename.isEmpty()) return;
+    if(filepath.isNull() || filepath.isEmpty()) return;
 
     auto dot_fileformat = QString(".%1").arg(fileext);
-    if(!filename.endsWith(dot_fileformat, Qt::CaseInsensitive)) filename.append(dot_fileformat);
+    if(!filepath.endsWith(dot_fileformat, Qt::CaseInsensitive)) filepath.append(dot_fileformat);
 
     stopFieldCalculating();
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
 
     auto pixmap = m_SceneView->getScene()->getSceneItem()->getPixmap();
-    auto success_saving = savePixmapToFile(pixmap, filename);
+    auto success_saving = savePixmapToFile(pixmap, filepath);
 
     if(config->ImageAutoopen() && success_saving)
     {
-        if(!OpenUrl(filename))
-            QMessageBox::critical(this, tr("Error"), tr("Error at open URL:\n'%1'").arg(filename));
+        if(!OpenUrl(filepath))
+            QMessageBox::critical(this, tr("Error"), tr("Error at open URL:\n'%1'").arg(filepath));
     }
 
     setMainActionsEnable(true);
@@ -2074,23 +2073,23 @@ void MainWindow::slotReport()
     });
     if(!dvl->exec()) return;
 
-    QString filename; // файл отчёта
+    QString filepath; // файл отчёта
     QString dirname;  // каталог доп.файлов отчёта
 
     auto fileext = config->ReportFileFormat().toLower();
-    auto def_filename = m_Field->getRule()->objectName().
-            replace(' ', '_').replace(QRegExp(FILENAME_VALID_RG), "") +
-            QString("_age%1").arg(QString::number(m_Field->getInformation()->getAge()));
-    auto dir_name = config->PathReportsDir() + QDir::separator() + def_filename + "." + fileext;
-    filename = QFileDialog::getSaveFileName(this, tr("Save report"), dir_name,
+    auto filename = GenerateFilePath(fileext, config->PathReportsDir(),
+                                     m_Field->getRule()->objectName(), FILENAME_VALID_RG,
+                                     QString("_age%1").
+                                     arg(QString::number(m_Field->getInformation()->getAge())));
+    filepath = QFileDialog::getSaveFileName(this, tr("Save report"), filename,
                                             tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
-    if(filename.isNull() || filename.isEmpty()) return;
+    if(filepath.isNull() || filepath.isEmpty()) return;
 
     auto dot_fileformat = QString(".%1").arg(fileext);
-    if(!filename.endsWith(dot_fileformat, Qt::CaseInsensitive)) filename.append(dot_fileformat);
+    if(!filepath.endsWith(dot_fileformat, Qt::CaseInsensitive)) filepath.append(dot_fileformat);
 
-    QFileInfo fileinfo(filename);
+    QFileInfo fileinfo(filepath);
     dirname = fileinfo.dir().absolutePath() + QDir::separator() +
             fileinfo.fileName().remove(dot_fileformat).replace(' ', '_') + "_files";
 
@@ -2292,25 +2291,25 @@ void MainWindow::slotReport()
     QString report = getTextFromRes(":/resources/html/report_body.html").
             arg(config->SceneBgColor(), caption, reportcontent);
 
-    auto success_saving = textToFile(report, filename);
+    auto success_saving = textToFile(report, filepath);
 
     if(!success_saving)
     {
-        qCritical() << "Error at file saving:" << filename;
+        qCritical() << "Error at file saving:" << filepath;
         QMessageBox::critical(this, tr("Error"),
-                              tr("Error at file saving. Path: '%1'").arg(filename));
+                              tr("Error at file saving. Path: '%1'").arg(filepath));
     }
 
     if(config->ReportAutoopen() && success_saving)
     {
-        if(!OpenUrl(filename))
-            QMessageBox::critical(this, tr("Error"), tr("Error at open URL:\n'%1'").arg(filename));
+        if(!OpenUrl(filepath))
+            QMessageBox::critical(this, tr("Error"), tr("Error at open URL:\n'%1'").arg(filepath));
     }
     else if(success_saving)
         QMessageBox::information(this, tr("Report"), tr("Report completed. \n"
                                                         "Report file: '%1' \n"
                                                         "Additional report files: '%2'").
-                                 arg(filename, dirname));
+                                 arg(filepath, dirname));
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);
@@ -2716,23 +2715,23 @@ void MainWindow::slotSaveProject()
 {
     qDebug() << __func__;
     auto fileext = PROJECT_FILE_EXTENSION.toLower();
-    auto def_filename = m_Field->getRule()->objectName().
-            replace(' ', '_').replace(QRegExp(FILENAME_VALID_RG), "") +
-            QString("_age%1").arg(QString::number(m_Field->getInformation()->getAge()));
-    auto dir_name = config->PathPojectsDir() + QDir::separator() + def_filename + "." + fileext;
-    auto filename = QFileDialog::getSaveFileName(this, tr("Save project"), dir_name,
+    auto filename = GenerateFilePath(fileext, config->PathPojectsDir(),
+                                     m_Field->getRule()->objectName(), FILENAME_VALID_RG,
+                                     QString("_age%1").
+                                     arg(QString::number(m_Field->getInformation()->getAge())));
+    auto filepath = QFileDialog::getSaveFileName(this, tr("Save project"), filename,
                                                  tr("%1 files (*.%2)").arg(fileext.toUpper(), fileext));
 
-    if(filename.isNull() || filename.isEmpty()) return;
+    if(filepath.isNull() || filepath.isEmpty()) return;
 
     stopFieldCalculating();
     setMainActionsEnable(false);
     setCellsActionsEnable(false);
 
     auto dot_fileext = QString(".%1").arg(fileext);
-    if(!filename.endsWith(dot_fileext, Qt::CaseInsensitive)) filename.append(dot_fileext);
+    if(!filepath.endsWith(dot_fileext, Qt::CaseInsensitive)) filepath.append(dot_fileext);
 
-    saveProjectToFile(filename);
+    saveProjectToFile(filepath);
 
     setMainActionsEnable(true);
     setCellsActionsEnable(true);

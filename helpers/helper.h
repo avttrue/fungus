@@ -47,4 +47,6 @@ bool CreateDir(const QString& path);
 bool OpenUrl(const QString& path);
 bool OpenUrl(const QUrl& url);
 
+QString GenerateFilePath(const QString &ext, const QString &dir, const QString &name, const QString &rg, const QString &add = "");
+
 #endif // HELPER_H

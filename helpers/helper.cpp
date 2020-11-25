@@ -230,3 +230,9 @@ bool OpenUrl(const QUrl &url)
     }
     return true;
 }
+
+QString GenerateFilePath(const QString &ext, const QString &dir, const QString &name, const QString &rg, const QString &add)
+{
+    auto filename = QString(name).replace(' ', '_').replace(QRegExp(rg), "") + add;
+    return dir + QDir::separator() + filename + "." + ext;
+}
