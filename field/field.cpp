@@ -254,7 +254,7 @@ void Field::calculate()
             if(config->FieldStopAtNewMaxDensity() &&
                     m_FieldInformation->getAgeMaxDensity() == m_FieldInformation->getAge())
             {
-                qDebug() << "Tasks: FieldStopAtMaxDensity =" << m_FieldInformation->getMaxDensity() <<
+                qDebug() << "Tasks: FieldStopAtNewMaxDensity =" << m_FieldInformation->getMaxDensity() <<
                             "/" << m_FieldInformation->getDensity();
                 m_CalculatingNonstop = false;
             }
