@@ -57,6 +57,7 @@ void Field::fill(int random)
     m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive - cursed);
     m_FieldInformation->setAliveCells(alive);
     m_FieldInformation->setCursedCells(cursed);
+    m_FieldInformation->applyDensity();
     m_FieldInformation->setActiveCells(0);
 
     qDebug() << "Field" << objectName() << ":" << m_Height * m_Width <<
@@ -225,6 +226,7 @@ void Field::calculate()
         m_FieldInformation->setDeadCells(m_FieldInformation->getCellsCount() - alive_count - cursed_count);
         m_FieldInformation->setAliveCells(alive_count);
         m_FieldInformation->setCursedCells(cursed_count);
+        m_FieldInformation->applyDensity();
         m_FieldInformation->setCellsWithTrait(trait_count);
         m_FieldInformation->applyAverageCalc(time);
 
@@ -246,6 +248,14 @@ void Field::calculate()
                     (m_FieldInformation->getAge() % config->FieldStopAtEveryTime()) == 0)
             {
                 qDebug() << "Tasks: FieldStopAtEveryTime =" << config->FieldStopAtEveryTime();
+                m_CalculatingNonstop = false;
+            }
+
+            if(config->FieldStopAtNewMaxDensity() &&
+                    m_FieldInformation->getAgeMaxDensity() == m_FieldInformation->getAge())
+            {
+                qDebug() << "Tasks: FieldStopAtMaxDensity =" << m_FieldInformation->getMaxDensity() <<
+                            "/" << m_FieldInformation->getDensity();
                 m_CalculatingNonstop = false;
             }
         }

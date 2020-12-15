@@ -51,7 +51,6 @@ protected:
     uint getRulesOperandValue(Kernel::ActivityOperand ao, QVector<Cell *> list); // получить значение в операнде
     void setRulesActivityReaction(CellInformation *oi, CellInformation *ni, Kernel::ActivityType at);
 
-
 private:
     int m_Width;
     int m_Height;

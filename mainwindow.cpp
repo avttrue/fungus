@@ -2327,18 +2327,23 @@ void MainWindow::slotTasks()
     const QVector<QString> keys = {
         tr("00#_Tasks"),
         "01#_", tr("02#__Value"),
+        "03#_", tr("04#__On/Off"),
 
-        tr("03#_Activation"),
-        tr("04#_Switch ON"),
+        tr("05#_Activation"),
+        tr("06#_Switch ON"),
     };
     QMap<QString, DialogValue> map = {
         {keys.at(0), {}},
         {keys.at(1), { QVariant::String,
                        tr("Stop the field every specified age (0 - never):"), "", "", DialogValueMode::Disabled}},
         {keys.at(2), {QVariant::Int, config->FieldStopAtEveryTime(), 0, 0}},
+        {keys.at(3), { QVariant::String,
+                       tr("Stop the field at new maximum density:"), "", "", DialogValueMode::Disabled}},
+        {keys.at(4), {QVariant::Bool, config->FieldStopAtNewMaxDensity()}},
 
-        {keys.at(3), {}},
-        {keys.at(4), {QVariant::Bool, config->UnsavedTasksEnabled()}},
+
+        {keys.at(5), {}},
+        {keys.at(6), {QVariant::Bool, config->UnsavedTasksEnabled()}},
     };
 
     auto dvl = new DialogValuesList(this, ":/resources/img/tasks.svg", tr("Project tasks"), &map);
@@ -2351,8 +2356,9 @@ void MainWindow::slotTasks()
     if(!dvl->exec()) return;
 
     config->setFieldStopAtEveryTime(map.value(keys.at(2)).value.toInt());
+    config->setFieldStopAtNewMaxDensity(map.value(keys.at(4)).value.toBool());
 
-    config->setUnsavedTasksEnabled(map.value(keys.at(4)).value.toBool());
+    config->setUnsavedTasksEnabled(map.value(keys.at(6)).value.toBool());
 }
 
 void MainWindow::slotRandomFill()

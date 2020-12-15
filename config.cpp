@@ -374,12 +374,24 @@ void Config::load()
     if(!m_Settings->contains("Field/StopAtEveryTime"))
         m_Settings->setValue("Field/StopAtEveryTime", FIELD_STOP_AT_EVERY_TIME);
     m_FieldStopAtEveryTime = m_Settings->value("Field/StopAtEveryTime").toUInt();
+
+    if(!m_Settings->contains("Field/StopAtNewMaxDensity"))
+        m_Settings->setValue("Field/StopAtNewMaxDensity", FIELD_STOP_AT_NEW_MAXDENSITY);
+    m_FieldStopAtNewMaxDensity = m_Settings->value("Field/StopAtNewMaxDensity").toBool();
+}
+
+void Config::setFieldStopAtNewMaxDensity( bool value)
+{
+    if(m_FieldStopAtNewMaxDensity == value) return;
+
+    m_FieldStopAtNewMaxDensity = value;
+    m_Settings->setValue("Field/StopAtNewMaxDensity", m_FieldStopAtNewMaxDensity);
 }
 
 void Config::setFieldStopAtEveryTime(uint value)
 {
     if(m_FieldStopAtEveryTime == value) return;
-
+    
     m_FieldStopAtEveryTime = value;
     m_Settings->setValue("Field/StopAtEveryTime", m_FieldStopAtEveryTime);
 }
@@ -1182,6 +1194,7 @@ bool Config::ReportAutoopen() const { return m_ReportAutoopen; }
 int Config::TasksWindowWidth() const { return m_TasksWindowWidth; }
 int Config::TasksWindowHeight() const { return m_TasksWindowHeight; }
 uint Config::FieldStopAtEveryTime() const { return m_FieldStopAtEveryTime; }
+bool Config::FieldStopAtNewMaxDensity() const { return m_FieldStopAtNewMaxDensity; }
 // Unsaved
 bool Config::UnsavedTasksEnabled() const { return m_UnsavedTasksEnabled; }
 void Config::setUnsavedTasksEnabled(bool value) { m_UnsavedTasksEnabled = value; }

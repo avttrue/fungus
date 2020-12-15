@@ -202,6 +202,8 @@ public:
     void setUnsavedTasksEnabled(bool value);
     uint FieldStopAtEveryTime() const;
     void setFieldStopAtEveryTime(uint value);
+    bool FieldStopAtNewMaxDensity() const;
+    void setFieldStopAtNewMaxDensity( bool value);
 
 protected:
     void load();
@@ -285,6 +287,7 @@ private:
     Qt::KeyboardModifiers m_SceneTooltipKeyModifier;// модификатор отображения координат Field
     Qt::KeyboardModifiers m_SceneMultiselKeyModifier;// модификатор выбора группы Cell
     Qt::KeyboardModifiers m_FieldFasteditKeyModifier;// модификатор быстрого редактирования ячейки
+    bool m_FieldStopAtNewMaxDensity;                // останавливаться при новой максимальной плотности поля
     bool m_ReportAutoopen;                          // открывать отчёт при сохранении
     bool m_ImageAutoopen;                           // открывать картинку при сохранении
     bool m_CellAliveAgeIndicate;                    // индикация возраста живой ячейки

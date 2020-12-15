@@ -46,7 +46,6 @@ void FieldInformation::setDeadCells(uint value)
 
     m_DeadCells = value;
     Q_EMIT signalDeadCellsChanged(m_DeadCells);
-    applyDensity();
 }
 
 void FieldInformation::setAliveCells(uint value)
@@ -55,7 +54,6 @@ void FieldInformation::setAliveCells(uint value)
 
     m_AliveCells = value;
     Q_EMIT signalAliveCellsChanged(m_AliveCells);
-    applyDensity();
 }
 
 void FieldInformation::setCursedCells(uint value)
@@ -64,7 +62,6 @@ void FieldInformation::setCursedCells(uint value)
 
     m_CursedCells = value;
     Q_EMIT signalCursedCellsChanged(m_CursedCells);
-    applyDensity();
 }
 
 void FieldInformation::setActiveCells(uint value)
