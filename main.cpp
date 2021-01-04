@@ -94,13 +94,16 @@ int main(int argc, char *argv[])
     MainWindow window;
 
     QEventLoop loop;
-    QTimer::singleShot(config->SplashTime(), [&application, &window, &splash, &loop]()
+
+    auto close_splash = [&application, &window, &splash, &loop]()
     {
         splash.finish(&window);
         window.show();
         application.setActiveWindow(&window);
         loop.quit();
-    });
+    };
+
+    QTimer::singleShot(config->SplashTime(), &application, close_splash);
     loop.exec(QEventLoop::ExcludeUserInputEvents);
 
     return application.exec();
