@@ -75,7 +75,8 @@ void DialogValuesList::addWidgetContent(QWidget *widget, bool sub_item)
 
 void DialogValuesList::addToolbarButton(QAction *action)
 {
-    toolBar->insertAction(toolBar->actions().first(), action);
+    action->setParent(this);
+    ToolBar()->insertAction(ToolBar()->actions().first(), action);
 }
 
 void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)

@@ -1,5 +1,4 @@
 #include "dialogbody.h"
-#include "properties.h"
 
 #include <QCoreApplication>
 #include <QGridLayout>
@@ -44,8 +43,8 @@ DialogBody::DialogBody(QWidget* parent,
     if(!icon.isEmpty())
     {
         auto labelIcon = new QLabel();
-        labelIcon->setStyleSheet(DB_ICON_STYLE);
-        labelIcon->setPixmap(QPixmap(icon).scaled(font_height + QSize(4, 4),
+        labelIcon->setStyleSheet(DB_CAPTION_ICON_STYLE);
+        labelIcon->setPixmap(QPixmap(icon).scaled(font_height + DB_CAPTION_DELTA_SIZE,
                                                   Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         layoutCaption->addWidget(labelIcon);
         setWindowIcon(QIcon(icon));
@@ -56,9 +55,10 @@ DialogBody::DialogBody(QWidget* parent,
     if(closable)
     {
         auto buttonCaption = new QPushButton();
+        buttonCaption->setStyleSheet(DB_CAPTION_BUTTON_STYLE);
         buttonCaption->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-        buttonCaption->setIconSize(font_height);
-        buttonCaption->setFixedSize(font_height + QSize(4, 4));
+        buttonCaption->setIconSize(font_height + DB_CAPTION_DELTA_SIZE);
+        buttonCaption->setFixedSize(font_height + DB_CAPTION_DELTA_SIZE + QSize(4, 4));
         buttonCaption->setIcon(QIcon(":/resources/img/exit.svg"));
         buttonCaption->setToolTip(tr("Close"));
         buttonCaption->setFlat(true);

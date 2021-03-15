@@ -92,7 +92,6 @@ protected:
 
 private:    
     QGridLayout* glContent;
-    QToolBar* toolBar;
     QMap<QString, DialogValue>* m_Values;
     QString m_FocusedKey;
     bool m_DialogMode;
