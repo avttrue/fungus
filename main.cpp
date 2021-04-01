@@ -31,17 +31,17 @@ void createDirectories()
     // каталог правил
     config->setPathRulesDir(config->PathAppDir() + QDir::separator() + RULES_DIRECTORY);
     if(!CreateDir(config->PathRulesDir()))
-        config->setPathPojectsDir(config->PathRulesDir());
+        config->setPathRulesDir(config->PathAppDir());
 
     // каталог логов
     config->setPathLogsDir(config->PathAppDir() + QDir::separator() + LOG_DIRECTORY);
     if(!CreateDir(config->PathLogsDir()))
-        config->setPathPojectsDir(config->PathLogsDir());
+        config->setPathLogsDir(config->PathAppDir());
 
     // каталог отчётов
     config->setPathReportsDir(config->PathAppDir() + QDir::separator() + REPORTS_DIRECTORY);
     if(!CreateDir(config->PathReportsDir()))
-        config->setPathPojectsDir(config->PathReportsDir());
+        config->setPathReportsDir(config->PathAppDir());
 }
 
 int main(int argc, char *argv[])

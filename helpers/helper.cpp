@@ -140,7 +140,7 @@ void copyResources(const QString& outPath, const QString& inPath, bool rewrite, 
         *ok = false; return;
     }
 
-    for(auto filename: outdir.entryList())
+    for(const auto &filename: outdir.entryList())
     {
         auto newfilename = inPath + QDir::separator() + filename;
         QFile file(outdir.path() + "/" + filename);
