@@ -66,7 +66,6 @@ int main(int argc, char *argv[])
 
     qInfo() << "App version:" << APP_VERSION;
     qInfo() << "Format version:" << FORMAT_VERSION;
-    qInfo() << "Git, build date:" << GIT_VERS << BUILD_DATE;
     qInfo() << "System info:" << getSystemInfo();
     qInfo() << "Qt version:" << QT_VERSION_STR;
 
@@ -114,21 +113,25 @@ void consoleOut(QtMsgType msgtype, const QMessageLogContext &context, const QStr
 {
     QTextStream log_out(m_logFile.data());
     log_out.setCodec(QTextCodec::codecForName(TEXT_CODEC.toLatin1()));
-    auto time = QDateTime::currentDateTime().toString(config->DateTimeFormat().append("\t"));
-    QString type;
+    auto msg_out = QDateTime::currentDateTime().toString(config->DateTimeFormat());
+
     switch (msgtype)
     {
     case QtDebugMsg:
-    { type = "DBG:\t"; break; }
+    { msg_out.append("\tDBG:\t"); break; }
     case QtInfoMsg:
-    { type = "INF:\t"; break; }
+    { msg_out.append("\tINF:\t"); break; }
     case QtWarningMsg:
-    { type = "WRN:\t"; break; }
+    { msg_out.append("\tWRN:\t"); break; }
     case QtCriticalMsg:
-    { type = "CRT:\t"; break; }
+    { msg_out.append("\tCRT:\t"); break; }
     case QtFatalMsg:
-    { type = "FTL:\t"; break; }
+    { msg_out.append("\tFTL:\t"); break; }
     }
-    log_out << time << type << context.file << "\t" << context.line << "\t" << msg << Qt::endl;
+
+    msg_out.append(context.file).append(" [").append(QString::number(context.line)).append("]\t").append(msg);
+
+    log_out << msg_out << Qt::endl;
     log_out.flush();
 }
+

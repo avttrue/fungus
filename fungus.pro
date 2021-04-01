@@ -11,6 +11,7 @@ DEFINES     += GIT_VERS=\\\"$$system(git describe --always)\\\"
 #DEFINES     += GIT_VERS=\\\"-------\\\"
 DEFINES     += BUILD_DATE='"\\\"$(shell date)\\\""'
 DEFINES     += QT_DEPRECATED_WARNINGS
+DEFINES     += QT_MESSAGELOGCONTEXT
 
 SOURCES += \
     controls/clickablelabel.cpp \
