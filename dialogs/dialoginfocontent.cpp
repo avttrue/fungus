@@ -25,19 +25,19 @@ DialogInfoContent::DialogInfoContent(QWidget *parent, const QString& title)
     
     ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     
-    m_ActionBackward = new QAction(QIcon(":/resources/img/left_arrow.svg"), "Назад");
+    m_ActionBackward = new QAction(QIcon(":/resources/img/left_arrow.svg"),tr("Backward"));
     QObject::connect(m_ActionBackward, &QAction::triggered, [=](){ m_Content->backward(); });
     m_ActionBackward->setAutoRepeat(false);
     m_ActionBackward->setEnabled(false);
     addToolBarAction(ToolBar(), m_ActionBackward, CSS_TOOLBUTTON);
     
-    m_ActionForward = new QAction(QIcon(":/resources/img/right_arrow.svg"), "Вперёд");
+    m_ActionForward = new QAction(QIcon(":/resources/img/right_arrow.svg"), tr("Forward"));
     QObject::connect(m_ActionForward, &QAction::triggered, [=](){ m_Content->forward(); });
     m_ActionForward->setAutoRepeat(false);
     m_ActionForward->setEnabled(false);
     addToolBarAction(ToolBar(), m_ActionForward, CSS_TOOLBUTTON);
     
-    auto m_ActionHome = new QAction(QIcon(":/resources/img/up_arrow.svg"), "Основная страница");
+    auto m_ActionHome = new QAction(QIcon(":/resources/img/up_arrow.svg"), tr("Main page"));
     QObject::connect(m_ActionHome, &QAction::triggered, [=](){ m_Content->home(); });
     m_ActionHome->setAutoRepeat(false);
     addToolBarAction(ToolBar(), m_ActionHome, CSS_TOOLBUTTON);
@@ -66,6 +66,8 @@ void DialogInfoContent::slotAnchorClicked(const QUrl &link)
         
         qDebug() << "Source page:" << source_page;
         qDebug() << "Target page:"  << target_page;
+
+        if(source_page.endsWith(HELP_PAGE_TRIGGER)) config->setHelpPage(target_page);
         
         auto res_type = m_Content->sourceType();
         m_Content->setSource(link, res_type);

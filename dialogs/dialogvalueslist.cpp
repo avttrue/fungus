@@ -43,7 +43,7 @@ DialogValuesList::DialogValuesList(QWidget* parent,
     ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     ToolBar()->addWidget(new WidgetSpacer());
 
-    auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Принять"));
+    auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
     actionAccept->setAutoRepeat(false);
     QObject::connect(actionAccept, &QAction::triggered, [=](){ accept(); });
     addToolBarAction(ToolBar(), actionAccept, CSS_TOOLBUTTON);
@@ -375,9 +375,11 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
 
 void DialogValuesList::saveImage(QPixmap pixmap)
 {
-    auto filename = QFileDialog::getSaveFileName(this, "Save image", config->PathAppDir(), "PNG files (*.png)");
+    auto filename = QFileDialog::getSaveFileName(this, "Save image", config->LastDir(), "PNG files (*.png)");
 
     if(filename.isNull()) return;
+
+    config->setLastDir(QFileInfo(filename).dir().path());
 
     if(!filename.endsWith(".png", Qt::CaseInsensitive)) filename.append(".png");
     QFile file(filename);
