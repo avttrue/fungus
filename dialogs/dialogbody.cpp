@@ -1,4 +1,5 @@
 #include "dialogbody.h"
+#include "properties.h"
 
 #include <QCoreApplication>
 #include <QGridLayout>
@@ -7,6 +8,8 @@
 #include <QSizeGrip>
 #include <QToolBar>
 
+#include <controls/separators.h>
+
 DialogBody::DialogBody(QWidget* parent,
                        const QString& text,
                        const QString& icon,
@@ -14,12 +17,13 @@ DialogBody::DialogBody(QWidget* parent,
                        bool modal)
     : QDialog(parent)
 {
-    setWindowFlags(Qt::Dialog |
-                   Qt::WindowStaysOnTopHint |
-                   Qt::FramelessWindowHint);
-
     setAttribute(Qt::WA_DeleteOnClose, true);
     setModal(modal);
+
+    Qt::WindowFlags windowflags = Qt::Dialog | Qt::FramelessWindowHint;
+    if(modal) windowflags |= Qt::WindowStaysOnTopHint;
+    setWindowFlags(windowflags);
+
     setStyleSheet(DB_WINDOW_STYLE);
 
     // основной контейнер
@@ -36,17 +40,19 @@ DialogBody::DialogBody(QWidget* parent,
     layoutCaption->setMargin(1);
     layoutCaption->setSpacing(2);
 
-    m_Caption = new DialogCaption(text);
+    m_Caption = new DialogCaption(this, text);
     auto font_height = QSize(QFontMetrics(m_Caption->font()).height(), QFontMetrics(m_Caption->font()).height());
     setWindowTitle(text);
 
+    m_LabelIcon = new QLabel(this);
+    m_LabelIcon->setVisible(false);
     if(!icon.isEmpty())
-    {
-        auto labelIcon = new QLabel();
-        labelIcon->setStyleSheet(DB_CAPTION_ICON_STYLE);
-        labelIcon->setPixmap(QPixmap(icon).scaled(font_height + DB_CAPTION_DELTA_SIZE,
+    {        
+        m_LabelIcon->setVisible(true);
+        m_LabelIcon->setStyleSheet(DB_CAPTION_ICON_STYLE);
+        m_LabelIcon->setPixmap(QPixmap(icon).scaled(font_height + DB_CAPTION_DELTA_SIZE,
                                                   Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        layoutCaption->addWidget(labelIcon);
+        layoutCaption->addWidget(m_LabelIcon);
         setWindowIcon(QIcon(icon));
     }
 
@@ -60,7 +66,7 @@ DialogBody::DialogBody(QWidget* parent,
         buttonCaption->setIconSize(font_height + DB_CAPTION_DELTA_SIZE);
         buttonCaption->setFixedSize(font_height + DB_CAPTION_DELTA_SIZE + QSize(4, 4));
         buttonCaption->setIcon(QIcon(":/resources/img/exit.svg"));
-        buttonCaption->setToolTip(tr("Close"));
+        buttonCaption->setToolTip(tr("Закрыть"));
         buttonCaption->setFlat(true);
         QObject::connect(buttonCaption, &QPushButton::released, this, &QDialog::close);
         layoutCaption->addWidget(buttonCaption);
@@ -81,6 +87,7 @@ DialogBody::DialogBody(QWidget* parent,
     m_ToolBar = new QToolBar();
     m_ToolBar->setMovable(false);
     m_ToolBar->setOrientation(Qt::Horizontal);
+    m_ToolBar->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
 
     formGridLayout->addWidget(frameCaption, 0, 0, 1, -1);
     formGridLayout->addWidget(frameContent, 1, 0, 1, -1);
@@ -132,12 +139,28 @@ bool DialogBody::eventFilter(QObject* object, QEvent *event)
 void DialogBody::addDialogContent(QWidget *widget) { m_ContentGridLayout->addWidget(widget); }
 QToolBar *DialogBody::ToolBar() const { return m_ToolBar; }
 
+void DialogBody::setWarningMode()
+{
+   m_Caption->setStyleSheet(DB_CAPTION_WARN_STYLE);
+   m_LabelIcon->hide();
+   setModal(true);
+
+   auto actions = ToolBar()->actions();
+   for(auto a: actions) ToolBar()->removeAction(a);
+
+   ToolBar()->addWidget(new WidgetSpacer);
+   ToolBar()->setMaximumHeight(1);
+}
+
 ///////////////////////////////////////////////
 
-DialogCaption::DialogCaption(const QString &text, QWidget* parent)
+DialogCaption::DialogCaption(QWidget* parent, const QString &text, bool warning)
     : QLabel(text, parent)
 {
-    setStyleSheet(DB_CAPTION_STYLE);
+    if (warning)
+        setStyleSheet(DB_CAPTION_WARN_STYLE);
+    else
+        setStyleSheet(DB_CAPTION_NORMAL_STYLE);
     setText(text);
 }
 

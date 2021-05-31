@@ -15,6 +15,7 @@ public:
     void setHtmlContent(const QString& content);
     void setMarkdownSource(const QString& source);
     void setMarkdownContent(const QString& content);
+    void scrollUp();
 
 private:
     QTextBrowser* m_Content;

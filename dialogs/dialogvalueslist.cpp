@@ -43,7 +43,7 @@ DialogValuesList::DialogValuesList(QWidget* parent,
     ToolBar()->setIconSize(QSize(config->ButtonSize(), config->ButtonSize()));
     ToolBar()->addWidget(new WidgetSpacer());
 
-    auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Accept"));
+    auto actionAccept = new QAction(QIcon(":/resources/img/yes.svg"), tr("Принять"));
     actionAccept->setAutoRepeat(false);
     QObject::connect(actionAccept, &QAction::triggered, [=](){ accept(); });
     addToolBarAction(ToolBar(), actionAccept, CSS_TOOLBUTTON);
@@ -54,8 +54,9 @@ DialogValuesList::DialogValuesList(QWidget* parent,
 
     resize(DVL_WINDOW_SIZE);
 
-    QObject::connect(this, &QObject::destroyed, [=](){ qDebug() << "DialogValuesList" << windowTitle() << "destroyed"; });
-    qDebug() << "DialogValuesList" << windowTitle() << "created";
+    QObject::connect(this, &QObject::destroyed, [=]()
+    { qInfo() << "DialogValuesList" << windowTitle() << "destroyed"; });
+    qInfo() << "DialogValuesList" << windowTitle() << "created";
 }
 
 void DialogValuesList::addWidgetContent(QWidget *widget, bool sub_item)
@@ -86,7 +87,8 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
 
     if(!values) { qCritical() << __func__ << ": Values is empty"; return; }
 
-    for (auto key: values->keys())
+    auto keys = values->keys();
+    for (const auto &key: keys)
     {
         QVariant::Type t = values->value(key).type;
         QVariant v = values->value(key).value;
@@ -203,7 +205,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
 
             auto actionSave = new QAction(QIcon(":/resources/img/save.svg"), tr("Save image"), widget);
             actionSave->setAutoRepeat(false);
-            QObject::connect(actionSave, &QAction::triggered, [=](){ saveImage(pixmap); });
+            QObject::connect(actionSave, &QAction::triggered, this, [=](){ saveImage(pixmap); });
             addToolBarAction(tbimginfo, actionSave, CSS_TOOLBUTTON);
 
             auto limgsize = new QLabel(QString("Size: %1X%2 px").
@@ -234,8 +236,8 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
             bl->addWidget(le, 1);
             widget->setLayout(bl);
 
-            if(key == m_FocusedKey) le->setFocus();
             addWidgetContent(widget, sub_item);
+            if(key == m_FocusedKey) le->setFocus();
             continue;
         }
 
@@ -309,8 +311,8 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
                 QObject::connect(le, &QLineEdit::returnPressed,
                                  this, &DialogValuesList::slotStringListValueChanged);
                 bl->addWidget(le, 1);
-                if(key == m_FocusedKey) le->setFocus();
                 widget->setLayout(bl);
+                if(key == m_FocusedKey) le->setFocus();
             }
             else if(values->value(key).mode == DialogValueMode::OneFromList)
             {
@@ -346,7 +348,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
                 if(!list.isEmpty())
                 {
                     list.sort(Qt::CaseInsensitive);
-                    for(QString s: list)
+                    for(const QString &s: list)
                     {
                         auto i = new QStandardItem(s);
                         i->setCheckable(true);
@@ -360,8 +362,8 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
                 }
                 else lv->setDisabled(true);
                 bl->addWidget(lv, 1);
-                if(key == m_FocusedKey) lv->setFocus();
                 widget->setLayout(bl);
+                if(key == m_FocusedKey) lv->setFocus();
             }
             addWidgetContent(widget, sub_item);
             continue;
@@ -373,10 +375,9 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
 
 void DialogValuesList::saveImage(QPixmap pixmap)
 {
-    auto filename = QFileDialog::getSaveFileName(this, "Save image", config->LastDir(), "PNG files (*.png)");
+    auto filename = QFileDialog::getSaveFileName(this, "Save image", config->PathAppDir(), "PNG files (*.png)");
 
     if(filename.isNull()) return;
-    config->setLastDir(QFileInfo(filename).dir().path());
 
     if(!filename.endsWith(".png", Qt::CaseInsensitive)) filename.append(".png");
     QFile file(filename);

@@ -4,25 +4,37 @@
 #include <QDialog>
 #include <QLabel>
 
-const QString DB_CAPTION_STYLE = "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-                                 "stop: 0 Silver, stop: 0.5 PowderBlue, "
-                                 "stop: 0.5 PowderBlue, stop: 1 silver); "
-                                 "border: 1px solid Silver; "
-                                 "padding: 0px 1px 0px 1px; border-radius: 5px; "
-                                 "color: black; font-family: monospace; font: bold; ";
+const QString DB_CAPTION_NORMAL_STYLE =
+        "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+        "stop: 0 PowderBlue, stop: 0.5 silver, "
+        "stop: 0.5 silver, stop: 1 PowderBlue); "
+        "border: 1px solid Silver; "
+        "padding: 0px 1px 0px 1px; border-radius: 5px; "
+        "color: black; font-family: monospace; font: bold; ";
 
-const QString DB_CAPTION_ICON_STYLE = "padding: 0px 0px 0px 0px; "
-                                      "margin: 1px 1px 1px 1px; ";
+const QString DB_CAPTION_WARN_STYLE =
+        "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+        "stop: 0 red, stop: 0.5 silver, "
+        "stop: 0.5 silver, stop: 1 red); "
+        "border: 1px solid Silver; "
+        "padding: 0px 1px 0px 1px; border-radius: 5px; "
+        "color: black; font-family: monospace; font: bold; ";
 
-const QString DB_CAPTION_BUTTON_STYLE = "padding: 0px 0px 0px 0px; "
-                                        "margin: 1px 1px 1px 1px; ";
+const QString DB_CAPTION_ICON_STYLE =
+        "padding: 0px 0px 0px 0px; "
+        "margin: 1px 1px 1px 1px; ";
+
+const QString DB_CAPTION_BUTTON_STYLE =
+        "padding: 0px 0px 0px 0px; "
+        "margin: 1px 1px 1px 1px; ";
+
+const QString DB_WINDOW_STYLE =
+        "QDialog { border-style: ridge; "
+        "border-width: 2px; "
+        "border-radius: 5px; "
+        "border-color: silver; }";
 
 const QSize DB_CAPTION_DELTA_SIZE = QSize(4, 4);
-
-const QString DB_WINDOW_STYLE = "QDialog { border-style: ridge; "
-                                "border-width: 2px; "
-                                "border-radius: 5px; "
-                                "border-color: silver; }";
 
 class QGridLayout;
 class QToolBar;
@@ -35,7 +47,7 @@ class DialogCaption : public QLabel
     Q_OBJECT
 
 public:
-    DialogCaption(const QString &text, QWidget* parent = nullptr);
+    DialogCaption(QWidget* parent, const QString &text, bool warning = false);
 
 public Q_SLOTS:
     void setText(const QString& text);
@@ -64,10 +76,12 @@ public:
 
     void addDialogContent(QWidget* widget);
     QToolBar *ToolBar() const;
+    void setWarningMode();
 
 private:
     QGridLayout* m_ContentGridLayout;
     DialogCaption* m_Caption;
+    QLabel* m_LabelIcon;
     QToolBar* m_ToolBar;
 
 protected:
