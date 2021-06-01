@@ -208,7 +208,7 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
             QObject::connect(actionSave, &QAction::triggered, this, [=](){ saveImage(pixmap); });
             addToolBarAction(tbimginfo, actionSave, CSS_TOOLBUTTON);
 
-            auto limgsize = new QLabel(QString("Size: %1X%2 px").
+            auto limgsize = new QLabel(tr("Size: %1X%2 px").
                                        arg(QString::number(realw), QString::number(realh)), widget);
             tbimginfo->addWidget(limgsize);
             bl->addWidget(tbimginfo, 0);
@@ -375,10 +375,11 @@ void DialogValuesList::slotLoadContent(QMap<QString, DialogValue>* values)
 
 void DialogValuesList::saveImage(QPixmap pixmap)
 {
-    auto filename = QFileDialog::getSaveFileName(this, "Save image", config->LastDir(), "PNG files (*.png)");
+    auto filename = QFileDialog::getSaveFileName(this, tr("Save image"), config->LastDir(), tr("PNG files (*.png)"));
 
     if(filename.isNull()) return;
 
+    // NOTE: если нужно сохранять последний каталог
     config->setLastDir(QFileInfo(filename).dir().path());
 
     if(!filename.endsWith(".png", Qt::CaseInsensitive)) filename.append(".png");
